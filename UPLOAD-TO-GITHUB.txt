@@ -1,0 +1,12 @@
+THE GRIFFLIST — GITHUB WEBSITE FILES
+
+1. Extract this ZIP.
+2. Open your GitHub repository.
+3. Upload these files to the repository root (not inside a nested folder), replacing files with matching names.
+4. Commit the changes to the main branch.
+5. Confirm GitHub Pages is publishing from main / (root).
+
+IMPORTANT:
+- Run the Supabase SQL migration from the separate Supabase ZIP before expecting the new Rock Meter and encore-voting features to work.
+- Do not upload service_role or secret API keys to this public repository.
+- The existing supabase-config.js contains the browser-side project URL/publishable key only; never replace it with a secret key.
