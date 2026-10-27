@@ -189,3 +189,31 @@ footer p{font-size:.7rem;color:#81797a;letter-spacing:.02em}
 
 /* The Grifflist live-show features */
 .rock-meter-section,.encore-section{scroll-margin-top:90px}.rock-meter-card{display:grid;grid-template-columns:220px 1fr;align-items:center;gap:28px;background:linear-gradient(140deg,#1c1714,#0d0d0d);border:1px solid #5a3b2a;border-radius:8px;padding:24px}.rock-meter-art{width:100%;max-width:220px;image-rendering:auto;filter:drop-shadow(0 8px 18px #0009);justify-self:center}.rock-meter-info{min-width:0}.rock-meter-goal-label{font-size:.7rem;letter-spacing:.17em;color:var(--gold);font-weight:900}.rock-meter-numbers{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}.rock-meter-numbers strong{font:900 clamp(2rem,5vw,3.5rem)/1 'Barlow Condensed',Impact,sans-serif;color:var(--gold)}.rock-meter-numbers>span{color:var(--muted);font-size:.9rem}.rock-meter-track{height:18px;border:2px solid #71624e;background:#090909;border-radius:2px;margin:15px 0 10px;padding:2px;overflow:hidden}.rock-meter-track span{display:block;height:100%;width:0;background:linear-gradient(90deg,#9b2520,#ff542e,#ffbd58);transition:width .5s}.rock-meter-caption,.support-small,.qr-caption{font-size:.78rem;color:var(--muted)}.encore-card{display:grid;grid-template-columns:minmax(180px,.75fr) 1fr;gap:22px;padding:20px;background:linear-gradient(140deg,#1c1714,#0d0d0d);border:1px solid #5a3b2a;border-radius:8px}.encore-image-link{display:block;align-self:center}.encore-image{display:block;width:100%;max-height:280px;object-fit:cover;border:1px solid #40362e;border-radius:5px}.encore-vote-content{min-width:0}.encore-poll-status{font-size:.82rem;color:var(--gold);min-height:1.3em}.encore-options{display:grid;gap:10px}.encore-option{display:flex;justify-content:space-between;align-items:center;gap:10px;width:100%;text-align:left;background:#111;border:1px solid #4a3a2c;color:var(--text);padding:13px;border-radius:4px;cursor:pointer}.encore-option:hover:not(:disabled){border-color:var(--hot);background:#211511}.encore-option:disabled{opacity:.7;cursor:default}.encore-option strong{font-size:.9rem}.encore-option span{font-size:.78rem;color:var(--gold);white-space:nowrap}.encore-option.selected{border-color:var(--gold);box-shadow:inset 0 0 0 1px var(--gold)}.encore-footnote{font-size:.7rem;color:#9a9288;margin-top:13px}.support-grid{display:grid;gap:12px}.support-grid .tip-card{margin:0}.kofi-qr-link{display:block;width:min(190px,100%);margin-top:12px;background:white;padding:8px;border-radius:5px}.kofi-qr{display:block;width:100%;height:auto}.qr-caption{margin:6px 0 0}.support-priority-note{font-size:.85rem;color:#c9bfb3;border-left:2px solid var(--gold);padding-left:13px}.support-grid .button{margin-top:9px}.top-nav a{white-space:nowrap}@media(max-width:700px){.top-nav{overflow-x:auto;justify-content:flex-start;gap:14px;padding-bottom:3px}.rock-meter-card,.encore-card{grid-template-columns:1fr;padding:16px}.rock-meter-art{max-width:170px}.encore-image{max-height:190px}.support-grid .tip-card{padding:15px}}
+
+
+/* Accessibility and simpler live-show tools */
+.site-header{gap:14px;padding-top:16px;padding-bottom:16px}
+.top-nav{gap:6px;flex-wrap:wrap;justify-content:flex-end;color:#fff;font-size:1rem}
+.top-nav a{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:10px 12px;border:1px solid #777;border-radius:6px;background:#171717;color:#fff;font-size:.95rem;font-weight:800;letter-spacing:0;text-transform:none;white-space:nowrap}
+.top-nav a:hover,.top-nav a:focus-visible{background:#3b1b12;color:#fff;border-color:#ffbd58;text-shadow:none}
+:focus-visible{outline:3px solid #ffdf73!important;outline-offset:4px!important}
+.button{min-height:46px;font-size:.95rem;padding:12px 18px}
+.rock-meter-track{height:24px;border:2px solid #b7b7b7;background:#222;padding:2px;border-radius:5px}
+.rock-meter-track span{border-radius:2px;background:#d62828;transition:width .5s,background-color .3s}
+.rock-meter-track.meter-red span{background:#e53935}
+.rock-meter-track.meter-yellow span{background:#ffd43b}
+.rock-meter-track.meter-green span{background:#32c766}
+.rock-meter-caption{font-size:.95rem;color:#fff;min-height:1.5em}
+.tip-card-icon{width:48px;height:48px;min-width:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.35rem;color:#fff}
+.kofi-qr-panel{width:min(210px,100%);margin-top:12px;padding:10px;background:#fff;border-radius:8px}
+.kofi-qr-panel[hidden]{display:none}
+.kofi-qr{display:block;width:100%;height:auto}
+.qr-caption{color:#333;font-size:.9rem;margin:8px 0 0}
+.encore-image-wrap{align-self:center}
+.encore-image-caption{color:#fff;font-size:.95rem;margin:10px 0 0}
+.encore-option{min-height:52px;font-size:1rem;border-width:2px}
+.encore-option strong{font-size:1rem}
+.encore-option span{font-size:.9rem}
+.support-priority-note{font-size:1rem}
+@media(max-width:800px){.site-header{align-items:stretch;flex-direction:column;gap:10px}.header-logo-link{align-self:center}.top-nav{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));width:100%;gap:8px;justify-content:stretch}.top-nav a{white-space:normal;text-align:center;line-height:1.2;padding:10px 6px;font-size:.9rem;min-height:48px}.rock-meter-card,.encore-card{grid-template-columns:1fr}.rock-meter-art{max-width:190px}.encore-image{max-height:220px}}
+@media(max-width:420px){.top-nav{grid-template-columns:repeat(2,minmax(0,1fr))}.top-nav a{font-size:.92rem}.tip-card-icon{width:44px;height:44px;min-width:44px}}

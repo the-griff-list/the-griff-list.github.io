@@ -192,7 +192,7 @@ bookingCopy.addEventListener("click", async()=>{try{await navigator.clipboard.wr
 const splash=$("#splash"), selectSound=$("#select-sound"), titleScreenSound=$("#title-screen-sound");
 function playSelectSound(){if(!selectSound)return;try{selectSound.currentTime=0;const attempt=selectSound.play();if(attempt&&typeof attempt.catch==="function")attempt.catch(()=>{});}catch(e){}}
 function playTitleScreenSound(){if(!titleScreenSound)return;try{titleScreenSound.currentTime=0;const attempt=titleScreenSound.play();if(attempt&&typeof attempt.catch==="function")attempt.catch(()=>{});}catch(e){}}
-document.querySelectorAll('.top-nav a, #copy-email, #booking-copy, .social-links a, .secret-entry, .support-grid a, .encore-image-link').forEach(el=>el.addEventListener('click',playTitleScreenSound));
+document.querySelectorAll('.top-nav a, #copy-email, #booking-copy, .social-links a, .secret-entry, .support-grid a').forEach(el=>el.addEventListener('click',playTitleScreenSound));
 function enterSite(){
   if(splash.classList.contains("dismissed")) return;
   playSelectSound();
@@ -218,11 +218,18 @@ const encoreStatus=document.querySelector("#encore-poll-status");
 const encoreTitle=document.querySelector("#encore-poll-title");
 const moneyCAD=value=>new Intl.NumberFormat("en-CA",{style:"currency",currency:"CAD",maximumFractionDigits:0}).format(Number(value)||0);
 async function loadRockMeter(){
- const client=window.supabaseClient;if(!client)return;
- try{const {data,error}=await client.from("rock_meter_settings").select("goal_label,goal_amount,raised_amount").eq("id",1).maybeSingle();if(error)throw error;if(!data)return;
- const goal=Math.max(1,Number(data.goal_amount)||200),raised=Math.max(0,Number(data.raised_amount)||0),pct=Math.min(100,Math.round(raised/goal*100));
- rockMeterGoalLabel.textContent=data.goal_label||"NEXT GIG GOAL";rockMeterRaised.textContent=moneyCAD(raised);rockMeterGoal.textContent=moneyCAD(goal);rockMeterFill.style.width=pct+"%";rockMeterProgress.setAttribute("aria-valuenow",String(pct));rockMeterCaption.textContent=pct>=100?"Goal reached — thank you for keeping the music going!":pct+"% of the goal reached. Thanks for the support.";
- }catch(e){console.info("Rock Meter needs the Supabase live-features migration.",e.message);}
+ const client=window.supabaseClient;
+ if(!client){rockMeterCaption.textContent="Rock Meter is waiting for its Supabase connection.";return;}
+ try{
+  const {data,error}=await client.from("rock_meter_settings").select("goal_label,goal_amount,raised_amount").eq("id",1).maybeSingle();
+  if(error)throw error;
+  if(!data)throw new Error("No Rock Meter settings found. Run the live-features SQL migration in Supabase.");
+  const goal=Math.max(1,Number(data.goal_amount)||200),raised=Math.max(0,Number(data.raised_amount)||0),pct=Math.min(100,Math.round(raised/goal*100));
+  const meterClass=pct>=100?"meter-green":pct>=50?"meter-yellow":"meter-red";
+  rockMeterProgress.classList.remove("meter-red","meter-yellow","meter-green");rockMeterProgress.classList.add(meterClass);
+  rockMeterGoalLabel.textContent=data.goal_label||"NEXT GIG GOAL";rockMeterRaised.textContent=moneyCAD(raised);rockMeterGoal.textContent=moneyCAD(goal);rockMeterFill.style.width=pct+"%";rockMeterProgress.setAttribute("aria-valuenow",String(pct));rockMeterProgress.setAttribute("aria-valuetext",`${pct}% of the ${moneyCAD(goal)} goal reached`);
+  rockMeterCaption.textContent=pct>=100?"Goal reached — thank you for keeping the music going!":pct>=50?`${pct}% of the goal reached. We're getting there!`:`${pct}% of the goal reached. Thanks for the support.`;
+ }catch(e){rockMeterCaption.textContent="Rock Meter could not load. Check that the Supabase live-features SQL has been run.";console.error("Rock Meter load failed:",e.message);}
 }
 async function loadEncorePoll(){
  const client=window.supabaseClient;if(!client)return;
@@ -234,4 +241,7 @@ async function loadEncorePoll(){
  if(alreadyVoted)encoreStatus.textContent=`Your vote is in. ${total} vote${total===1?"":"s"} so far.`;
  }catch(e){encoreStatus.textContent="Encore voting will be available after the live-features database setup.";console.info("Encore poll needs the Supabase live-features migration.",e.message);}
 }
+const showKofiQr=document.querySelector("#show-kofi-qr");
+const kofiQrPanel=document.querySelector("#kofi-qr-panel");
+if(showKofiQr&&kofiQrPanel){showKofiQr.addEventListener("click",()=>{const open=kofiQrPanel.hidden;kofiQrPanel.hidden=!open;showKofiQr.setAttribute("aria-expanded",String(open));showKofiQr.textContent=open?"Hide Ko-fi QR code":"Show Ko-fi QR code";if(open)kofiQrPanel.scrollIntoView({behavior:"smooth",block:"nearest"});});}
 loadRockMeter();loadEncorePoll();window.setInterval(()=>{loadRockMeter();loadEncorePoll();},30000);
