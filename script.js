@@ -187,14 +187,14 @@ const tipButton=$("#copy-email"),tipStatus=$("#tip-status");
 tipButton.addEventListener("click",async()=>{try{await navigator.clipboard.writeText(config.tipEmail);tipStatus.textContent="E-transfer email copied — open your banking app to send it.";}catch(e){tipStatus.textContent=`E-transfer email: ${config.tipEmail}. If copying was blocked, press and hold the address to copy it.`;}});
 const bookingCopy=$("#booking-copy"), bookingStatus=$("#booking-status");
 bookingCopy.addEventListener("click", async()=>{try{await navigator.clipboard.writeText("griffenarsenaultmusic@hotmail.com");bookingStatus.textContent="Booking email copied.";}catch(e){bookingStatus.textContent="Email: griffenarsenaultmusic@hotmail.com — select and copy it.";}});
-// Keep the original select sound for toolbar/navigation; use UI Sound 06R only on the title screen.
+// Swapped sound roles: UI Sound 06R (title-screen-sound.mp3) is used for navigation; the original select sound plays when entering the site.
 const splash=$("#splash"), selectSound=$("#select-sound"), titleScreenSound=$("#title-screen-sound");
 function playSelectSound(){if(!selectSound)return;try{selectSound.currentTime=0;const attempt=selectSound.play();if(attempt&&typeof attempt.catch==="function")attempt.catch(()=>{});}catch(e){}}
 function playTitleScreenSound(){if(!titleScreenSound)return;try{titleScreenSound.currentTime=0;const attempt=titleScreenSound.play();if(attempt&&typeof attempt.catch==="function")attempt.catch(()=>{});}catch(e){}}
-document.querySelectorAll('.top-nav a, #copy-email, #booking-copy, .social-links a, .secret-entry').forEach(el=>el.addEventListener('click',playSelectSound));
+document.querySelectorAll('.top-nav a, #copy-email, #booking-copy, .social-links a, .secret-entry').forEach(el=>el.addEventListener('click',playTitleScreenSound));
 function enterSite(){
   if(splash.classList.contains("dismissed")) return;
-  playTitleScreenSound();
+  playSelectSound();
   splash.classList.add("dismissed");document.body.classList.remove("splash-open");
   try{sessionStorage.setItem("grifflistEntered","yes");}catch(e){}
 }
