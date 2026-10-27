@@ -1,31 +1,16 @@
-THE GRIFFLIST — SOUND & ROCK METER UPDATE
+THE GRIFFLIST — SOUND AND ROCK METER UPDATE
 
-Included:
-- Three separate Rock Meter WebP states (red, yellow, green). The website switches images using the current Rock Meter total from Supabase: red below 50%, yellow at 50–99%, green at 100% of the goal.
-- Uploaded title-screen art with a separate animated/fading “PRESS ANY BUTTON TO ROCK” overlay at the approved position.
-- Uploaded title-screen sound, menu music loop, and requested contextual sound effects.
-- A clearer, easier-to-read catalog instruction.
-- Existing admin and Request Archive files preserved.
+Install: extract this ZIP and upload the included website files to the root of your existing GitHub Pages repository, replacing matching files. Commit to main and wait for Pages to publish.
 
-INSTALL:
-1. Extract this ZIP.
-2. Upload the files to the ROOT of the existing GitHub repository and replace files with the same names.
-3. Keep all audio and WebP assets alongside index.html.
-4. Commit to main and wait for GitHub Pages to publish.
-5. Test on a phone. Mobile browsers may block title-screen autoplay; the page attempts playback, and the first tap unlocks audio. The menu loop starts after “Press any button to rock.”
+Audio adjustments in this revision:
+- Removed SP cheer one R and SP cheer two R from the page and package.
+- Attempts to start Title screen.mp3 immediately on page load. Browsers may block autoplay until the first tap; this is a browser restriction, not a website setting.
+- Centers the title prompt within the logo area and makes it slightly larger.
+- Sets separate playback volumes for title music, background menu music, and each remaining effect so effects remain audible over the quieter menu loop.
+- Menu music starts after entering the site; if title playback was blocked until the first tap, menu music begins after the title cue ends.
 
-AUDIO MAPPING:
-- Title screen.mp3: attempted as soon as the page loads.
-- sp_cheer1R.wav / sp_cheer2R.wav: random Star Power cheer attempt on initial load.
-- Menu screen.mp3: looping background after entering the site.
-- cash.wav: support/payment controls.
-- highway_riseR.wav: copy e-transfer and booking email buttons.
-- notes_ripple_up_01.wav: selecting a song from the catalog.
-- scroll.wav: in-page navigation links.
-- you_rockR.wav: successful song request and encore vote.
+Sound files included: Title screen.mp3, Menu screen.mp3, cash.wav, highway_riseR.wav, notes_ripple_up_01.wav, scroll.wav, you_rockR.wav.
 
-NOTES:
-- Browser autoplay policies vary; the title sound and cheer may not play until the first tap. Menu music is started by the user's tap on the splash screen.
-- Sound cues can overlap by design; some browsers may briefly pause/restart a reused cue when clicked repeatedly.
-- Tip totals still need verified payment integration to automatically count external Ko-fi/PayPal payments.
-- The ZIP is prepared locally; it is not deployed to GitHub Pages by this package.
+The Rock Meter displays the configured Supabase total; it will not automatically verify or import Ko-fi/PayPal payments unless a payment integration is configured separately. Test on a phone after deployment.
+
+Menu music behavior: the title screen is shown on each page load, and the menu loop starts only after the visitor clicks/taps the title screen. Browser autoplay restrictions may still prevent the title cue from playing before a gesture.

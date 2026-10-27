@@ -188,36 +188,45 @@ const tipButton=$("#copy-email"),tipStatus=$("#tip-status");
 tipButton.addEventListener("click",async()=>{playSfx("highway-riser-sfx");try{await navigator.clipboard.writeText(config.tipEmail);tipStatus.textContent="E-transfer email copied — open your banking app to send it.";}catch(e){tipStatus.textContent=`E-transfer email: ${config.tipEmail}. If copying was blocked, press and hold the address to copy it.`;}});
 const bookingCopy=$("#booking-copy"), bookingStatus=$("#booking-status");
 bookingCopy.addEventListener("click", async()=>{playSfx("highway-riser-sfx");try{await navigator.clipboard.writeText("griffenarsenaultmusic@hotmail.com");bookingStatus.textContent="Booking email copied.";}catch(e){bookingStatus.textContent="Email: griffenarsenaultmusic@hotmail.com — select and copy it.";}});
-// Context-specific Guitar Hero-inspired audio. Browsers may block autoplay until the first user gesture.
+// Audio behavior. Browsers may block sound until a user gesture; try on load and unlock on first tap.
 const splash=$("#splash");
 const titleAudio=$("#title-screen-audio"), menuAudio=$("#menu-screen-audio");
-const sfxIds=["cash-sfx","highway-riser-sfx","notes-ripple-sfx","scroll-sfx","sp-cheer-1-sfx","sp-cheer-2-sfx","you-rock-sfx"];
+const audioVolumes={
+  "title-screen-audio":0.82,
+  "menu-screen-audio":0.28,
+  "cash-sfx":0.88,
+  "highway-riser-sfx":0.78,
+  "notes-ripple-sfx":0.82,
+  "scroll-sfx":0.65,
+  "you-rock-sfx":0.88
+};
+Object.entries(audioVolumes).forEach(([id,volume])=>{const audio=$("#"+id);if(audio){audio.volume=volume;audio.preload="auto";}});
+const sfxIds=["cash-sfx","highway-riser-sfx","notes-ripple-sfx","scroll-sfx","you-rock-sfx"];
 const sfxPool=new Map(sfxIds.map(id=>[id,$("#"+id)]).filter(([id,a])=>a));
 function playSfx(id){const audio=sfxPool.get(id);if(!audio)return;try{audio.pause();audio.currentTime=0;const p=audio.play();if(p&&p.catch)p.catch(()=>{});}catch(e){}}
-function playRandomCheer(){const id=Math.random()<0.5?"sp-cheer-1-sfx":"sp-cheer-2-sfx";playSfx(id);}
 let titleStarted=false;
-function attemptTitleAudio(){if(!titleAudio||titleStarted)return;try{const p=titleAudio.play();if(p&&p.then){p.then(()=>{titleStarted=true;}).catch(()=>{});}}catch(e){}}
-// Attempt title music and a random Star Power cheer immediately on load; autoplay policies may defer audio until a tap.
+function attemptTitleAudio(){if(!titleAudio||titleStarted)return false;try{titleAudio.volume=audioVolumes["title-screen-audio"];const p=titleAudio.play();if(p&&p.then){p.then(()=>{titleStarted=true;}).catch(()=>{});return true;}}catch(e){}return false;}
+// Start immediately when the page loads; browser autoplay policies may require the first tap.
 attemptTitleAudio();
-window.addEventListener("load",()=>{playRandomCheer();},{once:true});
-function startMenuMusic(){if(!menuAudio)return;try{menuAudio.volume=0.55;const p=menuAudio.play();if(p&&p.catch)p.catch(()=>{});}catch(e){}}
+window.addEventListener("load",attemptTitleAudio,{once:true});
+function startMenuMusic(){if(!menuAudio)return;try{menuAudio.volume=audioVolumes["menu-screen-audio"];const p=menuAudio.play();if(p&&p.catch)p.catch(()=>{});}catch(e){}}
 function enterSite(){
   if(splash.classList.contains("dismissed")) return;
-  // User gesture unlocks playback on mobile browsers if autoplay was blocked.
-  if(titleAudio){try{if(titleAudio.paused){titleAudio.currentTime=0;const tp=titleAudio.play();if(tp&&tp.catch)tp.catch(()=>{});} }catch(e){}}
-  playRandomCheer();
+  // If autoplay was blocked, start the title sound from this tap.
+  const titleWasPlaying=titleAudio&&!titleAudio.paused;
+  if(titleAudio&&!titleStarted){try{titleAudio.volume=audioVolumes["title-screen-audio"];const p=titleAudio.play();if(p&&p.then)p.then(()=>{titleStarted=true;}).catch(()=>{});}catch(e){}}
   splash.classList.add("dismissed");document.body.classList.remove("splash-open");
-  try{sessionStorage.setItem("grifflistEntered","yes");}catch(e){}
-  startMenuMusic();
+  // Let the title cue finish before starting the menu loop, avoiding an audio pile-up.
+  if(titleWasPlaying){titleAudio.addEventListener("ended",startMenuMusic,{once:true});}
+  else if(titleStarted||!titleAudio){startMenuMusic();}
+  else if(titleAudio){titleAudio.addEventListener("ended",startMenuMusic,{once:true});}
 }
-let alreadyEntered=false;try{alreadyEntered=sessionStorage.getItem("grifflistEntered")==="yes";}catch(e){}
-if(alreadyEntered){splash.classList.add("dismissed");document.body.classList.remove("splash-open");startMenuMusic();}else document.body.classList.add("splash-open");
+document.body.classList.add("splash-open");
 splash.addEventListener("click",enterSite);
 splash.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();enterSite();}});
 document.addEventListener("keydown",e=>{if(!splash.classList.contains("dismissed")&&(e.key==="Enter"||e.key===" "))enterSite();});
 // Suitable UI sounds: money/support actions, navigation scroll, song selection, and achievements.
 document.addEventListener("click",event=>{
- if(splash.classList.contains("dismissed")&&menuAudio&&menuAudio.paused)startMenuMusic();
  const control=event.target.closest("button,a,[role=button]");if(!control)return;
  if(control.id==="splash")return;
  if(control.matches("a[href^='#']"))playSfx("scroll-sfx");

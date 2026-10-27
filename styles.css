@@ -248,3 +248,7 @@ body:before{opacity:.025;background-size:8px 8px}
 @keyframes prompt-fade{0%,100%{opacity:.3}50%{opacity:1}}
 @media(max-width:700px){.splash{padding:0}.splash-stage{width:min(100vw,61.3dvh);max-width:100vw}.splash-artwork{width:100%;height:100%;transform:none!important}.press-prompt{font-size:clamp(8px,2.3vw,12px);left:47.5%;top:53.5%;width:49%}.rock-meter-card{padding:14px;gap:12px}.rock-meter-art-wrap{max-width:370px}.rock-meter-art{max-width:370px}.support-grid .tip-card{padding:16px}.catalog-footnote{font-size:.95rem}}
 @media(prefers-reduced-motion:reduce){.press-prompt{animation:none;opacity:1}}
+
+/* Follow-up: centered, more readable title prompt and balanced audio playback levels are set in script.js. */
+.press-prompt{left:46%;width:51%;text-align:center;font-size:clamp(11px,2.65vw,21px);letter-spacing:.025em;text-shadow:0 0 9px #a94316,0 2px 0 #42170a}
+@media(max-width:700px){.press-prompt{left:45%;width:53%;font-size:clamp(9px,2.7vw,14px);letter-spacing:.01em}}

@@ -16,3 +16,8 @@ INSTALL:
 4. Wait for GitHub Pages to deploy, then refresh the site.
 
 NOTE: The page cannot automatically verify payment-provider checkout options from the public page. Apple Pay / Google Pay availability depends on the provider's configuration, device, and checkout.
+
+
+Follow-up revision: removed the two SP cheer audio files and their playback logic; title audio now attempts autoplay on page load, the prompt is centered and slightly larger, and playback volumes are balanced in script.js. Mobile browsers may still block autoplay until the first user interaction.
+
+FOLLOW-UP: Menu screen.mp3 is now started only after the visitor clicks/taps the title screen. The title screen is shown on every page load, and menu music no longer starts from generic clicks elsewhere on the page. Mobile browsers may still require a user gesture to permit audio playback.
