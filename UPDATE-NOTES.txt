@@ -1,23 +1,24 @@
-THE GRIFFLIST — ROCK METER + SUPPORT DESIGN UPDATE
+THE GRIFFLIST — TITLE SCREEN, AUDIO CROSSFADE, AND NAVIGATION UPDATE
 
-Included:
-- Updated title-screen artwork with PRESS ANY BUTTON TO ROCK moved up under the logo.
-- Unified Support the Show section combining the Rock Meter, $200 goal, Ko-fi, PayPal, and e-transfer.
-- Larger responsive Rock Meter with red/yellow/green zones, a centered needle for each state, and blue star-power-style bulbs.
-- Rock Meter dial follows the live contribution percentage from the existing Supabase rock_meter_settings row: red under 50%, yellow from 50% to under 100%, green at the goal.
-- Three supplied UI sound clips play randomly when a button or link is clicked.
-- Apple Pay and Google Pay are described as conditional checkout options, not guaranteed payment methods.
-- Preserves the separate private Request Archive page and migration from the previous package.
+What's changed:
+- Title screen now combines the hand-drawn guitarist artwork with the refreshed metallic Grifflist logo in the original side-by-side layout.
+- The title prompt is separate from the image so it can fade in and out; it is centered under the logo, larger, and bold for mobile readability.
+- Title audio is attempted on page load (autoplay may be blocked by mobile browsers until a tap).
+- After the visitor taps the title screen, menu music starts only after that interaction. The title and menu tracks crossfade together over about 1.6 seconds when timing allows.
+- Menu music pauses when the browser tab/app is hidden and resumes only after the visitor has entered the site and returns to the page.
+- Main navigation order follows the visitor journey: Song Catalog → Make a Request → Support the Show → Encore Vote → Booking & Contact.
+- Main toolbar links continue to play a randomly selected UI sound. Support actions, song selections, email copying, scrolling, and successful actions retain their assigned effects.
+- Rock Meter red/yellow/green images, support links, song catalog, request form, encore voting, and private Request Archive files are retained.
+- Star Power cheer files are not included.
 
 INSTALL:
-1. Extract the ZIP. Upload all included website files to the root of the existing GitHub Pages repository, replacing files with the same names. Keep the repo's existing Rockmeter_gh3(1).webp if you still use it elsewhere; the new dial is drawn directly in the page.
-2. No new database migration is needed for these visual/UI changes. The Rock Meter still reads the existing rock_meter_settings table, and only shows live contributions if the existing Supabase live-features setup is configured.
-3. If you are also installing Request Archive for the first time, follow REQUEST-ARCHIVE-INSTALL.txt and run request-archive-migration.sql once. If that migration was already run, do not run it again unnecessarily.
-4. Wait for GitHub Pages to deploy, then refresh the site.
+1. Extract the ZIP.
+2. Upload all included files to the root of the existing GitHub Pages repository, replacing matching files.
+3. Commit to main and wait for GitHub Pages to publish.
+4. Test the title screen, audio transition, toolbar sounds, support section, song catalog, and archive on mobile.
 
-NOTE: The page cannot automatically verify payment-provider checkout options from the public page. Apple Pay / Google Pay availability depends on the provider's configuration, device, and checkout.
-
-
-Follow-up revision: removed the two SP cheer audio files and their playback logic; title audio now attempts autoplay on page load, the prompt is centered and slightly larger, and playback volumes are balanced in script.js. Mobile browsers may still block autoplay until the first user interaction.
-
-FOLLOW-UP: Menu screen.mp3 is now started only after the visitor clicks/taps the title screen. The title screen is shown on every page load, and menu music no longer starts from generic clicks elsewhere on the page. Mobile browsers may still require a user gesture to permit audio playback.
+NOTES:
+- Mobile browsers can block autoplay. The title track is attempted on page load and is retried when the visitor taps the title screen if playback was blocked.
+- Menu music is paused when the page becomes hidden. Audio playback and exact volume balance can vary by device/browser.
+- The Rock Meter reflects the existing Supabase configuration; automatic verified Ko-fi/PayPal payment tracking requires separate payment-provider integration.
+- The package has not been deployed to or tested against the live GitHub Pages site.

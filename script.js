@@ -188,7 +188,8 @@ const tipButton=$("#copy-email"),tipStatus=$("#tip-status");
 tipButton.addEventListener("click",async()=>{playSfx("highway-riser-sfx");try{await navigator.clipboard.writeText(config.tipEmail);tipStatus.textContent="E-transfer email copied — open your banking app to send it.";}catch(e){tipStatus.textContent=`E-transfer email: ${config.tipEmail}. If copying was blocked, press and hold the address to copy it.`;}});
 const bookingCopy=$("#booking-copy"), bookingStatus=$("#booking-status");
 bookingCopy.addEventListener("click", async()=>{playSfx("highway-riser-sfx");try{await navigator.clipboard.writeText("griffenarsenaultmusic@hotmail.com");bookingStatus.textContent="Booking email copied.";}catch(e){bookingStatus.textContent="Email: griffenarsenaultmusic@hotmail.com — select and copy it.";}});
-// Audio behavior. Browsers may block sound until a user gesture; try on load and unlock on first tap.
+// Audio behavior: attempt the title sound on load. Browsers may block autoplay until a tap.
+// Menu music begins only after the title screen is tapped, then crossfades with the title sound.
 const splash=$("#splash");
 const titleAudio=$("#title-screen-audio"), menuAudio=$("#menu-screen-audio");
 const audioVolumes={
@@ -207,39 +208,63 @@ Object.entries(audioVolumes).forEach(([id,volume])=>{const audio=$("#"+id);if(au
 const sfxIds=["cash-sfx","highway-riser-sfx","notes-ripple-sfx","scroll-sfx","you-rock-sfx","ui-sound-01r","ui-sound-05r","ui-sound-06r"];
 const sfxPool=new Map(sfxIds.map(id=>[id,$("#"+id)]).filter(([id,a])=>a));
 function playSfx(id){const audio=sfxPool.get(id);if(!audio)return;try{audio.pause();audio.currentTime=0;const p=audio.play();if(p&&p.catch)p.catch(()=>{});}catch(e){}}
-let titleStarted=false;
-function attemptTitleAudio(){if(!titleAudio||titleStarted)return false;try{titleAudio.volume=audioVolumes["title-screen-audio"];const p=titleAudio.play();if(p&&p.then){p.then(()=>{titleStarted=true;}).catch(()=>{});return true;}}catch(e){}return false;}
-// Keep the title screen silent until the visitor taps it; mobile browsers require a user gesture for reliable playback.
-let menuFadeTimer=null;
+let titleStarted=false, siteEntered=false, crossfadeStarted=false, menuFadeTimer=null;
+const CROSSFADE_MS=1600;
+function attemptTitleAudio(){
+ if(!titleAudio||titleStarted)return false;
+ try{titleAudio.volume=audioVolumes["title-screen-audio"];const p=titleAudio.play();if(p&&p.then){p.then(()=>{titleStarted=true;}).catch(()=>{});return true;}}catch(e){}
+ return false;
+}
 function startMenuMusic(){
- if(!menuAudio)return;
+ if(!menuAudio||crossfadeStarted)return;
+ crossfadeStarted=true;
  try{
    menuAudio.volume=0;
-   const p=menuAudio.play();
-   if(p&&p.catch)p.catch(()=>{});
+   const p=menuAudio.play();if(p&&p.catch)p.catch(()=>{});
    if(menuFadeTimer)window.clearInterval(menuFadeTimer);
-   const duration=1800, steps=18, stepMs=duration/steps; let step=0;
+   const steps=32, stepMs=CROSSFADE_MS/steps;let step=0;
    menuFadeTimer=window.setInterval(()=>{
-     step++;
-     const t=Math.min(1,step/steps);
+     step++;const t=Math.min(1,step/steps);
      menuAudio.volume=audioVolumes["menu-screen-audio"]*t;
      if(titleAudio&&!titleAudio.paused)titleAudio.volume=audioVolumes["title-screen-audio"]*(1-t);
-     if(t>=1){window.clearInterval(menuFadeTimer);menuFadeTimer=null;if(titleAudio){titleAudio.pause();titleAudio.currentTime=0;titleAudio.volume=audioVolumes["title-screen-audio"];}}
+     if(t>=1){window.clearInterval(menuFadeTimer);menuFadeTimer=null;if(titleAudio){titleAudio.pause();try{titleAudio.currentTime=0;}catch(e){}titleAudio.volume=audioVolumes["title-screen-audio"];}}
    },stepMs);
  }catch(e){}
 }
+function maybeCrossfadeTitle(){
+ if(!siteEntered||crossfadeStarted||!titleAudio)return;
+ const duration=titleAudio.duration;
+ if(Number.isFinite(duration)&&duration>0&&titleAudio.currentTime>=Math.max(0,duration-(CROSSFADE_MS/1000)))startMenuMusic();
+}
+if(titleAudio){
+ titleAudio.addEventListener("timeupdate",maybeCrossfadeTitle);
+ titleAudio.addEventListener("ended",()=>{if(siteEntered&&!crossfadeStarted)startMenuMusic();});
+ // Best-effort autoplay on page load; mobile browsers may reject it until a tap.
+ window.addEventListener("load",()=>{attemptTitleAudio();},{once:true});
+}
 function enterSite(){
- if(splash.classList.contains("dismissed")) return;
- const titleWasPlaying=titleAudio&&!titleAudio.paused;
- if(titleAudio&&!titleWasPlaying){try{titleAudio.volume=audioVolumes["title-screen-audio"];const p=titleAudio.play();if(p&&p.catch)p.catch(()=>{});}catch(e){}}
+ if(splash.classList.contains("dismissed"))return;
+ siteEntered=true;
  splash.classList.add("dismissed");document.body.classList.remove("splash-open");
- if(titleAudio&&!titleAudio.paused){titleAudio.addEventListener("ended",startMenuMusic,{once:true});}
- else {startMenuMusic();}
+ if(titleAudio&&titleAudio.paused){
+   try{titleAudio.currentTime=0;titleAudio.volume=audioVolumes["title-screen-audio"];const p=titleAudio.play();if(p&&p.then)p.then(()=>{titleStarted=true;maybeCrossfadeTitle();}).catch(()=>{startMenuMusic();});else startMenuMusic();}
+   catch(e){startMenuMusic();}
+ }else if(titleAudio){
+   titleStarted=true;
+   if(Number.isFinite(titleAudio.duration)&&titleAudio.duration-titleAudio.currentTime<=CROSSFADE_MS/1000)startMenuMusic();
+ }else startMenuMusic();
 }
 document.body.classList.add("splash-open");
 splash.addEventListener("click",enterSite);
 splash.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();enterSite();}});
 document.addEventListener("keydown",e=>{if(!splash.classList.contains("dismissed")&&(e.key==="Enter"||e.key===" "))enterSite();});
+// Pause background music when the tab/app is hidden; resume only after the visitor has entered the site.
+document.addEventListener("visibilitychange",()=>{
+ if(!menuAudio)return;
+ if(document.hidden){menuAudio.pause();}
+ else if(siteEntered){const p=menuAudio.play();if(p&&p.catch)p.catch(()=>{});}
+});
+window.addEventListener("pagehide",()=>{if(menuAudio)menuAudio.pause();});
 // Suitable UI sounds: money/support actions, navigation scroll, song selection, and achievements.
 document.addEventListener("click",event=>{
  const control=event.target.closest("button,a,[role=button]");if(!control)return;
