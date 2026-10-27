@@ -252,3 +252,11 @@ body:before{opacity:.025;background-size:8px 8px}
 /* Follow-up: centered, more readable title prompt and balanced audio playback levels are set in script.js. */
 .press-prompt{left:46%;width:51%;text-align:center;font-size:clamp(11px,2.65vw,21px);letter-spacing:.025em;text-shadow:0 0 9px #a94316,0 2px 0 #42170a}
 @media(max-width:700px){.press-prompt{left:45%;width:53%;font-size:clamp(9px,2.7vw,14px);letter-spacing:.01em}}
+
+/* Approved title screen artwork: fully visible on phones, with independent fading prompt. */
+.splash-stage{position:relative;width:min(100vw,66.6667dvh);aspect-ratio:2/3;max-height:100dvh;flex:0 0 auto;margin:auto}
+.splash-artwork{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:center;max-width:none;max-height:none;transform:none!important}
+.press-prompt{position:absolute;left:5%;top:68.5%;bottom:auto;right:auto;width:90%;transform:translateY(-50%);font:900 clamp(14px,3.3vw,30px)/1.1 Impact,'Arial Narrow',sans-serif;letter-spacing:.015em;text-align:center;color:#ff9b3d;text-shadow:0 0 8px #b44716,0 2px 0 #42170a;animation:prompt-fade 1.8s ease-in-out infinite;white-space:normal;pointer-events:none}
+@keyframes prompt-fade{0%,100%{opacity:1}50%{opacity:.35}}
+@media(max-width:700px){.splash{padding:0}.splash-stage{width:min(100vw,66.6667dvh);max-width:100vw}.press-prompt{left:4%;width:92%;top:68.5%;font-size:clamp(14px,4vw,23px);letter-spacing:0}}
+@media(prefers-reduced-motion:reduce){.press-prompt{animation:none;opacity:1}}

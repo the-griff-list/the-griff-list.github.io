@@ -192,34 +192,49 @@ bookingCopy.addEventListener("click", async()=>{playSfx("highway-riser-sfx");try
 const splash=$("#splash");
 const titleAudio=$("#title-screen-audio"), menuAudio=$("#menu-screen-audio");
 const audioVolumes={
-  "title-screen-audio":0.82,
-  "menu-screen-audio":0.28,
+  "title-screen-audio":0.78,
+  "menu-screen-audio":0.30,
   "cash-sfx":0.88,
-  "highway-riser-sfx":0.78,
+  "highway-riser-sfx":0.82,
   "notes-ripple-sfx":0.82,
-  "scroll-sfx":0.65,
-  "you-rock-sfx":0.88
+  "scroll-sfx":0.68,
+  "you-rock-sfx":0.90,
+  "ui-sound-01r":0.82,
+  "ui-sound-05r":0.82,
+  "ui-sound-06r":0.82
 };
 Object.entries(audioVolumes).forEach(([id,volume])=>{const audio=$("#"+id);if(audio){audio.volume=volume;audio.preload="auto";}});
-const sfxIds=["cash-sfx","highway-riser-sfx","notes-ripple-sfx","scroll-sfx","you-rock-sfx"];
+const sfxIds=["cash-sfx","highway-riser-sfx","notes-ripple-sfx","scroll-sfx","you-rock-sfx","ui-sound-01r","ui-sound-05r","ui-sound-06r"];
 const sfxPool=new Map(sfxIds.map(id=>[id,$("#"+id)]).filter(([id,a])=>a));
 function playSfx(id){const audio=sfxPool.get(id);if(!audio)return;try{audio.pause();audio.currentTime=0;const p=audio.play();if(p&&p.catch)p.catch(()=>{});}catch(e){}}
 let titleStarted=false;
 function attemptTitleAudio(){if(!titleAudio||titleStarted)return false;try{titleAudio.volume=audioVolumes["title-screen-audio"];const p=titleAudio.play();if(p&&p.then){p.then(()=>{titleStarted=true;}).catch(()=>{});return true;}}catch(e){}return false;}
-// Start immediately when the page loads; browser autoplay policies may require the first tap.
-attemptTitleAudio();
-window.addEventListener("load",attemptTitleAudio,{once:true});
-function startMenuMusic(){if(!menuAudio)return;try{menuAudio.volume=audioVolumes["menu-screen-audio"];const p=menuAudio.play();if(p&&p.catch)p.catch(()=>{});}catch(e){}}
+// Keep the title screen silent until the visitor taps it; mobile browsers require a user gesture for reliable playback.
+let menuFadeTimer=null;
+function startMenuMusic(){
+ if(!menuAudio)return;
+ try{
+   menuAudio.volume=0;
+   const p=menuAudio.play();
+   if(p&&p.catch)p.catch(()=>{});
+   if(menuFadeTimer)window.clearInterval(menuFadeTimer);
+   const duration=1800, steps=18, stepMs=duration/steps; let step=0;
+   menuFadeTimer=window.setInterval(()=>{
+     step++;
+     const t=Math.min(1,step/steps);
+     menuAudio.volume=audioVolumes["menu-screen-audio"]*t;
+     if(titleAudio&&!titleAudio.paused)titleAudio.volume=audioVolumes["title-screen-audio"]*(1-t);
+     if(t>=1){window.clearInterval(menuFadeTimer);menuFadeTimer=null;if(titleAudio){titleAudio.pause();titleAudio.currentTime=0;titleAudio.volume=audioVolumes["title-screen-audio"];}}
+   },stepMs);
+ }catch(e){}
+}
 function enterSite(){
-  if(splash.classList.contains("dismissed")) return;
-  // If autoplay was blocked, start the title sound from this tap.
-  const titleWasPlaying=titleAudio&&!titleAudio.paused;
-  if(titleAudio&&!titleStarted){try{titleAudio.volume=audioVolumes["title-screen-audio"];const p=titleAudio.play();if(p&&p.then)p.then(()=>{titleStarted=true;}).catch(()=>{});}catch(e){}}
-  splash.classList.add("dismissed");document.body.classList.remove("splash-open");
-  // Let the title cue finish before starting the menu loop, avoiding an audio pile-up.
-  if(titleWasPlaying){titleAudio.addEventListener("ended",startMenuMusic,{once:true});}
-  else if(titleStarted||!titleAudio){startMenuMusic();}
-  else if(titleAudio){titleAudio.addEventListener("ended",startMenuMusic,{once:true});}
+ if(splash.classList.contains("dismissed")) return;
+ const titleWasPlaying=titleAudio&&!titleAudio.paused;
+ if(titleAudio&&!titleWasPlaying){try{titleAudio.volume=audioVolumes["title-screen-audio"];const p=titleAudio.play();if(p&&p.catch)p.catch(()=>{});}catch(e){}}
+ splash.classList.add("dismissed");document.body.classList.remove("splash-open");
+ if(titleAudio&&!titleAudio.paused){titleAudio.addEventListener("ended",startMenuMusic,{once:true});}
+ else {startMenuMusic();}
 }
 document.body.classList.add("splash-open");
 splash.addEventListener("click",enterSite);
@@ -229,7 +244,11 @@ document.addEventListener("keydown",e=>{if(!splash.classList.contains("dismissed
 document.addEventListener("click",event=>{
  const control=event.target.closest("button,a,[role=button]");if(!control)return;
  if(control.id==="splash")return;
- if(control.matches("a[href^='#']"))playSfx("scroll-sfx");
+ if(control.matches(".top-nav a")){
+   const toolbarSounds=["ui-sound-01r","ui-sound-05r","ui-sound-06r"];
+   const chosen=toolbarSounds[Math.floor(Math.random()*toolbarSounds.length)];
+   playSfx(chosen);
+ } else if(control.matches("a[href^='#']"))playSfx("scroll-sfx");
  if(control.closest(".support-grid")||control.id==="show-kofi-qr")playSfx("cash-sfx");
  if(control.matches("button,a")){control.classList.remove("button-pressed");void control.offsetWidth;control.classList.add("button-pressed");window.setTimeout(()=>control.classList.remove("button-pressed"),220);}
 },true);

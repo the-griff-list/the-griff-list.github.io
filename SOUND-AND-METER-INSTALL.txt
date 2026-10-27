@@ -14,3 +14,10 @@ Sound files included: Title screen.mp3, Menu screen.mp3, cash.wav, highway_riseR
 The Rock Meter displays the configured Supabase total; it will not automatically verify or import Ko-fi/PayPal payments unless a payment integration is configured separately. Test on a phone after deployment.
 
 Menu music behavior: the title screen is shown on each page load, and the menu loop starts only after the visitor clicks/taps the title screen. Browser autoplay restrictions may still prevent the title cue from playing before a gesture.
+
+
+Title screen refinement (2026-10-27):
+- Uses the approved full logo artwork as splash-screen.webp, scaled to fit the full phone screen without cropping.
+- The prompt is a separate HTML layer, centered and larger, fading in and out.
+- Title audio begins on the title-screen tap (mobile-safe); the menu loop crossfades in over about 1.8 seconds after the title cue.
+- Each top toolbar navigation tap randomly plays one of ui-sound-01r.mp3, ui-sound-05r.mp3, or ui-sound-06r.mp3.
