@@ -1,6 +1,6 @@
 The Grifflist update notes
 - Removed the separate white PRESS ANY BUTTON TO ROCK overlay. The existing orange/gold LIVE REPERTOIRE text inside the splash artwork remains.
-- Rock Meter image now uses the supplied scaled image URL. It is externally hosted, so a host-side hotlink or availability change can still prevent display.
+- Rock Meter image now loads from ./Rockmeter_gh3(1).webp, the image you uploaded to the GitHub repository root. Keep the filename exactly the same, including capitalization and parentheses.
 - Updated the support section wording to clarify that priority requests remain pending until payment is verified.
 - The Reddit image text itself has NOT been edited in this package. Replacing text inside the image requires the actual image file to be provided or a recreated artwork asset.
 - Automatic verified payment-to-request flow is NOT implemented. Ko-fi/PayPal links alone do not provide a trusted confirmation back to this static site. That requires a payment checkout/webhook backend (e.g. Stripe Checkout plus a server-side webhook) or manual verification. Never put secret keys in public site files.

@@ -21,3 +21,5 @@ IMPORTANT
 - The live features require the separate Supabase live-features SQL migration to have been run successfully.
 - The browser checks for new Rock Meter and encore data every 8 seconds; this is near-live polling, not instant database push.
 - If an item still appears old after deployment, open the site in a private/incognito tab or hard refresh, then verify that the commit completed and Pages deployed it.
+
+IMPORTANT ROCK METER IMAGE: You said you already uploaded Rockmeter_gh3(1).webp to the repository root. Keep it there with the exact filename. This website update references that local file.

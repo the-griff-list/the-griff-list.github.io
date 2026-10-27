@@ -46,4 +46,4 @@ PAYMENT NOTE:
 The Ko-fi and PayPal buttons are support links. The website does not automatically verify payments and does not currently mark song requests as paid priority. Do not promise priority performance based on the link alone. Any paid-priority workflow needs manual payment matching and venue approval.
 
 IMAGE NOTE:
-The Rock Meter, Ko-fi QR, and Reddit gallery image are referenced from the URLs you supplied rather than bundled locally. If a host blocks hotlinking or changes its URL, that image may stop displaying. The supplied Reddit post appears to be about ticket service charges; the image is included in the Encore section because you asked to use it there.
+The Rock Meter image is loaded from ./Rockmeter_gh3(1).webp. Keep that file in the repository root with the exact filename and capitalization. The Ko-fi QR and Reddit gallery image are referenced from the URLs you supplied rather than bundled locally. The supplied Reddit post appears to be about ticket service charges; the image is included in the Encore section because you asked to use it there.
