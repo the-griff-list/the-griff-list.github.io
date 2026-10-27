@@ -1,9 +1,10 @@
-/* The Supabase project URL and publishable/anon key go here after project setup.
-   These are public client-side values. NEVER put a service_role/secret key in this file. */
+/* Public browser configuration for The Grifflist.
+   Publishable keys are designed to be visible in client-side code.
+   NEVER put a Supabase secret/service_role key here. */
 window.GRIFflist_SUPABASE_CONFIG = {
-  url: "YOUR_SUPABASE_PROJECT_URL",
-  anonKey: "YOUR_SUPABASE_PUBLISHABLE_OR_ANON_KEY"
+  url: "https://wgoepotvblksgjogougo.supabase.co",
+  anonKey: "sb_publishable_QFRCFR3MMW9Qt75-VtnWnw_beH_NBIN"
 };
-if (window.supabase && window.GRIFflist_SUPABASE_CONFIG.url.startsWith("https://") && !window.GRIFflist_SUPABASE_CONFIG.anonKey.startsWith("YOUR_")) {
+if (window.supabase && window.GRIFflist_SUPABASE_CONFIG.url.startsWith("https://") && window.GRIFflist_SUPABASE_CONFIG.anonKey && !window.GRIFflist_SUPABASE_CONFIG.anonKey.startsWith("YOUR_")) {
   window.supabaseClient = window.supabase.createClient(window.GRIFflist_SUPABASE_CONFIG.url, window.GRIFflist_SUPABASE_CONFIG.anonKey);
 }

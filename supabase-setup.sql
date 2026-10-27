@@ -22,10 +22,14 @@ create policy "Anyone can submit a song request"
     status = 'New'
   );
 
--- Only signed-in users can read/update. Create only your own admin login and disable public sign-ups.
+-- Only the designated admin account can read or update requests.
+-- Admin account UID: 7c4c9232-2c28-47f3-a00a-a371ed23cef5
 drop policy if exists "Admin can read song requests" on public.song_requests;
 create policy "Admin can read song requests"
-  on public.song_requests for select to authenticated using (true);
+  on public.song_requests for select to authenticated
+  using (auth.uid() = '7c4c9232-2c28-47f3-a00a-a371ed23cef5'::uuid);
 drop policy if exists "Admin can update song requests" on public.song_requests;
 create policy "Admin can update song requests"
-  on public.song_requests for update to authenticated using (true) with check (true);
+  on public.song_requests for update to authenticated
+  using (auth.uid() = '7c4c9232-2c28-47f3-a00a-a371ed23cef5'::uuid)
+  with check (auth.uid() = '7c4c9232-2c28-47f3-a00a-a371ed23cef5'::uuid);
