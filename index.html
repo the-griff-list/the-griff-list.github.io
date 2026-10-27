@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#09090c">
+  <meta name="description" content="Browse Griffen Arsenault's live repertoire, request a song, and support live music.">
+  <title>The Grifflist — Griffen Arsenault</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="embers" aria-hidden="true"></div>
+  <header class="topbar">
+    <a class="brand" href="#top" aria-label="The Grifflist home">
+      <span class="brand-mark">G!</span>
+      <span><strong>THE GRIFFLIST</strong><small>GRIFFEN ARSENAULT · LIVE REPERTOIRE</small></span>
+    </a>
+    <nav><a href="#requests">REQUEST A SONG</a><a href="#support">SUPPORT</a></nav>
+  </header>
+
+  <main class="shell" id="top">
+    <section class="hero">
+      <p class="eyebrow"><span class="led"></span> LIVE MUSIC · YOUR NEXT REQUEST</p>
+      <h1>SETLIST <span>SELECT</span></h1>
+      <p class="hero-copy">Find your favourite song. Make it the next one.</p>
+      <div class="divider-label"><span></span><i>CHOOSE YOUR TRACK</i><span></span></div>
+    </section>
+
+    <section class="library panel" aria-labelledby="library-title">
+      <div class="section-head">
+        <div><p class="eyebrow">THE REPERTOIRE</p><h2 id="library-title">Song Select</h2></div>
+        <span id="track-count" class="count">00 TRACKS</span>
+      </div>
+      <label class="search" for="search"><span class="search-icon">⌕</span><input id="search" type="search" placeholder="Search songs or artists…" autocomplete="off"><kbd>/</kbd></label>
+
+      <div class="filter-block">
+        <p class="filter-label">BROWSE BY DECADE</p>
+        <div id="decade-filters" class="chips" aria-label="Filter by decade"></div>
+      </div>
+      <div class="filter-block">
+        <p class="filter-label">BROWSE BY ARTIST</p>
+        <select id="artist-filter" aria-label="Filter by artist"><option value="All">All artists</option></select>
+      </div>
+
+      <div class="list-header"><span>TRACK / TITLE</span><span>ARTIST</span><span>LEVEL</span></div>
+      <div id="song-list" class="song-list" aria-live="polite"></div>
+      <p id="empty-state" class="empty-state" hidden>No tracks found. Try a different search or filter.</p>
+      <p class="small-note">Song list is a work in progress. Ask Griffen about a request if you don't see it here.</p>
+    </section>
+
+    <section class="request-section panel" id="requests">
+      <div class="section-head">
+        <div><p class="eyebrow">YOU PICK THE NEXT SONG</p><h2>Make a Request</h2></div>
+        <span class="stamp">REQUEST LINE</span>
+      </div>
+      <p class="section-intro">Got a song in mind? Tell me who you are and what you'd love to hear. You can enter a song, an artist, or both.</p>
+      <form id="request-form" class="request-form" action="https://formspree.io/f/REPLACE_WITH_YOUR_FORM_ID" method="POST">
+        <div class="field">
+          <label for="requester-name">YOUR NAME <span>* REQUIRED</span></label>
+          <input id="requester-name" name="name" type="text" maxlength="100" autocomplete="name" placeholder="What should I call you?" required>
+        </div>
+        <div class="form-grid">
+          <div class="field">
+            <label for="request-song">SONG TITLE <span>OPTIONAL</span></label>
+            <input id="request-song" name="song" type="text" maxlength="160" placeholder="What song?">
+          </div>
+          <div class="field">
+            <label for="request-artist">ARTIST <span>OPTIONAL</span></label>
+            <input id="request-artist" name="artist" type="text" maxlength="160" placeholder="Who performs it?">
+          </div>
+        </div>
+        <p class="form-hint">Enter at least a song title or an artist. Don't know the artist? No problem.</p>
+        <div class="field">
+          <label for="request-note">ANYTHING ELSE? <span>OPTIONAL</span></label>
+          <textarea id="request-note" name="notes" rows="3" maxlength="500" placeholder="Dedication, occasion, or a note for Griffen…"></textarea>
+        </div>
+        <input type="text" name="_gotcha" class="honeypot" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <input type="hidden" name="source" value="The Grifflist song request">
+        <button class="primary-button" type="submit">SEND SONG REQUEST <span>↗</span></button>
+        <p class="form-status" id="form-status" role="status"></p>
+        <p class="small-note">Requests aren't guaranteed, but I'll do my best. Please be kind and keep it venue-friendly.</p>
+      </form>
+    </section>
+
+    <section class="support-section" id="support">
+      <div class="support-copy">
+        <p class="eyebrow">KEEP LIVE MUSIC ALIVE</p>
+        <h2>LIKE THE MUSIC?<br><span>FUEL THE NEXT SONG.</span></h2>
+        <p>Tips help support independent live music. Thanks for listening and for supporting local artists.</p>
+      </div>
+      <div class="tip-card">
+        <div class="tip-icon">✦</div>
+        <p class="tip-title">SEND A TIP</p>
+        <p class="tip-subtitle">Canadian e-Transfer</p>
+        <div class="tip-email" id="tip-email-display">ADD YOUR EMAIL</div>
+        <button type="button" id="copy-email" class="secondary-button">COPY TIP EMAIL</button>
+        <p id="tip-status" class="form-status" role="status"></p>
+        <p class="tiny-note">Only send a tip if you want to. Thank you!</p>
+      </div>
+    </section>
+
+    <section class="booking panel" id="booking">
+      <div><p class="eyebrow">BOOKING & EVENTS</p><h2>LET'S MAKE SOME NOISE.</h2><p>For bars, private events, parties, and other live music opportunities.</p></div>
+      <a id="booking-link" class="primary-button booking-button" href="#booking">CONTACT FOR BOOKINGS <span>↗</span></a>
+    </section>
+  </main>
+
+  <footer class="footer"><span>THE GRIFFLIST · GRIFFEN ARSENAULT</span><span>MADE FOR THE NEXT ENCORE</span></footer>
+
+  <dialog id="song-dialog" class="song-dialog">
+    <button id="close-dialog" class="close-dialog" aria-label="Close song details">×</button>
+    <p class="eyebrow">TRACK DETAILS</p>
+    <div id="dialog-number" class="dialog-number">TRACK 001</div>
+    <h2 id="dialog-title">Song title</h2>
+    <p id="dialog-artist" class="dialog-artist">Artist</p>
+    <div id="dialog-tags" class="dialog-tags"></div>
+    <div class="detail-grid">
+      <div><span>DIFFICULTY</span><strong id="dialog-difficulty">—</strong></div>
+      <div><span>DECADE</span><strong id="dialog-decade">Not added</strong></div>
+      <div><span>KEY</span><strong id="dialog-key">Not added</strong></div>
+      <div><span>CAPO / TUNING</span><strong id="dialog-setup">Not added</strong></div>
+    </div>
+    <div class="notes-block"><span>PERFORMANCE NOTES</span><p id="dialog-notes">No notes added yet.</p></div>
+  </dialog>
+  <script src="script.js"></script>
+</body>
+</html>
