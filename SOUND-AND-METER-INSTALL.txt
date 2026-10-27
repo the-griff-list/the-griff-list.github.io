@@ -1,0 +1,31 @@
+THE GRIFFLIST — SOUND & ROCK METER UPDATE
+
+Included:
+- Three separate Rock Meter WebP states (red, yellow, green). The website switches images using the current Rock Meter total from Supabase: red below 50%, yellow at 50–99%, green at 100% of the goal.
+- Uploaded title-screen art with a separate animated/fading “PRESS ANY BUTTON TO ROCK” overlay at the approved position.
+- Uploaded title-screen sound, menu music loop, and requested contextual sound effects.
+- A clearer, easier-to-read catalog instruction.
+- Existing admin and Request Archive files preserved.
+
+INSTALL:
+1. Extract this ZIP.
+2. Upload the files to the ROOT of the existing GitHub repository and replace files with the same names.
+3. Keep all audio and WebP assets alongside index.html.
+4. Commit to main and wait for GitHub Pages to publish.
+5. Test on a phone. Mobile browsers may block title-screen autoplay; the page attempts playback, and the first tap unlocks audio. The menu loop starts after “Press any button to rock.”
+
+AUDIO MAPPING:
+- Title screen.mp3: attempted as soon as the page loads.
+- sp_cheer1R.wav / sp_cheer2R.wav: random Star Power cheer attempt on initial load.
+- Menu screen.mp3: looping background after entering the site.
+- cash.wav: support/payment controls.
+- highway_riseR.wav: copy e-transfer and booking email buttons.
+- notes_ripple_up_01.wav: selecting a song from the catalog.
+- scroll.wav: in-page navigation links.
+- you_rockR.wav: successful song request and encore vote.
+
+NOTES:
+- Browser autoplay policies vary; the title sound and cheer may not play until the first tap. Menu music is started by the user's tap on the splash screen.
+- Sound cues can overlap by design; some browsers may briefly pause/restart a reused cue when clicked repeatedly.
+- Tip totals still need verified payment integration to automatically count external Ko-fi/PayPal payments.
+- The ZIP is prepared locally; it is not deployed to GitHub Pages by this package.

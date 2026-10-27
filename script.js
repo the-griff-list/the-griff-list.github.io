@@ -162,7 +162,7 @@ function renderSongs(){const visible=filteredSongs();countEl.textContent=`${song
   const title=document.createElement("span");title.className="song-title";title.textContent=song.title;
   songCell.append(title);
   const year=document.createElement("span");year.className="song-year";year.textContent=song.year||"—";
-  row.append(artist,songCell,year);row.setAttribute("aria-label",`Select ${song.title} by ${song.artist} for a request`);row.addEventListener("click",()=>selectSongForRequest(song));listEl.appendChild(row);
+  row.append(artist,songCell,year);row.setAttribute("aria-label",`Select ${song.title} by ${song.artist} for a request`);row.addEventListener("click",()=>{playSfx("notes-ripple-sfx");selectSongForRequest(song);});listEl.appendChild(row);
  });}
 function stopPreview(){if(stopTimer){clearTimeout(stopTimer);stopTimer=null;}if(activeAudio){activeAudio.pause();activeAudio.currentTime=0;activeAudio=null;}if(activeButton){activeButton.classList.remove("playing");activeButton.textContent="▶";activeButton=null;}}
 function togglePreview(song,button){if(activeButton===button){stopPreview();return;}stopPreview();const audio=new Audio(song.audio);activeAudio=audio;activeButton=button;button.classList.add("playing");button.textContent="Ⅱ";audio.addEventListener("ended",stopPreview,{once:true});audio.addEventListener("error",()=>{stopPreview();alert("This preview couldn't be loaded. Check its path in script.js.");},{once:true});audio.play().then(()=>{stopTimer=setTimeout(stopPreview,Math.max(1,Number(config.previewSeconds)||15)*1000);}).catch(()=>{stopPreview();alert("Your browser couldn't play this preview.");});}
@@ -182,28 +182,51 @@ requestForm.addEventListener("submit",async e=>{
  const client=window.supabaseClient; if(!client){status.textContent="Online requests are being set up. Please try again later.";return;}
  const fingerprint=[name,song,artist,message].map(v=>v.trim().toLowerCase()).join("|");const storageKey="grifflistLastRequest";let previous=null;try{previous=JSON.parse(sessionStorage.getItem(storageKey)||"null");}catch(e){}if(previous&&previous.fingerprint===fingerprint&&Date.now()-previous.time<5*60*1000){status.textContent="That same request was just sent. Please wait five minutes before sending it again.";return;}
  if(submit.disabled)return;submit.disabled=true;submit.textContent="SENDING REQUEST…";
- try{const {error}=await client.from("song_requests").insert({requester_name:name,song_title:song,artist_name:artist||null,note:message||null});if(error)throw error;try{sessionStorage.setItem(storageKey,JSON.stringify({fingerprint,time:Date.now()}));}catch(e){}status.textContent="Request sent! Thanks for helping choose the music.";requestForm.reset();$("#request-hint").hidden=true;}catch(err){console.error("Request submission failed",err);status.textContent="Sorry, your request couldn't be sent right now. Please try again in a moment.";}finally{submit.disabled=false;submit.textContent="SEND SONG REQUEST ↗";}
+ try{const {error}=await client.from("song_requests").insert({requester_name:name,song_title:song,artist_name:artist||null,note:message||null});if(error)throw error;try{sessionStorage.setItem(storageKey,JSON.stringify({fingerprint,time:Date.now()}));}catch(e){}status.textContent="Request sent! Thanks for helping choose the music.";playSfx("you-rock-sfx");requestForm.reset();$("#request-hint").hidden=true;}catch(err){console.error("Request submission failed",err);status.textContent="Sorry, your request couldn't be sent right now. Please try again in a moment.";}finally{submit.disabled=false;submit.textContent="SEND SONG REQUEST ↗";}
 });
 const tipButton=$("#copy-email"),tipStatus=$("#tip-status");
-tipButton.addEventListener("click",async()=>{try{await navigator.clipboard.writeText(config.tipEmail);tipStatus.textContent="E-transfer email copied — open your banking app to send it.";}catch(e){tipStatus.textContent=`E-transfer email: ${config.tipEmail}. If copying was blocked, press and hold the address to copy it.`;}});
+tipButton.addEventListener("click",async()=>{playSfx("highway-riser-sfx");try{await navigator.clipboard.writeText(config.tipEmail);tipStatus.textContent="E-transfer email copied — open your banking app to send it.";}catch(e){tipStatus.textContent=`E-transfer email: ${config.tipEmail}. If copying was blocked, press and hold the address to copy it.`;}});
 const bookingCopy=$("#booking-copy"), bookingStatus=$("#booking-status");
-bookingCopy.addEventListener("click", async()=>{try{await navigator.clipboard.writeText("griffenarsenaultmusic@hotmail.com");bookingStatus.textContent="Booking email copied.";}catch(e){bookingStatus.textContent="Email: griffenarsenaultmusic@hotmail.com — select and copy it.";}});
-// Random UI sound: one of the three supplied short clips plays on each main-page button/link tap.
+bookingCopy.addEventListener("click", async()=>{playSfx("highway-riser-sfx");try{await navigator.clipboard.writeText("griffenarsenaultmusic@hotmail.com");bookingStatus.textContent="Booking email copied.";}catch(e){bookingStatus.textContent="Email: griffenarsenaultmusic@hotmail.com — select and copy it.";}});
+// Context-specific Guitar Hero-inspired audio. Browsers may block autoplay until the first user gesture.
 const splash=$("#splash");
-const uiSounds=[$("#ui-sound-1"),$("#ui-sound-2"),$("#ui-sound-3")].filter(Boolean);
-let lastUiSound=-1;
-function playRandomUiSound(){if(!uiSounds.length)return;let index=Math.floor(Math.random()*uiSounds.length);if(uiSounds.length>1&&index===lastUiSound)index=(index+1+Math.floor(Math.random()*(uiSounds.length-1)))%uiSounds.length;lastUiSound=index;const audio=uiSounds[index];try{audio.pause();audio.currentTime=0;const promise=audio.play();if(promise&&typeof promise.catch==="function")promise.catch(()=>{});}catch(e){}}
-document.addEventListener("click",event=>{const control=event.target.closest("button,a,[role=button]");if(!control||control.id==="splash"&&control.classList.contains("dismissed"))return;if(control.closest(".song-dialog")&&control.classList.contains("dialog-close")){}playRandomUiSound();if(control.matches("button,a")){control.classList.remove("button-pressed");void control.offsetWidth;control.classList.add("button-pressed");window.setTimeout(()=>control.classList.remove("button-pressed"),220);}},true);
+const titleAudio=$("#title-screen-audio"), menuAudio=$("#menu-screen-audio");
+const sfxIds=["cash-sfx","highway-riser-sfx","notes-ripple-sfx","scroll-sfx","sp-cheer-1-sfx","sp-cheer-2-sfx","you-rock-sfx"];
+const sfxPool=new Map(sfxIds.map(id=>[id,$("#"+id)]).filter(([id,a])=>a));
+function playSfx(id){const audio=sfxPool.get(id);if(!audio)return;try{audio.pause();audio.currentTime=0;const p=audio.play();if(p&&p.catch)p.catch(()=>{});}catch(e){}}
+function playRandomCheer(){const id=Math.random()<0.5?"sp-cheer-1-sfx":"sp-cheer-2-sfx";playSfx(id);}
+let titleStarted=false;
+function attemptTitleAudio(){if(!titleAudio||titleStarted)return;try{const p=titleAudio.play();if(p&&p.then){p.then(()=>{titleStarted=true;}).catch(()=>{});}}catch(e){}}
+// Attempt title music and a random Star Power cheer immediately on load; autoplay policies may defer audio until a tap.
+attemptTitleAudio();
+window.addEventListener("load",()=>{playRandomCheer();},{once:true});
+function startMenuMusic(){if(!menuAudio)return;try{menuAudio.volume=0.55;const p=menuAudio.play();if(p&&p.catch)p.catch(()=>{});}catch(e){}}
 function enterSite(){
   if(splash.classList.contains("dismissed")) return;
+  // User gesture unlocks playback on mobile browsers if autoplay was blocked.
+  if(titleAudio){try{if(titleAudio.paused){titleAudio.currentTime=0;const tp=titleAudio.play();if(tp&&tp.catch)tp.catch(()=>{});} }catch(e){}}
+  playRandomCheer();
   splash.classList.add("dismissed");document.body.classList.remove("splash-open");
   try{sessionStorage.setItem("grifflistEntered","yes");}catch(e){}
+  startMenuMusic();
 }
 let alreadyEntered=false;try{alreadyEntered=sessionStorage.getItem("grifflistEntered")==="yes";}catch(e){}
-if(alreadyEntered){splash.classList.add("dismissed");document.body.classList.remove("splash-open");}else document.body.classList.add("splash-open");
+if(alreadyEntered){splash.classList.add("dismissed");document.body.classList.remove("splash-open");startMenuMusic();}else document.body.classList.add("splash-open");
 splash.addEventListener("click",enterSite);
 splash.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();enterSite();}});
 document.addEventListener("keydown",e=>{if(!splash.classList.contains("dismissed")&&(e.key==="Enter"||e.key===" "))enterSite();});
+// Suitable UI sounds: money/support actions, navigation scroll, song selection, and achievements.
+document.addEventListener("click",event=>{
+ if(splash.classList.contains("dismissed")&&menuAudio&&menuAudio.paused)startMenuMusic();
+ const control=event.target.closest("button,a,[role=button]");if(!control)return;
+ if(control.id==="splash")return;
+ if(control.matches("a[href^='#']"))playSfx("scroll-sfx");
+ if(control.closest(".support-grid")||control.id==="show-kofi-qr")playSfx("cash-sfx");
+ if(control.matches("button,a")){control.classList.remove("button-pressed");void control.offsetWidth;control.classList.add("button-pressed");window.setTimeout(()=>control.classList.remove("button-pressed"),220);}
+},true);
+// Audio cues after successful actions.
+const requestFormForAchievement=$("#request-form");
+requestFormForAchievement.addEventListener("submit",()=>{ /* Success cue is triggered after Supabase confirms below. */ });
 renderDecades();renderArtists();renderSongs();
 
 // Rock Meter and encore poll use the existing Supabase project. Apply supabase-live-features.sql to enable live data.
@@ -214,6 +237,7 @@ const rockMeterFill=document.querySelector("#rock-meter-fill");
 const rockMeterProgress=document.querySelector("#rock-meter-progress");
 const rockMeterCaption=document.querySelector("#rock-meter-caption");
 const rockMeterNeedle=document.querySelector("#rock-meter-needle");
+const rockMeterDial=document.querySelector("#rock-meter-dial");
 const meterZoneLabel=document.querySelector("#meter-zone-label");
 const encoreOptions=document.querySelector("#encore-options");
 const encoreStatus=document.querySelector("#encore-poll-status");
@@ -228,7 +252,7 @@ async function loadRockMeter(){
   if(!data)throw new Error("No Rock Meter settings found. Run the live-features SQL migration in Supabase.");
   const goal=Math.max(1,Number(data.goal_amount)||200),raised=Math.max(0,Number(data.raised_amount)||0),pct=Math.min(100,Math.round(raised/goal*100));
   const meterClass=pct>=100?"meter-green":pct>=50?"meter-yellow":"meter-red";
-  if(rockMeterNeedle){const angle=pct>=100?45:pct>=50?0:-45;rockMeterNeedle.style.transform=`rotate(${angle}deg)`;}
+  if(rockMeterDial){const state=pct>=100?"green":pct>=50?"yellow":"red";const image=`rock-meter-${state}.webp`;if(!rockMeterDial.src.endsWith("/"+image))rockMeterDial.src=image;rockMeterDial.alt=`Rock Meter needle in the ${state} zone`;rockMeterDial.dataset.zone=state;}
   if(meterZoneLabel){meterZoneLabel.textContent=pct>=100?"GREEN ZONE · GOAL REACHED":pct>=50?"YELLOW ZONE · GETTING CLOSER":"RED ZONE · BUILDING MOMENTUM";meterZoneLabel.style.color=pct>=100?"#72ff9b":pct>=50?"#ffe36a":"#ff7777";}
   rockMeterProgress.classList.remove("meter-red","meter-yellow","meter-green");rockMeterProgress.classList.add(meterClass);
   rockMeterGoalLabel.textContent=data.goal_label||"NEXT GIG GOAL";rockMeterRaised.textContent=moneyCAD(raised);rockMeterGoal.textContent=moneyCAD(goal);rockMeterFill.style.width=pct+"%";rockMeterProgress.setAttribute("aria-valuenow",String(pct));rockMeterProgress.setAttribute("aria-valuetext",`${pct}% of the ${moneyCAD(goal)} goal reached`);
@@ -241,7 +265,7 @@ async function loadEncorePoll(){
  encoreTitle.textContent=poll.title||"CHOOSE THE ENCORE";encoreStatus.textContent="Choose one song. Voting is free.";encoreOptions.replaceChildren();
  const choices=Array.isArray(poll.choices)?poll.choices:[];const total=choices.reduce((sum,c)=>sum+(Number(c.votes)||0),0);let voterKey="";try{voterKey=localStorage.getItem("grifflistEncoreVoter")||"";if(!voterKey){voterKey="v-"+crypto.randomUUID();localStorage.setItem("grifflistEncoreVoter",voterKey);}}catch(e){voterKey="v-"+Math.random().toString(36).slice(2);}
  let alreadyVoted=false;try{alreadyVoted=localStorage.getItem("grifflistEncoreVoted:"+poll.poll_id)==="yes";}catch(e){}
- choices.forEach(choice=>{const button=document.createElement("button");button.type="button";button.className="encore-option";button.disabled=alreadyVoted;const label=document.createElement("strong");label.textContent=choice.song_title+(choice.artist_name?" — "+choice.artist_name:"");const count=document.createElement("span");count.textContent=`${Number(choice.votes)||0} vote${Number(choice.votes)===1?"":"s"}`;button.append(label,count);button.addEventListener("click",async()=>{button.disabled=true;encoreStatus.textContent="Submitting your vote…";try{const result=await client.rpc("cast_encore_vote",{p_poll_id:poll.poll_id,p_choice_id:choice.choice_id,p_voter_key:voterKey});if(result.error)throw result.error;try{localStorage.setItem("grifflistEncoreVoted:"+poll.poll_id,"yes");}catch(e){}encoreStatus.textContent="Vote counted! Thanks for helping choose the encore.";await loadEncorePoll();}catch(e){button.disabled=false;encoreStatus.textContent=e.message||"Could not submit your vote. Please try again.";}});encoreOptions.append(button);});
+ choices.forEach(choice=>{const button=document.createElement("button");button.type="button";button.className="encore-option";button.disabled=alreadyVoted;const label=document.createElement("strong");label.textContent=choice.song_title+(choice.artist_name?" — "+choice.artist_name:"");const count=document.createElement("span");count.textContent=`${Number(choice.votes)||0} vote${Number(choice.votes)===1?"":"s"}`;button.append(label,count);button.addEventListener("click",async()=>{button.disabled=true;encoreStatus.textContent="Submitting your vote…";try{const result=await client.rpc("cast_encore_vote",{p_poll_id:poll.poll_id,p_choice_id:choice.choice_id,p_voter_key:voterKey});if(result.error)throw result.error;try{localStorage.setItem("grifflistEncoreVoted:"+poll.poll_id,"yes");}catch(e){}encoreStatus.textContent="Vote counted! Thanks for helping choose the encore.";playSfx("you-rock-sfx");await loadEncorePoll();}catch(e){button.disabled=false;encoreStatus.textContent=e.message||"Could not submit your vote. Please try again.";}});encoreOptions.append(button);});
  if(alreadyVoted)encoreStatus.textContent=`Your vote is in. ${total} vote${total===1?"":"s"} so far.`;
  }catch(e){encoreStatus.textContent="Encore voting will be available after the live-features database setup.";console.info("Encore poll needs the Supabase live-features migration.",e.message);}
 }
