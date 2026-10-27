@@ -188,14 +188,14 @@ const tipButton=$("#copy-email"),tipStatus=$("#tip-status");
 tipButton.addEventListener("click",async()=>{try{await navigator.clipboard.writeText(config.tipEmail);tipStatus.textContent="E-transfer email copied — open your banking app to send it.";}catch(e){tipStatus.textContent=`E-transfer email: ${config.tipEmail}. If copying was blocked, press and hold the address to copy it.`;}});
 const bookingCopy=$("#booking-copy"), bookingStatus=$("#booking-status");
 bookingCopy.addEventListener("click", async()=>{try{await navigator.clipboard.writeText("griffenarsenaultmusic@hotmail.com");bookingStatus.textContent="Booking email copied.";}catch(e){bookingStatus.textContent="Email: griffenarsenaultmusic@hotmail.com — select and copy it.";}});
-// Swapped sound roles: UI Sound 06R (title-screen-sound.mp3) is used for navigation; the original select sound plays when entering the site.
-const splash=$("#splash"), selectSound=$("#select-sound"), titleScreenSound=$("#title-screen-sound");
-function playSelectSound(){if(!selectSound)return;try{selectSound.currentTime=0;const attempt=selectSound.play();if(attempt&&typeof attempt.catch==="function")attempt.catch(()=>{});}catch(e){}}
-function playTitleScreenSound(){if(!titleScreenSound)return;try{titleScreenSound.currentTime=0;const attempt=titleScreenSound.play();if(attempt&&typeof attempt.catch==="function")attempt.catch(()=>{});}catch(e){}}
-document.querySelectorAll('.top-nav a, #copy-email, #booking-copy, .social-links a, .secret-entry, .support-grid a, .support-grid button').forEach(el=>el.addEventListener('click',()=>{playTitleScreenSound();el.classList.remove('button-pressed');void el.offsetWidth;el.classList.add('button-pressed');window.setTimeout(()=>el.classList.remove('button-pressed'),220);}));
+// Random UI sound: one of the three supplied short clips plays on each main-page button/link tap.
+const splash=$("#splash");
+const uiSounds=[$("#ui-sound-1"),$("#ui-sound-2"),$("#ui-sound-3")].filter(Boolean);
+let lastUiSound=-1;
+function playRandomUiSound(){if(!uiSounds.length)return;let index=Math.floor(Math.random()*uiSounds.length);if(uiSounds.length>1&&index===lastUiSound)index=(index+1+Math.floor(Math.random()*(uiSounds.length-1)))%uiSounds.length;lastUiSound=index;const audio=uiSounds[index];try{audio.pause();audio.currentTime=0;const promise=audio.play();if(promise&&typeof promise.catch==="function")promise.catch(()=>{});}catch(e){}}
+document.addEventListener("click",event=>{const control=event.target.closest("button,a,[role=button]");if(!control||control.id==="splash"&&control.classList.contains("dismissed"))return;if(control.closest(".song-dialog")&&control.classList.contains("dialog-close")){}playRandomUiSound();if(control.matches("button,a")){control.classList.remove("button-pressed");void control.offsetWidth;control.classList.add("button-pressed");window.setTimeout(()=>control.classList.remove("button-pressed"),220);}},true);
 function enterSite(){
   if(splash.classList.contains("dismissed")) return;
-  playSelectSound();
   splash.classList.add("dismissed");document.body.classList.remove("splash-open");
   try{sessionStorage.setItem("grifflistEntered","yes");}catch(e){}
 }
@@ -213,6 +213,8 @@ const rockMeterGoal=document.querySelector("#rock-meter-goal");
 const rockMeterFill=document.querySelector("#rock-meter-fill");
 const rockMeterProgress=document.querySelector("#rock-meter-progress");
 const rockMeterCaption=document.querySelector("#rock-meter-caption");
+const rockMeterNeedle=document.querySelector("#rock-meter-needle");
+const meterZoneLabel=document.querySelector("#meter-zone-label");
 const encoreOptions=document.querySelector("#encore-options");
 const encoreStatus=document.querySelector("#encore-poll-status");
 const encoreTitle=document.querySelector("#encore-poll-title");
@@ -226,6 +228,8 @@ async function loadRockMeter(){
   if(!data)throw new Error("No Rock Meter settings found. Run the live-features SQL migration in Supabase.");
   const goal=Math.max(1,Number(data.goal_amount)||200),raised=Math.max(0,Number(data.raised_amount)||0),pct=Math.min(100,Math.round(raised/goal*100));
   const meterClass=pct>=100?"meter-green":pct>=50?"meter-yellow":"meter-red";
+  if(rockMeterNeedle){const angle=pct>=100?45:pct>=50?0:-45;rockMeterNeedle.style.transform=`rotate(${angle}deg)`;}
+  if(meterZoneLabel){meterZoneLabel.textContent=pct>=100?"GREEN ZONE · GOAL REACHED":pct>=50?"YELLOW ZONE · GETTING CLOSER":"RED ZONE · BUILDING MOMENTUM";meterZoneLabel.style.color=pct>=100?"#72ff9b":pct>=50?"#ffe36a":"#ff7777";}
   rockMeterProgress.classList.remove("meter-red","meter-yellow","meter-green");rockMeterProgress.classList.add(meterClass);
   rockMeterGoalLabel.textContent=data.goal_label||"NEXT GIG GOAL";rockMeterRaised.textContent=moneyCAD(raised);rockMeterGoal.textContent=moneyCAD(goal);rockMeterFill.style.width=pct+"%";rockMeterProgress.setAttribute("aria-valuenow",String(pct));rockMeterProgress.setAttribute("aria-valuetext",`${pct}% of the ${moneyCAD(goal)} goal reached`);
   rockMeterCaption.textContent=pct>=100?"Goal reached — thank you for keeping the music going!":pct>=50?`${pct}% of the goal reached. We're getting there!`:`${pct}% of the goal reached. Thanks for the support.`;

@@ -1,0 +1,11 @@
+THE GRIFFLIST — REQUEST ARCHIVE INSTALL
+
+1. Upload all files from this ZIP to the ROOT of your GitHub repository, replacing matching files. Add request-archive.html and request-archive.js as new files. Keep supabase-config.js and the existing website assets.
+2. In Supabase, open SQL Editor > New query.
+3. Open request-archive-migration.sql from this ZIP, copy all its contents, paste into SQL Editor, and Run ONCE.
+4. The migration creates a private archive, copies existing requests, and saves future requests automatically when they are submitted. Deleting a request from the live inbox will not delete its archived copy.
+5. After GitHub Pages publishes, open admin.html, sign in, and click OPEN REQUEST ARCHIVE.
+
+The archive is restricted to the admin UID currently configured for The Grifflist (7c4c9232-2c28-47f3-a00a-a371ed23cef5). Confirm this is the correct Supabase Auth user before running the migration. Do not put a service-role key in website files.
+
+If Supabase reports an error, stop and share the exact error text rather than rerunning repeatedly.

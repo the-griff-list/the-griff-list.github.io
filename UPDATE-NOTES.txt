@@ -1,7 +1,18 @@
-The Grifflist update notes
-- Removed the separate white PRESS ANY BUTTON TO ROCK overlay. The existing orange/gold LIVE REPERTOIRE text inside the splash artwork remains.
-- Rock Meter image now loads from ./Rockmeter_gh3(1).webp, the image you uploaded to the GitHub repository root. Keep the filename exactly the same, including capitalization and parentheses.
-- Updated the support section wording to clarify that priority requests remain pending until payment is verified.
-- The Reddit image text itself has NOT been edited in this package. Replacing text inside the image requires the actual image file to be provided or a recreated artwork asset.
-- Automatic verified payment-to-request flow is NOT implemented. Ko-fi/PayPal links alone do not provide a trusted confirmation back to this static site. That requires a payment checkout/webhook backend (e.g. Stripe Checkout plus a server-side webhook) or manual verification. Never put secret keys in public site files.
-- No Supabase SQL migration is included in this ZIP.
+THE GRIFFLIST — ROCK METER + SUPPORT DESIGN UPDATE
+
+Included:
+- Updated title-screen artwork with PRESS ANY BUTTON TO ROCK moved up under the logo.
+- Unified Support the Show section combining the Rock Meter, $200 goal, Ko-fi, PayPal, and e-transfer.
+- Larger responsive Rock Meter with red/yellow/green zones, a centered needle for each state, and blue star-power-style bulbs.
+- Rock Meter dial follows the live contribution percentage from the existing Supabase rock_meter_settings row: red under 50%, yellow from 50% to under 100%, green at the goal.
+- Three supplied UI sound clips play randomly when a button or link is clicked.
+- Apple Pay and Google Pay are described as conditional checkout options, not guaranteed payment methods.
+- Preserves the separate private Request Archive page and migration from the previous package.
+
+INSTALL:
+1. Extract the ZIP. Upload all included website files to the root of the existing GitHub Pages repository, replacing files with the same names. Keep the repo's existing Rockmeter_gh3(1).webp if you still use it elsewhere; the new dial is drawn directly in the page.
+2. No new database migration is needed for these visual/UI changes. The Rock Meter still reads the existing rock_meter_settings table, and only shows live contributions if the existing Supabase live-features setup is configured.
+3. If you are also installing Request Archive for the first time, follow REQUEST-ARCHIVE-INSTALL.txt and run request-archive-migration.sql once. If that migration was already run, do not run it again unnecessarily.
+4. Wait for GitHub Pages to deploy, then refresh the site.
+
+NOTE: The page cannot automatically verify payment-provider checkout options from the public page. Apple Pay / Google Pay availability depends on the provider's configuration, device, and checkout.
