@@ -1,0 +1,167 @@
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800;900&family=Inter:wght@400;500;600;700;800&display=swap');
+:root{--bg:#090909;--panel:#131313;--panel2:#1a1a1a;--line:#303030;--text:#f6f1e9;--muted:#a8a29b;--hot:#ff542e;--gold:#ffbd58;--max:1120px}*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:86px}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif;line-height:1.55}body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.08;background-image:radial-gradient(#fff 0.5px,transparent .5px);background-size:5px 5px;z-index:-1}a{color:inherit;text-decoration:none}button,input,select,textarea{font:inherit}button,a,select{touch-action:manipulation}button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--gold);outline-offset:3px}.splash{position:fixed;inset:0;z-index:20;background:#030303;display:grid;place-items:center;padding:20px;cursor:pointer;transition:opacity .5s,visibility .5s}.splash.dismissed{opacity:0;visibility:hidden;pointer-events:none}.splash-inner{width:min(100%,900px);min-height:min(56vh,540px);display:grid;grid-template-columns:minmax(110px,.7fr) 1.3fr;align-items:center;gap:clamp(20px,5vw,60px);position:relative;padding:clamp(20px,6vw,70px) 0}.paper-sketch{background:#e5dfcf;color:#25211d;aspect-ratio:3/4;max-width:240px;width:100%;justify-self:center;transform:rotate(-3deg);box-shadow:0 10px 30px #000;display:flex;flex-direction:column;align-items:center;justify-content:center;border:8px solid #d1c9b7;outline:1px dashed #6d665a;outline-offset:-15px}.sketch-star{font-size:3rem}.sketch-guitar{font-size:5rem;transform:rotate(-30deg);font-family:serif}.sketch-caption{font:800 1rem 'Barlow Condensed',sans-serif;letter-spacing:.14em;text-align:center;margin-top:15px}.splash-brand{text-align:left}.splash-kicker,.eyebrow{font-size:.72rem;font-weight:800;letter-spacing:.19em;color:var(--gold);text-transform:uppercase}.splash-logo{font:900 clamp(3rem,10vw,7.5rem)/.77 'Barlow Condensed',Impact,sans-serif;letter-spacing:-.045em;text-shadow:3px 4px 0 #5b2114}.splash-logo span{color:var(--hot)}.splash-subtitle{font:800 clamp(1.2rem,3.5vw,2.4rem) 'Barlow Condensed',sans-serif;letter-spacing:.2em;color:var(--gold);margin-top:17px}.press-prompt{position:absolute;bottom:0;left:0;right:0;text-align:center;font:800 clamp(.75rem,2.5vw,1.05rem) 'Barlow Condensed',sans-serif;letter-spacing:.13em;color:#f3e6d3;animation:pulse 1.6s infinite}@keyframes pulse{50%{opacity:.45}}.site-header{position:sticky;top:0;z-index:10;display:flex;justify-content:space-between;align-items:center;gap:18px;padding:14px max(20px,calc((100vw - var(--max))/2));background:#080808ed;border-bottom:1px solid #262626;backdrop-filter:blur(14px)}.wordmark{font:900 1.3rem 'Barlow Condensed',sans-serif;letter-spacing:.02em;white-space:nowrap}.wordmark span{color:var(--hot)}.top-nav{display:flex;align-items:center;gap:clamp(12px,2.5vw,28px);font-size:.82rem;font-weight:700;color:#d4d0c9}.top-nav a:hover,.social-links a:hover,.contact-email:hover{color:var(--gold)}main{max-width:var(--max);margin:auto;padding:0 24px}.hero{min-height:500px;display:grid;grid-template-columns:1.1fr .9fr;align-items:center;gap:30px;padding:70px 0 60px;border-bottom:1px solid var(--line);overflow:hidden}.hero h1,.section h2{font:900 clamp(2.6rem,6vw,5rem)/.96 'Barlow Condensed',Impact,sans-serif;letter-spacing:-.025em;margin:.45rem 0 1.2rem;text-transform:uppercase}.hero h1 span,.section h2 span{color:var(--hot)}.hero-text,.section-heading>p:not(.eyebrow),.tip-copy>p:not(.eyebrow),.contact-section>div>p:not(.eyebrow){max-width:590px;color:var(--muted)}.hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}.button{display:inline-flex;align-items:center;justify-content:center;border:1px solid transparent;border-radius:4px;padding:12px 17px;font-weight:800;font-size:.82rem;cursor:pointer;transition:transform .15s,background .15s}.button:hover{transform:translateY(-2px)}.button-hot{background:var(--hot);color:white;box-shadow:0 4px 0 #7c2818}.button-quiet{background:#171717;border-color:#424242;color:var(--text)}.hero-art{height:320px;position:relative;display:grid;place-items:center;background:radial-gradient(ellipse,#4c2016 0%,#1a1110 35%,transparent 70%)}.guitar-shape{position:relative;width:150px;height:260px;transform:rotate(28deg)}.guitar-neck{position:absolute;width:24px;height:210px;left:63px;top:0;background:linear-gradient(90deg,#4a2a19,#c38b48,#4a2a19);border:2px solid #21140e;z-index:1}.guitar-body{position:absolute;width:150px;height:145px;left:0;bottom:0;background:radial-gradient(ellipse at 55% 40%,#ffb45a 0,#ba4727 35%,#532016 72%);border:5px solid #21140e;border-radius:48% 48% 42% 42%;box-shadow:inset 0 0 0 5px #e2a65c,0 15px 25px #000}.guitar-hole{position:absolute;width:43px;height:43px;border-radius:50%;border:7px solid #3c2116;background:#0a0908;left:49px;top:30px}.amp-label,.hero-stamp{position:absolute;font:900 1.2rem/.9 'Barlow Condensed',sans-serif;letter-spacing:.1em}.amp-label{top:25px;left:15%;color:#fff3e3;transform:rotate(-9deg)}.hero-stamp{right:6%;bottom:28px;color:var(--gold);border:2px solid var(--gold);padding:8px;transform:rotate(8deg)}.section{padding:70px 0;border-bottom:1px solid var(--line)}.section-heading{margin-bottom:25px}.section-heading h2,.tip-copy h2,.contact-section h2{font-size:clamp(2.3rem,5vw,3.7rem)}.request-section{display:grid;grid-template-columns:.8fr 1.2fr;gap:50px;align-items:start}.request-form{background:var(--panel);border:1px solid var(--line);padding:22px;border-radius:8px}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.form-grid label:first-child{grid-column:1/-1}label{display:block;font-size:.78rem;font-weight:700;color:#d4cec5}input,select,textarea{display:block;width:100%;margin-top:7px;border:1px solid #3a3938;background:#0d0d0d;color:var(--text);padding:12px;border-radius:4px;min-width:0}textarea{resize:vertical}.request-form>label{margin-top:14px}.request-form .button{margin-top:17px}.form-status{font-size:.82rem;color:var(--gold);min-height:1.2em;margin:10px 0 0}.catalog-title{display:flex;justify-content:space-between;align-items:end;gap:15px}.track-counter{border:1px solid #4a3327;color:var(--gold);font:800 .9rem 'Barlow Condensed',sans-serif;letter-spacing:.12em;padding:8px 12px;white-space:nowrap}.catalog-controls{display:grid;grid-template-columns:minmax(180px,1fr) minmax(150px,.6fr) minmax(150px,.6fr);gap:12px;margin:24px 0}.search-label{position:relative}.search-label>span{position:absolute;left:13px;top:15px;font-size:1.25rem;color:var(--gold)}.search-label input{padding-left:38px}.filter-label select{margin-top:7px}.filter-heading,.song-list-heading{font-size:.68rem;letter-spacing:.15em;font-weight:800;color:#aaa39b}.decade-filters{display:flex;gap:7px;flex-wrap:wrap;margin:10px 0 23px}.chip{border:1px solid #3c3936;border-radius:3px;background:#151515;color:#c6c0b8;padding:7px 12px;font-size:.7rem;font-weight:800;letter-spacing:.06em;cursor:pointer}.chip.active,.chip:hover{background:var(--hot);border-color:var(--hot);color:white}.song-list-heading{display:grid;grid-template-columns:1fr minmax(170px,.7fr) 20px;padding:10px 13px;border-bottom:1px solid #5a352a}.song-list{border-top:1px solid var(--line)}.song-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(170px,.7fr) 20px;align-items:center;gap:15px;width:100%;text-align:left;background:transparent;color:var(--text);border:0;border-bottom:1px solid #282828;padding:11px 13px;cursor:pointer;min-height:50px}.song-row:hover{background:#191411}.song-title{font-size:.92rem;font-weight:700;line-height:1.25}.song-meta{font-size:.79rem;color:var(--muted);line-height:1.3}.song-arrow{color:var(--hot);font-size:1.05rem;text-align:right}.empty-state{padding:25px;text-align:center;color:var(--muted)}.catalog-footnote{font-size:.75rem;color:#888;margin-top:16px}.tip-section{display:grid;grid-template-columns:1fr 1fr;gap:45px;align-items:center}.tip-card{display:flex;gap:17px;align-items:flex-start;background:linear-gradient(130deg,#1a1512,#101010);border:1px solid #4a3327;border-radius:8px;padding:22px}.tip-card-icon{width:42px;height:42px;display:grid;place-items:center;border-radius:50%;background:#3a1b14;color:var(--hot);font-size:1.4rem}.tip-label{font-size:.67rem;letter-spacing:.15em;color:var(--muted);font-weight:800;margin:0}.tip-email-display{font-weight:800;overflow-wrap:anywhere;margin:7px 0 13px}.tip-card .button{padding:9px 13px}.contact-section{display:grid;grid-template-columns:1fr .7fr;gap:45px;align-items:center}.contact-actions{display:flex;flex-direction:column;align-items:flex-start;gap:14px}.contact-email{font-size:.88rem;color:#d4d0c9;overflow-wrap:anywhere}.social-links{display:flex;gap:18px;color:var(--gold);font-size:.85rem;font-weight:700}footer{max-width:var(--max);margin:auto;padding:25px 24px 35px;display:flex;align-items:center;gap:20px;justify-content:space-between;color:var(--muted);font-size:.75rem}footer p{margin:0}footer>a:last-child{white-space:nowrap}.song-dialog{position:fixed;width:min(520px,calc(100% - 28px));max-height:85vh;overflow:auto;background:#131313;color:var(--text);border:1px solid #594033;border-radius:8px;padding:28px;box-shadow:0 25px 100px #000}.song-dialog::backdrop{background:#000c;backdrop-filter:blur(5px)}.dialog-close{position:absolute;right:13px;top:8px;background:none;color:#eee;border:0;font-size:2rem;cursor:pointer}.song-dialog h2{font:900 clamp(2rem,7vw,3rem)/1 'Barlow Condensed',sans-serif;text-transform:uppercase;margin:8px 30px 5px 0}.dialog-artist{color:var(--muted);margin-top:0}.dialog-facts{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:22px 0}.dialog-facts>div{background:#1c1c1c;padding:12px;border:1px solid #303030}.dialog-facts span{display:block;font-size:.65rem;color:var(--muted);letter-spacing:.1em;font-weight:800}.dialog-facts strong{display:block;margin-top:4px}.dialog-setup,.dialog-notes{font-size:.85rem;color:#c1bbb3}.splash-open{overflow:hidden}@media(max-width:700px){.site-header{align-items:flex-start;flex-direction:column;gap:9px;padding:12px 16px}.top-nav{width:100%;gap:0;justify-content:space-between;font-size:.69rem}.top-nav a{padding:4px 0}.hero{grid-template-columns:1fr;min-height:0;padding:48px 0 35px;gap:5px}.hero h1{font-size:clamp(3.2rem,15vw,5rem)}.hero-art{height:230px;max-width:450px;width:100%;justify-self:center}.guitar-shape{transform:scale(.8) rotate(28deg)}main{padding:0 16px}.section{padding:48px 0}.request-section,.tip-section,.contact-section{grid-template-columns:1fr;gap:22px}.catalog-controls{grid-template-columns:1fr 1fr}.search-label{grid-column:1/-1}.song-list-heading{grid-template-columns:1fr minmax(110px,.8fr) 14px;font-size:.58rem;padding:8px 7px}.song-row{grid-template-columns:minmax(0,1fr) minmax(110px,.8fr) 14px;gap:8px;padding:10px 7px;min-height:46px}.song-title{font-size:.79rem}.song-meta{font-size:.68rem}.song-arrow{font-size:.9rem}.song-list-heading span:nth-child(2){text-align:left}.catalog-title{align-items:start}.track-counter{font-size:.72rem;padding:7px 8px}.form-grid{grid-template-columns:1fr}.form-grid label:first-child{grid-column:auto}.request-form{padding:16px}.splash-inner{grid-template-columns:minmax(85px,.65fr) 1.35fr;gap:16px;min-height:38vh;padding-bottom:45px}.paper-sketch{border-width:5px;max-width:150px}.sketch-star{font-size:2rem}.sketch-guitar{font-size:3rem}.sketch-caption{font-size:.7rem}.splash-logo{font-size:clamp(2.8rem,12vw,5rem)}.splash-kicker{font-size:.55rem;letter-spacing:.1em}.splash-subtitle{font-size:1rem;letter-spacing:.12em;margin-top:12px}.press-prompt{font-size:.7rem;bottom:0}.tip-card{padding:16px}footer{padding:22px 16px;flex-wrap:wrap;gap:10px}footer p{order:3;width:100%}}@media(max-width:380px){.top-nav{font-size:.62rem}.song-row{grid-template-columns:minmax(0,1fr) minmax(96px,.75fr) 12px;gap:6px}.song-title{font-size:.73rem}.song-meta{font-size:.63rem}.decade-filters{gap:5px}.chip{padding:6px 8px;font-size:.63rem}.splash-inner{grid-template-columns:88px 1fr}.splash-logo{font-size:2.65rem}}
+
+/* Refined stage-inspired visual pass: richer lighting, depth, and rock-poster detailing. */
+:root{--bg:#08080b;--panel:#151419;--panel2:#1d1a1e;--line:#40343a;--text:#faf5ee;--muted:#b2a8aa;--hot:#ff642e;--gold:#ffb347;--max:1160px;color-scheme:dark}
+body{background:radial-gradient(ellipse at 50% -12%,#54200f 0,transparent 39%),radial-gradient(ellipse at 100% 58%,#25100d 0,transparent 30%),linear-gradient(180deg,#100e12 0%,#08080b 46%,#100a09 100%);background-attachment:fixed}
+body:before{opacity:.13;background-image:radial-gradient(#fff 0.55px,transparent .55px),linear-gradient(115deg,transparent 0 48%,#ff6b3010 49%,transparent 51%);background-size:5px 5px,100% 100%;z-index:0}
+body>*{position:relative;z-index:1}
+.site-header{padding-top:17px;padding-bottom:17px;background:linear-gradient(180deg,#09090bf5,#0c0a0bed);border-bottom:1px solid #ff8c4330;box-shadow:0 8px 30px #0006}
+.wordmark{font-size:1.45rem;letter-spacing:.045em;text-shadow:0 2px 0 #000}
+.wordmark:before{content:'✦';display:inline-grid;place-items:center;width:27px;height:27px;margin-right:9px;border:1px solid #ffb34780;color:var(--gold);font-size:.8rem;transform:skew(-7deg);vertical-align:2px}
+.top-nav a{font-size:.75rem;text-transform:uppercase;letter-spacing:.075em;transition:color .2s ease}
+.top-nav a:hover{color:var(--hot);text-shadow:0 0 18px #ff642e60}
+main{max-width:var(--max)}
+.hero{position:relative;min-height:520px;padding:78px 0 68px;border-bottom:1px solid #ff8a3a35}
+.hero:before{content:'LIVE • LOUD • LOCAL';position:absolute;top:26px;right:0;color:#f5b65a70;font:800 .65rem 'Barlow Condensed',sans-serif;letter-spacing:.25em}
+.hero-copy{position:relative;z-index:2}
+.eyebrow{color:var(--gold);text-shadow:0 0 18px #ff9e2422}
+.hero h1,.section h2{letter-spacing:-.035em;text-shadow:0 3px 0 #000,0 0 34px #ff512b13}
+.hero h1{font-size:clamp(3.5rem,7vw,6.4rem);line-height:.88}
+.hero h1 span,.section h2 span{color:var(--hot);text-shadow:0 0 28px #ff542e32}
+.hero-text{font-size:1rem;max-width:470px}
+.hero-art{height:355px;border:1px solid #ff9b4530;background:radial-gradient(ellipse at 50% 48%,#8b321b5c 0%,#32181250 32%,#130f12 69%,transparent 72%);filter:drop-shadow(0 15px 22px #0007)}
+.hero-art:before{content:'';position:absolute;inset:7% 8%;border:1px solid #ffb34725;transform:rotate(-5deg)}
+.hero-art:after{content:'THE GRIFFLIST  /  LIVE REPERTOIRE';position:absolute;bottom:13px;left:0;right:0;text-align:center;color:#f6d1a56b;font:700 .62rem 'Barlow Condensed',sans-serif;letter-spacing:.22em}
+.guitar-shape{filter:drop-shadow(0 0 20px #ff4d2450)}
+.guitar-body{background:radial-gradient(ellipse at 45% 30%,#ffd184 0,#ff8c37 18%,#c83f20 48%,#481813 78%);box-shadow:inset 0 0 0 5px #f3bd65,inset 0 0 0 10px #5c2518,0 18px 32px #000b}
+.amp-label{font-size:1.5rem;text-shadow:0 2px 0 #000;letter-spacing:.16em}
+.hero-stamp{background:#100b0bc7;box-shadow:0 0 25px #ffb34718;letter-spacing:.16em}
+.button{border-radius:3px;text-transform:uppercase;letter-spacing:.055em;font-size:.75rem;min-height:44px}
+.button-hot{background:linear-gradient(135deg,#ff7438,#e63e25);border:1px solid #ffad6b;box-shadow:0 4px 0 #7b2818,0 0 24px #ff542e20}
+.button-hot:hover{background:linear-gradient(135deg,#ff8a4b,#f14b2c);box-shadow:0 4px 0 #7b2818,0 0 28px #ff542e3b}
+.button-quiet{background:linear-gradient(180deg,#201c20,#111014);border-color:#544149;box-shadow:inset 0 1px #ffffff0a}
+.section{position:relative;padding:76px 0;border-bottom:1px solid #ff8a3a27}
+.section:after{content:'✦';position:absolute;right:0;top:28px;color:#ffb3473d;font-size:1rem}
+.section-heading h2,.tip-copy h2,.contact-section h2{font-size:clamp(2.7rem,5.5vw,4rem)}
+.request-form,.tip-card{position:relative;overflow:hidden;background:linear-gradient(145deg,#1d191d,#111014 70%);border:1px solid #604233;border-radius:5px;box-shadow:0 18px 50px #0004,inset 0 1px #ffffff09}
+.request-form:before,.tip-card:before{content:'';position:absolute;left:0;top:0;width:100%;height:2px;background:linear-gradient(90deg,transparent,var(--hot),var(--gold),transparent);opacity:.8}
+input,select,textarea{background:#09090c;border-color:#494047;border-radius:3px;transition:border-color .18s,box-shadow .18s}
+input:focus,select:focus,textarea:focus{border-color:#ff9e57;box-shadow:0 0 0 3px #ff9e2414;outline:none}
+.catalog-title{margin-bottom:30px}
+.track-counter{background:linear-gradient(135deg,#211811,#100e11);border-color:#785035;box-shadow:inset 0 1px #ffffff0a;text-align:center}
+.catalog-controls{padding:16px;background:#100f13;border:1px solid #352c32;box-shadow:0 10px 30px #0003}
+.filter-heading{color:#d0a57c}
+.chip{border-radius:3px;background:linear-gradient(180deg,#211e22,#121114);border-color:#494047;transition:all .18s}
+.chip.active,.chip:hover{background:linear-gradient(135deg,#ff7135,#e94728);border-color:#ff9f61;box-shadow:0 0 18px #ff542e22}
+.song-list-heading{background:linear-gradient(90deg,#2a1713,#171216);border:1px solid #5b3528;border-bottom-color:#8b4c2a;color:#f4c18a}
+.song-list{border:1px solid #30282d;border-top:0;background:#0e0d11}
+.song-row{background:linear-gradient(90deg,#141216,#0e0d11);border-bottom:1px solid #2b252b;transition:background .18s,padding .18s}
+.song-row:nth-child(even){background:linear-gradient(90deg,#191519,#111014)}
+.song-row:hover{background:linear-gradient(90deg,#321a14,#1a1214);box-shadow:inset 3px 0 var(--hot)}
+.song-title{letter-spacing:.005em}
+.song-meta{color:#c0b2b0}
+.song-arrow{font-size:1.25rem;text-shadow:0 0 12px #ff542e40}
+.catalog-footnote{color:#a49a9d}
+.tip-card-icon{background:linear-gradient(135deg,#542115,#261114);border:1px solid #93412a;box-shadow:0 0 20px #ff542e16}
+.tip-label{color:#d2a77f}
+.contact-section{background:radial-gradient(ellipse at 80% 50%,#3c1a1330,transparent 45%)}
+.social-links a{border-bottom:1px solid #ffb34750;padding-bottom:3px}
+footer{border-top:1px solid #ff8a3a1a;color:#a99da0}
+.song-dialog{background:linear-gradient(145deg,#211a1d,#100f13);border-color:#805039;box-shadow:0 25px 100px #000,0 0 40px #ff542e10}
+.dialog-facts>div{background:#171418;border-color:#44343a}
+.splash{background:radial-gradient(ellipse at 50% 45%,#32140f 0%,#0c090b 48%,#030304 100%)}
+.splash:before{content:'';position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 50%,#ff5b2220,transparent 52%),repeating-linear-gradient(115deg,transparent 0 8px,#ffffff03 9px,transparent 10px 18px)}
+.paper-sketch{box-shadow:0 12px 40px #000,0 0 30px #ff7a2820;filter:contrast(1.04)}
+.splash-logo{letter-spacing:-.055em;text-shadow:4px 5px 0 #45170f,0 0 35px #ff542e24}
+.press-prompt{color:#ffddb4;text-shadow:0 0 18px #ff7c3a30}
+@media(max-width:700px){
+ .site-header{gap:10px;padding:12px 15px}.wordmark{font-size:1.22rem}.wordmark:before{width:23px;height:23px;margin-right:6px}
+ .top-nav{overflow-x:auto;justify-content:flex-start;gap:17px;padding:2px 0 4px;white-space:nowrap}.top-nav a{font-size:.64rem;flex-shrink:0}
+ .hero{padding:53px 0 37px}.hero:before{top:17px;font-size:.55rem;letter-spacing:.15em}.hero h1{font-size:clamp(3.4rem,15vw,5.4rem)}.hero-art{height:235px;margin-top:6px}
+ .section{padding:54px 0}.catalog-controls{padding:11px;gap:9px}.song-list{border-left:0;border-right:0}.song-row{min-height:49px}.song-title{font-size:.8rem}.song-meta{font-size:.69rem}
+ .request-form{box-shadow:0 12px 30px #0005}.section:after{top:20px;font-size:.8rem}
+}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+
+/* Exact custom splash artwork supplied for The Grifflist home screen. */
+.splash{padding:0;background:#000;overflow:hidden;place-items:center}
+.splash:before{display:none}
+.splash-artwork{display:block;width:100%;height:100%;max-width:1440px;max-height:100dvh;object-fit:contain;object-position:center;background:#000;user-select:none;-webkit-user-drag:none}
+@media(max-width:700px){.splash{padding:0}.splash-artwork{width:100%;height:100%;object-fit:contain;object-position:center;transform:scale(1.06);max-width:none}}
+
+
+/* Compact navigation and three-column repertoire table */
+.site-header{padding-top:9px;padding-bottom:9px;gap:10px}
+.top-nav{gap:clamp(8px,1.6vw,20px);font-size:.72rem}
+.top-nav a{font-size:.68rem;letter-spacing:.045em;white-space:nowrap}
+main{padding-top:0}
+.section{padding-top:42px;padding-bottom:42px}
+.request-section{padding-top:28px}
+.request-section .section-heading{margin-bottom:12px}
+.request-section .section-heading h2{margin-top:0;font-size:clamp(2rem,4vw,3rem)}
+.catalog-title{margin-bottom:16px}
+.catalog-title h2{margin-bottom:0}
+.catalog-controls{grid-template-columns:minmax(0,1fr) minmax(150px,.42fr);margin:14px 0;padding:10px}
+.search-label input,.filter-label select{padding:9px 10px}
+.search-label input{padding-left:34px}
+.search-label>span{top:11px}
+.song-list-heading,.song-row{grid-template-columns:minmax(0,.95fr) minmax(0,1.45fr) 54px;gap:10px}
+.song-list-heading{padding:9px 11px;font-size:.66rem;letter-spacing:.09em}
+.song-list-heading span:last-child{text-align:right}
+.song-row{display:grid;align-items:center;padding:7px 11px;min-height:42px;cursor:default}
+.song-artist{min-width:0;font-size:.77rem;color:#c0b2b0;line-height:1.25;overflow-wrap:anywhere}
+.song-cell{display:flex;align-items:center;gap:8px;min-width:0}
+.song-title{padding:0;border:0;background:transparent;color:var(--text);text-align:left;font-size:.82rem;font-weight:700;line-height:1.22;min-width:0;cursor:pointer}
+.song-title:hover{color:var(--gold)}
+.song-play{display:inline-grid;place-items:center;flex:0 0 26px;width:26px;height:26px;border:1px solid #8e4c2d;border-radius:50%;background:#25140f;color:#ffb347;font-size:.68rem;line-height:1}
+.song-play:hover{background:#ff642e;color:#fff;border-color:#ff9d5d}
+.song-year{text-align:right;font-variant-numeric:tabular-nums;font-size:.76rem;color:var(--gold);white-space:nowrap}
+.song-row:hover{padding-left:11px}
+.booking-note{margin:0;color:var(--muted);font-size:.82rem}
+footer p{font-size:.7rem;color:#81797a;letter-spacing:.02em}
+@media(max-width:700px){
+ .site-header{padding:8px 12px;gap:6px;align-items:center}
+ .wordmark{font-size:1.05rem}
+ .wordmark:before{display:none}
+ .top-nav{width:100%;gap:0;justify-content:space-between;overflow:visible;padding:0;white-space:normal}
+ .top-nav a{font-size:clamp(.55rem,2.5vw,.68rem);letter-spacing:0;padding:4px 2px;text-align:center}
+ main{padding:0 12px}
+ .section{padding:32px 0}
+ .request-section{padding-top:24px}
+ .request-section .section-heading h2{font-size:2.1rem;margin-bottom:.5rem}
+ .request-section .section-heading>p:not(.eyebrow){font-size:.85rem;margin:0}
+ .request-form{padding:12px}
+ .form-grid{gap:8px}
+ .request-form input,.request-form textarea{padding:9px}
+ .catalog-controls{grid-template-columns:minmax(0,1fr) minmax(110px,.55fr);gap:7px;padding:8px}
+ .song-list-heading,.song-row{grid-template-columns:minmax(0,.85fr) minmax(0,1.45fr) 42px;gap:6px;padding-left:7px;padding-right:7px}
+ .song-list-heading{font-size:.59rem;letter-spacing:.07em}
+ .song-row{min-height:39px;padding-top:6px;padding-bottom:6px}
+ .song-artist{font-size:.68rem}
+ .song-title{font-size:.73rem;overflow-wrap:anywhere}
+ .song-cell{gap:5px}
+ .song-play{width:23px;height:23px;flex-basis:23px;font-size:.62rem}
+ .song-year{font-size:.69rem}
+ .tip-section,.contact-section{gap:16px}
+ footer{padding:18px 12px;gap:8px}
+}
+@media(max-width:360px){.top-nav a{font-size:.53rem}.song-list-heading,.song-row{grid-template-columns:minmax(0,.78fr) minmax(0,1.45fr) 38px;gap:5px}.song-artist{font-size:.63rem}.song-title{font-size:.68rem}.song-play{width:21px;height:21px;flex-basis:21px}}
+
+/* Guitar Hero-style pulsing prompt replaces the lettering baked into the splash artwork. */
+.splash::after{content:'PRESS ANY BUTTON TO ROCK';position:absolute;left:48%;top:68%;width:48%;text-align:center;color:#ff8a3d;font:900 clamp(1.15rem,4vw,3rem)/1.05 'Barlow Condensed',Impact,sans-serif;letter-spacing:.045em;text-shadow:0 0 16px #ff542e88,2px 2px #000;pointer-events:none;animation:gh-prompt-pulse 1.25s ease-in-out infinite}
+@keyframes gh-prompt-pulse{0%,100%{opacity:1}50%{opacity:.18}}
+.email-reveal{display:block;padding:0;border:0;background:transparent;color:var(--text);font:inherit;font-weight:800;text-align:left;overflow-wrap:anywhere;cursor:pointer;margin:7px 0 13px}
+.email-reveal[hidden]{display:none}
+.email-reveal:not([hidden]):hover{color:var(--gold)}
+.request-hint{margin:12px 0 0;padding:12px;border:1px solid #a84b2a;background:#24140f;color:#ffd6b3;font-weight:700;border-radius:4px}
+.request-hint[hidden]{display:none}
+.hint-pulse{animation:gh-prompt-pulse 1.25s ease-in-out 3}
+@media(max-width:700px){.splash::after{left:49%;top:68%;width:48%;font-size:clamp(1rem,4.4vw,1.8rem);letter-spacing:.02em}}
+
+
+/* Final catalog interaction: the whole song row selects the request; no play icon or details popup. */
+.song-row{font-family:inherit;color:var(--text);border-left:0;border-right:0;border-top:0;width:100%;text-align:left;cursor:pointer}
+.song-cell{display:block;min-width:0}
+.song-title{display:block;background:none;border:0;padding:0;color:inherit;text-align:left;font:inherit;font-weight:800}
+.song-row:focus-visible{outline:2px solid var(--hot);outline-offset:-2px}
+
+/* Splash prompt sits centered directly beneath the lettering in the artwork. */
+.splash::after{left:47%;top:63%;width:46%;text-align:center;font-size:clamp(1rem,3.2vw,2.25rem);letter-spacing:.025em}
+@media(max-width:700px){.splash::after{left:46%;top:63%;width:47%;font-size:clamp(.8rem,3.5vw,1.35rem);letter-spacing:0}}
+.header-logo-link{display:flex;align-items:center;flex:0 0 auto;line-height:0}
+.header-logo{display:block;width:clamp(120px,16vw,190px);height:auto;max-height:56px;object-fit:contain}
+@media(max-width:700px){.site-header{align-items:center;flex-direction:column;gap:7px}.header-logo{width:clamp(118px,35vw,160px);max-height:43px}.top-nav{width:100%}}
+
+/* Discreet private-dashboard entry point */
+.secret-entry{display:inline-block;opacity:.08;color:#ff542e;font-size:1.2rem;line-height:1;padding:8px 2px;min-width:12px;text-align:center;transition:opacity .2s}.secret-entry:hover,.secret-entry:focus-visible{opacity:1}.button:disabled{opacity:.65;cursor:wait;transform:none}
