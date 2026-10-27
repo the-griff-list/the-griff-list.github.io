@@ -1,0 +1,65 @@
+# The Grifflist website update
+
+This package includes the updated mobile-friendly site files: `index.html`, `styles.css`, and `script.js`. Upload all three to the root of your `the-griff-list` GitHub repository, replacing the existing files.
+
+## Included changes
+- Top navigation: Send Tip, Make a Request, Song Catalog, Contact
+- Request section near the top
+- “Support” renamed to “Send Tip”
+- Compact mobile song rows with title, artist, and release year; no row numbering or difficulty display
+- Artist A–Z sorting, with names beginning in symbols/numbers after alphabetic artists
+- Artist and genre filters, including Classic Country and Classic Rock
+- Chronological decade buttons: 50s, 60s, 70s, 80s, 90s, 2000s, 2010s
+- Custom splash artwork featuring Griffen, The Grifflist, and Live Repertoire, with black framing and a press-to-enter prompt
+- Includes the optimized `splash-screen.webp` image file; upload it alongside the HTML, CSS, and JavaScript
+- Existing songs and recent additions retained; duplicate titles are not intentionally added
+
+## Before going live
+1. In `script.js`, replace `YOUR-ETRANSFER-EMAIL@example.com` with the email you use for e-Transfer.
+2. In `script.js`, replace the booking placeholder with your intended booking email or website.
+3. For song requests, create a free form at Formspree and replace `REPLACE_WITH_YOUR_FORM_ID` in the `action` URL in `index.html` with your form ID. Until you do, the site clearly tells visitors that requests are not connected yet.
+4. Social links currently point to generic Instagram/Facebook homepages; replace them with your artist profiles when ready.
+
+The supplied guitarist artwork is now built into the splash screen. Make sure `splash-screen.webp` is uploaded to the repository root alongside the other three website files.
+
+
+LATEST UPDATES
+- Navigation order is Make a Request, Song Catalog, Send a Tip, Contact.
+- Removed the hero promo section and genre selector.
+- Catalog columns are Artist, Song (with a Spotify search/play icon), and Year.
+- Tip e-transfer email is set to acdckicksass@hotmail.com.
+- Booking button opens an email draft to griffenarsenaultmusic@hotmail.com.
+- Instagram points to the supplied profile; Facebook link removed.
+
+SPOTIFY PREVIEW NOTE
+Spotify does not provide a dependable 15-second preview for every track through a simple public website integration. The play icon currently opens Spotify search for that exact artist and song; it does not stream a guaranteed 15-second sample directly on this page. Direct preview playback would require track IDs and preview URLs that Spotify makes available, and many tracks have no preview URL.
+
+
+SPLASH SELECT SOUND
+- The supplied title-screen-sound.mp3 (your UI Sound 06R file) plays when a visitor taps/clicks the splash screen or presses Enter/Space to enter the site. The original select.mp3 remains assigned to the top navigation and toolbar actions.
+- Upload both select.mp3 and title-screen-sound.mp3 to the same repository root as index.html, script.js, styles.css, and splash-screen.webp.
+- Sound playback depends on the visitor's browser/device allowing audio after their tap or keypress; if audio is blocked, the site still opens normally.
+
+
+LATEST CUSTOM BEHAVIOUR
+- The opening screen has a pulsing “PRESS ANY BUTTON TO ROCK” prompt.
+- The UI Sound 06R audio plays when entering from the title screen. The original select sound plays when navigation, tip reveal/copy, booking, or Instagram links are clicked.
+- Request submission opens the visitor’s SMS app with their name, song, artist, and special instructions prefilled to 902-303-6257. The visitor must press Send; a website cannot silently send an SMS.
+- Requests appear in the order texts arrive in the recipient phone’s messaging app. Resetting/clearing the request queue after each performance is a manual step; a static GitHub Pages site cannot centrally reset or maintain a shared live queue by itself.
+- In Send a Tip, tap “Show e-transfer email”, then tap the revealed email to copy it.
+
+Splash prompt update: the pulsing “PRESS ANY BUTTON TO ROCK…” prompt is positioned beside the portrait over the artwork lettering; the separate bottom prompt has been removed.
+
+
+LATEST UPDATE NOTES
+- select.mp3 is the original toolbar/navigation sound.
+- title-screen-sound.mp3 is the separate UI Sound 06R audio used only when entering from the splash screen.
+- The large splash prompt is now the pulsing prompt; the duplicate smaller overlay is removed.
+- Clicking a catalog song fills the request form and scrolls to it; the details dialog has been removed.
+- Song requests currently open a pre-filled SMS composer. A static GitHub Pages site cannot silently send a text; automatic SMS requires a backend/SMS provider and typically incurs charges.
+- Song play buttons currently open Spotify search results. In-browser playback without uploading audio is possible through Spotify/YouTube embeds, but requires linking tracks or a lookup integration; this package does not claim guaranteed inline playback.
+
+
+LATEST REQUEST / VIDEO SEARCH UPDATE
+- SMS message body is now only the requester name, song title in quotation marks, artist name, and optional comments, each on its own line. Empty comments are omitted; no field labels are included. The visitor still needs to press Send in their messaging app.
+- Song play icons now open YouTube search results for the artist and song (prioritizing official audio) instead of Spotify. This is a search link, not guaranteed inline playback; YouTube videos and embedding rights vary.
