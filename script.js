@@ -192,7 +192,7 @@ bookingCopy.addEventListener("click", async()=>{try{await navigator.clipboard.wr
 const splash=$("#splash"), selectSound=$("#select-sound"), titleScreenSound=$("#title-screen-sound");
 function playSelectSound(){if(!selectSound)return;try{selectSound.currentTime=0;const attempt=selectSound.play();if(attempt&&typeof attempt.catch==="function")attempt.catch(()=>{});}catch(e){}}
 function playTitleScreenSound(){if(!titleScreenSound)return;try{titleScreenSound.currentTime=0;const attempt=titleScreenSound.play();if(attempt&&typeof attempt.catch==="function")attempt.catch(()=>{});}catch(e){}}
-document.querySelectorAll('.top-nav a, #copy-email, #booking-copy, .social-links a, .secret-entry, .support-grid a').forEach(el=>el.addEventListener('click',playTitleScreenSound));
+document.querySelectorAll('.top-nav a, #copy-email, #booking-copy, .social-links a, .secret-entry, .support-grid a, .support-grid button').forEach(el=>el.addEventListener('click',()=>{playTitleScreenSound();el.classList.remove('button-pressed');void el.offsetWidth;el.classList.add('button-pressed');window.setTimeout(()=>el.classList.remove('button-pressed'),220);}));
 function enterSite(){
   if(splash.classList.contains("dismissed")) return;
   playSelectSound();
@@ -244,4 +244,4 @@ async function loadEncorePoll(){
 const showKofiQr=document.querySelector("#show-kofi-qr");
 const kofiQrPanel=document.querySelector("#kofi-qr-panel");
 if(showKofiQr&&kofiQrPanel){showKofiQr.addEventListener("click",()=>{const open=kofiQrPanel.hidden;kofiQrPanel.hidden=!open;showKofiQr.setAttribute("aria-expanded",String(open));showKofiQr.textContent=open?"Hide Ko-fi QR code":"Show Ko-fi QR code";if(open)kofiQrPanel.scrollIntoView({behavior:"smooth",block:"nearest"});});}
-loadRockMeter();loadEncorePoll();window.setInterval(()=>{loadRockMeter();loadEncorePoll();},30000);
+loadRockMeter();loadEncorePoll();window.setInterval(()=>{if(!document.hidden){loadRockMeter();loadEncorePoll();}},8000);document.addEventListener("visibilitychange",()=>{if(!document.hidden){loadRockMeter();loadEncorePoll();}});
