@@ -559,8 +559,11 @@ input:focus,select:focus,textarea:focus{border-color:#ffb45e!important;box-shado
 @media(prefers-reduced-motion:reduce){#requester-name:placeholder-shown:not(:focus){animation:none}.section.section-highlight,.payment-method-banner.payment-highlight{animation:none}.section.section-highlight{outline-color:#ffad63;box-shadow:0 0 0 1px #ff9b5260,0 0 14px #ff542e25}}
 
 
-/* Compact toolbar while browsing below the top of the page. */
-.site-header{transition:transform .24s ease,opacity .2s ease,padding .18s ease,gap .18s ease;}
+/* Compact toolbar while browsing below the top of the page.
+   Avoid animating layout-affecting properties (padding, gap, width, and font size):
+   changing those during sticky scrolling can cause visible jumps and repaint glitches.
+   Compact sizing switches cleanly; only the hide/reveal transform is animated. */
+.site-header{transition:transform .24s cubic-bezier(.22,1,.36,1),opacity .2s ease!important;will-change:transform;}
 .site-header.toolbar-compact{padding-top:4px!important;padding-bottom:4px!important;gap:4px!important;}
 .site-header.toolbar-compact .header-logo{width:clamp(58px,8vw,82px)!important;max-height:22px!important;}
 .site-header.toolbar-compact .top-nav{gap:4px!important;}
