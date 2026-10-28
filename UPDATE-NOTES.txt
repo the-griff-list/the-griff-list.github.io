@@ -27,3 +27,15 @@ NOTES:
 - Navigation now follows the visitor flow: Request a Song, Songs, Send a Tip, Rock Meter, Encore Vote, Booking Contact.
 - Song list is collapsed under a “Reveal the songs” dropdown directly beneath decade filters.
 \n\nToolbar icon update: navigation labels are unnumbered and now include contextual emoji icons. The Rock Meter navigation item uses a small meter image that follows the same red/yellow/green Supabase state as the full meter (refreshes with the existing live polling).\n
+
+FINAL VISUAL POLISH
+- Refined navigation contrast, hover/focus states, spacing, and mobile tap targets.
+- Improved admin dashboard card contrast, priority visibility, form readability, and gig-friendly mobile buttons.
+- Existing logo, floating close-list button, priority-request flow, Rock Meter, and encore controls are retained.
+- These are frontend polish changes; they do not add automatic payment verification.
+
+
+TITLE SCREEN LOGO UPDATE (2026-10-28)
+- Replaced the title-screen artwork with the exact supplied The Grifflist logo. No extra flames or guitarist artwork are included around it.
+- Updated the small header logo to match.
+- Kept the functional “PRESS ANY BUTTON TO ROCK” prompt separate beneath the logo.
