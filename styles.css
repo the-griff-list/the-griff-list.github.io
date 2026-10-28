@@ -531,3 +531,7 @@ input:focus,select:focus,textarea:focus{border-color:#ffb45e!important;box-shado
 /* Final compact toolbar: preserve navigation text size while reducing vertical space. */
 .site-header{padding-top:10px!important;padding-bottom:10px!important}
 @media(max-width:800px){.site-header{padding-top:7px!important;padding-bottom:7px!important}}
+
+/* Final logo readability adjustment: slightly larger without crowding the compact toolbar. */
+.header-logo{width:clamp(78px,10vw,115px)!important;max-height:34px!important}
+@media(max-width:700px){.header-logo{width:clamp(74px,21vw,94px)!important;max-height:27px!important}}
