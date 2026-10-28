@@ -1,49 +1,13 @@
-THE GRIFFLIST — BONUS EXPERIENCES UPDATE
+THE GRIFFLIST - SECRET MENU AND PUBLIC FEATURES
 
-IMPLEMENTED IN THIS PACKAGE
-- Discreet music-note button at the bottom opens the Secret Stage. No secret code required. Tell people where to find the note.
-- Secret Stage reveal animation respects reduced-motion preferences.
-- Lost Cassette teaser panel (ready for your chosen recording/story later).
-- Backstage Arcade: Guitar Pick Panic mini-game with a local personal-best score.
-- Hidden Note message.
-- Setlist Roulette (animated song picker) and Surprise Me (immediate random song); these are distinct actions.
-- Pick Your Rock Era filter linked to the repertoire decade filter.
-- Day, Night, and Neon visual themes, saved on that visitor's device.
-- Song-request confirmation animation and existing success sound.
-- Downloadable/shareable song card; native share is used where supported.
-- Grifflist Time Machine built from dated repertoire entries.
-- Monthly seasonal feature prompt.
-- Confirmed-tip wall: display name, amount, optional requested song; no dates are displayed. Tips must be verified and added by admin; no payment provider webhook is configured.
-- UI sound theme selector is prepared. The PS2-inspired audio files are not included yet; send your legally usable audio files when ready.
-- Installable PWA manifest and offline cache for local website assets/repertoire shell. Online requests, confirmed-tip updates, and live video still need connectivity.
-- Main bonus interactions are folded into existing site-interactions.js to avoid an extra script file.
-
-TIP WALL SETUP
-1. Open Supabase SQL Editor.
-2. Run bonus-features-migration.sql once.
-3. Verify the admin UUID in the SQL matches your own authorized admin account before running.
-4. In Admin, add a tip only after confirming the payment in the relevant provider/bank. The public wall does not show dates, payment IDs, or legal names unless you deliberately enter a full name as the display name. Prefer a nickname or Anonymous Rocker.
-
-PWA / OFFLINE NOTES
-- The app must be served over HTTPS (GitHub Pages qualifies).
-- Open the site online once so the service worker can cache the core files. Then test offline mode.
-- The browser's own install prompt is not available in every browser; Android users can also use the browser menu > Install app / Add to Home screen.
-- The service worker caches the local repertoire interface, not Supabase data or the live stream.
-
-SOUNDS
-- Existing Grifflist sounds continue to be used for normal UI feedback.
-- The PS2-style theme is a placeholder until you provide the audio files. No PlayStation sound files are bundled.
-
-NOT INCLUDED YET (IDEAS ONLY)
-- Ghost Gig: see GHOST-GIG-IDEAS.txt.
-- Great Grifflist Hunt: see GREAT-GRIFFLIST-HUNT-IDEAS.txt.
-
-
-High-score audio update: Two user-supplied PS2 award sounds are included as lightweight mono MP3s (32 kHz / 64 kbps), loudness-normalized for the Secret Stage effects. When the Guitar Pick Panic game beats the saved personal best, one of the two sounds is selected at random. Non-record games do not play a high-score sound. The offline cache version is v5 and includes both effects.
-
-
-PS2 SOUND UPDATE — NAVIGATION AND TRANSITION
-- PS2 navigation sound is the Secret Stage menu selection effect (secret-menu-select.mp3).
-- 12.mp3 was converted to lightweight mono MP3 as secret-transition.mp3 and plays when opening Secret Stage feature tiles, except Lost Cassette which keeps its dedicated discovery sound.
-- Secret Stage sounds are included in offline cache v6. Main homepage title and menu audio remain separate and unchanged.
-- The two randomized high-score award sounds remain assigned to new personal bests.
+- Secret Menu opens from one clearly labelled footer button.
+- PS2 boot-up plays once on entry. Homepage menu music pauses during the Secret Menu and resumes on close if it was previously playing.
+- PS2 effects are used for menu selection, guitar-pick pickup, transition, Lost Cassette discovery, and randomized high-score celebrations.
+- No Secret Menu background music or sound-mode dropdown is used.
+- Guitar Pick Panic mini-game stores a local personal-best score.
+- Explore contains Crowd Favourites, Encore Vote, and the Rock Wall.
+- The Rock Wall shows only confirmed real tip records; it never invents donors or tip amounts. Admin must verify payments before recording tips.
+- Day, Gothic Night, and neon 80s modes apply to public pages only.
+- Seasonal holiday mode is intentionally deferred until the final design review.
+- PWA offline cache contains static site assets. Online requests, tip updates, and live video still require connectivity.
+- Supabase migrations are included but must be run manually in the Supabase SQL Editor if not already applied.

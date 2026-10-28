@@ -1,5 +1,5 @@
 /* Reuses the homepage's original sound effects on the added pages. */
-(()=>{const map={nav:'ui-sound-01r.mp3',action:'select.mp3',success:'you_rockR.mp3',tip:'cash.mp3',open:'notes_ripple_up_01.mp3',close:'ui_sound_09R.mp3'};let last=0;function play(file){const now=Date.now();if(now-last<90)return;last=now;try{const a=new Audio(file);a.preload='none';a.volume=.42;a.play().catch(()=>{});}catch(e){}}document.addEventListener('click',e=>{const el=e.target.closest('button,a,summary,[role=button]');if(!el||el.disabled||el.closest('.secret-stage-overlay'))return;if(el.matches('.top-nav a, .header-logo-link'))play(map.nav);else if(el.id==='broadcast-start'||el.id==='broadcast-stop'||el.id==='quick-go-live'||el.id==='quick-end-live')play(map.action);else if(el.closest('.live-tip-card')||el.id==='copy-email')play(map.tip);else if(el.matches('button'))play(map.action);else if(el.matches('a'))play(map.open);},true);document.addEventListener('submit',e=>{if(e.target.matches('form'))play(map.success);},true);})();
+(()=>{const map={nav:'ui-sound-01r.mp3',action:'select.mp3',success:'you_rockR.mp3',tip:'cash.mp3',open:'notes_ripple_up_01.mp3',close:'ui_sound_09R.mp3'};let last=0;function play(file){const now=Date.now();if(now-last<90)return;last=now;try{const a=new Audio(file);a.preload='none';a.volume=.42;a.play().catch(()=>{});}catch(e){}}document.addEventListener('click',e=>{const el=e.target.closest('button,a,summary,[role=button]');if(!el||el.disabled||el.closest('.secret-stage-overlay')||el.matches('.secret-stage-trigger'))return;if(el.matches('.top-nav a, .header-logo-link'))play(map.nav);else if(el.id==='broadcast-start'||el.id==='broadcast-stop'||el.id==='quick-go-live'||el.id==='quick-end-live')play(map.action);else if(el.closest('.live-tip-card')||el.id==='copy-email')play(map.tip);else if(el.matches('button'))play(map.action);else if(el.matches('a'))play(map.open);},true);document.addEventListener('submit',e=>{if(e.target.matches('form'))play(map.success);},true);})();
 
 
 /* Bonus experiences bundle: see BONUS-EXPERIENCES-NOTES.txt */
@@ -14,7 +14,7 @@
   const root = document.documentElement;
   const pageIsHome = Boolean($('#song-list') && $('#request-form'));
   const exploreContent = $('#explore-drawer-content');
-  const appendExplore = (el) => { if (exploreContent) exploreContent.append(el); else if (pageIsHome) document.querySelector('main')?.append(el); };
+  const appendExplore = (el) => { if (exploreContent) exploreContent.append(el); else if (document.querySelector('main')) document.querySelector('main').append(el); };
   const getSongs = () => $$('.song-row').map(row => ({title: $('.song-title',row)?.textContent?.trim() || '', artist: $('.song-artist',row)?.textContent?.trim() || '', year: Number($('.song-year',row)?.textContent) || 0})).filter(s=>s.title);
 
   // Theme picker: daytime, nighttime, and colourful arcade.
@@ -29,7 +29,11 @@
     try{localStorage.setItem('grifflistTheme.v1',theme);}catch(_){}
   };
   const footer = $('footer');
-  if (footer) { footer.append(themeControls); themeControls.addEventListener('click',e=>{const b=e.target.closest('[data-theme]');if(b){applyTheme(b.dataset.theme);play('select-sfx');}}); }
+  if (footer && !document.body.classList.contains('admin-page') && !$('#inbox-panel')) {
+    const slot=$('.footer-appearance-slot',footer);
+    (slot||footer).append(themeControls);
+    themeControls.addEventListener('click',e=>{const b=e.target.closest('[data-theme]');if(b){applyTheme(b.dataset.theme);play('select-sfx');}});
+  }
   let savedTheme='night'; try{savedTheme=localStorage.getItem('grifflistTheme.v1')||'night';}catch(_){} applyTheme(savedTheme);
 
 
@@ -75,27 +79,20 @@
     randomButton?.addEventListener('click',selectRandomSong);
   }
 
-  // Compact seasonal spotlight: it points visitors to the catalog rather than duplicating random selection.
-  if (pageIsHome) {
-    const m=new Date().getMonth();
-    const seasonal=[['WINTER ROCK','Winter road-trip picks'],['VALENTINE RIFFS','Songs to share'],['SPRING SOUNDTRACK','Fresh-season favourites'],['MAY THE RIFFS BE WITH YOU','Force-of-rock favourites'],['CANADA DAY ROCK','Canadian summer soundtrack'],['SUMMER ROCK','Road-trip favourites'],['SUMMER ROCK','Road-trip favourites'],['BACK-TO-GIG SEASON','Live singalong picks'],['AUTUMN AMPLIFIERS','Rock for cooler nights'],['HALLOWEEN AFTER HOURS','Spooky season soundtrack'],['REMEMBRANCE DAY','A respectful moment of reflection'],['YEAR-END RIFF REWIND','Year-end favourites']][m];
-    const event=document.createElement('section'); event.className='section seasonal-event';
-    event.innerHTML=`<div><p class="eyebrow">✦ SEASONAL SPOTLIGHT</p><h2>${seasonal[0]}</h2><p>${seasonal[1]}</p></div><a class="button button-quiet" href="#catalog">BROWSE SONGS ↗</a>`;
-    appendExplore(event);
-  }
+  // Seasonal holiday styling is intentionally paused until the final design review.
 
   // Secret Stage: deliberately discreet amp button at the footer, no code required.
   if (footer) {
-    const secret=footer.querySelector('.secret-stage-trigger') || document.createElement('button');secret.type='button';secret.className='secret-stage-trigger';secret.setAttribute('aria-label','Hidden amp');secret.title='';secret.textContent='♬';if(!secret.isConnected)footer.append(secret);
+    const secret=footer.querySelector('.secret-stage-trigger') || document.createElement('button');secret.type='button';secret.className='secret-stage-trigger';secret.setAttribute('aria-label','Open Secret Menu');secret.title='Open the PS2-inspired Secret Menu';secret.innerHTML='♬ <span>Secret Menu</span>';if(!secret.isConnected)footer.insertBefore(secret,footer.querySelector('.footer-bottom-row'));
     const overlay=document.createElement('div');overlay.className='secret-stage-overlay';overlay.id='secret-stage-overlay';overlay.hidden=true;
-    overlay.innerHTML=`<div class="secret-stage-panel" role="dialog" aria-modal="true" aria-labelledby="secret-stage-title"><button type="button" class="secret-close" aria-label="Close secret stage">×</button><button type="button" class="secret-sound-toggle" aria-pressed="true" aria-label="Mute Secret Stage sounds">SOUND ON</button><p class="secret-kicker">UNLISTED AREA · LEVEL 99</p><h2 id="secret-stage-title">THE SECRET STAGE</h2><p class="secret-intro">You found the backstage door. Welcome to the part of The Grifflist that isn't on the setlist.</p><div class="secret-stage-grid"><button type="button" class="secret-tile" id="lost-cassette"><span class="cassette-art" aria-hidden="true"><i></i><b></b></span><strong>THE LOST CASSETTE</strong><small>Flip the tape for a hidden note.</small></button><button type="button" class="secret-tile" id="high-score-open"><span class="arcade-icon" aria-hidden="true">★<br>HI-SCORE</span><strong>BACKSTAGE ARCADE</strong><small>Catch the guitar picks.</small></button><button type="button" class="secret-tile" id="secret-message-open"><span class="secret-sparkle" aria-hidden="true">✦</span><strong>THE HIDDEN NOTE</strong><small>A little message from Griff.</small></button></div><div id="secret-content" class="secret-content" aria-live="polite"><p>Hint: the little music note at the bottom is the backstage door. Tell a friend where to look.</p></div><p class="secret-stage-footer">NO PASSWORD. JUST KNOW WHERE TO LOOK.</p></div>`;
+    overlay.innerHTML=`<div class="secret-stage-panel" role="dialog" aria-modal="true" aria-labelledby="secret-stage-title"><button type="button" class="secret-close" aria-label="Close secret stage">×</button><button type="button" class="secret-sound-toggle" aria-pressed="true" aria-label="Mute Secret Stage sounds">SOUND ON</button><p class="secret-kicker">PS2 MODE</p><h2 id="secret-stage-title">SECRET MENU</h2><p class="secret-intro">Hidden sounds, the Lost Cassette, and Guitar Pick Panic.</p><div class="secret-stage-grid"><button type="button" class="secret-tile" id="lost-cassette"><span class="cassette-art" aria-hidden="true"><i></i><b></b></span><strong>THE LOST CASSETTE</strong><small>Flip the tape for a hidden note.</small></button><button type="button" class="secret-tile" id="high-score-open"><span class="arcade-icon" aria-hidden="true">★<br>HI-SCORE</span><strong>BACKSTAGE ARCADE</strong><small>Catch the guitar picks.</small></button><button type="button" class="secret-tile" id="secret-message-open"><span class="secret-sparkle" aria-hidden="true">✦</span><strong>THE HIDDEN NOTE</strong><small>A little message from Griff.</small></button></div><div id="secret-content" class="secret-content" aria-live="polite"><p>Choose a secret feature.</p></div><p class="secret-stage-footer">SECRET MENU</p></div>`;
     document.body.append(overlay);
-    // PS2-inspired audio is isolated to the Secret Stage; homepage audio is untouched.
+    // PS2 effects are isolated to the Secret Menu; homepage menu audio pauses while it is open.
+    const homeMenuAudio=document.getElementById('menu-screen-audio');
+    let resumeHomeMenuOnClose=false;
     const secretBootAudio=new Audio('secret-stage-boot.mp3');
-    const secretMenuAudio=new Audio();
-    secretMenuAudio.src=(secretMenuAudio.canPlayType('audio/ogg; codecs="opus"') ? 'secret-stage-menu.ogg' : 'secret-stage-menu.mp3');
+    // Secret Stage intentionally uses PS2 effects only; no second background music track.
     secretBootAudio.preload='none'; secretBootAudio.volume=.78;
-    secretMenuAudio.preload='none'; secretMenuAudio.loop=true; secretMenuAudio.volume=.22;
     // Short PS2-style effects are individually normalized and kept lightweight.
     const secretEffects={
       select:new Audio('secret-menu-select.mp3'),
@@ -106,40 +103,38 @@
       highScoreTwo:new Audio('secret-highscore-2.mp3')
     };
     Object.values(secretEffects).forEach(a=>{a.preload='none';a.volume=.42;});
-    let secretSoundEnabled=true, secretBootFinished=false; let secretSoundMode='ps2'; try{secretSoundMode=localStorage.getItem('grifflistSoundTheme.v1')||'ps2';}catch(_){} secretSoundEnabled=secretSoundMode!=='silent';
-    const classicEffects={select:new Audio('select.mp3'),pickup:new Audio('notes_ripple_up_01.mp3'),lostCassette:new Audio('you_rockR.mp3'),transition:new Audio('ui_sound_09R.mp3')}; Object.values(classicEffects).forEach(a=>{a.preload='none';a.volume=.42;});
+    let secretSoundEnabled=true, secretBootFinished=false; const secretSoundMode='ps2';
     const playSecretEffect=(name)=>{
       if(!secretSoundEnabled||overlay.hidden)return;
-      const a=secretSoundMode==='classic'?(classicEffects[name]||secretEffects[name]):secretEffects[name];if(!a)return;
+      const a=secretEffects[name];if(!a)return;
       try{a.currentTime=0;const p=a.play();p?.catch?.(()=>{});}catch(_){}
     };
     const playRandomHighScore=()=>{
       if(!secretSoundEnabled||overlay.hidden)return;
-      const choices=secretSoundMode==='classic'?[classicEffects.pickup,classicEffects.select]:[secretEffects.highScoreOne,secretEffects.highScoreTwo];
+      const choices=[secretEffects.highScoreOne,secretEffects.highScoreTwo];
       const chosen=choices[Math.floor(Math.random()*choices.length)];
       try{chosen.currentTime=0;const p=chosen.play();p?.catch?.(()=>{});}catch(_){}
     };
-    try{secretSoundEnabled=localStorage.getItem('grifflistSecretSound')!=='off' && secretSoundMode!=='silent';}catch(_){}
-    document.addEventListener('grifflist-sound-mode',e=>{secretSoundMode=e.detail?.mode||'ps2';secretSoundEnabled=secretSoundMode!=='silent';updateSoundToggle();if(!secretSoundEnabled)stopSecretAudio();else if(!overlay.hidden){secretBootFinished=true;startSecretMenu();}});
+    secretSoundEnabled=true;
     const soundToggle=overlay.querySelector('.secret-sound-toggle');
     const updateSoundToggle=()=>{soundToggle.textContent=secretSoundEnabled?'SOUND ON':'SOUND OFF';soundToggle.setAttribute('aria-pressed',String(secretSoundEnabled));soundToggle.setAttribute('aria-label',secretSoundEnabled?'Mute Secret Stage sounds':'Enable Secret Stage sounds');};
-    const startSecretMenu=()=>{if(overlay.hidden||!secretSoundEnabled||!secretBootFinished)return;secretMenuAudio.play().catch(()=>{});};
-    secretBootAudio.addEventListener('ended',()=>{secretBootFinished=true;startSecretMenu();});
-    const stopSecretAudio=()=>{secretBootAudio.pause();secretMenuAudio.pause();Object.values(secretEffects).forEach(a=>{a.pause();try{a.currentTime=0;}catch(_){}});try{secretBootAudio.currentTime=0;secretMenuAudio.currentTime=0;}catch(_){}};
-    const close=()=>{overlay.hidden=true;document.body.classList.remove('secret-stage-open');stopSecretAudio();secret.focus();};
-    const reveal=()=>{document.body.classList.remove('secret-glitch-boot');overlay.hidden=false;document.body.classList.add('secret-stage-open');overlay.querySelector('.secret-close')?.focus();if(secretBootFinished)startSecretMenu();};
+    secretBootAudio.addEventListener('ended',()=>{secretBootFinished=true;});
+    const stopSecretAudio=()=>{secretBootAudio.pause();Object.values(secretEffects).forEach(a=>{a.pause();try{a.currentTime=0;}catch(_){}});try{secretBootAudio.currentTime=0;}catch(_){}};
+    const close=()=>{overlay.hidden=true;document.body.classList.remove('secret-stage-open');stopSecretAudio();secret.focus();if(resumeHomeMenuOnClose&&homeMenuAudio){homeMenuAudio.play().catch(()=>{});}resumeHomeMenuOnClose=false;};
+    const reveal=()=>{document.body.classList.remove('secret-glitch-boot');overlay.hidden=false;document.body.classList.add('secret-stage-open');overlay.querySelector('.secret-close')?.focus();};
     secret.addEventListener('click',()=>{
+      resumeHomeMenuOnClose=Boolean(homeMenuAudio&&!homeMenuAudio.paused);homeMenuAudio?.pause();
       stopSecretAudio();secretBootFinished=false;
       document.body.classList.add('secret-glitch-boot');
-      if(secretSoundEnabled && secretSoundMode==='ps2'){secretBootAudio.currentTime=0;secretBootAudio.play().then(()=>{}).catch(()=>{secretBootFinished=true;startSecretMenu();});}
-      else {secretBootFinished=true;if(secretSoundEnabled)playSecretEffect('select');}
+      if(secretSoundEnabled && secretSoundMode==='ps2'){secretBootAudio.currentTime=0;secretBootAudio.play().then(()=>{}).catch(()=>{secretBootFinished=true;});}
+      else {secretBootFinished=true;}
       if(reducedMotion())reveal();else window.setTimeout(reveal,460);
     });
     soundToggle.addEventListener('click',()=>{
       secretSoundEnabled=!secretSoundEnabled;updateSoundToggle();
       try{localStorage.setItem('grifflistSecretSound',secretSoundEnabled?'on':'off');}catch(_){}
-      if(!secretSoundEnabled){secretBootAudio.pause();secretMenuAudio.pause();Object.values(secretEffects).forEach(a=>a.pause());}
-      else if(!overlay.hidden){secretBootFinished=true;startSecretMenu();}
+      if(!secretSoundEnabled){secretBootAudio.pause();Object.values(secretEffects).forEach(a=>a.pause());}
+      else if(!overlay.hidden){secretBootFinished=true;}
     });
     updateSoundToggle();
     overlay.addEventListener('click',e=>{
@@ -162,22 +157,15 @@
     });
   }
 
-  // Time Machine built from existing repertoire, without hard-coded song history.
-  if (pageIsHome) {
-    const contact=$('#contact');const tm=document.createElement('section');tm.className='section time-machine-section';tm.innerHTML='<div class="section-heading"><h2><span>Browse by Decade</span></h2></div><div class="time-machine-rail" id="time-machine-rail"></div><div id="time-machine-result" class="time-machine-result" aria-live="polite"></div>';
-    appendExplore(tm);
-    const rail=$('#time-machine-rail');const years=[1960,1970,1980,1990,2000,2010];years.forEach(y=>{const b=document.createElement('button');b.type='button';b.textContent=y+'s';b.addEventListener('click',()=>{const songs=getSongs().filter(s=>s.year>=y&&s.year<y+10);const result=$('#time-machine-result');result.textContent=songs.length?`${y}s: ${songs.slice(0,5).map(s=>s.title+' - '+s.artist).join(' · ')}${songs.length>5?' …':''}`:`No dated songs from the ${y}s are currently listed.`;play('scroll-sfx');});rail.append(b);});
-    // Seasonal event card changes automatically by month.
-    const m=new Date().getMonth();const seasonal=[['WINTER ROCK PICK','Find a winter road-trip anthem.'],['VALENTINE RIFFS','Pick a song to share.'],['SPRING SOUNDTRACK','Choose a fresh-season favourite.'],['MAY THE RIFFS BE WITH YOU','Choose your force-of-rock anthem.'],['CANADA DAY ROCK','Pick a song for the summer celebration.'],['SUMMER ROAD-TRIP','Choose a driving anthem.'],['SUMMER ROAD-TRIP','Choose a driving anthem.'],['BACK-TO-GIG SEASON','Pick your next live singalong.'],['AUTUMN AMPLIFIERS','Choose a soundtrack for cooler nights.'],['HALLOWEEN AFTER HOURS','Unlock a spooky backstage surprise.'],['REMEMBRANCE DAY REFLECTION','Choose a meaningful song; observe the day respectfully.'],['YEAR-END RIFF REWIND','Pick a song to close out the year.']][m];
-    const event=document.createElement('section');event.className='section seasonal-event';event.innerHTML=`<div><p class="eyebrow">✦ SEASONAL PICK</p><h2>${seasonal[0]}</h2></div><button class="button button-quiet" id="seasonal-discover" type="button">🎸 PICK A SONG</button>`;appendExplore(event);$('#seasonal-discover')?.addEventListener('click',()=>{const songs=getSongs();if(!songs.length)return;const s=songs[Math.floor(Math.random()*songs.length)];const input=$('#request-song');if(input){input.value=s.title;$('#request-artist').value=s.artist;$('#request')?.scrollIntoView({behavior:reducedMotion()?'auto':'smooth'});}play('you-rock-sfx');});
-  }
+  // The main page stays focused: no duplicate decade tool or seasonal random-song card.
+  // Seasonal styling will be enabled after the final design review.
 
   // Tip wall: only confirmed records are shown; no dates or transaction IDs displayed.
-  if(pageIsHome) {
-    const contact=$('#contact');const wall=document.createElement('section');wall.className='section tip-wall-section';wall.innerHTML='<div class="section-heading"><h2><span>Encore Wall</span></h2></div><div id="tip-wall-list" class="tip-wall-list" aria-live="polite"></div>';
+  if(document.body.classList.contains('explore-page')) {
+    const wall=document.createElement('section');wall.className='section tip-wall-section';wall.innerHTML='<div class="section-heading"><h2><span>Rock Wall</span></h2></div><div id="tip-wall-list" class="tip-wall-list" aria-live="polite"></div>';
     appendExplore(wall);
     const list=$('#tip-wall-list');
-    const renderTips=async()=>{const client=window.supabaseClient;if(!client||!list)return;try{const {data,error}=await client.from('confirmed_tips').select('display_name,amount_cad,requested_song').eq('confirmed',true).order('id',{ascending:false}).limit(50);if(error)throw error;list.replaceChildren();if(!data?.length){[['Rock Fan','$5','Sample'],['Backstage Buddy','$10','Sample'],['Anonymous','$3','Sample']].forEach(([name,amount])=>{const row=document.createElement('div');row.className='tip-wall-row tip-wall-sample';row.innerHTML='<strong>'+name+'</strong><b>'+amount+'</b><small>Sample</small>';list.append(row);});list.classList.add('tip-wall-samples');return;}data.forEach(t=>{const row=document.createElement('div');row.className='tip-wall-row';const who=document.createElement('strong');who.textContent=t.display_name||'Anonymous Rocker';const amount=document.createElement('b');amount.textContent=new Intl.NumberFormat('en-CA',{style:'currency',currency:'CAD',maximumFractionDigits:2}).format(Number(t.amount_cad)||0);row.append(who,amount);if(t.requested_song){const song=document.createElement('small');song.textContent='Requested: '+t.requested_song;row.append(song);}list.append(row);});if(data.length>3){[...list.children].forEach(row=>list.append(row.cloneNode(true)));list.classList.add('tip-wall-scrolling');}}catch(_){if(list&&!list.children.length){[['Rock Fan','$5'],['Backstage Buddy','$10'],['Anonymous','$3']].forEach(([name,amount])=>{const row=document.createElement('div');row.className='tip-wall-row tip-wall-sample';row.innerHTML='<strong>'+name+'</strong><b>'+amount+'</b><small>Sample</small>';list.append(row);});list.classList.add('tip-wall-samples');}}};
+    const renderTips=async()=>{const client=window.supabaseClient;if(!client||!list)return;try{const {data,error}=await client.from('confirmed_tips').select('id,display_name,amount_cad,requested_song').eq('confirmed',true).order('id',{ascending:false}).limit(50);if(error)throw error;list.replaceChildren();if(!data?.length){list.innerHTML='<p class="tip-wall-empty">No tips yet.</p>';return;}const stageAliases=['Riff Rider','Vinyl Rebel','Amp Ace','Neon Strummer','Backbeat Bandit','Power Chord','Stage Diver','Tape Deck Hero','Guitar Ghost','Rock Voyager','Feedback Fan','Midnight Riffer'];data.forEach((t,index)=>{const row=document.createElement('div');row.className='tip-wall-row';const who=document.createElement('strong');const display=(t.display_name||'').trim();const generic=!display||/^(anonymous( rocker)?|rock fan|backstage buddy|sample|example)$/i.test(display);who.textContent=generic?stageAliases[Math.abs(Number(t.id)||index)%stageAliases.length]:display;const amount=document.createElement('b');amount.textContent=new Intl.NumberFormat('en-CA',{style:'currency',currency:'CAD',maximumFractionDigits:2}).format(Number(t.amount_cad)||0);row.append(who,amount);if(t.requested_song){const song=document.createElement('small');song.textContent=t.requested_song;row.append(song);}list.append(row);});if(data.length>3){[...list.children].forEach(row=>list.append(row.cloneNode(true)));list.classList.add('tip-wall-scrolling');}}catch(_){if(list)list.innerHTML='<p class="tip-wall-empty">Rock Wall temporarily unavailable.</p>';}};
     renderTips();
   }
 
@@ -189,13 +177,8 @@
     }
   }
 
-  // Secret Stage sound selector: controls only Secret Stage audio, never homepage sounds.
-  if (footer) {
-    const sound=document.createElement('label');sound.className='sound-theme-control';sound.innerHTML='<span aria-hidden="true">♬</span><span>Secret Stage</span><select id="ui-sound-theme" aria-label="Secret Stage sound mode"><option value="ps2">PS2 Sounds</option><option value="classic">Classic Sounds</option><option value="silent">Muted</option></select>';
-    footer.append(sound);let chosen='ps2';try{chosen=localStorage.getItem('grifflistSoundTheme.v1')||'ps2';}catch(_){}$('#ui-sound-theme').value=chosen;
-    const applySecretSoundMode=value=>{try{localStorage.setItem('grifflistSoundTheme.v1',value);}catch(_){};document.dispatchEvent(new CustomEvent('grifflist-sound-mode',{detail:{mode:value}}));};
-    applySecretSoundMode(chosen);$('#ui-sound-theme').addEventListener('change',e=>applySecretSoundMode(e.target.value));
-  }
+  // PS2 sounds are the single default for Secret Menu; no redundant sound-mode dropdown.
+
   if('serviceWorker' in navigator && location.protocol.startsWith('http')) window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
 })();
 

@@ -957,3 +957,394 @@ body.theme-eighties .heading-tone-rest {
   color:#ff713c;
   text-shadow:0 2px 0 #45133f,0 0 16px rgba(255,55,170,.22);
 }
+
+
+/* === Final visual pass: centered headings, clearer modes, and compact footer === */
+body:not(.admin-page) .section-heading,
+body:not(.admin-page) .section-heading h1,
+body:not(.admin-page) .section-heading h2,
+body:not(.admin-page) .section-heading h3,
+body:not(.admin-page) .explore-intro h1,
+body:not(.admin-page) .contact-section > div:first-child h2,
+body:not(.admin-page) .encore-section h2 {
+  text-align:center !important;
+}
+body:not(.admin-page) .catalog-title {display:flex;align-items:center;justify-content:center;gap:16px}
+body:not(.admin-page) .catalog-title > div {flex:1;text-align:center}
+body:not(.admin-page) .catalog-title .track-counter {flex:0 0 auto}
+body:not(.admin-page) .section-heading > p {margin-left:auto;margin-right:auto}
+
+/* The Guitar Hero III-inspired orange is the consistent Day/Night heading color. */
+body.theme-day .section-heading h1,
+body.theme-day .section-heading h2,
+body.theme-day .section-heading h3,
+body.theme-day main h1,
+body.theme-day main h2,
+body.theme-day main h3,
+body.theme-night .section-heading h1,
+body.theme-night .section-heading h2,
+body.theme-night .section-heading h3,
+body.theme-night main h1,
+body.theme-night main h2,
+body.theme-night main h3 {
+  color:#e85b2a !important;
+  text-shadow:0 2px 0 rgba(50,12,8,.13) !important;
+}
+body.theme-day .heading-tone-first,
+body.theme-day .heading-tone-rest,
+body.theme-night .heading-tone-first,
+body.theme-night .heading-tone-rest {
+  color:#e85b2a !important;
+  text-shadow:0 2px 0 rgba(50,12,8,.13) !important;
+}
+
+/* Day mode: lighten the overly dark catalog and request controls. */
+body.theme-day .catalog-controls {
+  background:linear-gradient(135deg,#fffaf2,#f3e8d8) !important;
+  color:#30231b !important;
+  border:1px solid #d8c2a9 !important;
+  box-shadow:0 5px 16px rgba(83,52,26,.08) !important;
+}
+body.theme-day .catalog-controls input,
+body.theme-day .catalog-controls select,
+body.theme-day .request-form input,
+body.theme-day .request-form textarea,
+body.theme-day .request-form select {
+  background:#fffdf8 !important;
+  color:#30231b !important;
+  border-color:#cbb69f !important;
+}
+body.theme-day .song-reveal {
+  background:linear-gradient(135deg,#fffaf2,#f1e3d1) !important;
+  color:#30231b !important;
+  border-color:#d2b79a !important;
+  box-shadow:0 5px 18px rgba(83,52,26,.08) !important;
+}
+body.theme-day .song-reveal>summary {
+  background:linear-gradient(100deg,#f4dfc5,#fff5e8) !important;
+  color:#9f351e !important;
+}
+body.theme-day .song-list-heading {background:#e8d3b9 !important;color:#5d3825 !important}
+body.theme-day .song-reveal-content {background:#fffaf2 !important;color:#30231b !important}
+body.theme-day .priority-option {
+  background:linear-gradient(110deg,#fff2dc,#f6e2c6) !important;
+  border-color:#d6a77c !important;
+}
+body.theme-day .priority-option-copy strong,
+body.theme-day .priority-option-copy small {color:#402a20 !important}
+body.theme-day .close-song-list {
+  background:#fffaf2 !important;color:#513323 !important;border-color:#c6a789 !important;
+}
+
+/* The 80s mode is an even, readable arcade palette: neon controls, not brown panels. */
+body.theme-eighties .priority-option,
+body.theme-eighties .priority-payment-wrap,
+body.theme-eighties .song-reveal,
+body.theme-eighties .song-request-tip,
+body.theme-eighties .payment-method-banner,
+body.theme-eighties .social-link,
+body.theme-eighties .contact-actions .button {
+  background:linear-gradient(125deg,#241039 0%,#15102b 48%,#102a3a 100%) !important;
+  color:#fff4ff !important;
+  border-color:#ff4db8 !important;
+  box-shadow:0 0 0 1px rgba(69,244,240,.12),0 5px 18px rgba(5,2,20,.28),0 0 16px rgba(255,62,170,.10) !important;
+}
+body.theme-eighties .priority-option-copy strong,
+body.theme-eighties .priority-option-copy small,
+body.theme-eighties .payment-method-copy strong,
+body.theme-eighties .payment-method-copy small {color:#fff4ff !important}
+body.theme-eighties .song-reveal>summary {
+  background:linear-gradient(100deg,#ff702f 0%,#ff329d 55%,#743cff 100%) !important;
+  color:#fff !important;
+  border-bottom:1px solid #ff9bd9;
+}
+body.theme-eighties .song-reveal-content {background:#10091d;color:#fff4ff}
+body.theme-eighties .song-list-heading {background:linear-gradient(90deg,#ff702f,#ff329d,#45f4f0);color:#13091d}
+body.theme-eighties .song-request-tip {
+  background:linear-gradient(100deg,#ff702f,#ff329d,#793cff) !important;
+  color:#fff !important;
+}
+body.theme-eighties .close-song-list {
+  background:linear-gradient(100deg,#083d49,#087f8b) !important;
+  color:#eaffff !important;
+  border-color:#45f4f0 !important;
+  box-shadow:0 0 18px rgba(69,244,240,.25) !important;
+}
+body.theme-eighties .payment-brand-mark,
+body.theme-eighties .payment-kofi .payment-brand-mark,
+body.theme-eighties .payment-paypal .payment-brand-mark,
+body.theme-eighties .payment-etransfer .payment-brand-mark,
+body.theme-eighties .payment-wallet .payment-brand-mark {
+  background:linear-gradient(135deg,#ff702f,#ff329d 55%,#45f4f0) !important;
+  color:#fff !important;
+  border:1px solid rgba(255,255,255,.45);
+  box-shadow:0 0 14px rgba(255,62,170,.20);
+}
+body.theme-eighties .wallet-badge {border-color:#75408b;background:linear-gradient(135deg,#211032,#101629);color:#fff4ff}
+body.theme-eighties .wallet-google .google-g {color:#45f4f0}
+body.theme-eighties .social-link svg {color:#45f4f0}
+body.theme-eighties .social-link:hover {border-color:#45f4f0 !important;box-shadow:0 0 18px rgba(69,244,240,.28) !important}
+body.theme-eighties .favourite-row,
+body.theme-eighties .encore-card,
+body.theme-eighties .encore-option,
+body.theme-eighties .favourites-toolbar,
+body.theme-eighties .favourites-filter-label select {
+  background:linear-gradient(135deg,#241039,#121025 55%,#102b38) !important;
+  color:#fff4ff !important;
+  border-color:#a044b2 !important;
+}
+body.theme-eighties .favourite-count {color:#45f4f0}
+body.theme-eighties .favourite-rank {color:#ff79cb}
+body.theme-eighties .favourite-tab.is-active,
+body.theme-eighties .encore-option button,
+body.theme-eighties .favourite-actions .button {
+  background:linear-gradient(100deg,#ff702f,#ff329d,#793cff) !important;
+  color:#fff !important;border-color:#ff9bd9 !important;
+}
+body.theme-eighties .gig-theme-controls button {min-width:78px;min-height:42px;white-space:nowrap}
+body.theme-eighties .header-logo,
+body.theme-eighties .footer-logo {filter:saturate(1.7) hue-rotate(275deg) drop-shadow(0 0 8px rgba(255,62,170,.55)) drop-shadow(0 0 12px rgba(69,244,240,.30) )}
+
+/* 80s headers shimmer subtly. Reduced-motion users get a static neon gradient. */
+@keyframes grifflist-neon-shimmer {
+  0% {background-position:0% 50%}
+  100% {background-position:250% 50%}
+}
+body.theme-eighties h1,
+body.theme-eighties h2,
+body.theme-eighties h3,
+body.theme-eighties h1 span,
+body.theme-eighties h2 span,
+body.theme-eighties h3 span {
+  background-image:linear-gradient(100deg,#fff7ff 0%,#ff6dca 20%,#45f4f0 40%,#ffb04a 60%,#fff7ff 80%,#ff6dca 100%);
+  background-size:250% auto;
+  background-clip:text;
+  -webkit-background-clip:text;
+  color:transparent !important;
+  -webkit-text-fill-color:transparent;
+  text-shadow:none !important;
+  animation:grifflist-neon-shimmer 6s linear infinite;
+}
+@media (prefers-reduced-motion:reduce) {
+  body.theme-eighties h1,body.theme-eighties h2,body.theme-eighties h3,
+  body.theme-eighties h1 span,body.theme-eighties h2 span,body.theme-eighties h3 span {
+    animation:none;background-position:50% 50%;
+  }
+}
+
+.header-logo {width:clamp(150px,19vw,230px);max-height:68px}
+
+/* Compact public footer: Explore first, appearance controls, Secret Menu, then logo + top link. */
+footer.site-footer {
+  max-width:var(--max);margin:0 auto;padding:20px 24px 28px;
+  display:flex;flex-direction:column;align-items:stretch;gap:12px;
+  color:var(--muted);font-size:.88rem;
+}
+.footer-explore-link {
+  display:flex;align-items:center;justify-content:center;gap:9px;
+  min-height:44px;padding:10px 16px;border:1px solid var(--line);border-radius:10px;
+  background:var(--panel);color:var(--text);font-weight:900;text-decoration:none;
+}
+.footer-explore-link span {color:var(--gold);font-size:1.2rem}
+.footer-appearance-slot {display:flex;justify-content:center}
+footer.site-footer .gig-theme-controls {
+  display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;
+  margin:0;padding:12px;border:1px solid var(--line);border-radius:12px;background:var(--panel);
+}
+footer.site-footer .gig-mode-label {font-weight:900;color:var(--text);margin-right:4px}
+footer.site-footer .gig-theme-controls button {
+  min-width:76px;min-height:42px;padding:8px 12px;border-radius:999px;
+  background:transparent;color:var(--text);font-weight:900;white-space:nowrap;
+}
+footer.site-footer .secret-stage-trigger {
+  display:flex;align-items:center;justify-content:center;gap:9px;
+  width:100%;min-height:48px;padding:11px 16px;border:1px solid var(--gold);
+  border-radius:10px;background:linear-gradient(100deg,var(--panel),var(--bg));
+  color:var(--text);font-size:1rem;font-weight:900;letter-spacing:.04em;opacity:1;
+}
+footer.site-footer .secret-stage-trigger span {font-size:.92rem;text-transform:uppercase}
+.footer-bottom-row {
+  display:flex;align-items:center;justify-content:space-between;gap:16px;
+  border-top:1px solid var(--line);padding-top:14px;margin-top:2px;
+}
+footer.site-footer .footer-logo-link {display:block;width:min(150px,38vw);margin:0}
+footer.site-footer .footer-logo {display:block;width:100%;height:auto;max-height:86px;object-fit:contain}
+footer.site-footer .footer-top-link {
+  display:inline-flex;align-items:center;justify-content:center;min-height:42px;
+  padding:9px 12px;border:1px solid var(--line);border-radius:9px;
+  background:var(--panel);color:var(--text);font-weight:900;text-decoration:none;
+}
+body.theme-day footer.site-footer .footer-top-link {color:#34231a;background:#fffaf2;border-color:#bba28a}
+body.theme-day footer.site-footer .footer-logo {filter:drop-shadow(0 1px 0 rgba(68,40,22,.35)) drop-shadow(0 0 3px rgba(255,255,255,.85))}
+body.theme-day footer.site-footer .footer-explore-link,
+body.theme-day footer.site-footer .secret-stage-trigger {background:linear-gradient(135deg,#fffaf2,#f2e2cf);color:#302119;border-color:#c9ad91}
+body.theme-night footer.site-footer .secret-stage-trigger {background:linear-gradient(135deg,#1c1017,#09070b);border-color:#70404b;color:#fff2f2}
+body.theme-eighties footer.site-footer .footer-explore-link,
+body.theme-eighties footer.site-footer .secret-stage-trigger,
+body.theme-eighties footer.site-footer .footer-top-link {background:linear-gradient(110deg,#241039,#15102b 50%,#102a3a);color:#fff4ff;border-color:#ff4db8}
+body.theme-eighties footer.site-footer .footer-bottom-row {border-color:#75408b}
+@media(max-width:700px) {
+  .header-logo {width:clamp(150px,44vw,190px)!important;max-height:62px!important}
+  .top-nav a {font-size:.93rem;min-height:42px;padding:10px 8px;line-height:1.1}
+  .request-section {padding-top:20px;padding-bottom:20px}
+  .request-form {gap:10px}
+  .request-form .form-grid {gap:10px}
+  .remember-name-option {margin:7px 0;font-size:.82rem}
+  footer.site-footer {padding:16px 20px 24px}
+}
+
+
+/* Rock Wall on Explore: actual confirmed records only, no invented donations. */
+.tip-wall-section {margin-top:22px}
+.tip-wall-list {display:flex;flex-direction:column;gap:10px;overflow:hidden;max-height:440px}
+.tip-wall-row {display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:6px 14px;padding:13px 15px;border:1px solid var(--line);border-radius:10px;background:var(--panel);color:var(--text)}
+.tip-wall-row strong {font-weight:900;overflow-wrap:anywhere}
+.tip-wall-row b {color:var(--gold);font-weight:900;white-space:nowrap}
+.tip-wall-row small {grid-column:1/-1;color:var(--muted);font-size:.82rem}
+.tip-wall-empty {text-align:center;color:var(--muted);padding:12px;margin:0}
+body.theme-eighties .tip-wall-row {background:linear-gradient(130deg,#241039,#121025 55%,#102b38);border-color:#a044b2}
+body.theme-eighties .tip-wall-row b {color:#45f4f0}
+body.theme-day .tip-wall-row {background:#fffaf2;border-color:#d7c3ac;color:#34231a}
+body.theme-day .tip-wall-row small {color:#6f5c4d}
+body.theme-night .tip-wall-row {background:linear-gradient(135deg,#1c1017,#09070b);border-color:#70404b}
+.explore-intro {padding-top:22px!important;padding-bottom:12px!important}
+.explore-intro h1 {margin:.1rem 0 .4rem!important;text-align:center}
+.crowd-favourites-section .section-heading h2,
+.encore-section .section-heading h2,
+.tip-wall-section .section-heading h2 {text-align:center}
+body.theme-eighties .tip-wall-section .section-heading h2 {color:#ff6dca}
+
+/* Shorter request card while retaining all fields and last-request control. */
+.request-section {padding-top:clamp(18px,3vw,30px);padding-bottom:clamp(18px,3vw,30px)}
+.request-section .section-heading h2 {margin-top:.1rem;margin-bottom:.7rem}
+.request-form {gap:10px}
+.request-form .form-grid {gap:10px}
+.request-status-panel {padding:12px;margin-top:12px}
+
+body:not(.admin-page) main h1,
+body:not(.admin-page) main h2,
+body:not(.admin-page) main h3 {text-align:center !important}
+
+
+/* 80s mode consistency pass: apply the arcade palette to the full home screen,
+   including navigation, request/catalog controls, support cards and footer. */
+body.theme-eighties:not(.admin-page) {
+  background-color:#10071d;
+  background-image:
+    radial-gradient(ellipse at 50% -8%,rgba(255,74,169,.34),transparent 40%),
+    radial-gradient(ellipse at 0% 28%,rgba(53,229,255,.15),transparent 35%),
+    radial-gradient(ellipse at 100% 55%,rgba(255,116,40,.15),transparent 34%),
+    linear-gradient(180deg,#160822 0%,#0c0718 58%,#17081f 100%);
+  color:#fff5ff;
+}
+body.theme-eighties .site-header {
+  background:linear-gradient(115deg,rgba(31,10,48,.97),rgba(14,8,29,.98) 55%,rgba(18,39,55,.97));
+  border-bottom:2px solid #ff4db8;
+  box-shadow:0 5px 0 #08030f,0 0 24px rgba(255,62,170,.18);
+}
+body.theme-eighties .header-logo {
+  filter:saturate(1.65) contrast(1.08) drop-shadow(0 0 8px rgba(255,62,170,.48)) drop-shadow(0 0 14px rgba(69,244,240,.32));
+}
+body.theme-eighties .top-nav a {
+  background:linear-gradient(135deg,#251039,#15102b 58%,#102b39) !important;
+  color:#fff5ff !important;
+  border:1px solid #8b42a0 !important;
+  box-shadow:inset 0 1px rgba(255,255,255,.07),0 3px 0 #090510;
+}
+body.theme-eighties .top-nav a:hover,
+body.theme-eighties .top-nav a:focus-visible {
+  border-color:#45f4f0 !important;
+  box-shadow:0 0 16px rgba(69,244,240,.22),0 3px 0 #090510;
+}
+body.theme-eighties .section,
+body.theme-eighties .request-section,
+body.theme-eighties .catalog-section,
+body.theme-eighties .tip-options-section,
+body.theme-eighties .watch-live-promo,
+body.theme-eighties .contact-section,
+body.theme-eighties .rock-meter-section,
+body.theme-eighties .explore-page-section {
+  background:linear-gradient(135deg,rgba(37,14,54,.97),rgba(15,9,31,.98) 62%,rgba(13,28,40,.96));
+  color:#fff5ff;
+  border-color:#8c42a5;
+  box-shadow:0 0 0 1px rgba(255,62,170,.10),0 10px 28px rgba(0,0,0,.24),0 0 20px rgba(255,62,170,.07);
+}
+body.theme-eighties .request-form,
+body.theme-eighties .catalog-controls,
+body.theme-eighties .priority-request-box,
+body.theme-eighties .request-status-panel {
+  background:linear-gradient(135deg,#21102f,#10091d 72%,#10232f);
+  color:#fff5ff;
+  border-color:#824398;
+}
+body.theme-eighties input,
+body.theme-eighties textarea,
+body.theme-eighties select,
+body.theme-eighties .search-label,
+body.theme-eighties .filter-label {
+  background:#0b0715;
+  color:#fff5ff;
+  border-color:#76468e;
+}
+body.theme-eighties input::placeholder,
+body.theme-eighties textarea::placeholder {
+  color:#cbb8d7;
+}
+body.theme-eighties .decade-filters button,
+body.theme-eighties .favourites-filter-label select,
+body.theme-eighties .request-status-actions .button,
+body.theme-eighties .button-quiet {
+  background:linear-gradient(135deg,#211032,#10091b) !important;
+  color:#fff5ff !important;
+  border-color:#75408b !important;
+}
+body.theme-eighties .decade-filters button[aria-pressed="true"],
+body.theme-eighties .decade-filters button.active {
+  background:linear-gradient(105deg,#ff702f,#ff329d 58%,#a94cff) !important;
+  color:#fff !important;
+  border-color:#ff9ad9 !important;
+}
+body.theme-eighties .song-reveal > summary,
+body.theme-eighties .song-list-heading {
+  background:linear-gradient(105deg,#ff702f 0%,#ff329d 58%,#45f4f0 100%);
+  color:#160820;
+  border-color:#ff9ad9;
+  box-shadow:0 4px 0 #51194f,0 0 20px rgba(255,50,157,.2);
+}
+body.theme-eighties .song-reveal-content {
+  background:#10091d;
+  color:#fff5ff;
+  border-color:#75408b;
+}
+body.theme-eighties .payment-method-banner,
+body.theme-eighties .payment-method-card,
+body.theme-eighties .support-main-card,
+body.theme-eighties .social-link,
+body.theme-eighties .contact-actions .button,
+body.theme-eighties .footer-bottom-row {
+  background:linear-gradient(135deg,#241036,#11091e 62%,#102b38);
+  color:#fff5ff;
+  border-color:#85449b;
+}
+body.theme-eighties .payment-brand-mark,
+body.theme-eighties .wallet-badge {
+  background:linear-gradient(135deg,#ff702f,#ff329d 58%,#45f4f0);
+  color:#18091f;
+  border-color:#ff9ad9;
+  box-shadow:0 0 12px rgba(255,62,170,.18);
+}
+body.theme-eighties .social-link svg,
+body.theme-eighties .social-link .social-icon {
+  color:#45f4f0;
+}
+body.theme-eighties .footer-logo,
+body.theme-eighties .footer-logo-link img {
+  filter:saturate(1.7) hue-rotate(275deg) drop-shadow(0 0 8px rgba(255,62,170,.5)) drop-shadow(0 0 12px rgba(69,244,240,.32));
+}
+body.theme-eighties .footer-explore-link,
+body.theme-eighties .secret-stage-trigger,
+body.theme-eighties .footer-top-link {
+  background:linear-gradient(110deg,#241039,#15102b 50%,#102a3a);
+  color:#fff5ff;
+  border-color:#ff4db8;
+}

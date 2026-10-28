@@ -19,7 +19,7 @@
    cache=(stats.data||[]).map(x=>({...x,pinned:false}));
    if(!pins.error){for(const pin of pins.data||[]){let match=cache.find(x=>x.song_title?.toLowerCase()===pin.song_title?.toLowerCase()&&(x.artist_name||'').toLowerCase()===(pin.artist_name||'').toLowerCase());if(match)match.pinned=true;else cache.push({song_title:pin.song_title,artist_name:pin.artist_name,request_count:0,played_count:0,category:pin.category,pinned:true});}}
    render();
-  }catch(e){console.warn('Crowd favourites could not load',e);list.innerHTML='<p class="favourites-empty">Crowd favourites need the included Supabase migration. The rest of the website remains available.</p>';}
+  }catch(e){console.warn('Crowd favourites could not load',e);list.innerHTML='<p class="favourites-empty">Crowd favourites are temporarily unavailable.</p>';}
  }
  async function shareSongCard(title,artist){
   const canvas=document.createElement('canvas');canvas.width=1200;canvas.height=630;const ctx=canvas.getContext('2d');

@@ -55,13 +55,12 @@ NEXT FEATURE UPDATE (2026-10-28)
 - The streaming software is free; public hosting still requires a reachable server, DNS/HTTPS, and sufficient upload bandwidth. The stream is not ready to go live until the server is configured and tested.
 
 
-SECRET STAGE AUDIO UPDATE
-- Added secret-stage-boot.mp3: the supplied boot-up sound plays when the hidden Secret Stage opens.
-- Added secret-stage-menu.mp3: the supplied 10-minute ambience is compressed to 96 kbps stereo MP3 (about 7.2 MB, down from 16.5 MB) and begins when the boot sound finishes. It loops while the Secret Stage remains open.
-- The normal homepage title sound and menu ambience are unchanged.
-- Added a SOUND ON / SOUND OFF control inside the Secret Stage; preference is remembered in the visitor's browser.
-- Secret Stage sounds stop when the overlay is closed. New audio files are included in the offline cache.
-- Other PS2-style effects can be added later when the remaining files are supplied.
+SECRET MENU PS2 AUDIO UPDATE
+- The PS2 boot-up sound plays once when Secret Menu opens.
+- PS2 effects are used for menu selection, pickup, transition, Lost Cassette, and randomized high-score rewards.
+- Homepage menu music pauses while Secret Menu is open and resumes on close if it was playing before.
+- No Secret Menu background ambience is loaded or played; the PS2 effects are the only Secret Menu audio after boot-up.
+- The in-menu SOUND ON / SOUND OFF control remains available. PS2 effects are the default.
 
 AUDIO PERFORMANCE UPDATE — LIGHTWEIGHT PLAYBACK
 - Re-encoded all 16 local MP3 audio assets with smaller, web-friendly bitrates. Short interface effects use approximately 48 kbps mono; the success sound uses 64 kbps mono; title and boot sounds use 80–96 kbps; normal menu ambience uses 96 kbps stereo; the 10-minute Secret Stage ambience uses 64 kbps stereo.
@@ -79,3 +78,18 @@ PS2 Secret Stage sound-effects update (Oct 28, 2026)
 - Wired each sound to its specific action, respecting the Secret Stage SOUND ON/OFF setting. Homepage title/menu audio is unchanged.
 - Improved arcade record messaging so a new personal best is explicitly identified. High-score celebration audio remains pending until a sound is selected.
 - Transition sound awaits SCPH-10000_00030.wav, which was referenced but was not included with the uploaded files received for this update.
+
+
+FINAL PUBLIC UI UPDATE:
+- The footer has one Secret Menu button; PS2 mode is automatic.
+- Entering Secret Menu pauses homepage menu music, plays the boot-up sound, then uses PS2 effects only. No Secret Stage background ambience is loaded.
+- Explore contains Crowd Favourites, Encore Vote, and the Rock Wall. The Rock Wall shows only confirmed real tip records; no fabricated donations are displayed.
+- The seasonal spotlight and duplicate decade picker are disabled until the final design review.
+- Run the included Supabase migrations manually in the Supabase SQL Editor if they have not already been applied; website ZIP updates cannot execute SQL against the live project.
+
+
+FINAL PUBLIC UI REVISION
+- Footer has Explore, appearance controls, one Secret Menu button, and a bottom row with the logo at left and Back to top at right.
+- The Secret Menu uses PS2 effects only; no background menu ambience is played there.
+- The Rock Wall has moved to Explore and displays only confirmed real tips.
+- The seasonal spotlight and duplicate decade picker are disabled pending final review.

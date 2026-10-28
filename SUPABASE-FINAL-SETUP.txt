@@ -1,0 +1,16 @@
+THE GRIFFLIST - SUPABASE SETUP NOTES
+
+The website files cannot execute SQL against your live Supabase project automatically.
+If these migrations have already been run successfully, do not run them again just for this visual update.
+
+For Crowd Favourites and Encore voting:
+- Open Supabase Dashboard > SQL Editor.
+- Run grifflist-next-update.sql if you have not already run it.
+- This migration includes live-show settings, crowd-favourite pins, the public-safe get_crowd_favourites() RPC, and request tracking support.
+
+For the Rock Wall / confirmed tip entries:
+- Run bonus-features-migration.sql if the confirmed_tips table has not already been created.
+- Only add entries after verifying the real payment in Ko-fi, PayPal, or your bank.
+- The public Rock Wall intentionally displays real confirmed entries only. It does not invent donor names or donation amounts.
+
+Check the administrator UUID in the SQL files before running them, and make sure it matches your authorized Supabase admin account.
