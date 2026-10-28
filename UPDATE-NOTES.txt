@@ -22,3 +22,8 @@ NOTES:
 - Menu music is paused when the page becomes hidden. Audio playback and exact volume balance can vary by device/browser.
 - The Rock Meter reflects the existing Supabase configuration; automatic verified Ko-fi/PayPal payment tracking requires separate payment-provider integration.
 - The package has not been deployed to or tested against the live GitHub Pages site.
+
+- Updated PayPal.Me URL to canonical https://paypal.me/TheGriffList (profile must exist and be active for checkout to work). If PayPal still says it cannot find the profile, replace this URL with the exact PayPal.Me link from the account.
+- Navigation now follows the visitor flow: Request a Song, Songs, Send a Tip, Rock Meter, Encore Vote, Booking Contact.
+- Song list is collapsed under a “Reveal the songs” dropdown directly beneath decade filters.
+\n\nToolbar icon update: navigation labels are unnumbered and now include contextual emoji icons. The Rock Meter navigation item uses a small meter image that follows the same red/yellow/green Supabase state as the full meter (refreshes with the existing live polling).\n

@@ -306,6 +306,7 @@ async function loadRockMeter(){
   const goal=Math.max(1,Number(data.goal_amount)||200),raised=Math.max(0,Number(data.raised_amount)||0),pct=Math.min(100,Math.round(raised/goal*100));
   const meterClass=pct>=100?"meter-green":pct>=50?"meter-yellow":"meter-red";
   if(rockMeterDial){const state=pct>=100?"green":pct>=50?"yellow":"red";const image=`rock-meter-${state}.webp`;if(!rockMeterDial.src.endsWith("/"+image))rockMeterDial.src=image;rockMeterDial.alt=`Rock Meter needle in the ${state} zone`;rockMeterDial.dataset.zone=state;}
+  const navMeterIcon=document.querySelector("#nav-rock-meter-icon");if(navMeterIcon){const state=pct>=100?"green":pct>=50?"yellow":"red";const image=`rock-meter-${state}.webp`;if(!navMeterIcon.src.endsWith("/"+image))navMeterIcon.src=image;navMeterIcon.alt="";navMeterIcon.title=`Rock Meter: ${pct}% of goal`;}
   if(meterZoneLabel){meterZoneLabel.textContent=pct>=100?"GREEN ZONE · GOAL REACHED":pct>=50?"YELLOW ZONE · GETTING CLOSER":"RED ZONE · BUILDING MOMENTUM";meterZoneLabel.style.color=pct>=100?"#72ff9b":pct>=50?"#ffe36a":"#ff7777";}
   rockMeterProgress.classList.remove("meter-red","meter-yellow","meter-green");rockMeterProgress.classList.add(meterClass);
   rockMeterGoalLabel.textContent=data.goal_label||"NEXT GIG GOAL";rockMeterRaised.textContent=moneyCAD(raised);rockMeterGoal.textContent=moneyCAD(goal);rockMeterFill.style.width=pct+"%";rockMeterProgress.setAttribute("aria-valuenow",String(pct));rockMeterProgress.setAttribute("aria-valuetext",`${pct}% of the ${moneyCAD(goal)} goal reached`);

@@ -282,3 +282,26 @@ body:before{opacity:.025;background-size:8px 8px}
 .social-links-branded .social-link:hover{border-color:var(--gold);color:var(--gold)}
 @media(max-width:800px){.top-nav{grid-template-columns:repeat(3,minmax(0,1fr));max-width:none;gap:7px}.top-nav a{font-size:.9rem;padding:10px 6px}.top-nav a:last-child{grid-column:2 / 4}}
 @media(max-width:440px){.top-nav{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.top-nav a{font-size:.86rem;min-height:44px}.top-nav a:last-child{grid-column:1 / -1}.social-links-branded{display:grid;grid-template-columns:1fr}.social-links-branded .social-link{width:100%}}
+
+
+/* Conversion-focused navigation, compact song reveal, and distinct tip/meter anchors. */
+.top-nav{grid-template-columns:repeat(6,minmax(0,1fr));max-width:1100px;gap:6px}
+.top-nav a{padding:10px 6px;font-size:.86rem;letter-spacing:.025em}
+#tip-options{scroll-margin-top:90px}
+#rock-meter{scroll-margin-top:90px}
+.song-reveal{margin-top:14px;border:1px solid #80512f;border-radius:8px;background:linear-gradient(180deg,#24170f,#0c0b0a);overflow:hidden;box-shadow:inset 0 1px #ffffff12,0 5px 18px #0007}
+.song-reveal>summary{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:52px;padding:13px 16px;cursor:pointer;list-style:none;color:#ffe0a6;font-weight:900;font-size:1.05rem;letter-spacing:.025em}
+.song-reveal>summary::-webkit-details-marker{display:none}
+.song-reveal>summary span{font-size:1.35rem;color:#ff9b3d;transition:transform .18s}
+.song-reveal[open]>summary{border-bottom:1px solid #654126;background:#301b11}
+.song-reveal[open]>summary span{transform:rotate(45deg)}
+.song-reveal-content{padding:0 12px 12px}
+.song-reveal-content .song-list-heading{margin-top:12px}
+@media(max-width:800px){.top-nav{grid-template-columns:repeat(3,minmax(0,1fr));max-width:none;gap:7px}.top-nav a{font-size:.88rem;padding:10px 5px;min-height:46px}.top-nav a:last-child{grid-column:auto}}
+@media(max-width:440px){.top-nav{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.top-nav a{font-size:.86rem;min-height:44px}.top-nav a:last-child{grid-column:auto}.song-reveal>summary{font-size:1rem;padding:12px}}
+
+/* Compact navigation icons; the Rock Meter thumbnail follows the live meter state. */
+.top-nav a{gap:6px}
+.nav-emoji{font-size:1.05em;line-height:1;flex:0 0 auto}
+.nav-meter-icon{display:inline-block;width:24px;height:21px;object-fit:contain;flex:0 0 auto;filter:drop-shadow(0 1px 3px #000)}
+@media(max-width:800px){.top-nav a{gap:5px}.nav-meter-icon{width:22px;height:19px}.nav-emoji{font-size:1em}}
