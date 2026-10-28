@@ -411,3 +411,23 @@ input:focus,select:focus,textarea:focus{border-color:#ffb45e!important;box-shado
 .support-grid{grid-template-columns:minmax(0,1fr);gap:9px}
 .support-grid .payment-method-list{grid-column:1/-1}
 @media(max-width:480px){.payment-method-banner{grid-template-columns:34px minmax(0,1fr) auto;gap:9px;padding:10px}.payment-brand-mark{width:33px;height:33px;font-size:1rem}.payment-method-copy strong{font-size:.86rem}.payment-method-copy small{font-size:.7rem}.payment-action{min-height:32px;padding:6px 8px;font-size:.7rem}}
+
+
+/* User-friendly homepage cleanup */
+.visually-hidden{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
+/* The numeric total and caption communicate progress; hide the decorative traffic-light bar/key. */
+.rock-meter-track,.meter-zone-key{display:none!important}
+.priority-payment-details{margin-top:12px}
+.request-form>.priority-payment-details{margin-top:14px}
+.payment-kofi-wallet{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:8px 12px}
+.payment-kofi-wallet .payment-wallet-logos{grid-column:1/-1;display:flex;align-items:center;flex-wrap:wrap;gap:8px}
+.payment-wallet-logos .wallet-badge{padding:6px 9px;font-size:.75rem;min-height:34px}
+.payment-kofi-wallet .payment-method-copy{min-width:0}
+.payment-kofi-wallet .payment-method-copy strong{display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+.kofi-symbol{display:inline-grid;place-items:center;width:19px;height:19px;border-radius:50%;background:#ff5e5b;color:#fff;font-size:.75rem;line-height:1}
+#next-show-details{margin:12px 0 0}
+.priority-return-action{margin-top:12px}
+.priority-return-action .button{font-size:.82rem;padding:10px 13px}
+@media(max-width:440px){.payment-kofi-wallet{grid-template-columns:minmax(0,1fr)}.payment-kofi-wallet>.payment-action{justify-self:start}.payment-wallet-logos{gap:6px}.payment-wallet-logos .wallet-badge{font-size:.7rem;padding:6px 8px}}
+
+.apple-pay-mark{width:16px;height:18px;display:inline-block;vertical-align:middle}
