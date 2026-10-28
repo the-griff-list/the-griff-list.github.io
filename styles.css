@@ -535,3 +535,17 @@ input:focus,select:focus,textarea:focus{border-color:#ffb45e!important;box-shado
 /* Final logo readability adjustment: slightly larger without crowding the compact toolbar. */
 .header-logo{width:clamp(78px,10vw,115px)!important;max-height:34px!important}
 @media(max-width:700px){.header-logo{width:clamp(74px,21vw,94px)!important;max-height:27px!important}}
+
+
+/* Request-flow polish: readable confirmation, non-focusing cursor cue, and shared section glow. */
+.request-hint{display:block;margin:0 0 16px;padding:11px 13px;border:1px solid #ff9a55;border-left:4px solid var(--hot);border-radius:6px;background:linear-gradient(105deg,#2b1710,#171012);color:#ffe3c2;font-size:.88rem;line-height:1.45;font-weight:700;box-shadow:0 0 16px #ff542e18}
+.request-hint[hidden]{display:none}
+.request-form .form-grid label:first-child{position:relative}
+.request-form .form-grid label:first-child:after{content:"";position:absolute;left:14px;top:43px;width:2px;height:1.1em;background:var(--gold);pointer-events:none;animation:request-caret-blink 1s steps(1,end) infinite}
+@keyframes request-caret-blink{0%,49%{opacity:1}50%,100%{opacity:0}}
+.section.section-highlight{border-radius:8px;box-shadow:0 0 0 2px #ff9b5260,0 0 26px #ff542e35,inset 0 0 26px #ff542e12;animation:section-highlight-pulse .8s ease-in-out 2}
+@keyframes section-highlight-pulse{0%,100%{filter:brightness(1)}50%{filter:brightness(1.18)}}
+.payment-method-banner.payment-highlight{animation:payment-pulse .8s ease-in-out 2}
+.header-logo{width:clamp(86px,11vw,126px)!important;max-height:38px!important}
+@media(max-width:700px){.header-logo{width:clamp(80px,23vw,104px)!important;max-height:30px!important}.request-hint{font-size:.82rem}.request-form .form-grid label:first-child:after{top:43px}}
+@media(prefers-reduced-motion:reduce){.request-form .form-grid label:first-child:after{animation:none;opacity:1}.section.section-highlight,.payment-method-banner.payment-highlight{animation:none}.section.section-highlight{box-shadow:0 0 0 2px #ff9b5260,0 0 14px #ff542e25}}

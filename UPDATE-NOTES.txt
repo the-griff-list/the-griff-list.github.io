@@ -40,3 +40,6 @@ October 28 — payment and catalog refinements
 - Added a collapsible payment-verification explanation to the priority request form.
 - Returned the floating close-list control to its original centered-right position and moved the song-request hint to the left.
 - Updated PayPal button to the user-provided checkout URL: https://www.paypal.com/ncp/payment/NWLZL44VCLAYN.
+
+
+Request-flow usability update (2026-10-28): moved song-selection confirmation above the name field; removed automatic focus after song selection; added a standard non-focusing blinking cursor cue; added brief shared section highlights for internal navigation; made catalog search punctuation/spacing tolerant (ACDC, AC/DC, AC DC); slightly enlarged header logo; added reduced-motion behavior. Existing duplicate-request guard retained.

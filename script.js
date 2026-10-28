@@ -150,10 +150,11 @@ function renderArtists() {
   artistEl.value=artists.includes(current)?current:"All";
 }
 
-function filteredSongs(){const q=searchEl.value.trim().toLocaleLowerCase();return songs.map((s,i)=>({...s,index:i,displayGenre:genreFor(s)}))
+function normalizeSearchText(value){return String(value||"").toLocaleLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g,"");}
+function filteredSongs(){const q=normalizeSearchText(searchEl.value);return songs.map((s,i)=>({...s,index:i,displayGenre:genreFor(s)}))
  .filter(s=>selectedDecade==="All"||s.decade===selectedDecade)
  .filter(s=>artistEl.value==="All"||s.artist===artistEl.value)
- .filter(s=>`${s.title} ${s.artist} ${s.displayGenre} ${s.decade} ${s.year||""}`.toLocaleLowerCase().includes(q))
+ .filter(s=>!q||normalizeSearchText(`${s.title} ${s.artist} ${s.displayGenre} ${s.decade} ${s.year||""}`).includes(q))
  .sort(artistCompare);}
 function renderSongs(){const visible=filteredSongs();countEl.textContent=`${songs.length} SONGS`;listEl.replaceChildren();emptyEl.hidden=visible.length>0;
  visible.forEach(song=>{const row=document.createElement("button");row.type="button";row.className="song-row";
@@ -166,12 +167,19 @@ function renderSongs(){const visible=filteredSongs();countEl.textContent=`${song
  });}
 function stopPreview(){if(stopTimer){clearTimeout(stopTimer);stopTimer=null;}if(activeAudio){activeAudio.pause();activeAudio.currentTime=0;activeAudio=null;}if(activeButton){activeButton.classList.remove("playing");activeButton.textContent="▶";activeButton=null;}}
 function togglePreview(song,button){if(activeButton===button){stopPreview();return;}stopPreview();const audio=new Audio(song.audio);activeAudio=audio;activeButton=button;button.classList.add("playing");button.textContent="Ⅱ";audio.addEventListener("ended",stopPreview,{once:true});audio.addEventListener("error",()=>{stopPreview();alert("This preview couldn't be loaded. Check its path in script.js.");},{once:true});audio.play().then(()=>{stopTimer=setTimeout(stopPreview,Math.max(1,Number(config.previewSeconds)||15)*1000);}).catch(()=>{stopPreview();alert("Your browser couldn't play this preview.");});}
+function brieflyHighlightSection(target){
+ if(!target)return;
+ document.querySelectorAll(".section.section-highlight").forEach(el=>el.classList.remove("section-highlight"));
+ target.classList.remove("section-highlight");void target.offsetWidth;target.classList.add("section-highlight");
+ window.setTimeout(()=>target.classList.remove("section-highlight"),1700);
+}
 function selectSongForRequest(song){
- const songInput=$("#request-song"), artistInput=$("#request-artist"), hint=$("#request-hint");
+ const songInput=$("#request-song"), artistInput=$("#request-artist"), hint=$("#request-hint"), section=$("#request");
  songInput.value=song.title; artistInput.value=song.artist||"";
- hint.hidden=false; hint.classList.remove("hint-pulse"); void hint.offsetWidth; hint.classList.add("hint-pulse");
- document.querySelector("#request").scrollIntoView({behavior:"smooth",block:"start"});
- window.setTimeout(()=>$("#requester-name").focus({preventScroll:true}),450);
+ hint.hidden=false; hint.classList.remove("hint-pulse");
+ section.scrollIntoView({behavior:window.matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"start"});
+ brieflyHighlightSection(section);
+ // Deliberately do not focus the name field: mobile keyboards must remain closed.
 }
 searchEl.addEventListener("input",renderSongs);artistEl.addEventListener("change",renderSongs);document.addEventListener("keydown",e=>{if(e.key==="/"&&!['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName)){e.preventDefault();searchEl.focus();}});window.addEventListener("pagehide",stopPreview);
 // Public visitors can submit requests; the database only permits public INSERTs.
@@ -302,8 +310,7 @@ function focusPaymentMethod(method){
  if(status){status.hidden=false;status.textContent=method==="etransfer"?"Your request is saved. Copy the e-transfer email below, then send your $5 CAD tip in your banking app.":method==="paypal"?"Your request is saved. Complete your $5 CAD tip through PayPal below.":"Your request is saved. Complete your $5 CAD tip through Ko-fi below.";}
  document.querySelectorAll(".payment-method-banner.payment-highlight").forEach(el=>el.classList.remove("payment-highlight"));
  target.classList.add("payment-highlight");target.scrollIntoView({behavior:"smooth",block:"center"});
- if(method==="etransfer")window.setTimeout(()=>document.querySelector("#copy-email")?.focus({preventScroll:true}),450);
- window.setTimeout(()=>target.classList.remove("payment-highlight"),5200);
+ window.setTimeout(()=>target.classList.remove("payment-highlight"),1700);
 }
 const songReveal=document.querySelector("#song-reveal");
 const closeSongList=document.querySelector("#close-song-list");
@@ -405,6 +412,12 @@ loadRockMeter();loadEncorePoll();window.setInterval(()=>{if(!document.hidden){lo
  window.addEventListener('pageshow',()=>{lastY=window.scrollY||0;header.classList.remove('toolbar-hidden');});
  header.addEventListener('focusin',()=>header.classList.remove('toolbar-hidden'));
 })();
+
+/* Consistent brief section highlight for internal navigation and relevant section links. */
+document.querySelectorAll('a[href^="#"]').forEach(link=>{
+ const href=link.getAttribute("href");if(!href||href==="#"||href==="#top")return;
+ link.addEventListener("click",()=>{const target=document.querySelector(href);if(target?.classList.contains("section")){brieflyHighlightSection(target);}});
+});
 
 /* Back-to-top and logo links should return to the absolute top of the document. */
 document.querySelectorAll('a[href="#top"]').forEach(link=>link.addEventListener("click",event=>{event.preventDefault();window.scrollTo({top:0,behavior:"smooth"});history.replaceState(null,"",location.pathname+location.search);if(typeof playSfx==="function")playSfx("scroll-sfx");}));
