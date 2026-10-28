@@ -137,7 +137,7 @@ function renderDecades() {
   decades.forEach(d => {
     const b=document.createElement("button"); b.type="button"; b.className="chip"+(selectedDecade===d?" active":"");
     b.textContent=d==="All"?"ALL DECADES":d.toUpperCase(); b.setAttribute("aria-pressed",String(selectedDecade===d));
-    b.addEventListener("click",()=>{selectedDecade=d;renderDecades();renderSongs();}); decadeEl.appendChild(b);
+    b.addEventListener("click",()=>{playSfx("select-sfx");selectedDecade=d;renderDecades();renderSongs();}); decadeEl.appendChild(b);
   });
 }
 function renderArtists() {
@@ -178,17 +178,16 @@ searchEl.addEventListener("input",renderSongs);artistEl.addEventListener("change
 const requestForm=$("#request-form");
 const priorityToggle=$("#priority-request"), priorityPaymentWrap=$("#priority-payment-wrap");
 let priorityAlreadyTipped=false;
-function isPrioritySelected(){return priorityToggle?.getAttribute("aria-pressed")==="true";}
+function isPrioritySelected(){return Boolean(priorityToggle?.checked);}
 function setPrioritySelected(selected,{alreadyTipped=false}={}){
  if(!priorityToggle)return;
- priorityToggle.setAttribute("aria-pressed",selected?"true":"false");
- priorityToggle.classList.toggle("is-selected",selected);
- const state=priorityToggle.querySelector(".priority-toggle-state");if(state)state.textContent=selected?"ON":"OFF";
+ priorityToggle.checked=Boolean(selected);
+ priorityToggle.closest(".priority-option")?.classList.toggle("is-selected",Boolean(selected));
  priorityPaymentWrap.hidden=!selected;
  priorityAlreadyTipped=Boolean(selected&&alreadyTipped);
  if(!selected){const method=document.querySelector("#priority-payment-method");if(method)method.value="";}
 }
-priorityToggle.addEventListener("click",()=>setPrioritySelected(!isPrioritySelected()));
+priorityToggle.addEventListener("change",()=>setPrioritySelected(priorityToggle.checked));
 requestForm.addEventListener("submit",async e=>{
  e.preventDefault();const name=$("#requester-name").value.trim(),song=$("#request-song").value.trim(),artist=$("#request-artist").value.trim(),message=$("#request-message").value.trim(),status=$("#form-status"),submit=requestForm.querySelector('button[type="submit"]');
  status.textContent="";if(!name){status.textContent="Please enter your name.";$("#requester-name").focus();return;}if(!song){status.textContent="Please enter a song name.";$("#request-song").focus();return;}
@@ -207,18 +206,21 @@ const splash=$("#splash");
 const titleAudio=$("#title-screen-audio"), menuAudio=$("#menu-screen-audio");
 const audioVolumes={
   "title-screen-audio":0.78,
-  "menu-screen-audio":0.30,
-  "cash-sfx":0.95,
-  "highway-riser-sfx":0.95,
-  "notes-ripple-sfx":0.95,
-  "scroll-sfx":0.95,
-  "you-rock-sfx":0.95,
-  "ui-sound-01r":0.95,
-  "ui-sound-05r":0.95,
-  "ui-sound-06r":0.95
+  "menu-screen-audio":0.22,
+  "cash-sfx":1.0,
+  "highway-riser-sfx":1.0,
+  "notes-ripple-sfx":1.0,
+  "scroll-sfx":1.0,
+  "you-rock-sfx":1.0,
+  "ui-sound-01r":1.0,
+  "ui-sound-05r":1.0,
+  "ui-sound-06r":1.0,
+  "select-sfx":1.0,
+  "ui-sound-10r":1.0,
+  "ui-sound-09r":1.0
 };
 Object.entries(audioVolumes).forEach(([id,volume])=>{const audio=$("#"+id);if(audio){audio.volume=volume;audio.preload="auto";}});
-const sfxIds=["cash-sfx","highway-riser-sfx","notes-ripple-sfx","scroll-sfx","you-rock-sfx","ui-sound-01r","ui-sound-05r","ui-sound-06r"];
+const sfxIds=["cash-sfx","highway-riser-sfx","notes-ripple-sfx","scroll-sfx","you-rock-sfx","ui-sound-01r","ui-sound-05r","ui-sound-06r","select-sfx","ui-sound-10r","ui-sound-09r"];
 const sfxPool=new Map(sfxIds.map(id=>[id,$("#"+id)]).filter(([id,a])=>a));
 function playSfx(id){const audio=sfxPool.get(id);if(!audio)return;try{audio.pause();audio.currentTime=0;const p=audio.play();if(p&&p.catch)p.catch(()=>{});}catch(e){}}
 let titleStarted=false, siteEntered=false, crossfadeStarted=false, menuFadeTimer=null;
@@ -307,7 +309,7 @@ const songReveal=document.querySelector("#song-reveal");
 const closeSongList=document.querySelector("#close-song-list");
 const songRequestTip=document.querySelector("#song-request-tip");
 const songRevealLabel=songReveal?.querySelector(".song-reveal-label");
-if(songReveal&&songRevealLabel){const syncSongRevealLabel=()=>{songRevealLabel.textContent=songReveal.open?"SONGS REVEALED":"REVEAL THE SONGS";};songReveal.addEventListener("toggle",syncSongRevealLabel);syncSongRevealLabel();}
+if(songReveal&&songRevealLabel){const syncSongRevealLabel=()=>{songRevealLabel.textContent=songReveal.open?"SONGS REVEALED":"REVEAL THE SONGS";};songReveal.addEventListener("toggle",()=>{syncSongRevealLabel();if(songReveal.open){playSfx("notes-ripple-sfx");}else{playSfx(Math.random()<0.5?"ui-sound-10r":"ui-sound-09r");}});syncSongRevealLabel();}
 if(songReveal&&closeSongList){
  let closeHideTimer;
  let catalogInView=false;
@@ -331,7 +333,7 @@ if(songReveal&&closeSongList){
  }else{catalogInView=true;}
  songReveal.addEventListener("toggle",syncCloseButton);
  window.addEventListener("scroll",()=>{if(catalogSection&&!('IntersectionObserver' in window)){const r=catalogSection.getBoundingClientRect();catalogInView=r.bottom>0&&r.top<window.innerHeight;syncCloseButton();}},{passive:true});
- closeSongList.addEventListener("click",()=>{songReveal.open=false;songReveal.querySelector("summary").scrollIntoView({behavior:"smooth",block:"center"});playSfx("scroll-sfx");});
+ closeSongList.addEventListener("click",()=>{songReveal.open=false;songReveal.querySelector("summary").scrollIntoView({behavior:"smooth",block:"center"});});
 }
 renderDecades();renderArtists();renderSongs();
 
