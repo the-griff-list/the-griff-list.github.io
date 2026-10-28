@@ -162,7 +162,7 @@ function renderSongs(){const visible=filteredSongs();countEl.textContent=`${song
   const title=document.createElement("span");title.className="song-title";title.textContent=song.title;
   songCell.append(title);
   const year=document.createElement("span");year.className="song-year";year.textContent=song.year||"—";
-  row.append(artist,songCell,year);row.setAttribute("aria-label",`Select ${song.title} by ${song.artist} for a request`);row.addEventListener("click",()=>{playSfx("notes-ripple-sfx");selectSongForRequest(song);});listEl.appendChild(row);
+  row.append(artist,songCell,year);row.setAttribute("aria-label",`Select ${song.title} by ${song.artist} for a request`);row.addEventListener("click",()=>selectSongForRequest(song));listEl.appendChild(row);
  });}
 function stopPreview(){if(stopTimer){clearTimeout(stopTimer);stopTimer=null;}if(activeAudio){activeAudio.pause();activeAudio.currentTime=0;activeAudio=null;}if(activeButton){activeButton.classList.remove("playing");activeButton.textContent="▶";activeButton=null;}}
 function togglePreview(song,button){if(activeButton===button){stopPreview();return;}stopPreview();const audio=new Audio(song.audio);activeAudio=audio;activeButton=button;button.classList.add("playing");button.textContent="Ⅱ";audio.addEventListener("ended",stopPreview,{once:true});audio.addEventListener("error",()=>{stopPreview();alert("This preview couldn't be loaded. Check its path in script.js.");},{once:true});audio.play().then(()=>{stopTimer=setTimeout(stopPreview,Math.max(1,Number(config.previewSeconds)||15)*1000);}).catch(()=>{stopPreview();alert("Your browser couldn't play this preview.");});}
@@ -176,183 +176,31 @@ function selectSongForRequest(song){
 searchEl.addEventListener("input",renderSongs);artistEl.addEventListener("change",renderSongs);document.addEventListener("keydown",e=>{if(e.key==="/"&&!['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName)){e.preventDefault();searchEl.focus();}});window.addEventListener("pagehide",stopPreview);
 // Public visitors can submit requests; the database only permits public INSERTs.
 const requestForm=$("#request-form");
-const priorityToggle=$("#priority-request"), priorityPaymentWrap=$("#priority-payment-wrap"), priorityReferenceWrap=$("#priority-reference-wrap");
-priorityToggle.addEventListener("change",()=>{priorityPaymentWrap.hidden=!priorityToggle.checked;priorityReferenceWrap.hidden=!priorityToggle.checked;});
 requestForm.addEventListener("submit",async e=>{
  e.preventDefault();const name=$("#requester-name").value.trim(),song=$("#request-song").value.trim(),artist=$("#request-artist").value.trim(),message=$("#request-message").value.trim(),status=$("#form-status"),submit=requestForm.querySelector('button[type="submit"]');
  status.textContent="";if(!name){status.textContent="Please enter your name.";$("#requester-name").focus();return;}if(!song){status.textContent="Please enter a song name.";$("#request-song").focus();return;}
  const client=window.supabaseClient; if(!client){status.textContent="Online requests are being set up. Please try again later.";return;}
- const priority=priorityToggle.checked;const paymentMethod=$("#priority-payment-method").value;const paymentReference=$("#priority-reference").value.trim();if(priority&&!paymentMethod){status.textContent="Choose how you sent the $5 CAD tip.";$("#priority-payment-method").focus();return;}const savedNote=[priority?`[PRIORITY TIP REPORTED — VERIFY PAYMENT] Method: ${paymentMethod}${paymentReference?` · Reference: ${paymentReference}`:""}`:"",message].filter(Boolean).join("\n\n");const fingerprint=[name,song,artist,savedNote].map(v=>v.trim().toLowerCase()).join("|");const storageKey="grifflistLastRequest";let previous=null;try{previous=JSON.parse(sessionStorage.getItem(storageKey)||"null");}catch(e){}if(previous&&previous.fingerprint===fingerprint&&Date.now()-previous.time<5*60*1000){status.textContent="That same request was just sent. Please wait five minutes before sending it again.";return;}
- if(submit.disabled)return;submit.disabled=true;submit.textContent="SENDING REQUEST…";
- try{const {error}=await client.from("song_requests").insert({requester_name:name,song_title:song,artist_name:artist||null,note:savedNote||null});if(error)throw error;try{sessionStorage.setItem(storageKey,JSON.stringify({fingerprint,time:Date.now()}));}catch(e){}status.textContent=priority?"Priority request submitted! It is flagged for payment verification on the admin page. Thanks!":"Request sent! Thanks for helping choose the music.";playSfx("you-rock-sfx");requestForm.reset();priorityPaymentWrap.hidden=true;priorityReferenceWrap.hidden=true;$("#request-hint").hidden=true;}catch(err){console.error("Request submission failed",err);status.textContent="Sorry, your request couldn't be sent right now. Please try again in a moment.";}finally{submit.disabled=false;submit.textContent="SEND SONG REQUEST ↗";}
+ submit.disabled=true;submit.textContent="SENDING REQUEST…";
+ try{const {error}=await client.from("song_requests").insert({requester_name:name,song_title:song,artist_name:artist||null,note:message||null});if(error)throw error;status.textContent="Request sent! Thanks for helping choose the music.";requestForm.reset();$("#request-hint").hidden=true;}catch(err){console.error("Request submission failed",err);status.textContent="Sorry, your request couldn't be sent right now. Please try again in a moment.";}finally{submit.disabled=false;submit.textContent="SEND SONG REQUEST ↗";}
 });
 const tipButton=$("#copy-email"),tipStatus=$("#tip-status");
-tipButton.addEventListener("click",async()=>{playSfx("highway-riser-sfx");try{await navigator.clipboard.writeText(config.tipEmail);tipStatus.textContent="E-transfer email copied — open your banking app to send it.";}catch(e){tipStatus.textContent=`E-transfer email: ${config.tipEmail}. If copying was blocked, press and hold the address to copy it.`;}});
+tipButton.addEventListener("click",async()=>{try{await navigator.clipboard.writeText(config.tipEmail);tipStatus.textContent="E-transfer email copied — open your banking app to send it.";}catch(e){tipStatus.textContent=`E-transfer email: ${config.tipEmail}. If copying was blocked, press and hold the address to copy it.`;}});
 const bookingCopy=$("#booking-copy"), bookingStatus=$("#booking-status");
-bookingCopy.addEventListener("click", async()=>{playSfx("highway-riser-sfx");try{await navigator.clipboard.writeText("griffenarsenaultmusic@hotmail.com");bookingStatus.textContent="Booking email copied.";}catch(e){bookingStatus.textContent="Email: griffenarsenaultmusic@hotmail.com — select and copy it.";}});
-// Audio behavior: attempt the title sound on load. Browsers may block autoplay until a tap.
-// Menu music begins only after the title screen is tapped, then crossfades with the title sound.
-const splash=$("#splash");
-const titleAudio=$("#title-screen-audio"), menuAudio=$("#menu-screen-audio");
-const audioVolumes={
-  "title-screen-audio":0.78,
-  "menu-screen-audio":0.30,
-  "cash-sfx":0.88,
-  "highway-riser-sfx":0.82,
-  "notes-ripple-sfx":0.82,
-  "scroll-sfx":0.68,
-  "you-rock-sfx":0.90,
-  "ui-sound-01r":0.82,
-  "ui-sound-05r":0.82,
-  "ui-sound-06r":0.82
-};
-Object.entries(audioVolumes).forEach(([id,volume])=>{const audio=$("#"+id);if(audio){audio.volume=volume;audio.preload="auto";}});
-const sfxIds=["cash-sfx","highway-riser-sfx","notes-ripple-sfx","scroll-sfx","you-rock-sfx","ui-sound-01r","ui-sound-05r","ui-sound-06r"];
-const sfxPool=new Map(sfxIds.map(id=>[id,$("#"+id)]).filter(([id,a])=>a));
-function playSfx(id){const audio=sfxPool.get(id);if(!audio)return;try{audio.pause();audio.currentTime=0;const p=audio.play();if(p&&p.catch)p.catch(()=>{});}catch(e){}}
-let titleStarted=false, siteEntered=false, crossfadeStarted=false, menuFadeTimer=null;
-const CROSSFADE_MS=1600;
-function attemptTitleAudio(){
- if(!titleAudio||titleStarted)return false;
- try{titleAudio.volume=audioVolumes["title-screen-audio"];const p=titleAudio.play();if(p&&p.then){p.then(()=>{titleStarted=true;}).catch(()=>{});return true;}}catch(e){}
- return false;
-}
-function startMenuMusic(){
- if(!menuAudio||crossfadeStarted)return;
- crossfadeStarted=true;
- try{
-   menuAudio.volume=0;
-   const p=menuAudio.play();if(p&&p.catch)p.catch(()=>{});
-   if(menuFadeTimer)window.clearInterval(menuFadeTimer);
-   const steps=32, stepMs=CROSSFADE_MS/steps;let step=0;
-   menuFadeTimer=window.setInterval(()=>{
-     step++;const t=Math.min(1,step/steps);
-     menuAudio.volume=audioVolumes["menu-screen-audio"]*t;
-     if(titleAudio&&!titleAudio.paused)titleAudio.volume=audioVolumes["title-screen-audio"]*(1-t);
-     if(t>=1){window.clearInterval(menuFadeTimer);menuFadeTimer=null;if(titleAudio){titleAudio.pause();try{titleAudio.currentTime=0;}catch(e){}titleAudio.volume=audioVolumes["title-screen-audio"];}}
-   },stepMs);
- }catch(e){}
-}
-function maybeCrossfadeTitle(){
- if(!siteEntered||crossfadeStarted||!titleAudio)return;
- const duration=titleAudio.duration;
- if(Number.isFinite(duration)&&duration>0&&titleAudio.currentTime>=Math.max(0,duration-(CROSSFADE_MS/1000)))startMenuMusic();
-}
-if(titleAudio){
- titleAudio.addEventListener("timeupdate",maybeCrossfadeTitle);
- titleAudio.addEventListener("ended",()=>{if(siteEntered&&!crossfadeStarted)startMenuMusic();});
- // Best-effort autoplay on page load; mobile browsers may reject it until a tap.
- window.addEventListener("load",()=>{attemptTitleAudio();},{once:true});
-}
+bookingCopy.addEventListener("click", async()=>{try{await navigator.clipboard.writeText("griffenarsenaultmusic@hotmail.com");bookingStatus.textContent="Booking email copied.";}catch(e){bookingStatus.textContent="Email: griffenarsenaultmusic@hotmail.com — select and copy it.";}});
+// Swapped sound roles: UI Sound 06R (title-screen-sound.mp3) is used for navigation; the original select sound plays when entering the site.
+const splash=$("#splash"), selectSound=$("#select-sound"), titleScreenSound=$("#title-screen-sound");
+function playSelectSound(){if(!selectSound)return;try{selectSound.currentTime=0;const attempt=selectSound.play();if(attempt&&typeof attempt.catch==="function")attempt.catch(()=>{});}catch(e){}}
+function playTitleScreenSound(){if(!titleScreenSound)return;try{titleScreenSound.currentTime=0;const attempt=titleScreenSound.play();if(attempt&&typeof attempt.catch==="function")attempt.catch(()=>{});}catch(e){}}
+document.querySelectorAll('.top-nav a, #copy-email, #booking-copy, .social-links a, .secret-entry').forEach(el=>el.addEventListener('click',playTitleScreenSound));
 function enterSite(){
- if(splash.classList.contains("dismissed"))return;
- siteEntered=true;
- splash.classList.add("dismissed");document.body.classList.remove("splash-open");
- if(titleAudio&&titleAudio.paused){
-   try{titleAudio.currentTime=0;titleAudio.volume=audioVolumes["title-screen-audio"];const p=titleAudio.play();if(p&&p.then)p.then(()=>{titleStarted=true;maybeCrossfadeTitle();}).catch(()=>{startMenuMusic();});else startMenuMusic();}
-   catch(e){startMenuMusic();}
- }else if(titleAudio){
-   titleStarted=true;
-   if(Number.isFinite(titleAudio.duration)&&titleAudio.duration-titleAudio.currentTime<=CROSSFADE_MS/1000)startMenuMusic();
- }else startMenuMusic();
+  if(splash.classList.contains("dismissed")) return;
+  playSelectSound();
+  splash.classList.add("dismissed");document.body.classList.remove("splash-open");
+  try{sessionStorage.setItem("grifflistEntered","yes");}catch(e){}
 }
-document.body.classList.add("splash-open");
+let alreadyEntered=false;try{alreadyEntered=sessionStorage.getItem("grifflistEntered")==="yes";}catch(e){}
+if(alreadyEntered){splash.classList.add("dismissed");document.body.classList.remove("splash-open");}else document.body.classList.add("splash-open");
 splash.addEventListener("click",enterSite);
 splash.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();enterSite();}});
 document.addEventListener("keydown",e=>{if(!splash.classList.contains("dismissed")&&(e.key==="Enter"||e.key===" "))enterSite();});
-// Pause background music when the tab/app is hidden; resume only after the visitor has entered the site.
-document.addEventListener("visibilitychange",()=>{
- if(!menuAudio)return;
- if(document.hidden){menuAudio.pause();}
- else if(siteEntered){const p=menuAudio.play();if(p&&p.catch)p.catch(()=>{});}
-});
-window.addEventListener("pagehide",()=>{if(menuAudio)menuAudio.pause();});
-// Suitable UI sounds: money/support actions, navigation scroll, song selection, and achievements.
-document.addEventListener("click",event=>{
- const control=event.target.closest("button,a,[role=button]");if(!control)return;
- if(control.id==="splash")return;
- if(control.matches(".top-nav a")){
-   const toolbarSounds=["ui-sound-01r","ui-sound-05r","ui-sound-06r"];
-   const chosen=toolbarSounds[Math.floor(Math.random()*toolbarSounds.length)];
-   playSfx(chosen);
- } else if(control.matches("a[href^='#']"))playSfx("scroll-sfx");
- if(control.closest(".support-grid")||control.id==="show-kofi-qr")playSfx("cash-sfx");
- if(control.matches("button,a")){control.classList.remove("button-pressed");void control.offsetWidth;control.classList.add("button-pressed");window.setTimeout(()=>control.classList.remove("button-pressed"),220);}
-},true);
-// Audio cues after successful actions.
-const requestFormForAchievement=$("#request-form");
-requestFormForAchievement.addEventListener("submit",()=>{ /* Success cue is triggered after Supabase confirms below. */ });
-const continuePriorityRequest=document.querySelector("#continue-priority-request");
-if(continuePriorityRequest){
- continuePriorityRequest.addEventListener("click",()=>{
-  const priorityToggle=document.querySelector("#priority-request");
-  const priorityPaymentWrap=document.querySelector("#priority-payment-wrap");
-  const priorityReferenceWrap=document.querySelector("#priority-reference-wrap");
-  if(priorityToggle){priorityToggle.checked=true;priorityPaymentWrap.hidden=false;priorityReferenceWrap.hidden=false;}
-  window.setTimeout(()=>{document.querySelector("#request").scrollIntoView({behavior:"smooth",block:"start"});document.querySelector("#requester-name")?.focus({preventScroll:true});},30);
- });
-}
-const songReveal=document.querySelector("#song-reveal");
-const closeSongList=document.querySelector("#close-song-list");
-if(songReveal&&closeSongList){
- let closeHideTimer;
- const syncCloseButton=()=>{
-  window.clearTimeout(closeHideTimer);
-  if(songReveal.open){
-   closeSongList.hidden=false;
-   window.requestAnimationFrame(()=>closeSongList.classList.add("is-visible"));
-  }else{
-   closeSongList.classList.remove("is-visible");
-   closeHideTimer=window.setTimeout(()=>{closeSongList.hidden=true;},260);
-  }
- };
- songReveal.addEventListener("toggle",syncCloseButton);
- closeSongList.addEventListener("click",()=>{songReveal.open=false;songReveal.querySelector("summary").scrollIntoView({behavior:"smooth",block:"center"});playSfx("scroll-sfx");});
-}
 renderDecades();renderArtists();renderSongs();
-
-// Rock Meter and encore poll use the existing Supabase project. Apply supabase-live-features.sql to enable live data.
-const rockMeterGoalLabel=document.querySelector("#rock-meter-goal-label");
-const rockMeterRaised=document.querySelector("#rock-meter-raised");
-const rockMeterGoal=document.querySelector("#rock-meter-goal");
-const rockMeterFill=document.querySelector("#rock-meter-fill");
-const rockMeterProgress=document.querySelector("#rock-meter-progress");
-const rockMeterCaption=document.querySelector("#rock-meter-caption");
-const rockMeterNeedle=document.querySelector("#rock-meter-needle");
-const rockMeterDial=document.querySelector("#rock-meter-dial");
-const meterZoneLabel=document.querySelector("#meter-zone-label");
-const encoreOptions=document.querySelector("#encore-options");
-const encoreStatus=document.querySelector("#encore-poll-status");
-const encoreTitle=document.querySelector("#encore-poll-title");
-const moneyCAD=value=>new Intl.NumberFormat("en-CA",{style:"currency",currency:"CAD",maximumFractionDigits:0}).format(Number(value)||0);
-async function loadRockMeter(){
- const client=window.supabaseClient;
- if(!client){rockMeterCaption.textContent="Rock Meter is waiting for its Supabase connection.";return;}
- try{
-  const {data,error}=await client.from("rock_meter_settings").select("goal_label,goal_amount,raised_amount").eq("id",1).maybeSingle();
-  if(error)throw error;
-  if(!data)throw new Error("No Rock Meter settings found. Run the live-features SQL migration in Supabase.");
-  const goal=Math.max(1,Number(data.goal_amount)||200),raised=Math.max(0,Number(data.raised_amount)||0),pct=Math.min(100,Math.round(raised/goal*100));
-  const meterClass=pct>=100?"meter-green":pct>=50?"meter-yellow":"meter-red";
-  if(rockMeterDial){const state=pct>=100?"green":pct>=50?"yellow":"red";const image=`rock-meter-${state}.webp`;if(!rockMeterDial.src.endsWith("/"+image))rockMeterDial.src=image;rockMeterDial.alt=`Rock Meter needle in the ${state} zone`;rockMeterDial.dataset.zone=state;}
-  const navMeterIcon=document.querySelector("#nav-rock-meter-icon");if(navMeterIcon){const state=pct>=100?"green":pct>=50?"yellow":"red";const image=`rock-meter-${state}.webp`;if(!navMeterIcon.src.endsWith("/"+image))navMeterIcon.src=image;navMeterIcon.alt="";navMeterIcon.title=`Rock Meter: ${pct}% of goal`;}
-  if(meterZoneLabel){meterZoneLabel.textContent=pct>=100?"GREEN ZONE · GOAL REACHED":pct>=50?"YELLOW ZONE · GETTING CLOSER":"RED ZONE · BUILDING MOMENTUM";meterZoneLabel.style.color=pct>=100?"#72ff9b":pct>=50?"#ffe36a":"#ff7777";}
-  rockMeterProgress.classList.remove("meter-red","meter-yellow","meter-green");rockMeterProgress.classList.add(meterClass);
-  rockMeterGoalLabel.textContent=data.goal_label||"NEXT GIG GOAL";rockMeterRaised.textContent=moneyCAD(raised);rockMeterGoal.textContent=moneyCAD(goal);rockMeterFill.style.width=pct+"%";rockMeterProgress.setAttribute("aria-valuenow",String(pct));rockMeterProgress.setAttribute("aria-valuetext",`${pct}% of the ${moneyCAD(goal)} goal reached`);
-  rockMeterCaption.textContent=pct>=100?"Goal reached — thank you for keeping the music going!":pct>=50?`${pct}% of the goal reached. We're getting there!`:`${pct}% of the goal reached. Thanks for the support.`;
- }catch(e){rockMeterCaption.textContent="Rock Meter could not load. Check that the Supabase live-features SQL has been run.";console.error("Rock Meter load failed:",e.message);}
-}
-async function loadEncorePoll(){
- const client=window.supabaseClient;if(!client)return;
- try{const {data,error}=await client.rpc("get_active_encore_poll");if(error)throw error;const poll=Array.isArray(data)?data[0]:data;if(!poll||!poll.active){encoreStatus.textContent="No active encore vote right now. Check back during a show!";encoreOptions.replaceChildren();return;}
- encoreTitle.textContent=poll.title||"VOTE FOR THE ENCORE";encoreStatus.textContent="Tap a song to vote.";encoreOptions.replaceChildren();
- const choices=Array.isArray(poll.choices)?poll.choices:[];const total=choices.reduce((sum,c)=>sum+(Number(c.votes)||0),0);let voterKey="";try{voterKey=localStorage.getItem("grifflistEncoreVoter")||"";if(!voterKey){voterKey="v-"+crypto.randomUUID();localStorage.setItem("grifflistEncoreVoter",voterKey);}}catch(e){voterKey="v-"+Math.random().toString(36).slice(2);}
- let alreadyVoted=false;try{alreadyVoted=localStorage.getItem("grifflistEncoreVoted:"+poll.poll_id)==="yes";}catch(e){}
- choices.forEach(choice=>{const button=document.createElement("button");button.type="button";button.className="encore-option";button.disabled=alreadyVoted;const label=document.createElement("strong");label.textContent=choice.song_title+(choice.artist_name?" — "+choice.artist_name:"");const count=document.createElement("span");count.textContent=`${Number(choice.votes)||0} vote${Number(choice.votes)===1?"":"s"}`;button.append(label,count);button.addEventListener("click",async()=>{button.disabled=true;encoreStatus.textContent="Submitting your vote…";try{const result=await client.rpc("cast_encore_vote",{p_poll_id:poll.poll_id,p_choice_id:choice.choice_id,p_voter_key:voterKey});if(result.error)throw result.error;try{localStorage.setItem("grifflistEncoreVoted:"+poll.poll_id,"yes");}catch(e){}encoreStatus.textContent="Vote counted! Thanks for helping choose the encore.";playSfx("you-rock-sfx");await loadEncorePoll();}catch(e){button.disabled=false;encoreStatus.textContent=e.message||"Could not submit your vote. Please try again.";}});encoreOptions.append(button);});
- if(alreadyVoted)encoreStatus.textContent=`Your vote is in. ${total} vote${total===1?"":"s"} so far.`;
- }catch(e){encoreStatus.textContent="Encore voting will be available after the live-features database setup.";console.info("Encore poll needs the Supabase live-features migration.",e.message);}
-}
-const showKofiQr=document.querySelector("#show-kofi-qr");
-const kofiQrPanel=document.querySelector("#kofi-qr-panel");
-if(showKofiQr&&kofiQrPanel){showKofiQr.addEventListener("click",()=>{const open=kofiQrPanel.hidden;kofiQrPanel.hidden=!open;showKofiQr.setAttribute("aria-expanded",String(open));showKofiQr.textContent=open?"Hide Ko-fi QR code":"Show Ko-fi QR code";if(open)kofiQrPanel.scrollIntoView({behavior:"smooth",block:"nearest"});});}
-loadRockMeter();loadEncorePoll();window.setInterval(()=>{if(!document.hidden){loadRockMeter();loadEncorePoll();}},8000);document.addEventListener("visibilitychange",()=>{if(!document.hidden){loadRockMeter();loadEncorePoll();}});

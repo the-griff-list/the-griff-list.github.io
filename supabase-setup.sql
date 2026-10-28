@@ -33,10 +33,3 @@ create policy "Admin can update song requests"
   on public.song_requests for update to authenticated
   using (auth.uid() = '7c4c9232-2c28-47f3-a00a-a371ed23cef5'::uuid)
   with check (auth.uid() = '7c4c9232-2c28-47f3-a00a-a371ed23cef5'::uuid);
-
-
--- Allow only the designated admin account to delete individual requests.
-drop policy if exists "Admin can delete song requests" on public.song_requests;
-create policy "Admin can delete song requests"
-  on public.song_requests for delete to authenticated
-  using (auth.uid() = '7c4c9232-2c28-47f3-a00a-a371ed23cef5'::uuid);

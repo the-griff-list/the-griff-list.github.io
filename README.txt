@@ -22,28 +22,3 @@ SECURITY NOTES
 
 OTHER
 Both sound files are separate: title-screen-sound.mp3 is for the title screen; select.mp3 is for navigation.
-
-
-THE GRIFFLIST LIVE FEATURES UPGRADE (October 2026)
-
-New features included:
-- Rock Meter using the supplied Guitar Hero III Rock Meter artwork.
-- Ko-fi support link and the QR image supplied for your Ko-fi account.
-- PayPal.Me support link and existing e-transfer copy option.
-- Encore voting section using the image from your supplied Reddit gallery link.
-- Admin controls for the Rock Meter goal/confirmed total and publishing a three-song encore poll.
-- Encore votes are submitted through Supabase RPC functions; one vote per browser token per poll (not a guarantee against someone using multiple browsers/devices).
-- Stripe dashboard shortcut is inside the login-protected admin view; no Stripe secret key is stored in the site.
-
-IMPORTANT SETUP BEFORE THESE FEATURES GO LIVE:
-1. Back up your current repository files.
-2. In your existing Supabase project, open SQL Editor and run supabase-live-features.sql ONCE. This is an additive migration; it does not replace or delete your song_requests table.
-3. Upload all extracted website files to the ROOT of your GitHub Pages repository, replacing the matching files, and commit to main. Keep all files together at the root.
-4. Sign in at your admin.html page. Set the Rock Meter goal and confirmed support total. Use the Encore Voting form to enter three options and check “Voting is open” before publishing.
-5. Test on your phone: submit a normal song request, open Ko-fi and PayPal links, scan the QR code, cast one test vote, and confirm the Rock Meter displays the amount you entered.
-
-PAYMENT NOTE:
-The Ko-fi and PayPal buttons are support links. The website does not automatically verify payments and does not currently mark song requests as paid priority. Do not promise priority performance based on the link alone. Any paid-priority workflow needs manual payment matching and venue approval.
-
-IMAGE NOTE:
-The Rock Meter image is loaded from ./Rockmeter_gh3(1).webp. Keep that file in the repository root with the exact filename and capitalization. The Ko-fi QR and Reddit gallery image are referenced from the URLs you supplied rather than bundled locally. The supplied Reddit post appears to be about ticket service charges; the image is included in the Encore section because you asked to use it there.
