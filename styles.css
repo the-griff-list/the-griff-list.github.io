@@ -645,3 +645,72 @@ body.theme-neon .button-hot{box-shadow:0 0 18px #ff48cf44}
 .secret-sound-toggle{position:absolute;top:13px;right:66px;min-height:40px;padding:8px 11px;border:1px solid #8a7048;border-radius:7px;background:#17101f;color:#f8dfad;font-size:.68rem;font-weight:800;letter-spacing:.08em;cursor:pointer}
 .secret-sound-toggle:hover,.secret-sound-toggle:focus-visible{border-color:#e3a33a;outline:2px solid #e3a33a55;outline-offset:2px}
 @media(max-width:520px){.secret-sound-toggle{top:66px;right:12px}.secret-stage-panel{padding-top:72px}}
+
+/* October UX polish: clearer modes, shorter Explore, and compact footer. */
+body.theme-day{--bg:#f7efe2;--panel:#fffaf2;--panel2:#f0e3d2;--line:#cbb8a3;--text:#211711;--muted:#57483d;--hot:#a92f20;--gold:#88530d;background:#f7efe2;color:#211711}
+body.theme-day:before{opacity:.025;background-image:radial-gradient(#4a2a16 .5px,transparent .5px)}
+body.theme-day .site-header{background:#fff8edee;border-bottom-color:#cbb8a3}
+body.theme-day .top-nav,body.theme-day .top-nav a,body.theme-day footer,body.theme-day .gig-theme-controls,body.theme-day .sound-theme-control{color:#3b2a20}
+body.theme-day .request-form,body.theme-day .support-grid .tip-card,body.theme-day .tip-card,body.theme-day .rock-meter-card,body.theme-day .watch-live-promo-inner,body.theme-day .seasonal-event,body.theme-day .explore-drawer,body.theme-day .time-machine-result{background:#fffaf2;color:#211711;border-color:#cbb8a3}
+body.theme-day input,body.theme-day select,body.theme-day textarea,body.theme-day .button-quiet,body.theme-day .chip,body.theme-day .favourite-tab{background:#fff;color:#211711;border-color:#b9a28b}
+body.theme-day label,body.theme-day .request-form label,body.theme-day .rock-meter-numbers,body.theme-day .meter-zone-key,body.theme-day .meter-zone-label,body.theme-day .rock-meter-goal-label{color:#34251b}
+body.theme-day .rock-meter-card{background:linear-gradient(140deg,#fffaf2,#efe1ce)}
+body.theme-day .rock-meter-numbers strong{color:#8d2b1e}
+body.theme-day .explore-drawer>summary small{display:none}
+body.theme-day .explore-drawer>summary{color:#211711}
+body.theme-day .seasonal-event{background:linear-gradient(115deg,#fff4df,#f3e0c5)}
+body.theme-day .watch-live-promo-inner{background:linear-gradient(120deg,#fff2df,#ead5bd)}
+body.theme-day .watch-live-promo-inner h2,body.theme-day .watch-live-promo-inner p{color:#211711}
+body.theme-day .watch-live-promo-inner h2 span{color:#a92f20}
+body.theme-day .live-tip-card,body.theme-day .live-info-card,body.theme-day .favourite-row,body.theme-day .request-status-panel{background:#fffaf2;color:#211711}
+body.theme-day .rock-meter-art{filter:drop-shadow(0 4px 8px #4c2c1830)}
+body.theme-day .meter-zone-key span{color:#49382b}
+body.theme-day .gig-theme-controls button,body.theme-day .sound-theme-control select{background:#fffaf2;color:#211711;border-color:#c4ad95}
+body.theme-eighties{--bg:#160b24;--panel:#21102e;--panel2:#2b1738;--line:#75456e;--text:#fff4e8;--muted:#e0bfd7;--hot:#ff4f93;--gold:#ffd15c;background:radial-gradient(ellipse at 20% 0,#63315c 0,#160b24 55%);color:#fff4e8}
+body.theme-eighties .section,body.theme-eighties .request-form,body.theme-eighties .rock-meter-card,body.theme-eighties .watch-live-promo-inner,body.theme-eighties .seasonal-event,body.theme-eighties .explore-drawer{border-color:#75456e;box-shadow:0 0 0 1px #ff4f9315,0 8px 24px #07020b35}
+body.theme-eighties .button-hot{background:linear-gradient(110deg,#ff7c32,#ff3f72);box-shadow:0 4px 0 #74294f}
+body.theme-eighties .site-header{background:#160b24ee}
+/* Decade buttons are all visible: no horizontal carousel/scrollbar. */
+.time-machine-rail{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px;overflow:visible;padding:8px 0 12px}
+.time-machine-rail button{min-width:0;width:100%;flex:auto}
+/* Rock-O-Meter headline and goal figures read as one centered unit. */
+.rock-meter-section>.section-heading h2{text-align:center}
+.rock-meter-numbers{display:flex;align-items:baseline;justify-content:center;gap:.45em;flex-wrap:wrap;text-align:center;font-weight:800;font-size:clamp(1.25rem,3vw,2rem);line-height:1.15;margin:10px 0 16px}
+.rock-meter-numbers strong{font-size:inherit;color:#f7c76d}
+.rock-meter-numbers span{font-size:inherit}
+/* More sophisticated, compact appearance picker. */
+.gig-theme-controls{justify-content:center;gap:8px;margin:18px auto 10px;padding:12px 14px;width:fit-content;max-width:100%;border:1px solid var(--line);border-radius:14px;background:var(--panel);box-shadow:0 8px 24px #00000012}
+.gig-theme-controls .gig-mode-label{font-weight:800;letter-spacing:.04em;margin-right:4px}
+.gig-theme-controls button{min-width:82px;border-radius:999px!important;padding:9px 15px!important;font-weight:800}
+/* Footer: small logo beside Back to top, both at the very bottom. */
+footer{display:grid;grid-template-columns:auto 1fr auto;grid-template-areas:'brand credit top' 'modes modes modes' 'sound sound sound' 'install install install';align-items:center;gap:12px 18px;padding-top:28px;padding-bottom:30px}
+footer .footer-logo-link{grid-area:brand;width:min(118px,28vw);margin:0;justify-self:start}
+footer>p{grid-area:credit}
+footer>a[href="#top"]{grid-area:top;justify-self:end;white-space:nowrap}
+footer .gig-theme-controls{grid-area:modes}
+footer .sound-theme-control{grid-area:sound;justify-self:center}
+footer #install-grifflist{grid-area:install;justify-self:center}
+footer>a[href*="explore.html"]{display:none}
+footer .secret-stage-trigger{grid-column:1/-1;justify-self:center}
+.header-logo{width:clamp(115px,16vw,170px);height:auto}
+.explore-drawer{margin:14px auto 22px;border-radius:12px}
+.explore-drawer>summary{min-height:56px;padding:12px 15px}
+.explore-drawer>summary small{display:none}
+.explore-drawer-icon{font-size:1.5rem;border-radius:50%;background:linear-gradient(135deg,#392017,#151019);width:42px;height:42px}
+.explore-drawer-content>.section{margin:12px 0;padding:14px 0}
+.bonus-song-tools .section-heading p{display:none}
+.share-card-tools{margin-top:12px}
+.seasonal-event{padding:18px 20px;min-height:0}
+.seasonal-event .eyebrow{margin:0;font-size:.65rem}
+.seasonal-event h2{font-size:clamp(1.4rem,3vw,2rem)!important;margin:6px 0!important}
+.tip-wall-section .section-heading{margin-bottom:12px}
+.tip-wall-section .tip-wall-list{max-height:180px}
+.tip-wall-sample:after{content:'EXAMPLE';grid-column:1/-1;font-size:.62rem;letter-spacing:.12em;color:var(--muted)}
+.tip-wall-samples{animation:none!important;max-height:none!important}
+.tip-wall-samples .tip-wall-row{background:var(--panel)}
+.watch-live-promo-inner .eyebrow{display:none!important}
+.watch-live-promo-inner h2{margin-top:0!important}
+/* Keep heading treatment consistent without low-contrast dark text in day mode. */
+body.theme-day .section-heading h2 span,body.theme-day .contact-section h2 span,body.theme-day .tip-copy h2 span{color:#a92f20!important}
+@media(max-width:700px){.time-machine-rail{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}.time-machine-rail button{min-height:44px;padding:8px 5px}footer{grid-template-columns:auto 1fr auto;gap:10px;padding-inline:14px}footer>p{font-size:.68rem}.gig-theme-controls{width:100%;gap:6px}.gig-theme-controls button{flex:1;min-width:0;padding:8px 9px!important}.header-logo{width:clamp(130px,23vw,170px)}}
+@media(max-width:400px){footer{grid-template-columns:1fr auto;grid-template-areas:'brand top' 'credit credit' 'modes modes' 'sound sound' 'install install'}.time-machine-rail{grid-template-columns:repeat(2,minmax(0,1fr))}}

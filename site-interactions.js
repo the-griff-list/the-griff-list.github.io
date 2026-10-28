@@ -21,10 +21,10 @@
   const themeControls = document.createElement('div');
   themeControls.className='gig-theme-controls';
   themeControls.setAttribute('aria-label','Website appearance');
-  themeControls.innerHTML='<span>Gig mode</span><button type="button" data-theme="day" aria-pressed="false">☀ Day</button><button type="button" data-theme="night" aria-pressed="false">☾ Night</button><button type="button" data-theme="neon" aria-pressed="false">✦ Neon</button>';
+  themeControls.innerHTML='<span class="gig-mode-label">Appearance</span><button type="button" data-theme="day" aria-pressed="false">☀ Day</button><button type="button" data-theme="night" aria-pressed="false">☾ Night</button><button type="button" data-theme="eighties" aria-pressed="false">⚡ 80s</button>';
   const applyTheme = (theme) => {
-    document.body.classList.remove('theme-day','theme-night','theme-neon');
-    document.body.classList.add('theme-'+(['day','night','neon'].includes(theme)?theme:'night'));
+    document.body.classList.remove('theme-day','theme-night','theme-neon','theme-eighties');
+    if(theme==='eighties') document.body.classList.add('theme-eighties'); else document.body.classList.add('theme-'+(['day','night'].includes(theme)?theme:'night'));
     $$('.gig-theme-controls button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.theme===theme)));
     try{localStorage.setItem('grifflistTheme.v1',theme);}catch(_){}
   };
@@ -32,16 +32,20 @@
   if (footer) { footer.append(themeControls); themeControls.addEventListener('click',e=>{const b=e.target.closest('[data-theme]');if(b){applyTheme(b.dataset.theme);play('select-sfx');}}); }
   let savedTheme='night'; try{savedTheme=localStorage.getItem('grifflistTheme.v1')||'night';}catch(_){} applyTheme(savedTheme);
 
+
+  // Apply the site's two-tone headline treatment consistently across public pages.
+  if (!$('#inbox-panel')) $$('.section-heading h2, .tip-copy h2, .contact-section h2, .watch-live-page h1, .explore-main h1').forEach(h=>{if(h.querySelector('span'))return;const txt=h.textContent.trim().split(/\s+/);if(txt.length<2)return;const last=txt.pop();h.textContent='';h.append(document.createTextNode(txt.join(' ')+' '));const span=document.createElement('span');span.textContent=last;h.append(span);});
+
   // Catalog discovery tools.
   if (pageIsHome) {
     const catalog = $('#catalog');
     const tools = document.createElement('section');
     tools.className='section bonus-song-tools';
-    tools.innerHTML=`<div class="section-heading"><h2><span>Find Your Next Anthem</span></h2><p>Spin the setlist, jump to a rock era, or let fate choose.</p></div>
-      <div class="bonus-tool-grid"><button class="button button-hot" id="setlist-roulette" type="button">🎡 SETLIST ROULETTE</button><button class="button button-quiet" id="surprise-song" type="button">⚡ SURPRISE ME</button>
-      <label class="era-picker">Pick your rock era<select id="rock-era-picker"><option value="all">All eras</option><option value="1960">1960s</option><option value="1970">1970s</option><option value="1980">1980s</option><option value="1990">1990s</option><option value="2000">2000s</option><option value="2010">2010s</option></select></label></div>
+    tools.innerHTML=`<div class="section-heading"><h2><span>Find a Song</span></h2></div>
+      <div class="bonus-tool-grid"><button class="button button-hot" id="surprise-song" type="button">🎸 Pick a Song for Me</button>
+      </div>
       <div id="song-picker-result" class="song-picker-result" aria-live="polite" role="status">Your next anthem is waiting.</div>
-      <div class="share-card-tools"><button id="make-song-card" class="button button-quiet" type="button">CREATE A SHAREABLE SONG CARD</button><span id="song-card-status" role="status" aria-live="polite"></span></div>`;
+      <div class="share-card-tools"><button id="make-song-card" class="button button-quiet" type="button">Make a Song Image to Share</button><span id="song-card-status" role="status" aria-live="polite"></span></div>`;
     appendExplore(tools);
     const getFiltered = () => {
       const era = $('#rock-era-picker')?.value || 'all';
@@ -63,13 +67,6 @@
       const result=$('#song-picker-result'); if(result)result.textContent=decade==='All'?'Browsing all eras.':`Rock era selected: ${decade}. Browse the matching songs above.`;
     });
     $('#surprise-song')?.addEventListener('click',()=>{const a=getFiltered();if(!a.length)return;selectForRequest(a[Math.floor(Math.random()*a.length)]);});
-    $('#setlist-roulette')?.addEventListener('click',()=>{
-      const a=getFiltered(); if(!a.length)return;const result=$('#song-picker-result');if(!result)return;
-      const duration=reducedMotion()?0:1500;const start=performance.now();let last=-1;
-      const spin=(now)=>{const elapsed=now-start;const idx=Math.floor(elapsed/80)%a.length;if(idx!==last){result.textContent='🎡 '+a[idx].title+' — '+a[idx].artist;last=idx;}
-        if(elapsed<duration)requestAnimationFrame(spin);else{const song=a[Math.floor(Math.random()*a.length)];result.textContent='THE SETLIST CHOOSES: '+song.title+' — '+song.artist;result.dataset.title=song.title;result.dataset.artist=song.artist;play('you-rock-sfx');}};
-      requestAnimationFrame(spin);
-    });
     $('#make-song-card')?.addEventListener('click',async()=>{
       const last=$('#song-picker-result');let title=last?.dataset.title||$('#request-song')?.value||'';let artist=last?.dataset.artist||$('#request-artist')?.value||'';
       if(!title){const all=getSongs();if(!all.length)return;const s=all[Math.floor(Math.random()*all.length)];title=s.title;artist=s.artist;}
@@ -163,20 +160,20 @@
 
   // Time Machine built from existing repertoire, without hard-coded song history.
   if (pageIsHome) {
-    const contact=$('#contact');const tm=document.createElement('section');tm.className='section time-machine-section';tm.innerHTML='<div class="section-heading"><h2><span>The Grifflist Time Machine</span></h2><p>Jump through the decades that shaped the setlist.</p></div><div class="time-machine-rail" id="time-machine-rail"></div><div id="time-machine-result" class="time-machine-result" aria-live="polite">Choose a decade to discover songs from that era.</div>';
+    const contact=$('#contact');const tm=document.createElement('section');tm.className='section time-machine-section';tm.innerHTML='<div class="section-heading"><h2><span>Browse by Decade</span></h2></div><div class="time-machine-rail" id="time-machine-rail"></div><div id="time-machine-result" class="time-machine-result" aria-live="polite"></div>';
     appendExplore(tm);
     const rail=$('#time-machine-rail');const years=[1960,1970,1980,1990,2000,2010];years.forEach(y=>{const b=document.createElement('button');b.type='button';b.textContent=y+'s';b.addEventListener('click',()=>{const songs=getSongs().filter(s=>s.year>=y&&s.year<y+10);const result=$('#time-machine-result');result.textContent=songs.length?`${y}s: ${songs.slice(0,5).map(s=>s.title+' — '+s.artist).join(' · ')}${songs.length>5?' …':''}`:`No dated songs from the ${y}s are currently listed.`;play('scroll-sfx');});rail.append(b);});
     // Seasonal event card changes automatically by month.
-    const m=new Date().getMonth();const seasonal=[['WINTER ENCORE','Warm up with a favourite anthem.'],['VALENTINE RIFFS','Share a song with someone who gets your music.'],['SPRING SOUND CHECK','Discover a fresh favourite from the catalog.'],['MAY THE RIFFS BE WITH YOU','A little extra distortion never hurt.'],['SUMMER OF ROCK','Build the perfect summer setlist.'],['SUMMER OF ROCK','Pick a road-trip anthem.'],['LATE-SUMMER LOUDNESS','Turn up a crowd favourite.'],['BACK TO THE RIFFS','Find an anthem for the next gig.'],['AUTUMN AMPLIFIERS','A darker soundtrack for shorter nights.'],['HALLOWEEN AFTER HOURS','The hidden stage is open after dark.'],['THANKS FOR THE ENCORE','Celebrate the songs you keep requesting.'],['YEAR-END RIFF REWIND','Revisit the year in songs.']][m];
-    const event=document.createElement('section');event.className='section seasonal-event';event.innerHTML=`<div><p class="eyebrow">LIMITED-TIME FEATURE</p><h2>${seasonal[0]}</h2><p>${seasonal[1]}</p></div><button class="button button-quiet" id="seasonal-discover" type="button">DISCOVER A SONG ↗</button>`;appendExplore(event);$('#seasonal-discover')?.addEventListener('click',()=>{const songs=getSongs();if(!songs.length)return;const s=songs[Math.floor(Math.random()*songs.length)];const input=$('#request-song');if(input){input.value=s.title;$('#request-artist').value=s.artist;$('#request')?.scrollIntoView({behavior:reducedMotion()?'auto':'smooth'});}play('you-rock-sfx');});
+    const m=new Date().getMonth();const seasonal=[['WINTER ROCK PICK','Find a winter road-trip anthem.'],['VALENTINE RIFFS','Pick a song to share.'],['SPRING SOUNDTRACK','Choose a fresh-season favourite.'],['MAY THE RIFFS BE WITH YOU','Choose your force-of-rock anthem.'],['CANADA DAY ROCK','Pick a song for the summer celebration.'],['SUMMER ROAD-TRIP','Choose a driving anthem.'],['SUMMER ROAD-TRIP','Choose a driving anthem.'],['BACK-TO-GIG SEASON','Pick your next live singalong.'],['AUTUMN AMPLIFIERS','Choose a soundtrack for cooler nights.'],['HALLOWEEN AFTER HOURS','Unlock a spooky backstage surprise.'],['REMEMBRANCE DAY REFLECTION','Choose a meaningful song; observe the day respectfully.'],['YEAR-END RIFF REWIND','Pick a song to close out the year.']][m];
+    const event=document.createElement('section');event.className='section seasonal-event';event.innerHTML=`<div><p class="eyebrow">✦ SEASONAL PICK</p><h2>${seasonal[0]}</h2></div><button class="button button-quiet" id="seasonal-discover" type="button">🎸 PICK A SONG</button>`;appendExplore(event);$('#seasonal-discover')?.addEventListener('click',()=>{const songs=getSongs();if(!songs.length)return;const s=songs[Math.floor(Math.random()*songs.length)];const input=$('#request-song');if(input){input.value=s.title;$('#request-artist').value=s.artist;$('#request')?.scrollIntoView({behavior:reducedMotion()?'auto':'smooth'});}play('you-rock-sfx');});
   }
 
   // Tip wall: only confirmed records are shown; no dates or transaction IDs displayed.
   if(pageIsHome) {
-    const contact=$('#contact');const wall=document.createElement('section');wall.className='section tip-wall-section';wall.innerHTML='<div class="section-heading"><h2><span>The Encore Wall</span></h2><p>Confirmed tips from people supporting the music. Names are shown as display names only.</p></div><div id="tip-wall-list" class="tip-wall-list" aria-live="polite"><p class="favourites-empty">Confirmed tips will appear here when recorded by the admin.</p></div><p class="tip-wall-note">No dates, payment details, or full legal names are displayed.</p>';
+    const contact=$('#contact');const wall=document.createElement('section');wall.className='section tip-wall-section';wall.innerHTML='<div class="section-heading"><h2><span>Encore Wall</span></h2></div><div id="tip-wall-list" class="tip-wall-list" aria-live="polite"></div>';
     appendExplore(wall);
     const list=$('#tip-wall-list');
-    const renderTips=async()=>{const client=window.supabaseClient;if(!client||!list)return;try{const {data,error}=await client.from('confirmed_tips').select('display_name,amount_cad,requested_song').eq('confirmed',true).order('id',{ascending:false}).limit(50);if(error)throw error;if(!data?.length)return;list.replaceChildren();data.forEach(t=>{const row=document.createElement('div');row.className='tip-wall-row';const who=document.createElement('strong');who.textContent=t.display_name||'Anonymous Rocker';const amount=document.createElement('b');amount.textContent=new Intl.NumberFormat('en-CA',{style:'currency',currency:'CAD',maximumFractionDigits:2}).format(Number(t.amount_cad)||0);row.append(who,amount);if(t.requested_song){const song=document.createElement('small');song.textContent='Requested: '+t.requested_song;row.append(song);}list.append(row);});if(data.length>3){[...list.children].forEach(row=>list.append(row.cloneNode(true)));list.classList.add('tip-wall-scrolling');}}catch(_){/* Table/migration not installed yet: keep the helpful empty state. */}};
+    const renderTips=async()=>{const client=window.supabaseClient;if(!client||!list)return;try{const {data,error}=await client.from('confirmed_tips').select('display_name,amount_cad,requested_song').eq('confirmed',true).order('id',{ascending:false}).limit(50);if(error)throw error;list.replaceChildren();if(!data?.length){[['Rock Fan','$5','Sample'],['Backstage Buddy','$10','Sample'],['Anonymous','$3','Sample']].forEach(([name,amount])=>{const row=document.createElement('div');row.className='tip-wall-row tip-wall-sample';row.innerHTML='<strong>'+name+'</strong><b>'+amount+'</b>';list.append(row);});list.classList.add('tip-wall-samples');return;}data.forEach(t=>{const row=document.createElement('div');row.className='tip-wall-row';const who=document.createElement('strong');who.textContent=t.display_name||'Anonymous Rocker';const amount=document.createElement('b');amount.textContent=new Intl.NumberFormat('en-CA',{style:'currency',currency:'CAD',maximumFractionDigits:2}).format(Number(t.amount_cad)||0);row.append(who,amount);if(t.requested_song){const song=document.createElement('small');song.textContent='Requested: '+t.requested_song;row.append(song);}list.append(row);});if(data.length>3){[...list.children].forEach(row=>list.append(row.cloneNode(true)));list.classList.add('tip-wall-scrolling');}}catch(_){if(list&&!list.children.length){[['Rock Fan','$5'],['Backstage Buddy','$10'],['Anonymous','$3']].forEach(([name,amount])=>{const row=document.createElement('div');row.className='tip-wall-row tip-wall-sample';row.innerHTML='<strong>'+name+'</strong><b>'+amount+'</b>';list.append(row);});list.classList.add('tip-wall-samples');}}};
     renderTips();
   }
 
@@ -190,9 +187,9 @@
 
   // Sound theme control placeholder. The requested PS2 audio files will be added when supplied.
   if (footer) {
-    const sound=document.createElement('label');sound.className='sound-theme-control';sound.innerHTML='UI sounds <select id="ui-sound-theme" aria-label="Interface sound theme"><option value="classic">Classic Grifflist</option><option value="ps2">PS2-style boot theme (audio files pending)</option><option value="silent">Muted</option></select>';
+    const sound=document.createElement('label');sound.className='sound-theme-control';sound.innerHTML='♬ Secret Stage <select id="ui-sound-theme" aria-label="Secret Stage sound setting"><option value="classic">Classic</option><option value="ps2">PS2</option><option value="silent">Muted</option></select>';
     footer.append(sound);let chosen='classic';try{chosen=localStorage.getItem('grifflistSoundTheme.v1')||'classic';}catch(_){}$('#ui-sound-theme').value=chosen;
-    $('#ui-sound-theme').addEventListener('change',e=>{try{localStorage.setItem('grifflistSoundTheme.v1',e.target.value);}catch(_){} if(e.target.value==='silent'){document.querySelectorAll('audio').forEach(a=>a.muted=true);}else{document.querySelectorAll('audio').forEach(a=>a.muted=false);if(e.target.value==='ps2')alert('PS2-style sound files have not been added yet. Send the audio files when ready and this theme can be connected.');}});
+    $('#ui-sound-theme').addEventListener('change',e=>{try{localStorage.setItem('grifflistSoundTheme.v1',e.target.value);}catch(_){} if(e.target.value==='silent'){document.querySelectorAll('audio').forEach(a=>a.muted=true);}else{document.querySelectorAll('audio').forEach(a=>a.muted=false);}});
   }
 
   // Install prompt where supported.

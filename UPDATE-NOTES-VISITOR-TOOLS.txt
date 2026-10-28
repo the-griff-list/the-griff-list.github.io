@@ -36,3 +36,15 @@ BONUS EXPERIENCES ADDENDUM
 - Added the public Encore Wall for confirmed tips. Run bonus-features-migration.sql once. Tip entries are manually added only after verification; payment provider webhooks are not configured.
 - PS2-inspired sound theme is a placeholder until user-supplied audio files are provided. No PlayStation audio is bundled.
 - Ghost Gig and Great Grifflist Hunt are ideas only; see their respective idea files.
+
+OCTOBER 2026 UX POLISH
+- Removed the duplicate roulette/random-song action; the simplified tool is now “Pick a Song for Me.”
+- Decade navigation is presented as a full grid with no horizontal scrolling; the Time Machine is renamed “Browse by Decade.”
+- Encore Wall public copy is reduced. If no confirmed entries load, clearly labelled example cards are shown rather than implying that sample tips are real.
+- Rockometer heading is “Rock-O-Meter”; goal figures are centered together.
+- Removed “WHEN THE AMP IS ON”; public headings use the two-tone treatment.
+- Gig modes are Day, Night, and 80s; themes apply to public pages, not the admin dashboard.
+- Day mode receives higher-contrast light surfaces and dark readable text. 80s mode uses a neon rock palette inspired by the supplied Guitar Hero references; the game artwork itself is not embedded.
+- Footer logo is smaller and placed beside Back to top; header logo is enlarged.
+- Explore drawer text is simplified, the seasonal feature is a compact song prompt, and the share-card action is renamed “Make a Song Image to Share.”
+- Sound selector is labelled “Secret Stage.”
