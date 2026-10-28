@@ -305,3 +305,9 @@ body:before{opacity:.025;background-size:8px 8px}
 .nav-emoji{font-size:1.05em;line-height:1;flex:0 0 auto}
 .nav-meter-icon{display:inline-block;width:24px;height:21px;object-fit:contain;flex:0 0 auto;filter:drop-shadow(0 1px 3px #000)}
 @media(max-width:800px){.top-nav a{gap:5px}.nav-meter-icon{width:22px;height:19px}.nav-emoji{font-size:1em}}
+
+/* Floating close control stays reachable while browsing the long song list. */
+.close-song-list{position:fixed;right:12px;top:52%;transform:translateY(-50%);z-index:15;display:flex;align-items:center;gap:7px;padding:12px 14px;border:1px solid #ff9b3d;border-radius:999px;background:#21130df2;color:#ffe0a6;font-size:.82rem;font-weight:900;box-shadow:0 5px 24px #000b;cursor:pointer;backdrop-filter:blur(8px)}
+.close-song-list:hover{background:#512714;color:#fff}
+.close-song-list[hidden]{display:none}
+@media(max-width:600px){.close-song-list{right:8px;top:auto;bottom:18px;transform:none;padding:12px 13px;font-size:.78rem;box-shadow:0 4px 20px #000d}.close-song-list span{display:inline}}

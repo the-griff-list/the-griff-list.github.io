@@ -280,6 +280,12 @@ document.addEventListener("click",event=>{
 // Audio cues after successful actions.
 const requestFormForAchievement=$("#request-form");
 requestFormForAchievement.addEventListener("submit",()=>{ /* Success cue is triggered after Supabase confirms below. */ });
+const songReveal=document.querySelector("#song-reveal");
+const closeSongList=document.querySelector("#close-song-list");
+if(songReveal&&closeSongList){
+ songReveal.addEventListener("toggle",()=>{closeSongList.hidden=!songReveal.open;});
+ closeSongList.addEventListener("click",()=>{songReveal.open=false;closeSongList.hidden=true;songReveal.querySelector("summary").scrollIntoView({behavior:"smooth",block:"center"});playSfx("scroll-sfx");});
+}
 renderDecades();renderArtists();renderSongs();
 
 // Rock Meter and encore poll use the existing Supabase project. Apply supabase-live-features.sql to enable live data.
