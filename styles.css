@@ -156,9 +156,9 @@ footer p{font-size:.7rem;color:#81797a;letter-spacing:.02em}
 .song-title{display:block;background:none;border:0;padding:0;color:inherit;text-align:left;font:inherit;font-weight:800}
 .song-row:focus-visible{outline:2px solid var(--hot);outline-offset:-2px}
 
-/* Splash prompt sits centered directly beneath the lettering in the artwork. */
-.splash::after{left:47%;top:63%;width:46%;text-align:center;font-size:clamp(1rem,3.2vw,2.25rem);letter-spacing:.025em}
-@media(max-width:700px){.splash::after{left:46%;top:63%;width:47%;font-size:clamp(.8rem,3.5vw,1.35rem);letter-spacing:0}}
+/* Splash prompt sits centered just a touch lower beneath the lettering in the artwork. */
+.splash::after{left:47%;top:64%;width:46%;text-align:center;font-size:clamp(1rem,3.2vw,2.25rem);letter-spacing:.025em}
+@media(max-width:700px){.splash::after{left:46%;top:64%;width:47%;font-size:clamp(.8rem,3.5vw,1.35rem);letter-spacing:0}}
 .header-logo-link{display:flex;align-items:center;flex:0 0 auto;line-height:0}
 .header-logo{display:block;width:clamp(120px,16vw,190px);height:auto;max-height:56px;object-fit:contain}
 @media(max-width:700px){.site-header{align-items:center;flex-direction:column;gap:7px}.header-logo{width:clamp(118px,35vw,160px);max-height:43px}.top-nav{width:100%}}
@@ -175,21 +175,180 @@ footer p{font-size:.7rem;color:#81797a;letter-spacing:.02em}
 @media(max-width:700px){.song-artist,.song-title,.song-year{font-size:.72rem;}}
 @media(max-width:360px){.song-artist,.song-title,.song-year{font-size:.65rem;}}
 
-/* Keep the home-screen prompt below the logo, centered with it. */
-.splash::after{top:67%}
-@media(max-width:700px){.splash::after{top:67%}}
+/* Raise the home-screen prompt so it sits immediately below the Grifflist lettering. */
+.splash::after{top:53%}
+@media(max-width:700px){.splash::after{top:53%}}
+
+/* Footer logo */
+.footer-logo-link{display:block;width:min(220px,65vw);margin:0 auto 1rem}
+.footer-logo{display:block;width:100%;height:auto;object-fit:contain}
+
+/* Position the prompt in the open area just below/right of the title logo. */
+.splash::after{left:47%;top:60%;width:46%;text-align:center}
+@media(max-width:700px){.splash::after{left:46%;top:60%;width:47%}}
+
+/* The Grifflist live-show features */
+.rock-meter-section,.encore-section{scroll-margin-top:90px}.rock-meter-card{display:grid;grid-template-columns:220px 1fr;align-items:center;gap:28px;background:linear-gradient(140deg,#1c1714,#0d0d0d);border:1px solid #5a3b2a;border-radius:8px;padding:24px}.rock-meter-art{width:100%;max-width:220px;image-rendering:auto;filter:drop-shadow(0 8px 18px #0009);justify-self:center}.rock-meter-info{min-width:0}.rock-meter-goal-label{font-size:.7rem;letter-spacing:.17em;color:var(--gold);font-weight:900}.rock-meter-numbers{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}.rock-meter-numbers strong{font:900 clamp(2rem,5vw,3.5rem)/1 'Barlow Condensed',Impact,sans-serif;color:var(--gold)}.rock-meter-numbers>span{color:var(--muted);font-size:.9rem}.rock-meter-track{height:18px;border:2px solid #71624e;background:#090909;border-radius:2px;margin:15px 0 10px;padding:2px;overflow:hidden}.rock-meter-track span{display:block;height:100%;width:0;background:linear-gradient(90deg,#9b2520,#ff542e,#ffbd58);transition:width .5s}.rock-meter-caption,.support-small,.qr-caption{font-size:.78rem;color:var(--muted)}.encore-card{display:grid;grid-template-columns:minmax(180px,.75fr) 1fr;gap:22px;padding:20px;background:linear-gradient(140deg,#1c1714,#0d0d0d);border:1px solid #5a3b2a;border-radius:8px}.encore-image-link{display:block;align-self:center}.encore-image{display:block;width:100%;max-height:280px;object-fit:cover;border:1px solid #40362e;border-radius:5px}.encore-vote-content{min-width:0}.encore-poll-status{font-size:.82rem;color:var(--gold);min-height:1.3em}.encore-options{display:grid;gap:10px}.encore-option{display:flex;justify-content:space-between;align-items:center;gap:10px;width:100%;text-align:left;background:#111;border:1px solid #4a3a2c;color:var(--text);padding:13px;border-radius:4px;cursor:pointer}.encore-option:hover:not(:disabled){border-color:var(--hot);background:#211511}.encore-option:disabled{opacity:.7;cursor:default}.encore-option strong{font-size:.9rem}.encore-option span{font-size:.78rem;color:var(--gold);white-space:nowrap}.encore-option.selected{border-color:var(--gold);box-shadow:inset 0 0 0 1px var(--gold)}.encore-footnote{font-size:.7rem;color:#9a9288;margin-top:13px}.support-grid{display:grid;gap:12px}.support-grid .tip-card{margin:0}.kofi-qr-link{display:block;width:min(190px,100%);margin-top:12px;background:white;padding:8px;border-radius:5px}.kofi-qr{display:block;width:100%;height:auto}.qr-caption{margin:6px 0 0}.support-priority-note{font-size:.85rem;color:#c9bfb3;border-left:2px solid var(--gold);padding-left:13px}.support-grid .button{margin-top:9px}.top-nav a{white-space:nowrap}@media(max-width:700px){.top-nav{overflow-x:auto;justify-content:flex-start;gap:14px;padding-bottom:3px}.rock-meter-card,.encore-card{grid-template-columns:1fr;padding:16px}.rock-meter-art{max-width:170px}.encore-image{max-height:190px}.support-grid .tip-card{padding:15px}}
 
 
-/* Clear, compact disclosure control beside the Fuel the Next Show heading. */
-.tip-copy h2{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.info-toggle{display:inline-flex;align-items:center;gap:6px;padding:4px 0;border:0;background:transparent;color:var(--gold);font:800 .82rem/1.2 system-ui,sans-serif;letter-spacing:.02em;cursor:pointer;vertical-align:middle;flex:0 0 auto}
-.info-chevron{font-size:1rem;transition:transform .15s ease}
-.info-toggle:hover,.info-toggle:focus-visible{color:#fff;text-decoration:underline;text-underline-offset:4px}
-.tip-info{max-width:540px;margin-top:10px;padding:13px 15px;border-left:2px solid var(--gold);background:#15120f}
-.tip-info[hidden]{display:none}
-.tip-info p{margin:0;color:var(--muted)}
-.info-close{display:block;margin:12px 0 0;padding:3px 0;border:0;background:transparent;color:var(--gold);font-size:.76rem;font-weight:800;cursor:pointer}
-.info-close:hover{text-decoration:underline}
-/* Keep the paper drawing on the left and the prompt clearly beneath the logo on the right. */
-.splash::after{left:49%;top:67%;width:42%;text-align:center;font-size:clamp(.95rem,3vw,2rem);letter-spacing:.025em}
-@media(max-width:700px){.splash::after{left:47%;top:67%;width:45%;font-size:clamp(.72rem,3.1vw,1.2rem);letter-spacing:0}}
+/* Accessibility and simpler live-show tools */
+.site-header{gap:14px;padding-top:16px;padding-bottom:16px}
+.top-nav{gap:6px;flex-wrap:wrap;justify-content:flex-end;color:#fff;font-size:1rem}
+.top-nav a{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:10px 12px;border:1px solid #777;border-radius:6px;background:#171717;color:#fff;font-size:.95rem;font-weight:800;letter-spacing:0;text-transform:none;white-space:nowrap}
+.top-nav a:hover,.top-nav a:focus-visible{background:#3b1b12;color:#fff;border-color:#ffbd58;text-shadow:none}
+:focus-visible{outline:3px solid #ffdf73!important;outline-offset:4px!important}
+.button{min-height:46px;font-size:.95rem;padding:12px 18px}
+.rock-meter-track{height:24px;border:2px solid #b7b7b7;background:#222;padding:2px;border-radius:5px}
+.rock-meter-track span{border-radius:2px;background:#d62828;transition:width .5s,background-color .3s}
+.rock-meter-track.meter-red span{background:#e53935}
+.rock-meter-track.meter-yellow span{background:#ffd43b}
+.rock-meter-track.meter-green span{background:#32c766}
+.rock-meter-caption{font-size:.95rem;color:#fff;min-height:1.5em}
+.tip-card-icon{width:48px;height:48px;min-width:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.35rem;color:#fff}
+.kofi-qr-panel{width:min(210px,100%);margin-top:12px;padding:10px;background:#fff;border-radius:8px}
+.kofi-qr-panel[hidden]{display:none}
+.kofi-qr{display:block;width:100%;height:auto}
+.qr-caption{color:#333;font-size:.9rem;margin:8px 0 0}
+.encore-image-wrap{align-self:center}
+.encore-image-caption{color:#fff;font-size:.95rem;margin:10px 0 0}
+.encore-option{min-height:52px;font-size:1rem;border-width:2px}
+.encore-option strong{font-size:1rem}
+.encore-option span{font-size:.9rem}
+.support-priority-note{font-size:1rem}
+@media(max-width:800px){.site-header{align-items:stretch;flex-direction:column;gap:10px}.header-logo-link{align-self:center}.top-nav{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));width:100%;gap:8px;justify-content:stretch}.top-nav a{white-space:normal;text-align:center;line-height:1.2;padding:10px 6px;font-size:.9rem;min-height:48px}.rock-meter-card,.encore-card{grid-template-columns:1fr}.rock-meter-art{max-width:190px}.encore-image{max-height:220px}}
+@media(max-width:420px){.top-nav{grid-template-columns:repeat(2,minmax(0,1fr))}.top-nav a{font-size:.92rem}.tip-card-icon{width:44px;height:44px;min-width:44px}}
+
+/* October 27 update: game-menu styling, splash prompt, and stage readability. */
+.splash{overflow:hidden}.splash-artwork{display:block;width:100%;height:100%;object-fit:contain;object-position:center}
+.site-header{background:linear-gradient(180deg,#090909f5,#17100ef2);border-bottom:2px solid #9a4327;box-shadow:0 5px 0 #000,0 10px 28px #0009}.top-nav a{font-family:'Barlow Condensed',Impact,sans-serif;font-size:1rem;letter-spacing:.045em;text-transform:uppercase;background:linear-gradient(180deg,#29201d,#100f0f);border:1px solid #7b4934;border-bottom:3px solid #6d2c1c;border-radius:3px;box-shadow:inset 0 1px #ffffff20,0 3px 0 #000;transition:transform .16s ease,background .16s ease,border-color .16s ease,box-shadow .16s ease}.top-nav a:hover,.top-nav a:focus-visible{transform:translateY(-2px);background:linear-gradient(180deg,#4a2419,#1b1110);border-color:#ffbd58;box-shadow:inset 0 1px #ffffff24,0 4px 0 #000,0 0 16px #ff542e30}.button:active,.top-nav a:active,.button-pressed{transform:translateY(1px) scale(.985)!important;filter:brightness(1.18)}.request-card h3{font-size:1.2rem!important;line-height:1.35}.request-card p{font-size:1rem!important;line-height:1.5}.request-meta{font-size:.88rem!important}.request-card{padding:18px}.request-actions .button{font-size:.9rem;min-height:46px}@media(max-width:700px){.top-nav a{font-size:.9rem;min-height:48px}}@media(prefers-reduced-motion:reduce){.top-nav a,.button{transition:none}}
+
+
+/* October 27: unified, mobile-first support + Guitar Hero-inspired Rock Meter. */
+.support-combined{scroll-margin-top:80px}.support-main-card{border:1px solid #6a4b2b;border-radius:12px;padding:clamp(14px,3vw,30px);background:radial-gradient(ellipse at 15% 15%,#3a2114 0,#16110d 42%,#090909 100%);box-shadow:inset 0 0 0 2px #21170e,0 16px 45px #0008;position:relative;overflow:hidden}.support-main-card:before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.16;background:repeating-linear-gradient(135deg,transparent 0 14px,#b78b4b 15px,transparent 16px 28px)}.support-main-card>*{position:relative}.rock-meter-card{grid-template-columns:minmax(220px,.85fr) minmax(0,1.15fr);background:linear-gradient(140deg,#1c1714ed,#0a0909ed);border:1px solid #76552c;border-radius:9px;padding:clamp(12px,2.5vw,26px);gap:clamp(14px,3vw,34px)}.rock-meter-art-wrap{min-width:0;text-align:center}.rock-meter-art{display:block;width:100%;max-width:370px;justify-self:center;filter:drop-shadow(0 0 12px #4baaff30);overflow:visible}.meter-zone-label{font:800 .72rem 'Barlow Condensed',Impact,sans-serif;letter-spacing:.09em;color:#9bd7ff;margin:0}.rock-meter-numbers strong{color:#f7c76d}.rock-meter-track{height:25px;border:2px solid #d2b77f;border-radius:7px;background:linear-gradient(90deg,#7c181b 0 49%,#8b6c16 50% 99%,#155c2b 100%);box-shadow:inset 0 2px 5px #000}.rock-meter-track span{border-radius:3px;background:linear-gradient(90deg,#e02b31,#ffce37,#32e76b);box-shadow:0 0 10px #fff5}.rock-meter-track.meter-red span{background:linear-gradient(90deg,#b51e26,#f0443b)}.rock-meter-track.meter-yellow span{background:linear-gradient(90deg,#e6a91c,#ffe66b)}.rock-meter-track.meter-green span{background:linear-gradient(90deg,#17a94c,#64ff92)}.meter-zone-key{display:flex;flex-wrap:wrap;gap:7px 14px;font-size:.68rem;color:#d2c9bb}.red-key{color:#ff6666}.yellow-key{color:#ffe36a}.green-key{color:#72ff9b}.combined-tip-copy{margin:26px 0 16px;padding-top:20px;border-top:1px solid #594027}.combined-tip-copy h2{font-size:clamp(2rem,5vw,3rem);margin:0 0 8px}.combined-tip-copy p:last-child{max-width:850px;margin-bottom:0}.support-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.support-grid .tip-card{min-width:0;background:linear-gradient(145deg,#21170f,#101010);border-color:#60462d;padding:16px;align-items:flex-start}.tip-card-icon{flex:0 0 42px;background:#35190f;color:#ff7041}.kofi-icon{background:#e94c31;color:#fff;box-shadow:0 0 18px #f04a2a33}.paypal-icon{background:#063e78;color:#fff;font-weight:900;font-style:italic}.support-grid .button{display:inline-flex;align-items:center;justify-content:center;min-height:44px;text-align:center;line-height:1.2;white-space:normal}.wallet-note{margin-top:18px;padding:15px 16px;border:1px solid #4d3b2a;border-radius:8px;background:#0b0b0b}.wallet-badges{display:flex;flex-wrap:wrap;gap:10px;margin:10px 0}.wallet-badge{display:inline-flex;align-items:center;gap:7px;border:1px solid #4c4c4c;border-radius:6px;padding:8px 12px;background:#171717;color:#f7f7f7;font-weight:800;font-size:.85rem}.wallet-apple{font-size:1.2rem;color:#fff}.google-g{font-size:1.1rem;font-weight:900;background:conic-gradient(#4285f4 0 25%,#34a853 25% 50%,#fbbc05 50% 75%,#ea4335 75%);background-clip:text;color:transparent}.wallet-note>p:last-child{font-size:.75rem;color:#aaa39b;margin-bottom:0}.splash::after{display:none!important}.splash-artwork{width:100%;height:100%;max-width:1000px;max-height:100dvh;object-fit:contain;object-position:center;background:#000}.splash{padding:0;background:#000}.splash-artwork{transform:none!important}@media(max-width:800px){.rock-meter-card{grid-template-columns:1fr}.rock-meter-art{max-width:min(100%,370px)}.rock-meter-info{width:100%}.support-grid{grid-template-columns:1fr}.support-grid .tip-card{padding:15px}.support-main-card{padding:12px}.wallet-badges{gap:8px}.wallet-badge{font-size:.78rem}.combined-tip-copy{margin-top:18px}}@media(max-width:380px){.rock-meter-numbers strong{font-size:2.4rem}.meter-zone-key{font-size:.62rem}.support-main-card{padding:9px}.rock-meter-art{max-width:310px}}
+
+
+/* Mobile-first legibility pass based on the uploaded Grifflist concept. */
+body:before{opacity:.025;background-size:8px 8px}
+.support-main-card:before{display:none}
+.support-main-card{background:#111;border-color:#70502d;box-shadow:inset 0 0 0 1px #261a10,0 12px 32px #0007}
+.rock-meter-card{display:grid;align-items:center}
+.rock-meter-art-wrap{width:100%;max-width:430px;margin-inline:auto}
+.rock-meter-art{width:100%;height:auto;max-width:430px;object-fit:contain;filter:drop-shadow(0 8px 12px #0009)}
+.rock-meter-info{font-size:1rem}
+.rock-meter-numbers span,.rock-meter-caption{font-size:1rem;line-height:1.5}
+.meter-zone-key{font-size:.82rem;line-height:1.5}
+.support-grid .tip-card{background:#15110f;border-color:#59432e}
+.wallet-note>p:last-child{font-size:.9rem;line-height:1.55}
+.catalog-footnote{font-size:1rem;color:#fff;background:#21160f;border:1px solid #694326;border-radius:7px;padding:12px 14px;text-align:center;line-height:1.4}
+.catalog-footnote strong{color:#ffd28a;letter-spacing:.025em}
+.section-heading>p:not(.eyebrow),.tip-copy>p:not(.eyebrow),.support-small,.form-status{font-size:1rem;line-height:1.6}
+.splash-stage{position:relative;width:min(100vw,61.3dvh);aspect-ratio:982/1602;max-height:100dvh;flex:0 0 auto}
+.splash-artwork{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;max-width:none;max-height:none;transform:none!important}
+.press-prompt{position:absolute;left:47.5%;top:53.5%;bottom:auto;right:auto;width:49%;transform:translateY(-50%);font:900 clamp(9px,2.3vw,19px)/1.15 Impact,'Arial Narrow',sans-serif;letter-spacing:.01em;text-align:center;color:#f28a35;text-shadow:0 0 7px #a94316,0 2px 0 #42170a;animation:prompt-fade 1.8s ease-in-out infinite;white-space:nowrap;pointer-events:none}
+@keyframes prompt-fade{0%,100%{opacity:.3}50%{opacity:1}}
+@media(max-width:700px){.splash{padding:0}.splash-stage{width:min(100vw,61.3dvh);max-width:100vw}.splash-artwork{width:100%;height:100%;transform:none!important}.press-prompt{font-size:clamp(8px,2.3vw,12px);left:47.5%;top:53.5%;width:49%}.rock-meter-card{padding:14px;gap:12px}.rock-meter-art-wrap{max-width:370px}.rock-meter-art{max-width:370px}.support-grid .tip-card{padding:16px}.catalog-footnote{font-size:.95rem}}
+@media(prefers-reduced-motion:reduce){.press-prompt{animation:none;opacity:1}}
+
+/* Follow-up: centered, more readable title prompt and balanced audio playback levels are set in script.js. */
+.press-prompt{left:46%;width:51%;text-align:center;font-size:clamp(11px,2.65vw,21px);letter-spacing:.025em;text-shadow:0 0 9px #a94316,0 2px 0 #42170a}
+@media(max-width:700px){.press-prompt{left:45%;width:53%;font-size:clamp(9px,2.7vw,14px);letter-spacing:.01em}}
+
+/* Approved title screen artwork: fully visible on phones, with independent fading prompt. */
+.splash-stage{position:relative;width:min(100vw,66.6667dvh);aspect-ratio:2/3;max-height:100dvh;flex:0 0 auto;margin:auto}
+.splash-artwork{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:center;max-width:none;max-height:none;transform:none!important}
+.press-prompt{position:absolute;left:5%;top:68.5%;bottom:auto;right:auto;width:90%;transform:translateY(-50%);font:900 clamp(14px,3.3vw,30px)/1.1 Impact,'Arial Narrow',sans-serif;letter-spacing:.015em;text-align:center;color:#ff9b3d;text-shadow:0 0 8px #b44716,0 2px 0 #42170a;animation:prompt-fade 1.8s ease-in-out infinite;white-space:normal;pointer-events:none}
+@keyframes prompt-fade{0%,100%{opacity:1}50%{opacity:.35}}
+@media(max-width:700px){.splash{padding:0}.splash-stage{width:min(100vw,66.6667dvh);max-width:100vw}.press-prompt{left:4%;width:92%;top:68.5%;font-size:clamp(14px,4vw,23px);letter-spacing:0}}
+@media(prefers-reduced-motion:reduce){.press-prompt{animation:none;opacity:1}}
+
+/* Updated portrait title screen: original guitarist sketch + refreshed Grifflist logo. */
+.splash-stage{width:min(100vw,61.3dvh);aspect-ratio:942/1536;max-height:100dvh;margin:auto}
+.splash-artwork{object-fit:contain;object-position:center}
+.press-prompt{left:45%;top:61%;width:52%;font:900 clamp(19px,4vw,34px)/1.08 Impact,'Arial Black',sans-serif;letter-spacing:.015em;text-align:center;color:#ff9b3d;text-shadow:0 0 10px #b44716,0 2px 0 #42170a;white-space:normal;animation:prompt-fade 1.8s ease-in-out infinite}
+@media(max-width:700px){.splash-stage{width:min(100vw,61.3dvh);max-width:100vw}.press-prompt{left:45%;top:61%;width:52%;font-size:clamp(16px,4.1vw,27px);line-height:1.08;letter-spacing:0}}
+@media(prefers-reduced-motion:reduce){.press-prompt{animation:none;opacity:1}}
+
+/* Cleaner, consistent navigation and simplified encore voting. */
+.top-nav{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;align-items:stretch;flex:1;max-width:850px}
+.top-nav a{min-width:0;white-space:normal;text-align:center;line-height:1.15;padding:11px 8px;font-size:.92rem;min-height:46px}
+.encore-card-simple{grid-template-columns:minmax(0,1fr);max-width:760px;margin-inline:auto;padding:clamp(16px,3vw,28px)}
+.encore-card-simple .encore-vote-content{width:100%}
+.encore-card-simple .encore-options{grid-template-columns:1fr;gap:10px}
+.encore-card-simple .encore-poll-status{min-height:0;margin:8px 0 14px}
+.encore-card-simple .encore-footnote{margin-bottom:0}
+.social-links-branded{display:flex;flex-wrap:wrap;gap:12px;margin-top:18px}
+.social-links-branded .social-link{display:inline-flex;align-items:center;gap:9px;min-height:44px;padding:9px 13px;border:1px solid #68412e;border-radius:5px;background:linear-gradient(180deg,#211815,#101010);font-weight:750;color:#f6f1e9;overflow-wrap:anywhere}
+.social-links-branded .social-link svg{width:23px;height:23px;flex:0 0 23px;color:#ff9b3d}
+.social-links-branded .social-link:hover{border-color:var(--gold);color:var(--gold)}
+@media(max-width:800px){.top-nav{grid-template-columns:repeat(3,minmax(0,1fr));max-width:none;gap:7px}.top-nav a{font-size:.9rem;padding:10px 6px}.top-nav a:last-child{grid-column:2 / 4}}
+@media(max-width:440px){.top-nav{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.top-nav a{font-size:.86rem;min-height:44px}.top-nav a:last-child{grid-column:1 / -1}.social-links-branded{display:grid;grid-template-columns:1fr}.social-links-branded .social-link{width:100%}}
+
+
+/* Conversion-focused navigation, compact song reveal, and distinct tip/meter anchors. */
+.top-nav{grid-template-columns:repeat(6,minmax(0,1fr));max-width:1100px;gap:6px}
+.top-nav a{padding:10px 6px;font-size:.86rem;letter-spacing:.025em}
+#tip-options{scroll-margin-top:90px}
+#rock-meter{scroll-margin-top:90px}
+.song-reveal{margin-top:14px;border:1px solid #80512f;border-radius:8px;background:linear-gradient(180deg,#24170f,#0c0b0a);overflow:hidden;box-shadow:inset 0 1px #ffffff12,0 5px 18px #0007}
+.song-reveal>summary{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:52px;padding:13px 16px;cursor:pointer;list-style:none;color:#ffe0a6;font-weight:900;font-size:1.05rem;letter-spacing:.025em}
+.song-reveal>summary::-webkit-details-marker{display:none}
+.song-reveal>summary span{font-size:1.35rem;color:#ff9b3d;transition:transform .18s}
+.song-reveal[open]>summary{border-bottom:1px solid #654126;background:#301b11}
+.song-reveal[open]>summary span{transform:rotate(45deg)}
+.song-reveal-content{padding:0 12px 12px}
+.song-reveal-content .song-list-heading{margin-top:12px}
+@media(max-width:800px){.top-nav{grid-template-columns:repeat(3,minmax(0,1fr));max-width:none;gap:7px}.top-nav a{font-size:.88rem;padding:10px 5px;min-height:46px}.top-nav a:last-child{grid-column:auto}}
+@media(max-width:440px){.top-nav{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.top-nav a{font-size:.86rem;min-height:44px}.top-nav a:last-child{grid-column:auto}.song-reveal>summary{font-size:1rem;padding:12px}}
+
+/* Compact navigation icons; the Rock Meter thumbnail follows the live meter state. */
+.top-nav a{gap:6px}
+.nav-emoji{font-size:1.05em;line-height:1;flex:0 0 auto}
+.nav-meter-icon{display:inline-block;width:24px;height:21px;object-fit:contain;flex:0 0 auto;filter:drop-shadow(0 1px 3px #000)}
+@media(max-width:800px){.top-nav a{gap:5px}.nav-meter-icon{width:22px;height:19px}.nav-emoji{font-size:1em}}
+
+/* Floating close control stays reachable while browsing the long song list. */
+.close-song-list{position:fixed;right:12px;top:52%;transform:translateY(-50%) translateX(12px);z-index:15;display:flex;align-items:center;gap:7px;padding:12px 14px;border:1px solid #ff9b3d;border-radius:999px;background:#21130df2;color:#ffe0a6;font-size:.82rem;font-weight:900;box-shadow:0 5px 24px #000b;cursor:pointer;backdrop-filter:blur(8px);opacity:0;visibility:hidden;transition:opacity .26s ease,transform .26s ease,visibility .26s ease}
+.close-song-list:hover{background:#512714;color:#fff}
+.close-song-list.is-visible{opacity:1;visibility:visible;transform:translateY(-50%) translateX(0)}
+.close-song-list[hidden]{display:none}
+@media(max-width:600px){.close-song-list{right:8px;top:auto;bottom:18px;transform:translateY(8px);padding:12px 13px;font-size:.78rem;box-shadow:0 4px 20px #000d}.close-song-list.is-visible{transform:translateY(0)}.close-song-list span{display:inline}}
+@media(prefers-reduced-motion:reduce){.close-song-list{transition:none}}
+
+/* Priority tip return path */
+.priority-return-action{margin:22px 0;padding:18px;border:1px solid #9b5528;border-radius:14px;background:linear-gradient(135deg,#24150f,#111);text-align:center;display:grid;justify-items:center;gap:10px}
+.priority-return-action p{margin:0;max-width:680px}
+.priority-return-action .button{max-width:100%;white-space:normal}
+/* Keep the catalog close control reachable at the bottom on every screen size. */
+.close-song-list{top:auto;bottom:18px;right:12px;transform:translateY(10px);}
+.close-song-list.is-visible{transform:translateY(0)}
+@media(max-width:600px){.close-song-list{right:8px;bottom:14px;top:auto;transform:translateY(10px);padding:12px 13px;font-size:.78rem}.close-song-list.is-visible{transform:translateY(0)}}
+
+
+/* Final polish: stronger hierarchy, cleaner spacing, and obvious interactive states. */
+:root{scroll-behavior:smooth;scroll-padding-top:84px}
+:focus-visible{outline:3px solid #ffc36b!important;outline-offset:3px!important}
+.button,.top-nav a,.social-links-branded .social-link{transition:transform .16s ease,border-color .16s ease,background-color .16s ease,box-shadow .16s ease}
+.button:hover,.top-nav a:hover{transform:translateY(-1px)}
+.top-nav a{border:1px solid #493222;border-radius:7px;background:linear-gradient(180deg,#211814,#100e0d);font-weight:850;min-height:48px;display:flex;align-items:center;justify-content:center;gap:6px}
+.top-nav a:active,.button:active{transform:translateY(1px)}
+.section{scroll-margin-top:86px}
+.section-heading h2{line-height:1.04;text-wrap:balance}
+.section-heading>p:not(.eyebrow){max-width:68ch}
+input,select,textarea{font:inherit}
+input:focus,select:focus,textarea:focus{border-color:#ffb45e!important;box-shadow:0 0 0 3px #ff9b3d25!important}
+.song-reveal>summary{min-height:56px}
+.song-reveal-content{padding:8px 12px 14px}
+.song-reveal[open]{box-shadow:0 12px 30px #0008}
+.song-row,.song-item,.song-card{transition:background-color .15s ease,border-color .15s ease}
+@media(max-width:600px){body{font-size:16px}.section{padding-inline:16px}.top-nav a{font-size:.88rem;min-height:48px;padding:10px 5px}.close-song-list{max-width:calc(100vw - 24px)}.request-form .button,.priority-return-action .button{width:100%}}
+@media(prefers-reduced-motion:reduce){:root{scroll-behavior:auto}.button,.top-nav a,.social-links-branded .social-link{transition:none}}
+
+
+/* Final title-screen logo replacement: use the supplied logo only, without flames or extra artwork. */
+.splash{display:grid;place-items:center;padding:0!important;background:#000!important;overflow:hidden}
+.splash:before,.splash:after{display:none!important}
+.splash-stage{position:relative;width:min(100vw,167.37dvh)!important;aspect-ratio:795/475!important;max-width:100vw;max-height:100dvh;margin:auto;flex:0 1 auto}
+.splash-artwork{position:absolute;inset:0;width:100%;height:100%;max-width:none;max-height:none;object-fit:contain;object-position:center;background:#000;transform:none!important}
+.press-prompt{left:0!important;right:0!important;top:auto!important;bottom:3.5%!important;width:100%!important;transform:none!important;font:900 clamp(11px,2.1vw,20px)/1.1 Impact,'Arial Black',sans-serif!important;letter-spacing:.04em!important;text-align:center;color:#f3d6a1!important;text-shadow:0 2px 8px #000,0 0 10px #000!important;white-space:normal!important}
+@media(max-width:700px){.splash-stage{width:min(100vw,167.37dvh)!important;max-width:100vw}.press-prompt{bottom:2.5%!important;font-size:clamp(10px,3vw,16px)!important;letter-spacing:.02em!important}}
+@media(prefers-reduced-motion:reduce){.press-prompt{animation:none!important;opacity:1}}
