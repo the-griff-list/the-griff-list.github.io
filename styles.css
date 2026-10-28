@@ -156,9 +156,9 @@ footer p{font-size:.7rem;color:#81797a;letter-spacing:.02em}
 .song-title{display:block;background:none;border:0;padding:0;color:inherit;text-align:left;font:inherit;font-weight:800}
 .song-row:focus-visible{outline:2px solid var(--hot);outline-offset:-2px}
 
-/* Splash prompt sits centered just a touch lower beneath the lettering in the artwork. */
-.splash::after{left:47%;top:64%;width:46%;text-align:center;font-size:clamp(1rem,3.2vw,2.25rem);letter-spacing:.025em}
-@media(max-width:700px){.splash::after{left:46%;top:64%;width:47%;font-size:clamp(.8rem,3.5vw,1.35rem);letter-spacing:0}}
+/* Final visual polish: keep the press prompt tucked directly beneath the logo artwork. */
+.splash::after{left:47%;top:63%;width:46%;text-align:center;font-size:clamp(1rem,3.2vw,2.25rem);letter-spacing:.025em}
+@media(max-width:700px){.splash::after{left:46%;top:63%;width:47%;font-size:clamp(.8rem,3.5vw,1.35rem);letter-spacing:0}}
 .header-logo-link{display:flex;align-items:center;flex:0 0 auto;line-height:0}
 .header-logo{display:block;width:clamp(120px,16vw,190px);height:auto;max-height:56px;object-fit:contain}
 @media(max-width:700px){.site-header{align-items:center;flex-direction:column;gap:7px}.header-logo{width:clamp(118px,35vw,160px);max-height:43px}.top-nav{width:100%}}
@@ -342,13 +342,3 @@ input:focus,select:focus,textarea:focus{border-color:#ffb45e!important;box-shado
 .song-row,.song-item,.song-card{transition:background-color .15s ease,border-color .15s ease}
 @media(max-width:600px){body{font-size:16px}.section{padding-inline:16px}.top-nav a{font-size:.88rem;min-height:48px;padding:10px 5px}.close-song-list{max-width:calc(100vw - 24px)}.request-form .button,.priority-return-action .button{width:100%}}
 @media(prefers-reduced-motion:reduce){:root{scroll-behavior:auto}.button,.top-nav a,.social-links-branded .social-link{transition:none}}
-
-
-/* Final title-screen logo replacement: use the supplied logo only, without flames or extra artwork. */
-.splash{display:grid;place-items:center;padding:0!important;background:#000!important;overflow:hidden}
-.splash:before,.splash:after{display:none!important}
-.splash-stage{position:relative;width:min(100vw,167.37dvh)!important;aspect-ratio:795/475!important;max-width:100vw;max-height:100dvh;margin:auto;flex:0 1 auto}
-.splash-artwork{position:absolute;inset:0;width:100%;height:100%;max-width:none;max-height:none;object-fit:contain;object-position:center;background:#000;transform:none!important}
-.press-prompt{left:0!important;right:0!important;top:auto!important;bottom:3.5%!important;width:100%!important;transform:none!important;font:900 clamp(11px,2.1vw,20px)/1.1 Impact,'Arial Black',sans-serif!important;letter-spacing:.04em!important;text-align:center;color:#f3d6a1!important;text-shadow:0 2px 8px #000,0 0 10px #000!important;white-space:normal!important}
-@media(max-width:700px){.splash-stage{width:min(100vw,167.37dvh)!important;max-width:100vw}.press-prompt{bottom:2.5%!important;font-size:clamp(10px,3vw,16px)!important;letter-spacing:.02em!important}}
-@media(prefers-reduced-motion:reduce){.press-prompt{animation:none!important;opacity:1}}

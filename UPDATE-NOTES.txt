@@ -33,9 +33,3 @@ FINAL VISUAL POLISH
 - Improved admin dashboard card contrast, priority visibility, form readability, and gig-friendly mobile buttons.
 - Existing logo, floating close-list button, priority-request flow, Rock Meter, and encore controls are retained.
 - These are frontend polish changes; they do not add automatic payment verification.
-
-
-TITLE SCREEN LOGO UPDATE (2026-10-28)
-- Replaced the title-screen artwork with the exact supplied The Grifflist logo. No extra flames or guitarist artwork are included around it.
-- Updated the small header logo to match.
-- Kept the functional “PRESS ANY BUTTON TO ROCK” prompt separate beneath the logo.
