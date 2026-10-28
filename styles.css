@@ -691,7 +691,7 @@ footer .gig-theme-controls{grid-area:modes}
 footer .sound-theme-control{grid-area:sound;justify-self:center}
 footer #install-grifflist{grid-area:install;justify-self:center}
 footer>a[href*="explore.html"]{display:none}
-footer .secret-stage-trigger{grid-column:1/-1;justify-self:center}
+footer .secret-stage-trigger{grid-area:secret!important;justify-self:center;align-self:center}
 .header-logo{width:clamp(115px,16vw,170px);height:auto}
 .explore-drawer{margin:14px auto 22px;border-radius:12px}
 .explore-drawer>summary{min-height:56px;padding:12px 15px}
@@ -714,3 +714,246 @@ footer .secret-stage-trigger{grid-column:1/-1;justify-self:center}
 body.theme-day .section-heading h2 span,body.theme-day .contact-section h2 span,body.theme-day .tip-copy h2 span{color:#a92f20!important}
 @media(max-width:700px){.time-machine-rail{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}.time-machine-rail button{min-height:44px;padding:8px 5px}footer{grid-template-columns:auto 1fr auto;gap:10px;padding-inline:14px}footer>p{font-size:.68rem}.gig-theme-controls{width:100%;gap:6px}.gig-theme-controls button{flex:1;min-width:0;padding:8px 9px!important}.header-logo{width:clamp(130px,23vw,170px)}}
 @media(max-width:400px){footer{grid-template-columns:1fr auto;grid-template-areas:'brand top' 'credit credit' 'modes modes' 'sound sound' 'install install'}.time-machine-rail{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+
+/* Compact request and footer polish, October 2026 */
+.request-form .random-request-song{width:100%;margin:0 0 10px;min-height:46px}
+.remember-name-option{display:inline-flex!important;gap:8px!important;align-items:center!important;width:fit-content;max-width:100%;padding:7px 10px;border:1px solid var(--line);border-radius:8px;background:var(--panel2);font-size:.82rem!important;line-height:1.25;margin:8px 0 14px!important}
+.remember-name-option input{width:17px!important;height:17px!important;flex-basis:17px!important}
+.request-status-panel{padding:8px 0!important;margin-top:12px!important;border:0!important;background:transparent!important}
+.request-status-actions{display:block}.request-status-actions #check-last-request{width:100%;min-height:48px}
+.request-status-actions #request-status-result:empty{display:none}
+.request-status-actions #request-status-result{display:block;margin-top:8px}
+#rock-meter>.section-heading p{display:none!important}
+.watch-live-promo{padding:26px 0!important;text-align:center}
+.watch-live-promo-inner{display:block!important;padding:0!important;border:0!important;background:transparent!important;box-shadow:none!important}
+.watch-live-cta{width:min(100%,520px);min-height:58px;font-size:1rem;border-radius:10px;background:linear-gradient(110deg,#ff7c32,#ff3f72);box-shadow:0 4px 0 #74294f}
+body.theme-day .header-logo,body.theme-day .footer-logo{filter:drop-shadow(0 1px 1px #3c2a1b) drop-shadow(0 0 2px #fffaf2);}
+body.theme-day .section{border-radius:14px}
+body.theme-day .request-form,body.theme-day .catalog-controls,body.theme-day .payment-method-banner,body.theme-day .rock-meter-card{box-shadow:0 8px 22px #6c482012}
+body.theme-day .catalog-controls{background:#211711;color:#fff8ed}
+body.theme-day .catalog-controls input,body.theme-day .catalog-controls select{background:#fffaf2;color:#211711}
+body.theme-day .song-reveal{background:#211711;color:#fff8ed;border-radius:12px}
+body.theme-day .song-reveal summary{color:#fff8ed}
+body.theme-day .seasonal-event{background:linear-gradient(120deg,#fffaf0,#f0dfc7);color:#211711}
+body.theme-eighties .section,body.theme-eighties .request-form,body.theme-eighties .rock-meter-card,body.theme-eighties .watch-live-promo-inner,body.theme-eighties .seasonal-event,body.theme-eighties .explore-drawer,body.theme-eighties .payment-method-banner{background:linear-gradient(135deg,#24102e 0%,#170c24 52%,#35132c 100%);border-color:#ff4f93;box-shadow:0 0 0 1px #ff4f9320,0 8px 24px #07020b45}
+body.theme-eighties .payment-method-banner{color:#fff4e8}
+body.theme-eighties .seasonal-event h2,body.theme-eighties .section h2{ text-shadow:2px 2px 0 #72284c }
+body.theme-eighties .rock-meter-art{filter:drop-shadow(0 0 12px #ff4f9344)}
+.gig-theme-controls{display:flex;align-items:center;flex-wrap:wrap}
+.sound-theme-control{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;margin:4px auto!important;font-size:.88rem}
+.sound-theme-control select{max-width:220px;min-width:0;border-radius:9px;padding:10px 12px}
+footer{display:grid!important;grid-template-columns:auto 1fr auto!important;grid-template-areas:'credit credit credit' 'modes modes modes' 'sound sound sound' 'brand secret top'!important;align-items:center;gap:14px!important}
+footer .footer-logo-link{grid-area:brand!important;width:min(105px,26vw)!important;margin:0!important;filter:none}
+footer .footer-logo{filter:drop-shadow(0 1px 1px #3c2a1b)}
+footer>p{grid-area:credit!important;width:auto!important;margin:0!important;text-align:center}
+footer>a[href="#top"]{grid-area:top!important;justify-self:end!important}
+footer #install-grifflist{display:none!important}
+footer .secret-stage-trigger{grid-area:secret!important;justify-self:center;align-self:center}
+.time-machine-section,.bonus-song-tools{display:none!important}
+.seasonal-event{padding:14px 16px!important;min-height:0!important;border-radius:14px!important}
+.seasonal-event .eyebrow{font-size:.62rem!important}
+.seasonal-event h2{font-size:clamp(1.2rem,4vw,1.7rem)!important;margin:4px 0!important}
+.seasonal-event p:not(.eyebrow){margin:4px 0 0;font-size:.9rem}
+.tip-wall-section .section-heading p,.tip-wall-note{display:none!important}
+.tip-wall-samples .tip-wall-row{border-style:dashed}
+@media(max-width:520px){.time-machine-rail{grid-template-columns:repeat(3,minmax(0,1fr))}footer{grid-template-columns:auto 1fr auto!important}footer .footer-logo-link{width:min(86px,24vw)!important}.gig-theme-controls{width:100%;justify-content:center}.gig-theme-controls button{min-width:72px!important;padding:8px 12px!important}}
+
+
+/* === Visual refinement: Gothic Night + Guitar Hero 80s === */
+body.theme-night {
+  --bg:#09070b;
+  --panel:#151016;
+  --text:#f5edf0;
+  --muted:#b9aab2;
+  --line:#4d303b;
+  --hot:#b92c45;
+  --gold:#d2a15e;
+  color:var(--text);
+  background:
+    radial-gradient(ellipse at 15% 0%, rgba(105,20,45,.22), transparent 42%),
+    radial-gradient(ellipse at 90% 30%, rgba(49,22,48,.20), transparent 38%),
+    linear-gradient(180deg,#09070b 0%,#100b12 48%,#08070a 100%);
+}
+body.theme-night .section,
+body.theme-night .explore-drawer,
+body.theme-night .request-status-panel,
+body.theme-night .favourite-row,
+body.theme-night .live-tip-card,
+body.theme-night .live-info-card,
+body.theme-night .seasonal-event,
+body.theme-night .tip-wall-section,
+body.theme-night .rock-meter-section {
+  background:linear-gradient(145deg,rgba(29,18,26,.97),rgba(12,10,14,.98));
+  color:#f5edf0;
+  border-color:#573340;
+  box-shadow:0 10px 30px rgba(0,0,0,.30), inset 0 1px rgba(255,220,230,.025);
+}
+body.theme-night .section-heading h2,
+body.theme-night .contact-section h2,
+body.theme-night .watch-live-card h2 {
+  text-shadow:0 2px 0 #26080f,0 0 20px rgba(185,44,69,.12);
+}
+body.theme-night input,
+body.theme-night textarea,
+body.theme-night select,
+body.theme-night .song-search,
+body.theme-night .catalog-controls {
+  background:#0b090d;
+  color:#f8f0f3;
+  border-color:#62414b;
+}
+body.theme-night .button,
+body.theme-night button,
+body.theme-night .top-nav a {
+  border-color:#62404b;
+}
+body.theme-night .button-hot,
+body.theme-night .watch-live-button {
+  background:linear-gradient(110deg,#9f2038,#d13a45);
+  border-color:#e05a65;
+  box-shadow:0 5px 0 #48101d,0 0 18px rgba(185,44,69,.15);
+}
+body.theme-night .header-logo,
+body.theme-night .footer-logo-link img {
+  filter:drop-shadow(0 2px 5px rgba(255,230,236,.32)) drop-shadow(0 0 12px rgba(191,47,70,.16));
+}
+body.theme-night .gig-theme-controls,
+body.theme-night .sound-theme-control {
+  background:linear-gradient(145deg,#1b1119,#100b11);
+  border-color:#53313c;
+}
+body.theme-night .gig-theme-controls button[aria-pressed="true"] {
+  background:#2a111a;
+  color:#ff8b9a;
+  border-color:#c83d53;
+}
+
+/* 80s mode: electric arcade-magenta, cyan and sunset orange, inspired by
+   Guitar Hero Encore: Rocks the 80s cover art without copying the artwork. */
+body.theme-eighties {
+  --bg:#10071d;
+  --panel:#1b0d2d;
+  --text:#fff5ff;
+  --muted:#e0c6ed;
+  --line:#7c3b92;
+  --hot:#ff3eaa;
+  --gold:#45f4f0;
+  color:#fff5ff;
+  background:
+    radial-gradient(ellipse at 50% -8%,rgba(255,74,169,.35),transparent 40%),
+    radial-gradient(ellipse at 0% 30%,rgba(53,229,255,.17),transparent 36%),
+    radial-gradient(ellipse at 100% 55%,rgba(255,116,40,.16),transparent 35%),
+    linear-gradient(180deg,#160822 0%,#0c0718 60%,#17081f 100%);
+}
+body.theme-eighties .section,
+body.theme-eighties .explore-drawer,
+body.theme-eighties .request-status-panel,
+body.theme-eighties .favourite-row,
+body.theme-eighties .live-tip-card,
+body.theme-eighties .live-info-card,
+body.theme-eighties .seasonal-event,
+body.theme-eighties .tip-wall-section,
+body.theme-eighties .rock-meter-section {
+  background:
+    linear-gradient(135deg,rgba(37,14,54,.97),rgba(15,9,31,.98));
+  color:#fff5ff;
+  border-color:#8c42a5;
+  box-shadow:0 0 0 1px rgba(255,62,170,.10),0 10px 28px rgba(0,0,0,.25),0 0 22px rgba(255,62,170,.08);
+}
+body.theme-eighties .section-heading h2,
+body.theme-eighties .contact-section h2 {
+  color:#ff6dca;
+  text-shadow:0 2px 0 #47123d,0 0 18px rgba(255,62,170,.30);
+}
+body.theme-eighties .section:nth-of-type(odd) {
+  background-image:linear-gradient(130deg,rgba(255,62,170,.07),transparent 40%,rgba(69,244,240,.055));
+}
+body.theme-eighties input,
+body.theme-eighties textarea,
+body.theme-eighties select,
+body.theme-eighties .song-search,
+body.theme-eighties .catalog-controls {
+  background:#0b0715;
+  color:#fff5ff;
+  border-color:#76468e;
+}
+body.theme-eighties .button-hot,
+body.theme-eighties .watch-live-button {
+  background:linear-gradient(105deg,#ff702f 0%,#ff329d 58%,#a94cff 100%);
+  color:#fff;
+  border-color:#ff9ad9;
+  box-shadow:0 5px 0 #51194f,0 0 22px rgba(255,50,157,.25);
+}
+body.theme-eighties .button:not(.button-hot),
+body.theme-eighties button:not(.button-hot),
+body.theme-eighties .top-nav a {
+  background:linear-gradient(145deg,#211032,#10091b);
+  color:#fff5ff;
+  border-color:#75408b;
+}
+body.theme-eighties .gig-theme-controls,
+body.theme-eighties .sound-theme-control {
+  background:linear-gradient(135deg,#241036,#10091b);
+  border-color:#804098;
+  box-shadow:0 0 18px rgba(255,62,170,.12);
+}
+body.theme-eighties .gig-theme-controls button[aria-pressed="true"] {
+  background:linear-gradient(100deg,#ff702f,#ff329d);
+  color:white;
+  border-color:#ff9ad9;
+  box-shadow:0 0 16px rgba(255,62,170,.28);
+}
+body.theme-eighties .header-logo,
+body.theme-eighties .footer-logo-link img {
+  filter:drop-shadow(0 2px 5px rgba(255,255,255,.4)) drop-shadow(0 0 12px rgba(255,62,170,.28));
+}
+@media (prefers-reduced-motion:no-preference) {
+  body.theme-eighties .button-hot:hover,
+  body.theme-eighties .watch-live-button:hover {
+    box-shadow:0 5px 0 #51194f,0 0 28px rgba(255,62,170,.38);
+  }
+}
+
+
+/* Consistent heading system across public pages: first word light, remainder orange. */
+body:not(.admin-page) h1,
+body:not(.admin-page) h2,
+body:not(.admin-page) h3 {
+  text-transform:uppercase;
+  letter-spacing:.015em;
+  line-height:1.06;
+}
+body:not(.admin-page) .heading-tone-first {
+  color:#fff7ee;
+  text-shadow:0 2px 0 rgba(0,0,0,.38);
+}
+body:not(.admin-page) .heading-tone-rest {
+  color:#ff6a32;
+  text-shadow:0 2px 0 rgba(0,0,0,.22);
+}
+/* Keep light mode genuinely readable rather than placing white text on cream. */
+body.theme-day .heading-tone-first {
+  color:#251b17;
+  text-shadow:none;
+}
+body.theme-day .heading-tone-rest {
+  color:#bd3e22;
+  text-shadow:none;
+}
+body.theme-night .heading-tone-first {
+  color:#fff2f2;
+  text-shadow:0 2px 0 #280a12,0 0 12px rgba(255,235,240,.08);
+}
+body.theme-night .heading-tone-rest {
+  color:#ff704a;
+  text-shadow:0 2px 0 #310d18,0 0 14px rgba(255,72,62,.12);
+}
+body.theme-eighties .heading-tone-first {
+  color:#fff7ff;
+  text-shadow:0 2px 0 #3a1645,0 0 12px rgba(255,255,255,.14);
+}
+body.theme-eighties .heading-tone-rest {
+  color:#ff713c;
+  text-shadow:0 2px 0 #45133f,0 0 16px rgba(255,55,170,.22);
+}

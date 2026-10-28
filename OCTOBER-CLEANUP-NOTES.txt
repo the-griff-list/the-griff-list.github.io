@@ -1,0 +1,16 @@
+THE GRIFFLIST - OCTOBER CLEANUP UPDATE
+
+Changes:
+- Random Song button moved into the Request a Song form.
+- Removed duplicate roulette/share-card tools and the non-useful Browse by Decade Time Machine.
+- Seasonal Spotlight now directs visitors to the catalog instead of choosing a random song.
+- Request status panel now only shows the Check My Last Request button and its result.
+- Name field label simplified; required hint moved into placeholder.
+- Remember My Name control compacted.
+- Removed Rock-O-Meter explanatory paragraph and simplified Watch Live to a single button.
+- Footer logo and Back to Top arranged side by side; install prompt removed from page UI.
+- Secret Stage selector now controls PS2 sounds, Classic sound effects, or mute, without muting homepage sounds.
+- Day mode contrast and logo readability improved; 80s mode cards use a stronger purple/pink retro palette.
+- Long Secret Stage menu ambience includes an Opus version with MP3 fallback.
+
+Validation: package/archive and syntax checks are performed, but a full browser playback and live Supabase test is still required after deployment.
