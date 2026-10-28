@@ -23,7 +23,7 @@ NOTES:
 - The Rock Meter reflects the existing Supabase configuration; automatic verified Ko-fi/PayPal payment tracking requires separate payment-provider integration.
 - The package has not been deployed to or tested against the live GitHub Pages site.
 
-- Updated PayPal.Me URL to canonical https://paypal.me/TheGriffList (profile must exist and be active for checkout to work). If PayPal still says it cannot find the profile, replace this URL with the exact PayPal.Me link from the account.
+- Updated PayPal.Me URL to canonical https://www.paypal.com/ncp/payment/NWLZL44VCLAYN (user-provided PayPal checkout URL).
 - Navigation now follows the visitor flow: Request a Song, Songs, Send a Tip, Rock Meter, Encore Vote, Booking Contact.
 - Song list is collapsed under a “Reveal the songs” dropdown directly beneath decade filters.
 \n\nToolbar icon update: navigation labels are unnumbered and now include contextual emoji icons. The Rock Meter navigation item uses a small meter image that follows the same red/yellow/green Supabase state as the full meter (refreshes with the existing live polling).\n
@@ -33,3 +33,10 @@ FINAL VISUAL POLISH
 - Improved admin dashboard card contrast, priority visibility, form readability, and gig-friendly mobile buttons.
 - Existing logo, floating close-list button, priority-request flow, Rock Meter, and encore controls are retained.
 - These are frontend polish changes; they do not add automatic payment verification.
+
+October 28 — payment and catalog refinements
+- Simplified the payment cards and grouped Ko-fi, PayPal, e-transfer, Apple Pay, and Google Pay into one compact payment area.
+- Apple Pay and Google Pay buttons open the Ko-fi checkout page; availability depends on Ko-fi's payment options and the visitor's device. Direct wallet processing requires a configured payment provider.
+- Added a collapsible payment-verification explanation to the priority request form.
+- Returned the floating close-list control to its original centered-right position and moved the song-request hint to the left.
+- Updated PayPal button to the user-provided checkout URL: https://www.paypal.com/ncp/payment/NWLZL44VCLAYN.

@@ -356,3 +356,34 @@ input:focus,select:focus,textarea:focus{border-color:#ffb45e!important;box-shado
 .song-request-tip[hidden]{display:none}
 @media(max-width:600px){.song-request-tip{right:8px;bottom:72px;max-width:calc(100vw - 24px);font-size:.75rem;padding:9px 12px}}
 @media(prefers-reduced-motion:reduce){.song-request-tip{transition:none}}
+
+/* Payment cleanup: compact, grouped payment methods with a consistent dropdown. */
+.priority-payment-details{margin-top:10px;border:1px solid #4a3327;border-radius:6px;background:#0c0b0a;overflow:hidden}
+.priority-payment-details>summary{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:9px 11px;cursor:pointer;list-style:none;color:var(--gold);font-size:.78rem;font-weight:850}
+.priority-payment-details>summary::-webkit-details-marker{display:none}
+.priority-payment-details[open]>summary{border-bottom:1px solid #3d2b20;background:#17110d}
+.priority-details-arrow{transition:transform .18s}
+.priority-payment-details[open] .priority-details-arrow{transform:rotate(180deg)}
+.priority-payment-details>p{margin:0;padding:10px 11px 12px;color:var(--muted);font-size:.78rem;line-height:1.5}
+.support-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;align-items:stretch}
+.support-grid .tip-card{padding:12px;gap:9px;border-radius:8px;align-items:flex-start}
+.support-grid .tip-card-icon{flex-basis:30px;width:30px;height:30px;font-size:.95rem}
+.support-grid .tip-card>div:last-child{min-width:0;width:100%}
+.support-grid .tip-label,.wallet-note .tip-label{font-size:.68rem;letter-spacing:.1em;margin-bottom:7px}
+.support-grid .button{width:100%;min-height:38px;padding:9px 10px;font-size:.76rem;margin-top:5px}
+.support-grid .support-small{font-size:.72rem;line-height:1.4;margin-top:7px}
+.support-grid .form-status{font-size:.72rem;line-height:1.4}
+.wallet-note{min-width:0;margin:0;padding:12px;background:linear-gradient(145deg,#21170f,#101010);border-color:#60462d;border-radius:8px}
+.wallet-note>p:last-child{font-size:.7rem;line-height:1.4;margin-top:7px}
+.wallet-badges{display:grid;gap:7px;margin:0}
+.wallet-badge{justify-content:flex-start;flex-wrap:wrap;padding:8px 9px;font-size:.74rem;text-decoration:none;min-width:0}
+.wallet-badge:hover{border-color:var(--gold);background:#211811}
+.wallet-via{font-size:.63rem;color:#d4c7b7;margin-left:auto;white-space:nowrap}
+/* Return the close control to its original floating position; keep the request hint opposite it. */
+.close-song-list{top:52%;bottom:auto;right:12px;transform:translateY(-50%) translateX(12px)}
+.close-song-list.is-visible{transform:translateY(-50%) translateX(0)}
+.song-request-tip{left:12px;right:auto;top:52%;bottom:auto;max-width:min(260px,calc(50vw - 28px));transform:translateY(calc(-50% + 10px));text-align:center}
+.song-request-tip.is-visible{transform:translateY(-50%)}
+@media(max-width:800px){.support-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.wallet-note{grid-column:span 2}}
+@media(max-width:600px){.close-song-list{top:52%;bottom:auto;right:8px;transform:translateY(-50%) translateX(10px);padding:10px 11px}.close-song-list.is-visible{transform:translateY(-50%) translateX(0)}.song-request-tip{top:52%;left:8px;right:auto;bottom:auto;max-width:calc(50vw - 24px);font-size:.7rem;padding:9px 10px}.song-request-tip.is-visible{transform:translateY(-50%)}.support-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.support-grid .tip-card{padding:10px}.wallet-note{grid-column:span 2}}
+@media(max-width:380px){.wallet-badge{font-size:.69rem;padding:7px}.wallet-via{font-size:.58rem}.support-grid .button{font-size:.7rem}}
