@@ -472,3 +472,21 @@ input:focus,select:focus,textarea:focus{border-color:#ffb45e!important;box-shado
 .payment-method-banner.payment-highlight{border-color:#ffb45c!important;box-shadow:0 0 0 3px #ff8c4355,0 0 24px #ff542e55!important;animation:payment-pulse .8s ease-in-out 5}
 @keyframes payment-pulse{0%,100%{filter:brightness(1)}50%{filter:brightness(1.55)}}
 @media(prefers-reduced-motion:reduce){.payment-method-banner.payment-highlight{animation:none}}
+
+
+/* Priority payment UX refresh */
+.priority-toggle{background:linear-gradient(110deg,#32110f,#1a0d0d);border-color:#d8473f}
+.priority-toggle .priority-toggle-state{background:#c92e2e;border-color:#ff6565;color:#fff}
+.priority-toggle.is-selected{border-color:#48bd78;background:linear-gradient(110deg,#102a1a,#101710);box-shadow:0 0 0 2px #48bd7826}
+.priority-toggle.is-selected .priority-toggle-state{background:#168747;border-color:#58d68d;color:#fff}
+.priority-toggle strong{display:flex;flex-direction:column;align-items:flex-start;gap:2px}
+.priority-toggle .priority-price{display:block;font-size:.86rem;font-weight:800;color:var(--gold);line-height:1.25}
+.payment-wallet-logos{justify-content:center}
+.payment-wallet-logos .wallet-badge{justify-content:center}
+.header-logo{width:min(100%,360px);max-height:none}
+.header-logo-link{flex:0 0 auto}
+.song-request-tip{width:max-content;height:auto;max-width:min(220px,calc(50vw - 20px));min-height:0;padding:10px 12px;border-radius:18px;font-size:.78rem;line-height:1.35;text-align:left;white-space:normal;box-sizing:border-box}
+.song-request-tip span{display:block}
+.close-song-list{bottom:84px;top:auto;right:12px}
+.song-request-tip{bottom:84px;top:auto}
+@media(max-width:600px){.close-song-list{bottom:86px;top:auto;right:8px;padding:10px 11px}.song-request-tip{bottom:86px;top:auto;left:8px;right:auto;max-width:min(210px,calc(50vw - 18px));font-size:.76rem;padding:9px 10px}}

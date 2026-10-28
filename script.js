@@ -176,7 +176,7 @@ function selectSongForRequest(song){
 searchEl.addEventListener("input",renderSongs);artistEl.addEventListener("change",renderSongs);document.addEventListener("keydown",e=>{if(e.key==="/"&&!['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName)){e.preventDefault();searchEl.focus();}});window.addEventListener("pagehide",stopPreview);
 // Public visitors can submit requests; the database only permits public INSERTs.
 const requestForm=$("#request-form");
-const priorityToggle=$("#priority-request"), priorityPaymentWrap=$("#priority-payment-wrap"), priorityReferenceWrap=$("#priority-reference-wrap");
+const priorityToggle=$("#priority-request"), priorityPaymentWrap=$("#priority-payment-wrap");
 let priorityAlreadyTipped=false;
 function isPrioritySelected(){return priorityToggle?.getAttribute("aria-pressed")==="true";}
 function setPrioritySelected(selected,{alreadyTipped=false}={}){
@@ -184,16 +184,16 @@ function setPrioritySelected(selected,{alreadyTipped=false}={}){
  priorityToggle.setAttribute("aria-pressed",selected?"true":"false");
  priorityToggle.classList.toggle("is-selected",selected);
  const state=priorityToggle.querySelector(".priority-toggle-state");if(state)state.textContent=selected?"ON":"OFF";
- priorityPaymentWrap.hidden=!selected;priorityReferenceWrap.hidden=!selected;
+ priorityPaymentWrap.hidden=!selected;
  priorityAlreadyTipped=Boolean(selected&&alreadyTipped);
- if(!selected){const method=document.querySelector("#priority-payment-method");if(method)method.value="";const ref=document.querySelector("#priority-reference");if(ref)ref.value="";}
+ if(!selected){const method=document.querySelector("#priority-payment-method");if(method)method.value="";}
 }
 priorityToggle.addEventListener("click",()=>setPrioritySelected(!isPrioritySelected()));
 requestForm.addEventListener("submit",async e=>{
  e.preventDefault();const name=$("#requester-name").value.trim(),song=$("#request-song").value.trim(),artist=$("#request-artist").value.trim(),message=$("#request-message").value.trim(),status=$("#form-status"),submit=requestForm.querySelector('button[type="submit"]');
  status.textContent="";if(!name){status.textContent="Please enter your name.";$("#requester-name").focus();return;}if(!song){status.textContent="Please enter a song name.";$("#request-song").focus();return;}
  const client=window.supabaseClient; if(!client){status.textContent="Online requests are being set up. Please try again later.";return;}
- const priority=isPrioritySelected();const paymentMethod=$("#priority-payment-method").value;const paymentReference=$("#priority-reference").value.trim();if(priority&&!paymentMethod){status.textContent="Choose how you’ll send your $5 CAD tip.";$("#priority-payment-method").focus();return;}const priorityMarker=priority?(priorityAlreadyTipped?"[PRIORITY TIP REPORTED — VERIFY PAYMENT]":"[PRIORITY TIP PENDING — VERIFY PAYMENT]"):"";const savedNote=[priority?`${priorityMarker} Method: ${paymentMethod}${paymentReference?` · Reference: ${paymentReference}`:""}`:"",message].filter(Boolean).join("\n\n");const fingerprint=[name,song,artist,savedNote].map(v=>v.trim().toLowerCase()).join("|");const storageKey="grifflistLastRequest";let previous=null;try{previous=JSON.parse(sessionStorage.getItem(storageKey)||"null");}catch(e){}if(previous&&previous.fingerprint===fingerprint&&Date.now()-previous.time<5*60*1000){status.textContent="That same request was just sent. Please wait five minutes before sending it again.";return;}
+ const priority=isPrioritySelected();const paymentMethod=$("#priority-payment-method").value;if(priority&&!paymentMethod){status.textContent="Choose how you’ll send your $5 CAD tip.";$("#priority-payment-method").focus();return;}const priorityMarker=priority?(priorityAlreadyTipped?"[PRIORITY TIP REPORTED — VERIFY PAYMENT]":"[PRIORITY TIP PENDING — VERIFY PAYMENT]"):"";const savedNote=[priority?`${priorityMarker} Method: ${paymentMethod}`:"",message].filter(Boolean).join("\n\n");const fingerprint=[name,song,artist,savedNote].map(v=>v.trim().toLowerCase()).join("|");const storageKey="grifflistLastRequest";let previous=null;try{previous=JSON.parse(sessionStorage.getItem(storageKey)||"null");}catch(e){}if(previous&&previous.fingerprint===fingerprint&&Date.now()-previous.time<5*60*1000){status.textContent="That same request was just sent. Please wait five minutes before sending it again.";return;}
  if(submit.disabled)return;submit.disabled=true;submit.textContent="SENDING REQUEST…";
  try{const {error}=await client.from("song_requests").insert({requester_name:name,song_title:song,artist_name:artist||null,note:savedNote||null});if(error)throw error;try{sessionStorage.setItem(storageKey,JSON.stringify({fingerprint,time:Date.now()}));}catch(e){}status.textContent=priority?(priorityAlreadyTipped?"Priority request submitted. Your payment will be checked manually.":"Request saved! Complete your $5 CAD tip using the highlighted payment option below."):"Request sent! Thanks for helping choose the music.";playSfx("you-rock-sfx");const shouldGoPay=priority&&!priorityAlreadyTipped;const chosenMethod=paymentMethod;requestForm.reset();setPrioritySelected(false);$("#request-hint").hidden=true;if(shouldGoPay){window.setTimeout(()=>focusPaymentMethod(chosenMethod),180);}priorityAlreadyTipped=false;}catch(err){console.error("Request submission failed",err);status.textContent="Sorry, your request couldn't be sent right now. Please try again in a moment.";}finally{submit.disabled=false;submit.textContent="SEND SONG REQUEST ↗";}
 });
@@ -303,19 +303,11 @@ function focusPaymentMethod(method){
  if(method==="etransfer")window.setTimeout(()=>document.querySelector("#copy-email")?.focus({preventScroll:true}),450);
  window.setTimeout(()=>target.classList.remove("payment-highlight"),5200);
 }
-const continuePriorityRequest=document.querySelector("#continue-priority-request");
-if(continuePriorityRequest){
- continuePriorityRequest.addEventListener("click",()=>{
-  const priorityToggle=document.querySelector("#priority-request");
-  const priorityPaymentWrap=document.querySelector("#priority-payment-wrap");
-  const priorityReferenceWrap=document.querySelector("#priority-reference-wrap");
-  if(priorityToggle){setPrioritySelected(true,{alreadyTipped:true});}
-  window.setTimeout(()=>{document.querySelector("#request").scrollIntoView({behavior:"smooth",block:"start"});document.querySelector("#requester-name")?.focus({preventScroll:true});},30);
- });
-}
 const songReveal=document.querySelector("#song-reveal");
 const closeSongList=document.querySelector("#close-song-list");
 const songRequestTip=document.querySelector("#song-request-tip");
+const songRevealLabel=songReveal?.querySelector(".song-reveal-label");
+if(songReveal&&songRevealLabel){const syncSongRevealLabel=()=>{songRevealLabel.textContent=songReveal.open?"Songs revealed":"Reveal the songs";};songReveal.addEventListener("toggle",syncSongRevealLabel);syncSongRevealLabel();}
 if(songReveal&&closeSongList){
  let closeHideTimer;
  let catalogInView=false;
@@ -340,14 +332,6 @@ if(songReveal&&closeSongList){
  songReveal.addEventListener("toggle",syncCloseButton);
  window.addEventListener("scroll",()=>{if(catalogSection&&!('IntersectionObserver' in window)){const r=catalogSection.getBoundingClientRect();catalogInView=r.bottom>0&&r.top<window.innerHeight;syncCloseButton();}},{passive:true});
  closeSongList.addEventListener("click",()=>{songReveal.open=false;songReveal.querySelector("summary").scrollIntoView({behavior:"smooth",block:"center"});playSfx("scroll-sfx");});
-}
-const nextShowDetails=document.querySelector("#next-show-details");
-if(nextShowDetails){
- const label=nextShowDetails.querySelector(".next-show-toggle-label");
- const arrow=nextShowDetails.querySelector(".next-show-toggle-arrow");
- const syncNextShowToggle=()=>{if(label)label.textContent=nextShowDetails.open?"Show less":"More info";if(arrow)arrow.textContent=nextShowDetails.open?"↑":"↓";};
- nextShowDetails.addEventListener("toggle",syncNextShowToggle);
- syncNextShowToggle();
 }
 renderDecades();renderArtists();renderSongs();
 
