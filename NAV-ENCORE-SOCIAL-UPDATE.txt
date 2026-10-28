@@ -1,0 +1,20 @@
+THE GRIFFLIST — NAVIGATION, ENCORE & SOCIAL LINKS UPDATE
+
+WHAT CHANGED
+- Toolbar labels are shorter and visually aligned: Songs, Request a Song, Support, Encore Vote, Booking Contact.
+- Navigation uses a consistent grid on desktop and mobile, with Booking Contact given a deliberate full-width position on narrow phones.
+- Encore voting image and descriptive intro removed for a cleaner voting area.
+- Removed “Choose a song to cast your vote.”
+- Encore prompt simplified to “Tap a song to vote.” and “One vote per browser.”
+- Booking section heading is now “Booking Contact”.
+- Instagram link uses the Instagram emblem and @g.r.i.f.f.e.n.
+- YouTube link uses the YouTube emblem and @griffenarsenaultmusic.
+- Existing title screen, audio, support, meter, catalog, request, and archive files are retained.
+
+INSTALL
+1. Extract this ZIP.
+2. Open the grifflist-update folder.
+3. Upload all files inside it to the root of the existing GitHub repository, replacing files with matching names.
+4. Commit the changes to main and wait for GitHub Pages to deploy.
+
+This update does not change the Supabase database. Test encore voting on the live site after deployment.
