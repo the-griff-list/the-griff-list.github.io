@@ -474,7 +474,7 @@ input:focus,select:focus,textarea:focus{border-color:#ffb45e!important;box-shado
 #rock-meter-goal-label,#rock-meter-caption{display:none!important}
 .payment-flow-status{margin:0 0 6px;padding:12px 14px;border:1px solid #70502e;border-radius:8px;background:#21170f;color:#ffe0a6;font-weight:700;line-height:1.45}
 .payment-method-banner.payment-highlight{border-color:#ffb45c!important;box-shadow:0 0 0 3px #ff8c4355,0 0 24px #ff542e55!important;animation:payment-pulse .8s ease-in-out 5}
-@keyframes payment-pulse{0%,100%{filter:brightness(1)}50%{filter:brightness(1.55)}}
+@keyframes payment-pulse{0%,100%{border-color:var(--line);box-shadow:0 0 0 0 #ff8c4300,0 0 0 #ff542e00}45%{border-color:#ffd08b;box-shadow:0 0 0 2px #ff8c4340,0 0 20px #ff542e35}}
 @media(prefers-reduced-motion:reduce){.payment-method-banner.payment-highlight{animation:none}}
 
 
@@ -546,12 +546,25 @@ input:focus,select:focus,textarea:focus{border-color:#ffb45e!important;box-shado
 #requester-name:not(:placeholder-shown),#requester-name:focus{background-image:none;animation:none;padding-left:12px}
 @keyframes request-caret-blink{0%,49%{background-image:linear-gradient(var(--gold),var(--gold))}50%,100%{background-image:none}}
 /* Glow the section outline and its content, never brighten the section's background fill. */
-.section.section-highlight{outline:2px solid #ffad63;outline-offset:3px;border-radius:5px;box-shadow:0 0 0 1px #ff9b5260,0 0 22px #ff542e35;animation:section-border-pulse .8s ease-in-out 2}
-.section.section-highlight .section-heading h2,.section.section-highlight .section-heading p,.section.section-highlight label,.section.section-highlight p,.section.section-highlight h3,.section.section-highlight h4,.section.section-highlight a{ text-shadow:0 0 10px #ff9b5266; }
-.section.section-highlight .request-form,.section.section-highlight .tip-card,.section.section-highlight .rock-meter-card,.section.section-highlight .encore-card,.section.section-highlight .contact-actions,.section.section-highlight .support-grid{filter:drop-shadow(0 0 5px #ff7c3a40)}
-.section.section-highlight input,.section.section-highlight textarea,.section.section-highlight select,.section.section-highlight button,.section.section-highlight .tip-card,.section.section-highlight .rock-meter-card,.section.section-highlight .encore-card{border-color:#ffad63}
-@keyframes section-border-pulse{0%,100%{outline-color:#ffad6380;box-shadow:0 0 0 1px #ff9b5230,0 0 12px #ff542e20}50%{outline-color:#ffd08b;box-shadow:0 0 0 2px #ff9b5270,0 0 25px #ff542e50}}
-.payment-method-banner.payment-highlight{animation:payment-pulse .8s ease-in-out 2}
+.section.section-highlight{outline:2px solid #ffad63;outline-offset:3px;border-radius:5px;box-shadow:0 0 0 1px #ff9b5260,0 0 18px #ff542e2b;animation:section-border-pulse 1.15s cubic-bezier(.22,1,.36,1) 1 both}
+.section.section-highlight .section-heading h2,.section.section-highlight .section-heading p,.section.section-highlight label,.section.section-highlight p,.section.section-highlight h3,.section.section-highlight h4,.section.section-highlight a{animation:section-content-glow 1.15s cubic-bezier(.22,1,.36,1) 1 both;}
+.section.section-highlight .request-form,.section.section-highlight .tip-card,.section.section-highlight .rock-meter-card,.section.section-highlight .encore-card,.section.section-highlight .contact-actions,.section.section-highlight .support-grid{animation:section-content-glow 1.15s cubic-bezier(.22,1,.36,1) 1 both}
+.section.section-highlight input,.section.section-highlight textarea,.section.section-highlight select,.section.section-highlight button,.section.section-highlight .tip-card,.section.section-highlight .rock-meter-card,.section.section-highlight .encore-card{animation:section-control-glow 1.15s cubic-bezier(.22,1,.36,1) 1 both}
+@keyframes section-border-pulse{0%{outline-color:#ffad6380;box-shadow:0 0 0 1px #ff9b5230,0 0 10px #ff542e18}45%{outline-color:#ffd08b;box-shadow:0 0 0 2px #ff9b5260,0 0 22px #ff542e38}100%{outline-color:#ffad6380;box-shadow:0 0 0 1px #ff9b5230,0 0 10px #ff542e18}}
+@keyframes section-content-glow{0%,100%{text-shadow:0 0 0 transparent;filter:drop-shadow(0 0 0 transparent)}45%{text-shadow:0 0 9px #ff9b524d;filter:drop-shadow(0 0 3px #ff7c3a22)}}
+@keyframes section-control-glow{0%,100%{border-color:var(--line);filter:drop-shadow(0 0 0 transparent)}45%{border-color:#ffad63;filter:drop-shadow(0 0 4px #ff7c3a30)}}
+.payment-method-banner.payment-highlight{animation:payment-pulse 1.15s cubic-bezier(.22,1,.36,1) 1 both}
 .header-logo{width:clamp(86px,11vw,126px)!important;max-height:38px!important}
 @media(max-width:700px){.header-logo{width:clamp(80px,23vw,104px)!important;max-height:30px!important}.request-hint{font-size:.82rem}}
 @media(prefers-reduced-motion:reduce){#requester-name:placeholder-shown:not(:focus){animation:none}.section.section-highlight,.payment-method-banner.payment-highlight{animation:none}.section.section-highlight{outline-color:#ffad63;box-shadow:0 0 0 1px #ff9b5260,0 0 14px #ff542e25}}
+
+
+/* Compact toolbar while browsing below the top of the page. */
+.site-header{transition:transform .24s ease,opacity .2s ease,padding .18s ease,gap .18s ease;}
+.site-header.toolbar-compact{padding-top:4px!important;padding-bottom:4px!important;gap:4px!important;}
+.site-header.toolbar-compact .header-logo{width:clamp(58px,8vw,82px)!important;max-height:22px!important;}
+.site-header.toolbar-compact .top-nav{gap:4px!important;}
+.site-header.toolbar-compact .top-nav a{min-height:34px!important;padding:5px 4px!important;font-size:.78rem!important;line-height:1.05!important;box-shadow:inset 0 1px #ffffff12,0 2px 0 #000!important;}
+.site-header.toolbar-compact .nav-meter-icon{width:18px!important;height:16px!important;}
+@media(max-width:700px){.site-header.toolbar-compact .header-logo{width:64px!important;max-height:19px!important;}.site-header.toolbar-compact .top-nav{gap:4px!important;}.site-header.toolbar-compact .top-nav a{min-height:32px!important;padding:4px 3px!important;font-size:.75rem!important;}}
+@media(prefers-reduced-motion:reduce){.site-header{transition:none!important;}}

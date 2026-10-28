@@ -403,9 +403,8 @@ loadRockMeter();loadEncorePoll();window.setInterval(()=>{if(!document.hidden){lo
  const update=()=>{
    const y=Math.max(0,window.scrollY||0);
    const delta=y-lastY;
-   if(y<90){header.classList.remove('toolbar-hidden');}
-   else if(delta>7){header.classList.add('toolbar-hidden');}
-   else if(delta<-7){header.classList.remove('toolbar-hidden');}
+   if(y<90){header.classList.remove('toolbar-hidden');header.classList.remove('toolbar-compact');}
+   else {header.classList.add('toolbar-compact');if(delta>7){header.classList.add('toolbar-hidden');}else if(delta<-7){header.classList.remove('toolbar-hidden');}}
    lastY=y; ticking=false;
  };
  window.addEventListener('scroll',()=>{if(!ticking){window.requestAnimationFrame(update);ticking=true;}},{passive:true});
