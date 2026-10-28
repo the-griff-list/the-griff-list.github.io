@@ -294,20 +294,31 @@ if(continuePriorityRequest){
 }
 const songReveal=document.querySelector("#song-reveal");
 const closeSongList=document.querySelector("#close-song-list");
+const songRequestTip=document.querySelector("#song-request-tip");
 if(songReveal&&closeSongList){
  let closeHideTimer;
  const syncCloseButton=()=>{
   window.clearTimeout(closeHideTimer);
   if(songReveal.open){
    closeSongList.hidden=false;
-   window.requestAnimationFrame(()=>closeSongList.classList.add("is-visible"));
+   if(songRequestTip)songRequestTip.hidden=false;
+   window.requestAnimationFrame(()=>{closeSongList.classList.add("is-visible");songRequestTip?.classList.add("is-visible");});
   }else{
    closeSongList.classList.remove("is-visible");
-   closeHideTimer=window.setTimeout(()=>{closeSongList.hidden=true;},260);
+   songRequestTip?.classList.remove("is-visible");
+   closeHideTimer=window.setTimeout(()=>{closeSongList.hidden=true;if(songRequestTip)songRequestTip.hidden=true;},260);
   }
  };
  songReveal.addEventListener("toggle",syncCloseButton);
  closeSongList.addEventListener("click",()=>{songReveal.open=false;songReveal.querySelector("summary").scrollIntoView({behavior:"smooth",block:"center"});playSfx("scroll-sfx");});
+}
+const nextShowDetails=document.querySelector("#next-show-details");
+if(nextShowDetails){
+ const label=nextShowDetails.querySelector(".next-show-toggle-label");
+ const arrow=nextShowDetails.querySelector(".next-show-toggle-arrow");
+ const syncNextShowToggle=()=>{if(label)label.textContent=nextShowDetails.open?"Show less":"More info";if(arrow)arrow.textContent=nextShowDetails.open?"↑":"↓";};
+ nextShowDetails.addEventListener("toggle",syncNextShowToggle);
+ syncNextShowToggle();
 }
 renderDecades();renderArtists();renderSongs();
 

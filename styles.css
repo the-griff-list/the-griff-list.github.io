@@ -342,3 +342,17 @@ input:focus,select:focus,textarea:focus{border-color:#ffb45e!important;box-shado
 .song-row,.song-item,.song-card{transition:background-color .15s ease,border-color .15s ease}
 @media(max-width:600px){body{font-size:16px}.section{padding-inline:16px}.top-nav a{font-size:.88rem;min-height:48px;padding:10px 5px}.close-song-list{max-width:calc(100vw - 24px)}.request-form .button,.priority-return-action .button{width:100%}}
 @media(prefers-reduced-motion:reduce){:root{scroll-behavior:auto}.button,.top-nav a,.social-links-branded .social-link{transition:none}}
+
+/* October 28 polish: concise expandable next-show details and catalog request hint. */
+.next-show-details{margin-top:14px;max-width:850px;border:1px solid #4a3327;border-radius:6px;background:#0d0d0d;overflow:hidden}
+.next-show-details>summary{display:flex;align-items:center;justify-content:space-between;gap:12px;list-style:none;cursor:pointer;padding:11px 14px;color:var(--gold);font-size:.82rem;font-weight:900;letter-spacing:.04em}
+.next-show-details>summary::-webkit-details-marker{display:none}
+.next-show-details>summary:hover{background:#1a1410;color:#fff0c8}
+.next-show-toggle-arrow{font-size:1.05rem;line-height:1}
+.next-show-details-content{padding:0 14px 12px;color:var(--muted);font-size:.88rem}
+.next-show-details-content p{margin:0;max-width:790px}
+.song-request-tip{position:fixed;right:12px;bottom:76px;z-index:15;padding:10px 14px;border:1px solid #60462d;border-radius:999px;background:#111d;color:#ffe0a6;font-size:.78rem;font-weight:900;box-shadow:0 5px 24px #0009;backdrop-filter:blur(8px);opacity:0;visibility:hidden;transform:translateY(10px);transition:opacity .26s ease,transform .26s ease,visibility .26s}
+.song-request-tip.is-visible{opacity:1;visibility:visible;transform:translateY(0)}
+.song-request-tip[hidden]{display:none}
+@media(max-width:600px){.song-request-tip{right:8px;bottom:72px;max-width:calc(100vw - 24px);font-size:.75rem;padding:9px 12px}}
+@media(prefers-reduced-motion:reduce){.song-request-tip{transition:none}}
