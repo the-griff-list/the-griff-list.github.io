@@ -177,17 +177,28 @@ searchEl.addEventListener("input",renderSongs);artistEl.addEventListener("change
 // Public visitors can submit requests; the database only permits public INSERTs.
 const requestForm=$("#request-form");
 const priorityToggle=$("#priority-request"), priorityPaymentWrap=$("#priority-payment-wrap"), priorityReferenceWrap=$("#priority-reference-wrap");
-priorityToggle.addEventListener("change",()=>{priorityPaymentWrap.hidden=!priorityToggle.checked;priorityReferenceWrap.hidden=!priorityToggle.checked;});
+let priorityAlreadyTipped=false;
+function isPrioritySelected(){return priorityToggle?.getAttribute("aria-pressed")==="true";}
+function setPrioritySelected(selected,{alreadyTipped=false}={}){
+ if(!priorityToggle)return;
+ priorityToggle.setAttribute("aria-pressed",selected?"true":"false");
+ priorityToggle.classList.toggle("is-selected",selected);
+ const state=priorityToggle.querySelector(".priority-toggle-state");if(state)state.textContent=selected?"ON":"OFF";
+ priorityPaymentWrap.hidden=!selected;priorityReferenceWrap.hidden=!selected;
+ priorityAlreadyTipped=Boolean(selected&&alreadyTipped);
+ if(!selected){const method=document.querySelector("#priority-payment-method");if(method)method.value="";const ref=document.querySelector("#priority-reference");if(ref)ref.value="";}
+}
+priorityToggle.addEventListener("click",()=>setPrioritySelected(!isPrioritySelected()));
 requestForm.addEventListener("submit",async e=>{
  e.preventDefault();const name=$("#requester-name").value.trim(),song=$("#request-song").value.trim(),artist=$("#request-artist").value.trim(),message=$("#request-message").value.trim(),status=$("#form-status"),submit=requestForm.querySelector('button[type="submit"]');
  status.textContent="";if(!name){status.textContent="Please enter your name.";$("#requester-name").focus();return;}if(!song){status.textContent="Please enter a song name.";$("#request-song").focus();return;}
  const client=window.supabaseClient; if(!client){status.textContent="Online requests are being set up. Please try again later.";return;}
- const priority=priorityToggle.checked;const paymentMethod=$("#priority-payment-method").value;const paymentReference=$("#priority-reference").value.trim();if(priority&&!paymentMethod){status.textContent="Choose how you sent the $5 CAD tip.";$("#priority-payment-method").focus();return;}const savedNote=[priority?`[PRIORITY TIP REPORTED — VERIFY PAYMENT] Method: ${paymentMethod}${paymentReference?` · Reference: ${paymentReference}`:""}`:"",message].filter(Boolean).join("\n\n");const fingerprint=[name,song,artist,savedNote].map(v=>v.trim().toLowerCase()).join("|");const storageKey="grifflistLastRequest";let previous=null;try{previous=JSON.parse(sessionStorage.getItem(storageKey)||"null");}catch(e){}if(previous&&previous.fingerprint===fingerprint&&Date.now()-previous.time<5*60*1000){status.textContent="That same request was just sent. Please wait five minutes before sending it again.";return;}
+ const priority=isPrioritySelected();const paymentMethod=$("#priority-payment-method").value;const paymentReference=$("#priority-reference").value.trim();if(priority&&!paymentMethod){status.textContent="Choose how you’ll send your $5 CAD tip.";$("#priority-payment-method").focus();return;}const priorityMarker=priority?(priorityAlreadyTipped?"[PRIORITY TIP REPORTED — VERIFY PAYMENT]":"[PRIORITY TIP PENDING — VERIFY PAYMENT]"):"";const savedNote=[priority?`${priorityMarker} Method: ${paymentMethod}${paymentReference?` · Reference: ${paymentReference}`:""}`:"",message].filter(Boolean).join("\n\n");const fingerprint=[name,song,artist,savedNote].map(v=>v.trim().toLowerCase()).join("|");const storageKey="grifflistLastRequest";let previous=null;try{previous=JSON.parse(sessionStorage.getItem(storageKey)||"null");}catch(e){}if(previous&&previous.fingerprint===fingerprint&&Date.now()-previous.time<5*60*1000){status.textContent="That same request was just sent. Please wait five minutes before sending it again.";return;}
  if(submit.disabled)return;submit.disabled=true;submit.textContent="SENDING REQUEST…";
- try{const {error}=await client.from("song_requests").insert({requester_name:name,song_title:song,artist_name:artist||null,note:savedNote||null});if(error)throw error;try{sessionStorage.setItem(storageKey,JSON.stringify({fingerprint,time:Date.now()}));}catch(e){}status.textContent=priority?"Priority request submitted! It is flagged for payment verification on the admin page. Thanks!":"Request sent! Thanks for helping choose the music.";playSfx("you-rock-sfx");requestForm.reset();priorityPaymentWrap.hidden=true;priorityReferenceWrap.hidden=true;$("#request-hint").hidden=true;}catch(err){console.error("Request submission failed",err);status.textContent="Sorry, your request couldn't be sent right now. Please try again in a moment.";}finally{submit.disabled=false;submit.textContent="SEND SONG REQUEST ↗";}
+ try{const {error}=await client.from("song_requests").insert({requester_name:name,song_title:song,artist_name:artist||null,note:savedNote||null});if(error)throw error;try{sessionStorage.setItem(storageKey,JSON.stringify({fingerprint,time:Date.now()}));}catch(e){}status.textContent=priority?(priorityAlreadyTipped?"Priority request submitted. Your payment will be checked manually.":"Request saved! Complete your $5 CAD tip using the highlighted payment option below."):"Request sent! Thanks for helping choose the music.";playSfx("you-rock-sfx");const shouldGoPay=priority&&!priorityAlreadyTipped;const chosenMethod=paymentMethod;requestForm.reset();setPrioritySelected(false);$("#request-hint").hidden=true;if(shouldGoPay){window.setTimeout(()=>focusPaymentMethod(chosenMethod),180);}priorityAlreadyTipped=false;}catch(err){console.error("Request submission failed",err);status.textContent="Sorry, your request couldn't be sent right now. Please try again in a moment.";}finally{submit.disabled=false;submit.textContent="SEND SONG REQUEST ↗";}
 });
 const tipButton=$("#copy-email"),tipStatus=$("#tip-status");
-tipButton.addEventListener("click",async()=>{playSfx("highway-riser-sfx");try{await navigator.clipboard.writeText(config.tipEmail);tipStatus.textContent="E-transfer email copied — open your banking app to send it.";}catch(e){tipStatus.textContent=`E-transfer email: ${config.tipEmail}. If copying was blocked, press and hold the address to copy it.`;}});
+tipButton.addEventListener("click",async()=>{playSfx("cash-sfx");try{await navigator.clipboard.writeText(config.tipEmail);tipStatus.textContent="E-transfer email copied — open your banking app to send it.";}catch(e){tipStatus.textContent=`E-transfer email: ${config.tipEmail}. If copying was blocked, press and hold the address to copy it.`;}});
 const bookingCopy=$("#booking-copy"), bookingStatus=$("#booking-status");
 bookingCopy.addEventListener("click", async()=>{playSfx("highway-riser-sfx");try{await navigator.clipboard.writeText("griffenarsenaultmusic@hotmail.com");bookingStatus.textContent="Booking email copied.";}catch(e){bookingStatus.textContent="Email: griffenarsenaultmusic@hotmail.com — select and copy it.";}});
 // Audio behavior: attempt the title sound on load. Browsers may block autoplay until a tap.
@@ -197,14 +208,14 @@ const titleAudio=$("#title-screen-audio"), menuAudio=$("#menu-screen-audio");
 const audioVolumes={
   "title-screen-audio":0.78,
   "menu-screen-audio":0.30,
-  "cash-sfx":0.88,
-  "highway-riser-sfx":0.82,
-  "notes-ripple-sfx":0.82,
-  "scroll-sfx":0.68,
-  "you-rock-sfx":0.90,
-  "ui-sound-01r":0.82,
-  "ui-sound-05r":0.82,
-  "ui-sound-06r":0.82
+  "cash-sfx":0.95,
+  "highway-riser-sfx":0.95,
+  "notes-ripple-sfx":0.95,
+  "scroll-sfx":0.95,
+  "you-rock-sfx":0.95,
+  "ui-sound-01r":0.95,
+  "ui-sound-05r":0.95,
+  "ui-sound-06r":0.95
 };
 Object.entries(audioVolumes).forEach(([id,volume])=>{const audio=$("#"+id);if(audio){audio.volume=volume;audio.preload="auto";}});
 const sfxIds=["cash-sfx","highway-riser-sfx","notes-ripple-sfx","scroll-sfx","you-rock-sfx","ui-sound-01r","ui-sound-05r","ui-sound-06r"];
@@ -282,13 +293,23 @@ document.addEventListener("click",event=>{
 // Audio cues after successful actions.
 const requestFormForAchievement=$("#request-form");
 requestFormForAchievement.addEventListener("submit",()=>{ /* Success cue is triggered after Supabase confirms below. */ });
+function focusPaymentMethod(method){
+ const targets={etransfer:document.querySelector(".payment-etransfer"),paypal:document.querySelector(".payment-paypal"),kofi:document.querySelector(".payment-kofi-wallet")};
+ const target=targets[method];const status=document.querySelector("#payment-flow-status");
+ if(!target)return;
+ if(status){status.hidden=false;status.textContent=method==="etransfer"?"Your request is saved. Copy the e-transfer email below, then send your $5 CAD tip in your banking app.":method==="paypal"?"Your request is saved. Complete your $5 CAD tip through PayPal below.":"Your request is saved. Complete your $5 CAD tip through Ko-fi below.";}
+ document.querySelectorAll(".payment-method-banner.payment-highlight").forEach(el=>el.classList.remove("payment-highlight"));
+ target.classList.add("payment-highlight");target.scrollIntoView({behavior:"smooth",block:"center"});
+ if(method==="etransfer")window.setTimeout(()=>document.querySelector("#copy-email")?.focus({preventScroll:true}),450);
+ window.setTimeout(()=>target.classList.remove("payment-highlight"),5200);
+}
 const continuePriorityRequest=document.querySelector("#continue-priority-request");
 if(continuePriorityRequest){
  continuePriorityRequest.addEventListener("click",()=>{
   const priorityToggle=document.querySelector("#priority-request");
   const priorityPaymentWrap=document.querySelector("#priority-payment-wrap");
   const priorityReferenceWrap=document.querySelector("#priority-reference-wrap");
-  if(priorityToggle){priorityToggle.checked=true;priorityPaymentWrap.hidden=false;priorityReferenceWrap.hidden=false;}
+  if(priorityToggle){setPrioritySelected(true,{alreadyTipped:true});}
   window.setTimeout(()=>{document.querySelector("#request").scrollIntoView({behavior:"smooth",block:"start"});document.querySelector("#requester-name")?.focus({preventScroll:true});},30);
  });
 }
@@ -352,14 +373,18 @@ async function loadRockMeter(){
   if(error)throw error;
   if(!data)throw new Error("No Rock Meter settings found. Run the live-features SQL migration in Supabase.");
   const goal=Math.max(1,Number(data.goal_amount)||200),raised=Math.max(0,Number(data.raised_amount)||0),pct=Math.min(100,Math.round(raised/goal*100));
-  const meterClass=pct>=100?"meter-green":pct>=50?"meter-yellow":"meter-red";
-  if(rockMeterDial){const state=pct>=100?"green":pct>=50?"yellow":"red";const image=`rock-meter-${state}.webp`;if(!rockMeterDial.src.endsWith("/"+image))rockMeterDial.src=image;rockMeterDial.alt=`Rock Meter needle in the ${state} zone`;rockMeterDial.dataset.zone=state;}
-  const navMeterIcon=document.querySelector("#nav-rock-meter-icon");if(navMeterIcon){const state=pct>=100?"green":pct>=50?"yellow":"red";const image=`rock-meter-${state}.webp`;if(!navMeterIcon.src.endsWith("/"+image))navMeterIcon.src=image;navMeterIcon.alt="";navMeterIcon.title=`Rock Meter: ${pct}% of goal`;}
-  if(meterZoneLabel){meterZoneLabel.textContent=pct>=100?"GREEN ZONE · GOAL REACHED":pct>=50?"YELLOW ZONE · GETTING CLOSER":"RED ZONE · BUILDING MOMENTUM";meterZoneLabel.style.color=pct>=100?"#72ff9b":pct>=50?"#ffe36a":"#ff7777";}
+  // Six supplied meter illustrations: nearest 20% increment of the configured goal.
+  const meterStep=Math.min(5,Math.round(pct/20));
+  const meterPosition=meterStep*20;
+  const dialState=meterStep>=4?"green":meterStep>=2?"yellow":"red";
+  const meterClass=dialState==="green"?"meter-green":dialState==="yellow"?"meter-yellow":"meter-red";
+  if(rockMeterDial){const image=`rock-meter-${meterPosition}.webp`;if(!rockMeterDial.src.endsWith("/"+image))rockMeterDial.src=image;rockMeterDial.alt=`Rock Meter illustration at ${meterPosition}% of goal; current total is ${pct}%`;rockMeterDial.dataset.zone=dialState;rockMeterDial.dataset.step=String(meterStep);rockMeterDial.dataset.position=String(meterPosition);}
+  const navMeterIcon=document.querySelector("#nav-rock-meter-icon");if(navMeterIcon){const image=`rock-meter-${dialState}.webp`;if(!navMeterIcon.src.endsWith("/"+image))navMeterIcon.src=image;navMeterIcon.alt="";navMeterIcon.title=`Rock Meter: ${pct}% of goal`;}
+  if(meterZoneLabel){const labels=["RED ZONE · LET’S GET STARTED","RED ZONE · BUILDING MOMENTUM","YELLOW ZONE · PICKING UP","YELLOW ZONE · HALF WAY THERE","GREEN ZONE · NEAR THE GOAL","GREEN ZONE · GOAL REACHED"];meterZoneLabel.textContent=labels[meterStep];meterZoneLabel.style.color=dialState==="green"?"#72ff9b":dialState==="yellow"?"#ffe36a":"#ff7777";}
   rockMeterProgress.classList.remove("meter-red","meter-yellow","meter-green");rockMeterProgress.classList.add(meterClass);
-  rockMeterGoalLabel.textContent=data.goal_label||"NEXT GIG GOAL";rockMeterRaised.textContent=moneyCAD(raised);rockMeterGoal.textContent=moneyCAD(goal);rockMeterFill.style.width=pct+"%";rockMeterProgress.setAttribute("aria-valuenow",String(pct));rockMeterProgress.setAttribute("aria-valuetext",`${pct}% of the ${moneyCAD(goal)} goal reached`);
-  rockMeterCaption.textContent=pct>=100?"Goal reached — thank you for keeping the music going!":pct>=50?`${pct}% of the goal reached. We're getting there!`:`${pct}% of the goal reached. Thanks for the support.`;
- }catch(e){rockMeterCaption.textContent="Rock Meter could not load. Check that the Supabase live-features SQL has been run.";console.error("Rock Meter load failed:",e.message);}
+  rockMeterGoalLabel.textContent="";rockMeterGoalLabel.hidden=true;rockMeterRaised.textContent=moneyCAD(raised);rockMeterGoal.textContent=moneyCAD(goal);rockMeterFill.style.width=pct+"%";rockMeterProgress.setAttribute("aria-valuenow",String(pct));rockMeterProgress.setAttribute("aria-valuetext",`${pct}% of the ${moneyCAD(goal)} goal reached`);
+  rockMeterCaption.textContent="";rockMeterCaption.hidden=true;
+ }catch(e){rockMeterCaption.textContent="";rockMeterCaption.hidden=true;console.error("Rock Meter load failed:",e.message);}
 }
 async function loadEncorePoll(){
  const client=window.supabaseClient;if(!client)return;
@@ -392,3 +417,6 @@ loadRockMeter();loadEncorePoll();window.setInterval(()=>{if(!document.hidden){lo
  window.addEventListener('pageshow',()=>{lastY=window.scrollY||0;header.classList.remove('toolbar-hidden');});
  header.addEventListener('focusin',()=>header.classList.remove('toolbar-hidden'));
 })();
+
+/* Back-to-top and logo links should return to the absolute top of the document. */
+document.querySelectorAll('a[href="#top"]').forEach(link=>link.addEventListener("click",event=>{event.preventDefault();window.scrollTo({top:0,behavior:"smooth"});history.replaceState(null,"",location.pathname+location.search);if(typeof playSfx==="function")playSfx("scroll-sfx");}));
