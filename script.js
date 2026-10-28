@@ -176,13 +176,15 @@ function selectSongForRequest(song){
 searchEl.addEventListener("input",renderSongs);artistEl.addEventListener("change",renderSongs);document.addEventListener("keydown",e=>{if(e.key==="/"&&!['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName)){e.preventDefault();searchEl.focus();}});window.addEventListener("pagehide",stopPreview);
 // Public visitors can submit requests; the database only permits public INSERTs.
 const requestForm=$("#request-form");
+const priorityToggle=$("#priority-request"), priorityPaymentWrap=$("#priority-payment-wrap"), priorityReferenceWrap=$("#priority-reference-wrap");
+priorityToggle.addEventListener("change",()=>{priorityPaymentWrap.hidden=!priorityToggle.checked;priorityReferenceWrap.hidden=!priorityToggle.checked;});
 requestForm.addEventListener("submit",async e=>{
  e.preventDefault();const name=$("#requester-name").value.trim(),song=$("#request-song").value.trim(),artist=$("#request-artist").value.trim(),message=$("#request-message").value.trim(),status=$("#form-status"),submit=requestForm.querySelector('button[type="submit"]');
  status.textContent="";if(!name){status.textContent="Please enter your name.";$("#requester-name").focus();return;}if(!song){status.textContent="Please enter a song name.";$("#request-song").focus();return;}
  const client=window.supabaseClient; if(!client){status.textContent="Online requests are being set up. Please try again later.";return;}
- const fingerprint=[name,song,artist,message].map(v=>v.trim().toLowerCase()).join("|");const storageKey="grifflistLastRequest";let previous=null;try{previous=JSON.parse(sessionStorage.getItem(storageKey)||"null");}catch(e){}if(previous&&previous.fingerprint===fingerprint&&Date.now()-previous.time<5*60*1000){status.textContent="That same request was just sent. Please wait five minutes before sending it again.";return;}
+ const priority=priorityToggle.checked;const paymentMethod=$("#priority-payment-method").value;const paymentReference=$("#priority-reference").value.trim();if(priority&&!paymentMethod){status.textContent="Choose how you sent the $5 CAD tip.";$("#priority-payment-method").focus();return;}const savedNote=[priority?`[PRIORITY TIP REPORTED — VERIFY PAYMENT] Method: ${paymentMethod}${paymentReference?` · Reference: ${paymentReference}`:""}`:"",message].filter(Boolean).join("\n\n");const fingerprint=[name,song,artist,savedNote].map(v=>v.trim().toLowerCase()).join("|");const storageKey="grifflistLastRequest";let previous=null;try{previous=JSON.parse(sessionStorage.getItem(storageKey)||"null");}catch(e){}if(previous&&previous.fingerprint===fingerprint&&Date.now()-previous.time<5*60*1000){status.textContent="That same request was just sent. Please wait five minutes before sending it again.";return;}
  if(submit.disabled)return;submit.disabled=true;submit.textContent="SENDING REQUEST…";
- try{const {error}=await client.from("song_requests").insert({requester_name:name,song_title:song,artist_name:artist||null,note:message||null});if(error)throw error;try{sessionStorage.setItem(storageKey,JSON.stringify({fingerprint,time:Date.now()}));}catch(e){}status.textContent="Request sent! Thanks for helping choose the music.";playSfx("you-rock-sfx");requestForm.reset();$("#request-hint").hidden=true;}catch(err){console.error("Request submission failed",err);status.textContent="Sorry, your request couldn't be sent right now. Please try again in a moment.";}finally{submit.disabled=false;submit.textContent="SEND SONG REQUEST ↗";}
+ try{const {error}=await client.from("song_requests").insert({requester_name:name,song_title:song,artist_name:artist||null,note:savedNote||null});if(error)throw error;try{sessionStorage.setItem(storageKey,JSON.stringify({fingerprint,time:Date.now()}));}catch(e){}status.textContent=priority?"Priority request submitted! It is flagged for payment verification on the admin page. Thanks!":"Request sent! Thanks for helping choose the music.";playSfx("you-rock-sfx");requestForm.reset();priorityPaymentWrap.hidden=true;priorityReferenceWrap.hidden=true;$("#request-hint").hidden=true;}catch(err){console.error("Request submission failed",err);status.textContent="Sorry, your request couldn't be sent right now. Please try again in a moment.";}finally{submit.disabled=false;submit.textContent="SEND SONG REQUEST ↗";}
 });
 const tipButton=$("#copy-email"),tipStatus=$("#tip-status");
 tipButton.addEventListener("click",async()=>{playSfx("highway-riser-sfx");try{await navigator.clipboard.writeText(config.tipEmail);tipStatus.textContent="E-transfer email copied — open your banking app to send it.";}catch(e){tipStatus.textContent=`E-transfer email: ${config.tipEmail}. If copying was blocked, press and hold the address to copy it.`;}});
@@ -280,11 +282,32 @@ document.addEventListener("click",event=>{
 // Audio cues after successful actions.
 const requestFormForAchievement=$("#request-form");
 requestFormForAchievement.addEventListener("submit",()=>{ /* Success cue is triggered after Supabase confirms below. */ });
+const continuePriorityRequest=document.querySelector("#continue-priority-request");
+if(continuePriorityRequest){
+ continuePriorityRequest.addEventListener("click",()=>{
+  const priorityToggle=document.querySelector("#priority-request");
+  const priorityPaymentWrap=document.querySelector("#priority-payment-wrap");
+  const priorityReferenceWrap=document.querySelector("#priority-reference-wrap");
+  if(priorityToggle){priorityToggle.checked=true;priorityPaymentWrap.hidden=false;priorityReferenceWrap.hidden=false;}
+  window.setTimeout(()=>{document.querySelector("#request").scrollIntoView({behavior:"smooth",block:"start"});document.querySelector("#requester-name")?.focus({preventScroll:true});},30);
+ });
+}
 const songReveal=document.querySelector("#song-reveal");
 const closeSongList=document.querySelector("#close-song-list");
 if(songReveal&&closeSongList){
- songReveal.addEventListener("toggle",()=>{closeSongList.hidden=!songReveal.open;});
- closeSongList.addEventListener("click",()=>{songReveal.open=false;closeSongList.hidden=true;songReveal.querySelector("summary").scrollIntoView({behavior:"smooth",block:"center"});playSfx("scroll-sfx");});
+ let closeHideTimer;
+ const syncCloseButton=()=>{
+  window.clearTimeout(closeHideTimer);
+  if(songReveal.open){
+   closeSongList.hidden=false;
+   window.requestAnimationFrame(()=>closeSongList.classList.add("is-visible"));
+  }else{
+   closeSongList.classList.remove("is-visible");
+   closeHideTimer=window.setTimeout(()=>{closeSongList.hidden=true;},260);
+  }
+ };
+ songReveal.addEventListener("toggle",syncCloseButton);
+ closeSongList.addEventListener("click",()=>{songReveal.open=false;songReveal.querySelector("summary").scrollIntoView({behavior:"smooth",block:"center"});playSfx("scroll-sfx");});
 }
 renderDecades();renderArtists();renderSongs();
 

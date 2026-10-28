@@ -1,0 +1,5 @@
+THE GRIFFLIST — GIG-FRIENDLY ADMIN UPDATE
+
+Upload all files in this ZIP to the root of your GitHub repository, replacing the matching files. The title-screen artwork now uses the supplied silver/cream logo. The admin dashboard has larger tap targets, sticky refresh/sign-out controls, and priority requests highlighted in gold.
+
+Priority payments are not automatically confirmed by Ko-fi, PayPal, or e-transfer in this version. Open your payment account first, confirm the payment, then press MARK PAYMENT VERIFIED on the matching request. The admin inbox refreshes every 20 seconds while open.
