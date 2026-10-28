@@ -571,3 +571,18 @@ input:focus,select:focus,textarea:focus{border-color:#ffb45e!important;box-shado
 .site-header.toolbar-compact .nav-meter-icon{width:18px!important;height:16px!important;}
 @media(max-width:700px){.site-header.toolbar-compact .header-logo{width:64px!important;max-height:19px!important;}.site-header.toolbar-compact .top-nav{gap:4px!important;}.site-header.toolbar-compact .top-nav a{min-height:32px!important;padding:4px 3px!important;font-size:.75rem!important;}}
 @media(prefers-reduced-motion:reduce){.site-header{transition:none!important;}}
+
+
+/* Stable toolbar resize: keep layout metrics constant and animate only visual scale.
+   This avoids reflow/scroll feedback that can make the toolbar flutter between sizes. */
+.site-header{transform:scale(1);transform-origin:top center;transition:transform .32s cubic-bezier(.2,.75,.25,1),opacity .22s ease!important;will-change:transform;backface-visibility:hidden;}
+.site-header.toolbar-compact{padding-top:10px!important;padding-bottom:10px!important;gap:10px!important;transform:scale(.90);}
+.site-header.toolbar-compact .header-logo{width:clamp(86px,11vw,126px)!important;max-height:38px!important;}
+.site-header.toolbar-compact .top-nav{gap:6px!important;}
+.site-header.toolbar-compact .top-nav a{min-height:44px!important;padding:10px 6px!important;font-size:.86rem!important;line-height:normal!important;}
+.site-header.toolbar-compact .nav-meter-icon{width:24px!important;height:21px!important;}
+.site-header.toolbar-hidden{transform:translateY(-110%) scale(var(--toolbar-scale,1));opacity:0;pointer-events:none;}
+.site-header.toolbar-compact.toolbar-hidden{--toolbar-scale:.90;}
+@media(max-width:800px){.site-header.toolbar-compact{padding-top:7px!important;padding-bottom:7px!important;}}
+@media(max-width:700px){.site-header.toolbar-compact .header-logo{width:clamp(80px,23vw,104px)!important;max-height:30px!important;}.site-header.toolbar-compact .top-nav{gap:6px!important;}.site-header.toolbar-compact .top-nav a{min-height:44px!important;padding:10px 6px!important;font-size:.86rem!important;}}
+@media(prefers-reduced-motion:reduce){.site-header{transition:none!important;}}
