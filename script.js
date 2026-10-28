@@ -297,9 +297,12 @@ const closeSongList=document.querySelector("#close-song-list");
 const songRequestTip=document.querySelector("#song-request-tip");
 if(songReveal&&closeSongList){
  let closeHideTimer;
+ let catalogInView=false;
+ const catalogSection=document.querySelector("#catalog");
  const syncCloseButton=()=>{
   window.clearTimeout(closeHideTimer);
-  if(songReveal.open){
+  const shouldShow=Boolean(songReveal.open&&catalogInView);
+  if(shouldShow){
    closeSongList.hidden=false;
    if(songRequestTip)songRequestTip.hidden=false;
    window.requestAnimationFrame(()=>{closeSongList.classList.add("is-visible");songRequestTip?.classList.add("is-visible");});
@@ -309,7 +312,12 @@ if(songReveal&&closeSongList){
    closeHideTimer=window.setTimeout(()=>{closeSongList.hidden=true;if(songRequestTip)songRequestTip.hidden=true;},260);
   }
  };
+ if(catalogSection&&"IntersectionObserver" in window){
+  const catalogObserver=new IntersectionObserver(entries=>{catalogInView=entries.some(entry=>entry.isIntersecting&&entry.intersectionRatio>0.12);syncCloseButton();},{threshold:[0,0.12,0.25]});
+  catalogObserver.observe(catalogSection);
+ }else{catalogInView=true;}
  songReveal.addEventListener("toggle",syncCloseButton);
+ window.addEventListener("scroll",()=>{if(catalogSection&&!('IntersectionObserver' in window)){const r=catalogSection.getBoundingClientRect();catalogInView=r.bottom>0&&r.top<window.innerHeight;syncCloseButton();}},{passive:true});
  closeSongList.addEventListener("click",()=>{songReveal.open=false;songReveal.querySelector("summary").scrollIntoView({behavior:"smooth",block:"center"});playSfx("scroll-sfx");});
 }
 const nextShowDetails=document.querySelector("#next-show-details");
@@ -364,3 +372,23 @@ async function loadEncorePoll(){
  }catch(e){encoreStatus.textContent="Encore voting will be available after the live-features database setup.";console.info("Encore poll needs the Supabase live-features migration.",e.message);}
 }
 loadRockMeter();loadEncorePoll();window.setInterval(()=>{if(!document.hidden){loadRockMeter();loadEncorePoll();}},8000);document.addEventListener("visibilitychange",()=>{if(!document.hidden){loadRockMeter();loadEncorePoll();}});
+
+
+/* Smart toolbar behavior: hide on downward scroll, reveal on upward scroll, always visible at page top. */
+(()=>{
+ const header=document.querySelector('.site-header');
+ if(!header) return;
+ let lastY=window.scrollY||0;
+ let ticking=false;
+ const update=()=>{
+   const y=Math.max(0,window.scrollY||0);
+   const delta=y-lastY;
+   if(y<90){header.classList.remove('toolbar-hidden');}
+   else if(delta>7){header.classList.add('toolbar-hidden');}
+   else if(delta<-7){header.classList.remove('toolbar-hidden');}
+   lastY=y; ticking=false;
+ };
+ window.addEventListener('scroll',()=>{if(!ticking){window.requestAnimationFrame(update);ticking=true;}},{passive:true});
+ window.addEventListener('pageshow',()=>{lastY=window.scrollY||0;header.classList.remove('toolbar-hidden');});
+ header.addEventListener('focusin',()=>header.classList.remove('toolbar-hidden'));
+})();
