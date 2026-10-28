@@ -43,3 +43,39 @@ October 28 — payment and catalog refinements
 
 
 Request-flow usability update (2026-10-28): moved song-selection confirmation above the name field; removed automatic focus after song selection; added a standard non-focusing blinking cursor cue; added brief shared section highlights for internal navigation; made catalog search punctuation/spacing tolerant (ACDC, AC/DC, AC DC); slightly enlarged header logo; added reduced-motion behavior. Existing duplicate-request guard retained.
+
+
+NEXT FEATURE UPDATE (2026-10-28)
+- Renamed the public meter to Rockometer and the request section to Request a Song.
+- Title-screen sound no longer attempts autoplay at page load; it starts only after the title-screen click/tap.
+- Added Watch Live homepage callout, dedicated watch-live.html page, phone browser broadcast controls (WHIP), public playback (WHEP), venue settings, and in-video Rockometer overlay.
+- Added Crowd Favourites with this-month/all-time ranges, request counts, played-status counts, category filter for pinned songs, request buttons, share action, and admin pinning.
+- Added Supabase migration grifflist-next-update.sql. Run it before using Watch Live settings or Crowd Favourites.
+- Added free self-hosted MediaMTX/Caddy examples and detailed setup guide in WATCH-LIVE-AND-FAVOURITES-SETUP.txt.
+- The streaming software is free; public hosting still requires a reachable server, DNS/HTTPS, and sufficient upload bandwidth. The stream is not ready to go live until the server is configured and tested.
+
+
+SECRET STAGE AUDIO UPDATE
+- Added secret-stage-boot.mp3: the supplied boot-up sound plays when the hidden Secret Stage opens.
+- Added secret-stage-menu.mp3: the supplied 10-minute ambience is compressed to 96 kbps stereo MP3 (about 7.2 MB, down from 16.5 MB) and begins when the boot sound finishes. It loops while the Secret Stage remains open.
+- The normal homepage title sound and menu ambience are unchanged.
+- Added a SOUND ON / SOUND OFF control inside the Secret Stage; preference is remembered in the visitor's browser.
+- Secret Stage sounds stop when the overlay is closed. New audio files are included in the offline cache.
+- Other PS2-style effects can be added later when the remaining files are supplied.
+
+AUDIO PERFORMANCE UPDATE — LIGHTWEIGHT PLAYBACK
+- Re-encoded all 16 local MP3 audio assets with smaller, web-friendly bitrates. Short interface effects use approximately 48 kbps mono; the success sound uses 64 kbps mono; title and boot sounds use 80–96 kbps; normal menu ambience uses 96 kbps stereo; the 10-minute Secret Stage ambience uses 64 kbps stereo.
+- Combined local MP3 size is now approximately 6.4 MB. The Secret Stage ambience is approximately 4.6 MiB, down from about 7.0 MiB in the previous package and much smaller than the supplied original.
+- Audio elements and scripted sound effects use preload="none" so the browser doesn't download every sound when the homepage first loads. Sounds download when they are played.
+- The service worker no longer downloads every audio file during initial installation. It caches assets after they are requested online, so audio already played can be available offline; first-time playback of an uncached sound still requires a connection.
+- Audio is lossy-compressed, so it is not bit-for-bit identical to the originals. Settings prioritize a reasonable balance of sound quality and size, with stereo preserved for background tracks.
+- Existing title/menu behavior, Secret Stage boot-then-ambience behavior, and sound controls remain unchanged. Test playback on mobile and desktop after publishing.
+
+- Request form name field label now reads “Name (Required)” to make the required field clearer.
+
+
+PS2 Secret Stage sound-effects update (Oct 28, 2026)
+- Added four lightweight, normalized mono MP3 effects for Secret Stage selection, feature confirmation, guitar-pick pickup, and Lost Cassette discovery.
+- Wired each sound to its specific action, respecting the Secret Stage SOUND ON/OFF setting. Homepage title/menu audio is unchanged.
+- Improved arcade record messaging so a new personal best is explicitly identified. High-score celebration audio remains pending until a sound is selected.
+- Transition sound awaits SCPH-10000_00030.wav, which was referenced but was not included with the uploaded files received for this update.

@@ -1,0 +1,45 @@
+THE GRIFFLIST — SIMPLER HOMEPAGE UPDATE
+
+Design changes
+- Homepage navigation now focuses on Request a Song, Song Catalog, Send a Tip, Watch Live, and Explore.
+- Optional games/discovery tools, Time Machine, seasonal feature, and Encore Wall sit inside a single collapsed “Explore more” drawer so the essentials remain easy to scan.
+- Crowd Favourites and Encore Vote are on the dedicated explore.html page.
+- Existing artwork, catalog, requests, Supabase integration, payment links, Rockometer, live page, admin page, and secret-stage features are retained.
+
+PS2-inspired sound file purposes — send one file for each role you want to use:
+1. STARTUP / BOOT: one short sound that plays once when a visitor presses “PRESS ANY BUTTON TO ROCK”. Best: a short boot sting, around 2–8 seconds.
+2. MENU AMBIENCE: optional loop that plays after entering the site. Best: a calm atmospheric menu loop, ideally 20–90 seconds and seamless.
+3. MENU SELECT: short click/beep when a visitor selects a menu item or button.
+4. CONFIRM / ACCEPT: short positive sound after a successful action, such as a song request being sent.
+5. BACK / CANCEL: short lower or descending sound when closing a panel or backing out.
+6. SECRET UNLOCK: a distinctive discovery / glitch sound for opening the hidden Secret Stage.
+7. TRANSITION: a brief sweep or startup-like flourish for changing to a new section or opening the Time Machine.
+8. ARCADE PICKUP: optional short arcade sound when collecting a guitar pick in the mini-game.
+
+You do not need to send all eight. If you only have a few, prioritize 1 (startup), 2 (menu loop), 3 (select), 4 (confirm), and 6 (secret unlock). Please upload the audio files and tell me which number/purpose each file is for. WAV or MP3 is fine; short files are best for UI effects. Only send files you have permission to use.
+
+Verification note
+The ZIP archive and JavaScript syntax should be checked after packaging. This is not a substitute for testing the site in a browser or verifying the live Supabase configuration after upload.
+
+CURRENT IMPLEMENTATION — SECRET STAGE AUDIO
+- secret-stage-boot.mp3: compressed from the supplied 13-second Bootup.mp3; plays only when opening the Secret Stage.
+- secret-stage-menu.mp3: compressed from the supplied 10-minute Menu.mp3 to 96 kbps stereo MP3; starts after the boot sound finishes and loops while the Secret Stage is open.
+- The homepage title sound and normal menu ambience are unchanged.
+- A SOUND ON / SOUND OFF control is provided inside the Secret Stage and the choice is saved in this browser.
+- Secret Stage audio stops and resets when the overlay closes. The two new files are included in the offline cache.
+- Compression: boot audio approx. 204 KiB; menu audio approx. 7.0 MiB (about 57% smaller than the original 16.5 MB).
+- Remaining optional effects (menu select, pickup, high score, Lost Cassette discovery) can be added separately when supplied.
+
+AUDIO PERFORMANCE UPDATE
+- All 16 local MP3 files have been optimized for smaller web delivery. UI effects are ~48 kbps mono, the success cue is 64 kbps mono, main menu ambience is 96 kbps stereo, and Secret Stage ambience is 64 kbps stereo.
+- Audio preload is disabled on initial page load; audio is fetched when used. The service worker no longer pre-caches every audio file during first install, but caches audio after it is requested online.
+- This reduces initial downloads and storage usage. Lossy compression can sound slightly different from the original, so please listen on your phone after upload.
+
+
+PS2 SOUND UPDATE — 2026-10-28
+- secret-menu-select.mp3: supplied ps2-select-sound.mp3, mono 32 kHz / 64 kbps MP3, loudness normalized for a consistent short-effect level; used for ordinary button interactions inside the Secret Stage.
+- secret-button-confirm.mp3: supplied SCPH-10000_00022.wav converted to mono 32 kHz / 64 kbps MP3; used when opening a Secret Stage tile/feature.
+- secret-pickup.mp3: supplied 04. Game Boot.mp3 converted/normalized to mono 32 kHz / 64 kbps MP3; plays when a guitar pick is caught.
+- secret-lost-cassette.mp3: supplied 03. Browser To Menu.mp3 converted/normalized to mono 32 kHz / 64 kbps MP3; plays when opening the Lost Cassette.
+- Secret Stage effects use their own mute toggle and never change homepage audio. The background ambience stays at its separate, quieter level.
+- The high-score sound is not assigned yet. SCPH-10000_00030.wav was mentioned for transition audio but was not present among the uploaded files for this update, so that transition sound remains pending.

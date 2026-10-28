@@ -1,0 +1,10 @@
+THE GREAT GRIFFLIST HUNT — IDEAS ONLY (NOT IMPLEMENTED)
+
+1. Three Clues: one clue in the logo area, one in the song catalog, and one in the Secret Stage.
+2. Decade Trail: each decade filter reveals a lyric-free clue about a song title or year in the repertoire.
+3. Sound Clue: a short original interface sound indicates the right interaction, without autoplay.
+4. Cassette Unlock: collecting all clues reveals the Lost Cassette's hidden side-B note.
+5. Finale: a shareable “Backstage Explorer” card; no personal data or account required.
+6. Hint button: visitors can reveal a hint if they get stuck, and all clues have keyboard and screen-reader alternatives.
+
+Recommendation: start with three clues maximum. Keep the puzzle optional, avoid requiring payment or personal data, and make sure the regular site remains easy to navigate.

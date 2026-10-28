@@ -1,0 +1,9 @@
+GHOST GIG — IDEAS ONLY (NOT IMPLEMENTED)
+
+1. The Vanishing Poster: a faint concert poster appears only after the visitor opens the Secret Stage. Clicking it reveals a fictional, clearly marked mystery-show story.
+2. The Empty Stage: an eerie stage view with a single microphone, a countdown, and a short original sound effect; no fake real-world event or misleading venue details.
+3. The Lost Setlist: each song clue points to another song in the repertoire; solving the sequence unlocks a hidden cassette message.
+4. The Midnight Encore: a seasonal, time-limited visual effect that appears at a configured time, with a manual reduced-motion alternative.
+5. The Ghost in the Amp: a subtle amp-light flicker that reveals a clue after the visitor taps the hidden footer note.
+
+Recommendation: make it atmospheric, playful, and obviously fictional once opened. Do not use scary flashing effects or anything that implies a real show is happening when it is not.

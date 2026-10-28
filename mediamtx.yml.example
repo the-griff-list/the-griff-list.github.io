@@ -1,0 +1,31 @@
+# FREE self-hosted MediaMTX configuration for The Grifflist.
+# Copy to mediamtx.yml and replace example values before running.
+authMethod: internal
+authInternalUsers:
+  - user: publisher
+    pass: REPLACE_WITH_A_LONG_RANDOM_PASSWORD
+    ips: []
+    permissions:
+      - action: publish
+        path: live
+  - user: any
+    pass:
+    ips: []
+    permissions:
+      - action: read
+        path: live
+
+webrtc: yes
+webrtcAddress: :8889
+webrtcLocalUDPAddress: :8189
+# Add your public DNS hostname or public IP; do not leave the example hostname.
+webrtcAdditionalHosts:
+  - stream.example.com
+# Replace with the exact public website origin hosting The Grifflist.
+webrtcAllowOrigins:
+  - https://YOUR-USERNAME.github.io
+
+# The phone sends to /live/whip; viewers read from /live/whep.
+paths:
+  live:
+    source: publisher

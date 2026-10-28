@@ -1,0 +1,11 @@
+{
+  "name": "The Grifflist — Live Repertoire",
+  "short_name": "The Grifflist",
+  "description": "Browse the live repertoire, request songs, and follow the show.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#080808",
+  "theme_color": "#080808",
+  "icons": [{"src":"./app-icon.png","sizes":"512x512","type":"image/png","purpose":"any maskable"}]
+}

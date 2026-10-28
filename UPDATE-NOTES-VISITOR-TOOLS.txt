@@ -1,0 +1,38 @@
+THE GRIFFLIST — VISITOR TOOLS UPDATE
+
+Added:
+- Optional remember-my-name checkbox (device-local storage only).
+- One-tap catalog and favourite requests only when a name is remembered and there are no pending notes or priority-payment choices; otherwise song details are filled without auto-submitting.
+- Private-by-token request status lookup (apply the updated Supabase SQL first).
+- Generated shareable PNG song cards from Crowd Favourites, with download/share fallback.
+- Share Crowd Favourites link.
+- Audio-only low-data mode for WHEP/WebRTC playback.
+- Basic admin stream-health indicator for connection, camera and microphone tracks.
+- Quick admin Go Live, End Live and Refresh Requests actions.
+- New show-session timestamp and This Show crowd-favourite filter. Monthly and all-time stats remain.
+- Accessibility improvements: visible keyboard focus, status announcements, touch-friendly controls, accessible names.
+- Reused the homepage's existing MP3 sound effects on Watch Live, admin and archive pages.
+
+IMPORTANT SETUP
+1. Back up the existing repository.
+2. Read grifflist-next-update.sql and verify the admin UUID in its RLS policies matches the correct admin account before running it in Supabase SQL Editor.
+3. Apply the SQL migration before publishing the new scripts. It adds a tracking_token column and a status RPC; existing request rows remain unchanged.
+4. Upload the extracted website files to the repository root, preserving the existing Supabase configuration and assets.
+5. Test song requests, status lookup, pinning, favourites and admin controls before using them at a show.
+6. Configure the self-hosted MediaMTX server, HTTPS, WHIP/WHEP URLs and CORS/firewall settings separately. Audio-only mode requires the streaming server to accept an audio-only WHEP session.
+
+LIMITATIONS
+- The stream health display is a basic browser-side indicator, not a full bitrate or server monitoring dashboard.
+- Automatic show reset starts a new show session timestamp and makes the “This Show” favourites range start fresh. It does not reset the all-time or monthly counts.
+- Sound effects are reused from the homepage, but a browser or in-app browser may suppress audio until a user interaction.
+- No live Supabase project or actual camera broadcast was available for end-to-end verification. Test in a staging copy first.
+
+
+BONUS EXPERIENCES ADDENDUM
+- Discreet footer music-note button opens Secret Stage with a brief arcade-style glitch reveal.
+- Secret Stage includes Lost Cassette teaser, hidden note, and Guitar Pick Panic mini-game.
+- Added Setlist Roulette, Surprise Me, era picker, Time Machine, seasonal feature, shareable song cards, and Day/Night/Neon appearance modes.
+- Added installable PWA manifest and service worker cache for offline repertoire shell. Online requests, tips, and live video still require internet.
+- Added the public Encore Wall for confirmed tips. Run bonus-features-migration.sql once. Tip entries are manually added only after verification; payment provider webhooks are not configured.
+- PS2-inspired sound theme is a placeholder until user-supplied audio files are provided. No PlayStation audio is bundled.
+- Ghost Gig and Great Grifflist Hunt are ideas only; see their respective idea files.

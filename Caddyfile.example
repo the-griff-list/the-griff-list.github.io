@@ -1,0 +1,4 @@
+# Replace stream.example.com with a DNS hostname that points to your home server.
+stream.example.com {
+    reverse_proxy mediamtx:8889
+}
