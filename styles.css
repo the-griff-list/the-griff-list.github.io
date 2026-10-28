@@ -294,7 +294,11 @@ body:before{opacity:.025;background-size:8px 8px}
 .song-reveal>summary::-webkit-details-marker{display:none}
 .song-reveal>summary span{font-size:1.35rem;color:#ff9b3d;transition:transform .18s}
 .song-reveal[open]>summary{border-bottom:1px solid #654126;background:#301b11}
-.song-reveal[open]>summary span{transform:rotate(45deg)}
+.song-reveal[open]>summary>span:last-child{transform:rotate(45deg)}
+.song-reveal>summary .song-reveal-label{display:inline-block;white-space:nowrap;transform:none!important;rotate:none!important;flex:1;min-width:0}
+.song-reveal>summary{display:flex;align-items:center;gap:10px;white-space:nowrap}
+.song-reveal>summary>span:last-child{flex:0 0 auto}
+.song-reveal[open]>summary .song-reveal-label{transform:none!important;rotate:none!important}
 .song-reveal-content{padding:0 12px 12px}
 .song-reveal-content .song-list-heading{margin-top:12px}
 @media(max-width:800px){.top-nav{grid-template-columns:repeat(3,minmax(0,1fr));max-width:none;gap:7px}.top-nav a{font-size:.88rem;padding:10px 5px;min-height:46px}.top-nav a:last-child{grid-column:auto}}

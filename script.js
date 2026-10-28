@@ -307,7 +307,7 @@ const songReveal=document.querySelector("#song-reveal");
 const closeSongList=document.querySelector("#close-song-list");
 const songRequestTip=document.querySelector("#song-request-tip");
 const songRevealLabel=songReveal?.querySelector(".song-reveal-label");
-if(songReveal&&songRevealLabel){const syncSongRevealLabel=()=>{songRevealLabel.textContent=songReveal.open?"Songs revealed":"Reveal the songs";};songReveal.addEventListener("toggle",syncSongRevealLabel);syncSongRevealLabel();}
+if(songReveal&&songRevealLabel){const syncSongRevealLabel=()=>{songRevealLabel.textContent=songReveal.open?"SONGS REVEALED":"REVEAL THE SONGS";};songReveal.addEventListener("toggle",syncSongRevealLabel);syncSongRevealLabel();}
 if(songReveal&&closeSongList){
  let closeHideTimer;
  let catalogInView=false;
