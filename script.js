@@ -363,7 +363,4 @@ async function loadEncorePoll(){
  if(alreadyVoted)encoreStatus.textContent=`Your vote is in. ${total} vote${total===1?"":"s"} so far.`;
  }catch(e){encoreStatus.textContent="Encore voting will be available after the live-features database setup.";console.info("Encore poll needs the Supabase live-features migration.",e.message);}
 }
-const showKofiQr=document.querySelector("#show-kofi-qr");
-const kofiQrPanel=document.querySelector("#kofi-qr-panel");
-if(showKofiQr&&kofiQrPanel){showKofiQr.addEventListener("click",()=>{const open=kofiQrPanel.hidden;kofiQrPanel.hidden=!open;showKofiQr.setAttribute("aria-expanded",String(open));showKofiQr.textContent=open?"Hide Ko-fi QR code":"Show Ko-fi QR code";if(open)kofiQrPanel.scrollIntoView({behavior:"smooth",block:"nearest"});});}
 loadRockMeter();loadEncorePoll();window.setInterval(()=>{if(!document.hidden){loadRockMeter();loadEncorePoll();}},8000);document.addEventListener("visibilitychange",()=>{if(!document.hidden){loadRockMeter();loadEncorePoll();}});

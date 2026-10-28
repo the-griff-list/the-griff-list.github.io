@@ -387,3 +387,27 @@ input:focus,select:focus,textarea:focus{border-color:#ffb45e!important;box-shado
 @media(max-width:800px){.support-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.wallet-note{grid-column:span 2}}
 @media(max-width:600px){.close-song-list{top:52%;bottom:auto;right:8px;transform:translateY(-50%) translateX(10px);padding:10px 11px}.close-song-list.is-visible{transform:translateY(-50%) translateX(0)}.song-request-tip{top:52%;left:8px;right:auto;bottom:auto;max-width:calc(50vw - 24px);font-size:.7rem;padding:9px 10px}.song-request-tip.is-visible{transform:translateY(-50%)}.support-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.support-grid .tip-card{padding:10px}.wallet-note{grid-column:span 2}}
 @media(max-width:380px){.wallet-badge{font-size:.69rem;padding:7px}.wallet-via{font-size:.58rem}.support-grid .button{font-size:.7rem}}
+
+
+/* Streamlined priority payment form and unified support payment banners. */
+.priority-toggle strong{display:block;font-size:.92rem;line-height:1.35}
+.priority-toggle small{display:block;margin-top:5px;font-size:.79rem;line-height:1.45;color:var(--muted)}
+#priority-payment-wrap,#priority-reference-wrap{margin-top:10px;font-size:.82rem}
+#priority-payment-method,#priority-reference{margin-top:5px}
+.payment-method-list{display:grid;grid-template-columns:minmax(0,1fr);gap:9px;width:100%;max-width:780px;margin:0 auto}
+.payment-method-banner{display:grid;grid-template-columns:40px minmax(0,1fr) auto;align-items:center;gap:12px;min-width:0;padding:12px 15px;border:1px solid #5b432c;border-radius:9px;background:linear-gradient(105deg,#21170f,#11100f 72%);color:#f7f2e9;text-decoration:none;box-shadow:0 5px 14px #0003;transition:border-color .18s ease,transform .18s ease,background .18s ease}
+.payment-method-banner:hover{border-color:var(--gold);background:linear-gradient(105deg,#302013,#171411 72%);transform:translateY(-1px)}
+.payment-brand-mark{display:flex;width:38px;height:38px;align-items:center;justify-content:center;border-radius:9px;background:#332116;color:#ffd08a;font-size:1.15rem;font-weight:900}
+.payment-kofi .payment-brand-mark{background:#e94c31;color:#fff}
+.payment-paypal .payment-brand-mark{background:#073b70;color:#fff;font-style:italic}
+.payment-etransfer .payment-brand-mark{background:#19452d;color:#d5ffe2}
+.payment-wallet .payment-brand-mark{background:#171717;color:#fff}
+.payment-method-copy{display:flex;flex-direction:column;gap:3px;min-width:0}
+.payment-method-copy strong{font-size:.94rem;line-height:1.2}
+.payment-method-copy small{font-size:.76rem;line-height:1.35;color:#c4b8a8;overflow-wrap:anywhere}
+.payment-action{display:inline-flex;align-items:center;justify-content:center;min-height:34px;padding:7px 11px;border:1px solid #765a39;border-radius:6px;background:#21180f;color:#ffe0a6;font:inherit;font-size:.75rem;font-weight:800;text-decoration:none;white-space:nowrap;cursor:pointer}
+.payment-action:hover{background:#382515;border-color:var(--gold)}
+.payment-method-banner .form-status{grid-column:2/-1;margin:0;font-size:.72rem}
+.support-grid{grid-template-columns:minmax(0,1fr);gap:9px}
+.support-grid .payment-method-list{grid-column:1/-1}
+@media(max-width:480px){.payment-method-banner{grid-template-columns:34px minmax(0,1fr) auto;gap:9px;padding:10px}.payment-brand-mark{width:33px;height:33px;font-size:1rem}.payment-method-copy strong{font-size:.86rem}.payment-method-copy small{font-size:.7rem}.payment-action{min-height:32px;padding:6px 8px;font-size:.7rem}}
