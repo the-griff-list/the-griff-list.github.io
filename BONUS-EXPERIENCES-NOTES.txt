@@ -15,3 +15,12 @@ THE GRIFFLIST - SECRET MENU AND PUBLIC FEATURES
 
 ARCADE PICK ART UPDATE
 - Guitar Pick Panic now uses the supplied Treynor 1.2mm purple pick, enhanced as an isolated glossy game asset at arcade-pick-treynor.png.
+
+
+Update 12 - neon pick and final visual/audio polish
+- Replaced the arcade pick artwork with a transparent-background neon purple pick; removed the brand and thickness lettering.
+- Softened arcade pick click audio with a short fade-in/fade-out envelope and a fresh audio instance per tap to reduce clipping.
+- Reopening Secret Menu explicitly pauses homepage menu music and restarts the PS2 ambience; returning home resumes homepage audio when it had been playing before.
+- Refined day/night catalog rows, payment/contact surfaces, request buttons, headings, footer controls, and the Secret Menu shimmer.
+- Service-worker cache version bumped to v12 so the updated artwork, CSS and interactions can replace cached files.
+- Browser/Supabase end-to-end testing has not been performed in this package build.

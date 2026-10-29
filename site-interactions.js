@@ -105,8 +105,28 @@
     Object.values(secretEffects).forEach(a=>{a.preload='none';a.volume=.42;});
     const playSecretEffect=(name)=>{
       if(overlay.hidden)return;
-      const a=secretEffects[name];if(!a)return;
-      try{a.currentTime=0;const p=a.play();p?.catch?.(()=>{});}catch(_){}
+      const original=secretEffects[name];if(!original)return;
+      // Arcade pickup: use a fresh player per tap and gently fade the attack/release
+      // to prevent the clipped click heard when the same MP3 is restarted rapidly.
+      if(name==='pickup'){
+        try{
+          const a=new Audio(original.src);a.preload='auto';a.volume=0.01;
+          const fadeIn=0.018,fadeOut=0.095,peak=0.23;let raf=0;
+          const envelope=()=>{
+            if(a.paused||!Number.isFinite(a.duration)||a.duration<=0)return;
+            const t=a.currentTime,remaining=a.duration-t;
+            let v=peak;
+            if(t<fadeIn)v=peak*Math.max(.05,t/fadeIn);
+            if(remaining<fadeOut)v=Math.min(v,peak*Math.max(0,remaining/fadeOut));
+            a.volume=Math.max(0,Math.min(peak,v));
+            if(!a.paused&&remaining>0)raf=requestAnimationFrame(envelope);
+          };
+          a.addEventListener('ended',()=>cancelAnimationFrame(raf),{once:true});
+          a.play().then(()=>{raf=requestAnimationFrame(envelope);}).catch(()=>{});
+        }catch(_){}
+        return;
+      }
+      try{original.currentTime=0;const p=original.play();p?.catch?.(()=>{});}catch(_){}
     };
     const playRandomHighScore=()=>{
       if(overlay.hidden)return;
@@ -118,7 +138,7 @@
       [secretBootAudio,secretAmbience,...Object.values(secretEffects)].forEach(a=>{a.pause();try{a.currentTime=0;}catch(_){}});
     };
     const close=()=>{overlay.hidden=true;document.body.classList.remove('secret-stage-open');stopSecretAudio();if(resumeHomeMenuOnClose&&homeMenuAudio){homeMenuAudio.play().catch(()=>{});}resumeHomeMenuOnClose=false;};
-    const reveal=()=>{document.body.classList.remove('secret-glitch-boot');secretBootAudio.pause();try{secretBootAudio.currentTime=0;}catch(_){}overlay.hidden=false;document.body.classList.add('secret-stage-open');overlay.querySelector('.secret-close')?.focus();secretAmbience.currentTime=0;secretAmbience.play().catch(()=>{});};
+    const reveal=()=>{document.body.classList.remove('secret-glitch-boot');secretBootAudio.pause();try{secretBootAudio.currentTime=0;}catch(_){}overlay.hidden=false;document.body.classList.add('secret-stage-open');overlay.querySelector('.secret-close')?.focus();homeMenuAudio?.pause();secretAmbience.pause();secretAmbience.currentTime=0;secretAmbience.play().catch(()=>{});};
     secret.addEventListener('click',()=>{
       resumeHomeMenuOnClose=Boolean(homeMenuAudio&&!homeMenuAudio.paused);homeMenuAudio?.pause();
       stopSecretAudio();

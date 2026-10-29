@@ -1600,3 +1600,42 @@ body.theme-eighties footer.site-footer .gig-theme-controls button[aria-pressed="
 
 body.theme-eighties .header-logo {width:clamp(140px,20vw,225px);max-height:72px}
 @media(max-width:700px){body.theme-eighties .header-logo{width:clamp(138px,42vw,185px);max-height:58px}}
+
+/* Final touch-up: calmer catalog, brighter controls, and a compact shared footer. */
+body.theme-day .song-row,
+body.theme-day .song-list .song-row,
+body.theme-day .song-list-heading {background:#e8e8e8!important;color:#2b211b!important}
+body.theme-day .song-row:nth-child(even){background:#f1f1f1!important}
+body.theme-day .song-title,body.theme-day .song-artist,body.theme-day .song-year{color:#e65a2d!important}
+body.theme-day .catalog-controls{background:linear-gradient(135deg,#eeeeee,#dedede)!important;border-color:#c5bdb4!important}
+body.theme-day .song-reveal>summary{background:linear-gradient(110deg,#ff7135,#ff3f71)!important;color:#fff!important;border-color:#ff7135!important}
+body.theme-day .song-reveal>summary *{color:#fff!important}
+body.theme-day #random-request-song,body.theme-night #random-request-song{background:#e7e7e7!important;color:#241b17!important;border-color:#c5bdb4!important}
+body.theme-day #check-last-request{background:linear-gradient(110deg,#ff7135,#ff3f71)!important;color:#fff!important;padding:10px 14px!important;font-size:.88rem!important;min-height:42px!important}
+body.theme-day .payment-method-banner{background:linear-gradient(135deg,#eeeeee,#dedede)!important;color:#2b211b!important;border-color:#c5bdb4!important}
+body.theme-day .payment-method-banner .payment-action,
+body.theme-day #booking-copy,
+body.theme-day .social-link{background:#e7e7e7!important;color:#2b211b!important;border-color:#c5bdb4!important}
+body.theme-day .priority-payment-wrap select{background:#e7e7e7!important;color:#2b211b!important}
+body.theme-day .rock-meter-numbers #rock-meter-raised{color:#ef5a2f!important}
+body.theme-day .decade-filters button{border-color:#ef6a37!important;color:#c94b28!important}
+body.theme-day .section-heading h2,body.theme-night .section-heading h2,
+body.theme-day .contact-section h2,body.theme-night .contact-section h2,
+body.theme-day .tip-options-section h2,body.theme-night .tip-options-section h2{color:#ff762e!important}
+body.theme-day .section-heading h2 span,body.theme-night .section-heading h2 span{color:#ff762e!important}
+body.theme-night #random-request-song{background:#e7e7e7!important;color:#241b17!important;border-color:#c5bdb4!important}
+body.theme-night #request-form button[type=submit],body.theme-night #home-watch-live-button,
+body.theme-night #booking-copy{background:linear-gradient(110deg,#ff7135,#ff3f71)!important;color:#fff!important;border-color:#ff7135!important}
+.arcade-pick-art{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 0 7px #ff35ed) drop-shadow(0 0 16px #ff18cc)!important}
+.arcade-pick{background:transparent!important;border:0!important;box-shadow:none!important;padding:0!important;overflow:visible!important}
+.secret-stage-trigger{position:relative;isolation:isolate;overflow:hidden}
+.secret-stage-trigger:after{content:"";position:absolute;top:-30%;bottom:-30%;left:-45%;width:30%;transform:skewX(-24deg);background:linear-gradient(90deg,transparent,#ffffff8c,transparent);animation:secret-menu-glimmer 3.8s ease-in-out infinite;pointer-events:none}
+@keyframes secret-menu-glimmer{0%,55%{left:-45%}85%,100%{left:130%}}
+footer.site-footer .footer-bottom-row{display:flex!important;align-items:center!important;justify-content:center!important;gap:18px!important;width:100%!important;flex-wrap:nowrap!important}
+footer.site-footer .footer-logo-link{margin:0!important;flex:0 1 120px!important}
+footer.site-footer .footer-top-link{white-space:nowrap!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;min-height:40px!important;padding:8px 12px!important;font-size:.92rem!important;color:#2b211b!important;background:#e7e7e7!important;border:1px solid #c5bdb4!important;border-radius:9px!important;line-height:1!important}
+footer.site-footer .social-links{display:flex!important;justify-content:center!important;gap:10px!important;flex-wrap:wrap!important}
+footer.site-footer .contact-actions{display:flex!important;flex-direction:column!important;align-items:center!important;gap:10px!important}
+footer.site-footer .social-link{padding:10px 14px!important}
+body.theme-eighties .arcade-pick-art{filter:drop-shadow(0 0 8px #ff39e8) drop-shadow(0 0 20px #45f4f0)!important}
+@media(max-width:480px){footer.site-footer .footer-bottom-row{gap:12px!important}footer.site-footer .footer-logo-link{flex-basis:96px!important}footer.site-footer .footer-top-link{font-size:.82rem!important;padding:8px!important}}
