@@ -55,3 +55,14 @@ FINAL UI + SECRET MENU UPDATE
 - Online Backstage Arcade leaderboard requires arcade-leaderboard-migration.sql; see SUPABASE-ARCADE-LEADERBOARD-SETUP.txt.
 - Catalog floating controls fade away when Rock-O-Meter enters view.
 - Seasonal holiday themes remain paused until the final review.
+
+
+OCTOBER UI POLISH UPDATE
+- Tightened the Check My Last Request button and moved it visually closer to the request submit action.
+- Made Random Song a compact, fitted button without the dark bottom shadow line.
+- Improved day-mode decade filter contrast, song row background/metadata contrast, payment buttons, booking contact, and toolbar colors.
+- Arranged Instagram and YouTube side-by-side directly below the booking email button.
+- Arranged Day / Night / 80s appearance controls horizontally, followed by Secret Menu, then logo and Back to top side-by-side at the footer.
+- Repaired enclosed transparent pinholes in all Rock-O-Meter artwork while preserving transparent exterior edges.
+- Cache-busted the stylesheet reference for the update.
+- Reminder: test the seasonal themes (Halloween, Christmas, Easter, New Year’s Eve, and other Canadian holidays) before the final revision.

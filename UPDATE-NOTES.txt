@@ -93,3 +93,14 @@ FINAL PUBLIC UI REVISION
 - The Secret Menu uses PS2 effects only; no background menu ambience is played there.
 - The Rock Wall has moved to Explore and displays only confirmed real tips.
 - The seasonal spotlight and duplicate decade picker are disabled pending final review.
+
+
+OCTOBER UI POLISH UPDATE
+- Tightened the Check My Last Request button and moved it visually closer to the request submit action.
+- Made Random Song a compact, fitted button without the dark bottom shadow line.
+- Improved day-mode decade filter contrast, song row background/metadata contrast, payment buttons, booking contact, and toolbar colors.
+- Arranged Instagram and YouTube side-by-side directly below the booking email button.
+- Arranged Day / Night / 80s appearance controls horizontally, followed by Secret Menu, then logo and Back to top side-by-side at the footer.
+- Repaired enclosed transparent pinholes in all Rock-O-Meter artwork while preserving transparent exterior edges.
+- Cache-busted the stylesheet reference for the update.
+- Reminder: test the seasonal themes (Halloween, Christmas, Easter, New Year’s Eve, and other Canadian holidays) before the final revision.
