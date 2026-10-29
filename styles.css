@@ -1639,3 +1639,17 @@ footer.site-footer .contact-actions{display:flex!important;flex-direction:column
 footer.site-footer .social-link{padding:10px 14px!important}
 body.theme-eighties .arcade-pick-art{filter:drop-shadow(0 0 8px #ff39e8) drop-shadow(0 0 20px #45f4f0)!important}
 @media(max-width:480px){footer.site-footer .footer-bottom-row{gap:12px!important}footer.site-footer .footer-logo-link{flex-basis:96px!important}footer.site-footer .footer-top-link{font-size:.82rem!important;padding:8px!important}}
+
+/* Secret Menu compact header/layout refinement (Oct 29) */
+.secret-stage-panel{padding-top:clamp(112px,14vw,142px)!important}
+.secret-stage-panel #secret-stage-title{position:absolute;top:clamp(28px,5vw,46px);left:clamp(18px,4vw,34px);right:76px;margin:0!important;font-size:clamp(2rem,6.4vw,4.35rem);line-height:.98;letter-spacing:.025em;white-space:nowrap;}
+.secret-stage-panel #secret-stage-title::before,.secret-stage-panel #secret-stage-title::after{content:none!important;display:none!important}
+.secret-stage-grid{margin:0 0 10px!important;gap:10px}
+.secret-content:empty{display:none!important}
+.secret-content:not(:empty){min-height:0;border-top:1px solid #51402d;padding-top:12px}
+@media(max-width:650px){.secret-stage-panel{padding:clamp(112px,18vw,132px) 16px 18px!important}.secret-stage-panel #secret-stage-title{top:clamp(31px,6vw,42px);left:18px;right:70px;font-size:clamp(1.85rem,7.5vw,3.1rem)}.secret-stage-grid{margin-top:0!important;margin-bottom:0!important;gap:10px}.secret-tile{min-height:100px;padding:12px 10px}}
+@media(max-width:370px){.secret-stage-panel #secret-stage-title{font-size:1.65rem;letter-spacing:0}}
+
+/* Guitar Pick Panic: keep the clickable pick consistently small after every hit. */
+.secret-stage-panel .arcade-board .arcade-pick{width:40px!important;height:44px!important;min-width:40px!important;min-height:44px!important;max-width:40px!important;max-height:44px!important;padding:0!important;box-sizing:border-box!important;transform:none!important;}
+.secret-stage-panel .arcade-board .arcade-pick-art{width:25px!important;height:32px!important;max-width:25px!important;max-height:32px!important;object-fit:contain!important;}

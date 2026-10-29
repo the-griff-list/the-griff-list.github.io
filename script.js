@@ -284,6 +284,10 @@ document.addEventListener("keydown",e=>{if(!splash.classList.contains("dismissed
 // Pause background music when the tab/app is hidden; resume only after the visitor has entered the site.
 document.addEventListener("visibilitychange",()=>{
  if(!menuAudio)return;
+ // Never restart homepage music while the Secret Menu is active or booting.
+ if(document.body.classList.contains("secret-stage-open")){
+   menuAudio.pause();return;
+ }
  if(document.hidden){menuAudio.pause();}
  else if(siteEntered){const p=menuAudio.play();if(p&&p.catch)p.catch(()=>{});}
 });

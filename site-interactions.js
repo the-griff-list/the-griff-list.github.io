@@ -137,13 +137,30 @@
     const stopSecretAudio=()=>{
       [secretBootAudio,secretAmbience,...Object.values(secretEffects)].forEach(a=>{a.pause();try{a.currentTime=0;}catch(_){}});
     };
-    const close=()=>{overlay.hidden=true;document.body.classList.remove('secret-stage-open');stopSecretAudio();if(resumeHomeMenuOnClose&&homeMenuAudio){homeMenuAudio.play().catch(()=>{});}resumeHomeMenuOnClose=false;};
-    const reveal=()=>{document.body.classList.remove('secret-glitch-boot');secretBootAudio.pause();try{secretBootAudio.currentTime=0;}catch(_){}overlay.hidden=false;document.body.classList.add('secret-stage-open');overlay.querySelector('.secret-close')?.focus();homeMenuAudio?.pause();secretAmbience.pause();secretAmbience.currentTime=0;secretAmbience.play().catch(()=>{});};
+    const startSecretAmbience=()=>{
+      if(overlay.hidden||!document.body.classList.contains('secret-stage-open'))return;
+      if(!secretBootAudio.paused&&!secretBootAudio.ended)return;
+      secretAmbience.pause();try{secretAmbience.currentTime=0;}catch(_){}
+      secretAmbience.play().catch(()=>{});
+    };
+    secretBootAudio.addEventListener('ended',startSecretAmbience);
+    const close=()=>{
+      overlay.hidden=true;document.body.classList.remove('secret-stage-open','secret-glitch-boot');stopSecretAudio();
+      // Returning home always restarts the home menu track from its beginning.
+      if(homeMenuAudio){try{homeMenuAudio.pause();homeMenuAudio.currentTime=0;}catch(_){}homeMenuAudio.play().catch(()=>{});}
+      resumeHomeMenuOnClose=false;
+    };
+    const reveal=()=>{
+      document.body.classList.remove('secret-glitch-boot');overlay.hidden=false;document.body.classList.add('secret-stage-open');
+      overlay.querySelector('.secret-close')?.focus();homeMenuAudio?.pause();
+      // Let the full boot track finish; its ended event starts the looping ambience.
+      if(secretBootAudio.paused||secretBootAudio.ended)startSecretAmbience();
+    };
     secret.addEventListener('click',()=>{
-      resumeHomeMenuOnClose=Boolean(homeMenuAudio&&!homeMenuAudio.paused);homeMenuAudio?.pause();
-      stopSecretAudio();
-      document.body.classList.add('secret-glitch-boot');
-      secretBootAudio.currentTime=0;secretBootAudio.play().catch(()=>{});
+      resumeHomeMenuOnClose=Boolean(homeMenuAudio&&!homeMenuAudio.paused);
+      if(homeMenuAudio){homeMenuAudio.pause();try{homeMenuAudio.currentTime=0;}catch(_){}}
+      stopSecretAudio();document.body.classList.add('secret-stage-open','secret-glitch-boot');
+      secretBootAudio.currentTime=0;secretBootAudio.play().catch(()=>{startSecretAmbience();});
       if(reducedMotion())reveal();else window.setTimeout(reveal,460);
     });
     overlay.addEventListener('click',e=>{
@@ -156,7 +173,7 @@
     },true);
     overlay.querySelector('.secret-close').addEventListener('click',()=>{close();if(!pageIsHome)window.location.href='index.html#top';else window.scrollTo({top:0,behavior:reducedMotion()?'auto':'smooth'});});document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!overlay.hidden)close();});
     const content=$('#secret-content',overlay);
-    $('#lost-cassette',overlay).addEventListener('click',()=>{content.innerHTML='<div class="cassette-flip"><div class="cassette-art large"><i></i><b></b></div><h3>SIDE B: THE LOST TRACK</h3><p>Every musician has a song that never made the setlist. This cassette is a place to reveal an acoustic demo, a hidden recording, or a story behind one of your songs.</p><p class="secret-note">For now, the tape is a teaser. Add your chosen recording when you are ready.</p></div>';content.scrollIntoView({behavior:reducedMotion()?'auto':'smooth',block:'start'});});
+    $('#lost-cassette',overlay).addEventListener('click',()=>{content.innerHTML='<div class="cassette-flip"><div class="cassette-art large"><i></i><b></b></div><h3>SIDE B: THE LOST TRACK</h3><p class="secret-note">For now, the tape is a teaser. Add your chosen recording when you are ready.</p></div>';content.scrollIntoView({behavior:reducedMotion()?'auto':'smooth',block:'start'});});
     $('#secret-message-open',overlay).addEventListener('click',()=>{content.innerHTML='<h3>YOU FOUND IT. 🤘</h3><p>Thanks for taking the time to explore The Grifflist. The best things in rock and roll are often hidden just offstage.</p><p class="secret-note">- Griff</p>';content.scrollIntoView({behavior:reducedMotion()?'auto':'smooth',block:'start'});});
     $('#high-score-open',overlay).addEventListener('click',()=>{
       content.innerHTML='<div class="mini-arcade"><h3>GUITAR PICK PANIC</h3><p>Tap as many picks as you can in 15 seconds.</p><div class="arcade-score">Score: <strong id="arcade-score">0</strong> · Time: <strong id="arcade-time">15</strong></div><div id="arcade-board" class="arcade-board"><button type="button" class="arcade-pick" aria-label="Catch guitar pick"><img class="arcade-pick-art" src="arcade-pick-treynor.png" alt="" aria-hidden="true" draggable="false"></button></div><button type="button" class="button button-hot" id="arcade-start">START GAME</button><p id="arcade-status" role="status" aria-live="polite"></p><section class="arcade-leaderboard" aria-labelledby="arcade-leaderboard-title"><h4 id="arcade-leaderboard-title">HIGH SCORES</h4><ol id="arcade-leaderboard-list"><li>Loading scores…</li></ol></section></div>';

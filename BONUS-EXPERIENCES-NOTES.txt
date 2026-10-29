@@ -24,3 +24,6 @@ Update 12 - neon pick and final visual/audio polish
 - Refined day/night catalog rows, payment/contact surfaces, request buttons, headings, footer controls, and the Secret Menu shimmer.
 - Service-worker cache version bumped to v12 so the updated artwork, CSS and interactions can replace cached files.
 - Browser/Supabase end-to-end testing has not been performed in this package build.
+
+
+Secret Menu audio and arcade refinement (Oct 29): Lost Cassette explanatory paragraph removed. Guitar Pick Panic pick target is fixed at a small size across hits. Secret-stage boot audio now plays through before looping PS2 ambience; homepage menu audio is paused/reset while the Secret Menu is open, including tab visibility changes, and restarts from the beginning when returning home. Service worker and script cache versions bumped.
