@@ -1823,3 +1823,6 @@ body.theme-night #request-hint.hint-pulse{border-color:#ff8a35!important;color:#
 
 /* Keep the public Watch Live CTA hidden when the admin disables it. */
 .watch-live-cta[hidden]{display:none!important}
+
+/* v7 Watch Live and admin polish */
+.live-player-controls{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:10px 0 18px;padding:10px 12px;border:1px solid var(--line);border-radius:9px;background:#101010}.live-player-controls label{display:flex;align-items:center;gap:8px;font-weight:800}.live-player-controls input{width:18px;height:18px;accent-color:var(--hot)}.live-rockometer-overlay{width:min(170px,35%);padding:7px 9px}.live-rockometer-overlay img{display:block;width:100%;height:auto;max-height:92px;object-fit:contain}.live-rockometer-overlay>div{text-align:center;font-size:.9rem;font-weight:900}.live-rockometer-overlay strong{font-size:1rem}@media(max-width:650px){.live-player-controls{align-items:flex-start;flex-direction:column}.live-rockometer-overlay{width:min(135px,40%);padding:5px 7px}.live-rockometer-overlay img{max-height:65px}.live-rockometer-overlay>div{font-size:.78rem}}
