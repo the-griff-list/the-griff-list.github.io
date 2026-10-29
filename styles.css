@@ -1917,3 +1917,39 @@ body.theme-night #request-hint.hint-pulse{border-color:#ff8a35!important;color:#
 .live-player-shell:fullscreen .live-screen-button{top:2vh;right:2vw}
 .live-player-shell:fullscreen .live-exit-fullscreen{right:auto;left:2vw;top:2vh}
 @media(max-width:560px){.live-recording-overlay{left:6px;bottom:6px;width:min(275px,calc(100% - 12px));padding:6px 7px;gap:4px}.live-recording-overlay .recording-actions .button{font-size:.66rem;padding:5px 6px;min-height:29px}.live-recording-overlay #recording-status{font-size:.62rem}.live-recording-overlay #recording-mode{font-size:.7rem;padding:5px 6px}.live-screen-button{top:6px;right:6px;min-height:34px;padding:6px 9px}.live-player-shell:fullscreen .live-recording-overlay{width:min(300px,62vw);left:2vw;bottom:2vh}.live-player-shell:fullscreen .live-rockometer-overlay{width:74px}}
+
+/* Watch Live v11: concise, cohesive 80s-style controls and transparent footer. */
+.watch-live-page .live-player-controls{display:grid;grid-template-columns:minmax(0,1fr);gap:7px;margin-top:8px}
+.watch-live-page .live-player-controls label,.watch-live-page .live-player-controls span,.watch-live-page .live-player-controls button{width:fit-content;max-width:100%;min-height:36px;padding:7px 11px;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--text);font-size:.78rem;line-height:1.2}
+.watch-live-page .live-player-controls input{accent-color:var(--hot)}
+.watch-live-page .live-recording-overlay{width:min(285px,calc(100% - 18px));padding:8px;gap:5px;border-radius:9px;background:rgba(8,8,8,.34);border-color:#ffffff50;backdrop-filter:blur(4px);box-shadow:none}
+.watch-live-page .live-recording-overlay .live-recording-heading h2{font-size:1.05rem;letter-spacing:.04em;color:var(--hot);text-shadow:0 0 9px #ff4db833}
+.watch-live-page .live-recording-overlay .recording-mode-label{font-size:.7rem}
+.watch-live-page .live-recording-overlay #recording-mode{min-height:34px;padding:6px 9px;border-radius:7px}
+.watch-live-page .live-recording-overlay .recording-actions{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.watch-live-page .live-recording-overlay .recording-actions .button{min-height:32px;padding:6px 7px;font-size:.68rem;letter-spacing:.025em;border-radius:6px}
+.watch-live-page .live-recording-overlay #recording-status{font-size:.66rem;line-height:1.2}
+.live-screen-button{width:38px;height:38px;min-height:38px;padding:0;border-radius:8px;font-size:1.15rem;background:rgba(8,8,8,.32);border-color:#ffffff66}
+.live-player-shell:fullscreen .live-screen-button{right:12px;left:auto;top:12px}
+.live-player-shell:fullscreen .live-exit-fullscreen{right:12px;left:auto;top:12px}
+.live-player-shell:fullscreen:not(.controls-visible) .live-screen-button{opacity:0;pointer-events:none}
+.live-player-shell:fullscreen.controls-visible .live-screen-button{opacity:1;pointer-events:auto}
+.live-player-shell:fullscreen:not(.controls-visible) .live-recording-overlay{opacity:0;pointer-events:none}
+.live-player-shell:fullscreen.controls-visible .live-recording-overlay{opacity:.9;pointer-events:auto}
+/* Match the homepage support cards across day, night and 80s themes. */
+.watch-live-page .live-tip-card,.watch-live-page .live-info-card{border:1px solid var(--line);border-radius:12px;background:var(--panel);box-shadow:none}
+.watch-live-page .live-tip-actions{display:grid;grid-template-columns:minmax(0,1fr);gap:9px}
+.watch-live-page .live-tip-actions .payment-method-banner{min-height:68px;padding:12px 14px;border-radius:9px;box-shadow:none}
+.watch-live-page .live-tip-actions .payment-method-copy strong{font-size:.9rem}
+.watch-live-page .live-tip-actions .payment-method-copy small{font-size:.73rem}
+body.theme-day .watch-live-page .live-tip-card,body.theme-day .watch-live-page .live-info-card{background:#fffaf2;border-color:#cbb8a3;color:#211711}
+body.theme-day .watch-live-page .live-tip-actions .payment-method-banner{background:linear-gradient(135deg,#eeeeee,#dedede)!important;border-color:#c5bdb4!important;color:#2b211b!important}
+body.theme-day .watch-live-page .live-tip-actions .payment-method-banner .payment-method-copy,body.theme-day .watch-live-page .live-tip-actions .payment-method-banner .payment-method-copy *{color:#302219!important}
+body.theme-eighties .watch-live-page .live-tip-card,body.theme-eighties .watch-live-page .live-info-card{background:linear-gradient(135deg,#241039,#102b38);border-color:#ff4db8}
+body.theme-eighties .watch-live-page .live-tip-actions .payment-method-banner{background:linear-gradient(135deg,#241039,#102b38)!important;border-color:#45f4f0!important}
+body.theme-eighties .watch-live-page .live-tip-actions .payment-method-banner,body.theme-eighties .watch-live-page .live-tip-actions .payment-method-banner *{color:#fff4ff!important}
+/* Keep the footer logo and Back to top floating on the page background. */
+footer.site-footer{background:transparent!important;box-shadow:none!important}
+footer.site-footer .footer-bottom-row{background:transparent!important;border-top:0!important;padding-top:0!important}
+footer.site-footer .footer-logo-link,footer.site-footer .footer-top-link{background:transparent!important;box-shadow:none!important}
+@media(max-width:560px){.watch-live-page .live-recording-overlay{width:min(250px,calc(100% - 12px));left:6px;bottom:6px}.watch-live-page .live-recording-overlay .recording-actions .button{font-size:.65rem;min-height:30px}.watch-live-page .live-tip-actions .payment-method-banner{padding:10px}.watch-live-page .live-player-controls label,.watch-live-page .live-player-controls span,.watch-live-page .live-player-controls button{font-size:.74rem}}

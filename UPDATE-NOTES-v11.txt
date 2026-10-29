@@ -1,0 +1,9 @@
+THE GRIFFLIST WEBSITE UPDATE v11
+
+Changes:
+- Refined Watch Live recording and low-data controls into a tighter, more concise theme-aware layout.
+- Changed fullscreen control to a compact expand icon; fullscreen exit uses a matching shrink icon in the same top-right position. Tapping the video reveals controls in fullscreen.
+- Matched Watch Live support cards to the homepage payment-card styling across Day, Night and 80s themes.
+- Removed the background panel behind the footer logo and Back to top link while preserving both links.
+
+No Supabase schema or Cloudflare secret changes are included. Test fullscreen/recording on the target mobile browser and verify support links after deployment.
