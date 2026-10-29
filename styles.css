@@ -1765,3 +1765,33 @@ body.theme-eighties .hospitality-thanks strong,body.theme-eighties .safe-ride-co
 .rock-meter-art{object-fit:contain;opacity:1;isolation:isolate}
 
 .safe-ride-location-note{margin:.45rem 0 0;font-size:.78rem;opacity:.76}
+
+/* October 2026 mobile footer and action alignment fix. */
+.request-form .random-request-song,
+#check-last-request,
+.request-status-actions #check-last-request {
+  display:flex!important; width:fit-content!important; max-width:100%!important;
+  margin-left:auto!important; margin-right:auto!important; text-align:center!important;
+}
+.request-form .random-request-song { align-self:center!important; }
+.request-status-actions { display:flex!important; flex-direction:column!important; align-items:center!important; text-align:center!important; gap:7px!important; }
+.hospitality-thanks { padding:.7rem .85rem!important; margin:.7rem 0 0!important; }
+.hospitality-thanks strong { font-size:.95rem!important; }
+.hospitality-thanks p { margin:.25rem auto 0!important; line-height:1.35!important; }
+/* Keep the safe-ride and Watch Live sections in their intended visual order. */
+.safe-ride-location-note { display:none!important; }
+@media(max-width:520px){
+  footer.site-footer { gap:14px!important; padding:16px 16px 24px!important; }
+  footer.site-footer .gig-theme-controls { flex-wrap:wrap!important; row-gap:7px!important; }
+  footer.site-footer .gig-theme-controls .gig-mode-label { flex:0 0 100%!important; text-align:center!important; }
+  footer.site-footer .gig-theme-controls button { flex:1 1 28%!important; min-width:0!important; }
+  footer.site-footer .secret-stage-trigger { width:min(100%,240px)!important; min-height:48px!important; white-space:normal!important; padding:10px 14px!important; }
+  footer.site-footer .secret-stage-trigger span { display:inline!important; font-size:.9rem!important; }
+  footer.site-footer .footer-bottom-row { display:flex!important; flex-direction:row!important; justify-content:space-between!important; align-items:center!important; flex-wrap:wrap!important; gap:12px!important; }
+  footer.site-footer .footer-logo-link { flex:0 1 112px!important; width:112px!important; max-width:42%!important; }
+  footer.site-footer .footer-top-link { position:static!important; margin:0!important; max-width:55%!important; font-size:.8rem!important; padding:8px 10px!important; }
+  #contact .social-links-branded,.booking-section .social-links-branded { margin-top:4px!important; }
+}
+#contact .contact-actions { gap:6px!important; }
+#contact #booking-status { min-height:0!important; margin:0!important; }
+#contact .social-links-branded { margin-top:4px!important; }
