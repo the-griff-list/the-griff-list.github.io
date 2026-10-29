@@ -2027,3 +2027,13 @@ body.theme-day .rock-meter-art{background:transparent!important;mix-blend-mode:m
 #remember-requester-name{background:transparent!important;appearance:none;-webkit-appearance:none;border:2px solid var(--line)!important;box-shadow:none!important}
 #remember-requester-name:checked{background:var(--hot)!important;box-shadow:inset 0 0 0 4px var(--panel)!important}
 @media(max-width:560px){.recording-actions{gap:5px}.recording-actions .button{font-size:.72rem;padding:8px 5px}.recording-actions .low-data-control{font-size:.68rem!important;padding:7px 5px!important}.live-screen-button{width:54px;height:54px}.live-screen-button span{font-size:2.2rem!important}}
+
+
+/* Sober Drive layout refinement v19: heading above a single-action card, matching Encore Vote hierarchy. */
+#safe-ride-home.safe-ride-section{display:block!important;text-align:center!important;padding:clamp(24px,4vw,42px) 0!important;border-top:0!important;border-bottom:0!important;margin-top:0!important}
+#safe-ride-home .safe-ride-heading{font:900 clamp(2.7rem,5.5vw,4rem)/.96 'Barlow Condensed',Impact,sans-serif!important;letter-spacing:-.025em!important;text-transform:uppercase!important;text-align:center!important;margin:0 0 22px!important;color:var(--hot)!important}
+#safe-ride-home .safe-ride-copy{width:min(100%,720px)!important;margin:0 auto!important;padding:clamp(16px,3vw,24px)!important;text-align:center!important;border:1px solid var(--accent,#ef5a2f)!important;border-radius:16px!important}
+#safe-ride-home .safe-ride-copy h2,#safe-ride-home .safe-ride-copy p{display:none!important}
+#safe-ride-home .safe-ride-button{display:flex!important;width:100%!important;min-height:60px!important;align-items:center!important;justify-content:center!important;text-align:center!important;margin:0!important}
+body.theme-day #safe-ride-home .safe-ride-heading{color:#c84b20!important}
+@media(max-width:700px){#safe-ride-home.safe-ride-section{padding:26px 0!important}#safe-ride-home .safe-ride-heading{font-size:clamp(2.3rem,7vw,3rem)!important;margin-bottom:16px!important}}
