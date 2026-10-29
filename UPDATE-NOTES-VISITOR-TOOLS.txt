@@ -48,3 +48,10 @@ OCTOBER 2026 UX POLISH
 - Footer logo is smaller and placed beside Back to top; header logo is enlarged.
 - Explore drawer text is simplified, the seasonal feature is a compact song prompt, and the share-card action is renamed “Make a Song Image to Share.”
 - Sound selector is labelled “Secret Stage.”
+
+
+FINAL UI + SECRET MENU UPDATE
+- Secret Menu now plays a looped lightweight Opus PS2 ambience and pauses homepage menu audio while open.
+- Online Backstage Arcade leaderboard requires arcade-leaderboard-migration.sql; see SUPABASE-ARCADE-LEADERBOARD-SETUP.txt.
+- Catalog floating controls fade away when Rock-O-Meter enters view.
+- Seasonal holiday themes remain paused until the final review.

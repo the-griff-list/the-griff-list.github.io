@@ -85,15 +85,15 @@
   if (footer) {
     const secret=footer.querySelector('.secret-stage-trigger') || document.createElement('button');secret.type='button';secret.className='secret-stage-trigger';secret.setAttribute('aria-label','Open Secret Menu');secret.title='Open the PS2-inspired Secret Menu';secret.innerHTML='♬ <span>Secret Menu</span>';if(!secret.isConnected)footer.insertBefore(secret,footer.querySelector('.footer-bottom-row'));
     const overlay=document.createElement('div');overlay.className='secret-stage-overlay';overlay.id='secret-stage-overlay';overlay.hidden=true;
-    overlay.innerHTML=`<div class="secret-stage-panel" role="dialog" aria-modal="true" aria-labelledby="secret-stage-title"><button type="button" class="secret-close" aria-label="Close secret stage">×</button><button type="button" class="secret-sound-toggle" aria-pressed="true" aria-label="Mute Secret Stage sounds">SOUND ON</button><p class="secret-kicker">PS2 MODE</p><h2 id="secret-stage-title">SECRET MENU</h2><p class="secret-intro">Hidden sounds, the Lost Cassette, and Guitar Pick Panic.</p><div class="secret-stage-grid"><button type="button" class="secret-tile" id="lost-cassette"><span class="cassette-art" aria-hidden="true"><i></i><b></b></span><strong>THE LOST CASSETTE</strong><small>Flip the tape for a hidden note.</small></button><button type="button" class="secret-tile" id="high-score-open"><span class="arcade-icon" aria-hidden="true">★<br>HI-SCORE</span><strong>BACKSTAGE ARCADE</strong><small>Catch the guitar picks.</small></button><button type="button" class="secret-tile" id="secret-message-open"><span class="secret-sparkle" aria-hidden="true">✦</span><strong>THE HIDDEN NOTE</strong><small>A little message from Griff.</small></button></div><div id="secret-content" class="secret-content" aria-live="polite"><p>Choose a secret feature.</p></div><p class="secret-stage-footer">SECRET MENU</p></div>`;
+    overlay.innerHTML=`<div class="secret-stage-panel" role="dialog" aria-modal="true" aria-labelledby="secret-stage-title"><button type="button" class="secret-close" aria-label="Return to home screen" title="Home">⌂</button><h2 id="secret-stage-title">SECRET MENU</h2><div class="secret-stage-grid"><button type="button" class="secret-tile" id="lost-cassette"><span class="cassette-art" aria-hidden="true"><i></i><b></b></span><strong>THE LOST CASSETTE</strong></button><button type="button" class="secret-tile" id="high-score-open"><span class="arcade-icon" aria-hidden="true">★<br>HI-SCORE</span><strong>BACKSTAGE ARCADE</strong></button><button type="button" class="secret-tile" id="secret-message-open"><span class="secret-sparkle" aria-hidden="true">✦</span><strong>THE HIDDEN NOTE</strong></button></div><div id="secret-content" class="secret-content" aria-live="polite"></div></div>`;
     document.body.append(overlay);
     // PS2 effects are isolated to the Secret Menu; homepage menu audio pauses while it is open.
     const homeMenuAudio=document.getElementById('menu-screen-audio');
     let resumeHomeMenuOnClose=false;
     const secretBootAudio=new Audio('secret-stage-boot.mp3');
-    // Secret Stage intentionally uses PS2 effects only; no second background music track.
-    secretBootAudio.preload='none'; secretBootAudio.volume=.78;
-    // Short PS2-style effects are individually normalized and kept lightweight.
+    const secretAmbience=new Audio('secret-stage-ambience.ogg');
+    secretBootAudio.preload='none'; secretBootAudio.volume=.58;
+    secretAmbience.preload='none'; secretAmbience.loop=true; secretAmbience.volume=.34;
     const secretEffects={
       select:new Audio('secret-menu-select.mp3'),
       pickup:new Audio('secret-pickup.mp3'),
@@ -103,40 +103,29 @@
       highScoreTwo:new Audio('secret-highscore-2.mp3')
     };
     Object.values(secretEffects).forEach(a=>{a.preload='none';a.volume=.42;});
-    let secretSoundEnabled=true, secretBootFinished=false; const secretSoundMode='ps2';
     const playSecretEffect=(name)=>{
-      if(!secretSoundEnabled||overlay.hidden)return;
+      if(overlay.hidden)return;
       const a=secretEffects[name];if(!a)return;
       try{a.currentTime=0;const p=a.play();p?.catch?.(()=>{});}catch(_){}
     };
     const playRandomHighScore=()=>{
-      if(!secretSoundEnabled||overlay.hidden)return;
+      if(overlay.hidden)return;
       const choices=[secretEffects.highScoreOne,secretEffects.highScoreTwo];
       const chosen=choices[Math.floor(Math.random()*choices.length)];
       try{chosen.currentTime=0;const p=chosen.play();p?.catch?.(()=>{});}catch(_){}
     };
-    secretSoundEnabled=true;
-    const soundToggle=overlay.querySelector('.secret-sound-toggle');
-    const updateSoundToggle=()=>{soundToggle.textContent=secretSoundEnabled?'SOUND ON':'SOUND OFF';soundToggle.setAttribute('aria-pressed',String(secretSoundEnabled));soundToggle.setAttribute('aria-label',secretSoundEnabled?'Mute Secret Stage sounds':'Enable Secret Stage sounds');};
-    secretBootAudio.addEventListener('ended',()=>{secretBootFinished=true;});
-    const stopSecretAudio=()=>{secretBootAudio.pause();Object.values(secretEffects).forEach(a=>{a.pause();try{a.currentTime=0;}catch(_){}});try{secretBootAudio.currentTime=0;}catch(_){}};
-    const close=()=>{overlay.hidden=true;document.body.classList.remove('secret-stage-open');stopSecretAudio();secret.focus();if(resumeHomeMenuOnClose&&homeMenuAudio){homeMenuAudio.play().catch(()=>{});}resumeHomeMenuOnClose=false;};
-    const reveal=()=>{document.body.classList.remove('secret-glitch-boot');overlay.hidden=false;document.body.classList.add('secret-stage-open');overlay.querySelector('.secret-close')?.focus();};
+    const stopSecretAudio=()=>{
+      [secretBootAudio,secretAmbience,...Object.values(secretEffects)].forEach(a=>{a.pause();try{a.currentTime=0;}catch(_){}});
+    };
+    const close=()=>{overlay.hidden=true;document.body.classList.remove('secret-stage-open');stopSecretAudio();if(resumeHomeMenuOnClose&&homeMenuAudio){homeMenuAudio.play().catch(()=>{});}resumeHomeMenuOnClose=false;};
+    const reveal=()=>{document.body.classList.remove('secret-glitch-boot');secretBootAudio.pause();try{secretBootAudio.currentTime=0;}catch(_){}overlay.hidden=false;document.body.classList.add('secret-stage-open');overlay.querySelector('.secret-close')?.focus();secretAmbience.currentTime=0;secretAmbience.play().catch(()=>{});};
     secret.addEventListener('click',()=>{
       resumeHomeMenuOnClose=Boolean(homeMenuAudio&&!homeMenuAudio.paused);homeMenuAudio?.pause();
-      stopSecretAudio();secretBootFinished=false;
+      stopSecretAudio();
       document.body.classList.add('secret-glitch-boot');
-      if(secretSoundEnabled && secretSoundMode==='ps2'){secretBootAudio.currentTime=0;secretBootAudio.play().then(()=>{}).catch(()=>{secretBootFinished=true;});}
-      else {secretBootFinished=true;}
+      secretBootAudio.currentTime=0;secretBootAudio.play().catch(()=>{});
       if(reducedMotion())reveal();else window.setTimeout(reveal,460);
     });
-    soundToggle.addEventListener('click',()=>{
-      secretSoundEnabled=!secretSoundEnabled;updateSoundToggle();
-      try{localStorage.setItem('grifflistSecretSound',secretSoundEnabled?'on':'off');}catch(_){}
-      if(!secretSoundEnabled){secretBootAudio.pause();Object.values(secretEffects).forEach(a=>a.pause());}
-      else if(!overlay.hidden){secretBootFinished=true;}
-    });
-    updateSoundToggle();
     overlay.addEventListener('click',e=>{
       if(e.target===overlay){close();return;}
       const button=e.target.closest('button');if(!button||!overlay.contains(button))return;
@@ -145,15 +134,42 @@
       else if(button.classList.contains('secret-tile'))playSecretEffect('transition');
       else playSecretEffect('select');
     },true);
-    overlay.querySelector('.secret-close').addEventListener('click',close);document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!overlay.hidden)close();});
+    overlay.querySelector('.secret-close').addEventListener('click',()=>{close();if(!pageIsHome)window.location.href='index.html#top';else window.scrollTo({top:0,behavior:reducedMotion()?'auto':'smooth'});});document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!overlay.hidden)close();});
     const content=$('#secret-content',overlay);
-    $('#lost-cassette',overlay).addEventListener('click',()=>{content.innerHTML='<div class="cassette-flip"><div class="cassette-art large"><i></i><b></b></div><h3>SIDE B: THE LOST TRACK</h3><p>Every musician has a song that never made the setlist. This cassette is a place to reveal an acoustic demo, a hidden recording, or a story behind one of your songs.</p><p class="secret-note">For now, the tape is a teaser. Add your chosen recording when you are ready.</p></div>';});
-    $('#secret-message-open',overlay).addEventListener('click',()=>{content.innerHTML='<h3>YOU FOUND IT. 🤘</h3><p>Thanks for taking the time to explore The Grifflist. The best things in rock and roll are often hidden just offstage.</p><p class="secret-note">- Griff</p>';});
+    $('#lost-cassette',overlay).addEventListener('click',()=>{content.innerHTML='<div class="cassette-flip"><div class="cassette-art large"><i></i><b></b></div><h3>SIDE B: THE LOST TRACK</h3><p>Every musician has a song that never made the setlist. This cassette is a place to reveal an acoustic demo, a hidden recording, or a story behind one of your songs.</p><p class="secret-note">For now, the tape is a teaser. Add your chosen recording when you are ready.</p></div>';content.scrollIntoView({behavior:reducedMotion()?'auto':'smooth',block:'start'});});
+    $('#secret-message-open',overlay).addEventListener('click',()=>{content.innerHTML='<h3>YOU FOUND IT. 🤘</h3><p>Thanks for taking the time to explore The Grifflist. The best things in rock and roll are often hidden just offstage.</p><p class="secret-note">- Griff</p>';content.scrollIntoView({behavior:reducedMotion()?'auto':'smooth',block:'start'});});
     $('#high-score-open',overlay).addEventListener('click',()=>{
-      content.innerHTML='<div class="mini-arcade"><h3>GUITAR PICK PANIC</h3><p>Tap as many picks as you can in 15 seconds.</p><div class="arcade-score">Score: <strong id="arcade-score">0</strong> · Time: <strong id="arcade-time">15</strong></div><div id="arcade-board" class="arcade-board"><button type="button" class="arcade-pick" aria-label="Catch guitar pick">◆</button></div><button type="button" class="button button-hot" id="arcade-start">START GAME</button><p id="arcade-status" role="status" aria-live="polite"></p></div>';
-      const board=$('#arcade-board'),start=$('#arcade-start'),scoreEl=$('#arcade-score'),timeEl=$('#arcade-time'),status=$('#arcade-status');let score=0,time=15,timer=null;
+      content.innerHTML='<div class="mini-arcade"><h3>GUITAR PICK PANIC</h3><p>Tap as many picks as you can in 15 seconds.</p><div class="arcade-score">Score: <strong id="arcade-score">0</strong> · Time: <strong id="arcade-time">15</strong></div><div id="arcade-board" class="arcade-board"><button type="button" class="arcade-pick" aria-label="Catch guitar pick"><span class="arcade-pick-art" aria-hidden="true"></span></button></div><button type="button" class="button button-hot" id="arcade-start">START GAME</button><p id="arcade-status" role="status" aria-live="polite"></p><section class="arcade-leaderboard" aria-labelledby="arcade-leaderboard-title"><h4 id="arcade-leaderboard-title">HIGH SCORES</h4><ol id="arcade-leaderboard-list"><li>Loading scores…</li></ol></section></div>';
+      const board=$('#arcade-board'),start=$('#arcade-start'),scoreEl=$('#arcade-score'),timeEl=$('#arcade-time'),status=$('#arcade-status'),leaderboard=$('#arcade-leaderboard-list');let score=0,time=15,timer=null;
+      const loadLeaderboard=async()=>{
+        const client=window.supabaseClient;
+        if(!leaderboard)return;
+        if(!client){leaderboard.innerHTML='<li>Online leaderboard needs Supabase setup.</li>';return;}
+        try{
+          const {data,error}=await client.from('arcade_leaderboard').select('player_name,score').order('score',{ascending:false}).order('created_at',{ascending:true}).limit(10);
+          if(error)throw error;
+          leaderboard.innerHTML='';
+          if(!data?.length){leaderboard.innerHTML='<li>Be the first on the board!</li>';return;}
+          data.forEach((entry,index)=>{const li=document.createElement('li');const name=document.createElement('span');name.textContent=entry.player_name;const points=document.createElement('b');points.textContent=String(entry.score);li.append(name,points);leaderboard.append(li);});
+        }catch(_){leaderboard.innerHTML='<li>Leaderboard will appear after Supabase setup.</li>';}
+      };
+      loadLeaderboard();
+      const saveLeaderboardScore=async(finalScore)=>{
+        const client=window.supabaseClient;if(!client)return;
+        let playerName=window.localStorage?.getItem('grifflistArcadeName')||'';
+        if(!playerName){playerName=window.prompt('Choose a display name for the high-score board (optional):','Rock Star')||'';}
+        playerName=playerName.trim().replace(/[<>]/g,'').slice(0,24);
+        if(!playerName)return;
+        try{window.localStorage?.setItem('grifflistArcadeName',playerName);}catch(_){}
+        try{
+          const {error}=await client.from('arcade_leaderboard').insert({player_name:playerName,score:Math.max(0,Math.min(150,Math.floor(finalScore)))});
+          if(error)throw error;
+          await loadLeaderboard();
+        }catch(_){status.textContent+=' Score could not be saved online yet.';}
+      };
+      content.scrollIntoView({behavior:reducedMotion()?'auto':'smooth',block:'start'});
       const pick=$('.arcade-pick',board);pick.addEventListener('click',()=>{if(!timer)return;score++;scoreEl.textContent=score;pick.style.left=(5+Math.random()*75)+'%';pick.style.top=(5+Math.random()*70)+'%';playSecretEffect('pickup');});
-      start.addEventListener('click',()=>{if(timer)clearInterval(timer);score=0;time=15;scoreEl.textContent=score;timeEl.textContent=time;status.textContent='Rock on!';timer=setInterval(()=>{time--;timeEl.textContent=time;if(time<=0){clearInterval(timer);timer=null;status.textContent=`FINAL SCORE: ${score}. Try again and beat your record!`;try{const previous=Number(localStorage.getItem('grifflistArcadeBest')||0);if(score>previous){localStorage.setItem('grifflistArcadeBest',score);status.textContent+=` NEW PERSONAL BEST: ${score}!`;playRandomHighScore(); }else{status.textContent+=` Personal best: ${previous}.`;}}catch(_){}}},1000);});
+      start.addEventListener('click',()=>{if(timer)clearInterval(timer);score=0;time=15;scoreEl.textContent=score;timeEl.textContent=time;status.textContent='Rock on!';timer=setInterval(()=>{time--;timeEl.textContent=time;if(time<=0){clearInterval(timer);timer=null;status.textContent=`FINAL SCORE: ${score}.`;try{const previous=Number(localStorage.getItem('grifflistArcadeBest')||0);if(score>previous){localStorage.setItem('grifflistArcadeBest',score);status.textContent+=` NEW PERSONAL BEST: ${score}!`;playRandomHighScore(); }else{status.textContent+=` Personal best: ${previous}.`;}}catch(_){}saveLeaderboardScore(score);}},1000);});
     });
   }
 
@@ -185,3 +201,24 @@
 
 // Give successful request confirmations a short, accessible visual cue.
 (() => { const el=document.querySelector('#form-status'); if(!el)return; const observer=new MutationObserver(()=>{ if(/request sent|request saved|priority request submitted/i.test(el.textContent||'')){el.classList.remove('request-confirmation-pop');void el.offsetWidth;el.classList.add('request-confirmation-pop');} }); observer.observe(el,{childList:true,subtree:true,characterData:true}); })();
+
+
+/* Keep floating catalog actions limited to the catalog viewport. */
+(() => {
+  const catalog = document.getElementById('catalog');
+  const meter = document.getElementById('rock-meter');
+  if (!catalog || !meter || !('IntersectionObserver' in window)) return;
+  let catalogVisible = false;
+  let meterVisible = false;
+  const sync = () => document.body.classList.toggle('catalog-tools-active', catalogVisible && !meterVisible);
+  const catalogObserver = new IntersectionObserver(entries => {
+    for (const entry of entries) catalogVisible = entry.isIntersecting && entry.intersectionRatio >= 0.08;
+    sync();
+  }, {threshold:[0,0.08,0.2]});
+  const meterObserver = new IntersectionObserver(entries => {
+    for (const entry of entries) meterVisible = entry.isIntersecting && entry.intersectionRatio >= 0.08;
+    sync();
+  }, {threshold:[0,0.08,0.2]});
+  catalogObserver.observe(catalog);
+  meterObserver.observe(meter);
+})();

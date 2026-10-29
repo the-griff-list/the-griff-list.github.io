@@ -1,0 +1,19 @@
+THE GRIFFLIST - SUPABASE SETUP FOR THE ONLINE ARCADE LEADERBOARD
+
+Only required new database step for this update:
+1. Open the Supabase project used by The Grifflist.
+2. Open SQL Editor -> New query.
+3. Open arcade-leaderboard-migration.sql from this ZIP, copy all of its contents into the SQL Editor, and run it once.
+4. Check that the arcade_leaderboard table appears under Table Editor.
+5. Deploy the website ZIP contents to the root of the GitHub Pages repository.
+6. Open Secret Menu -> Backstage Arcade, finish a game, and optionally enter a display name. The score should appear in High Scores.
+
+Do not run this migration again if the arcade_leaderboard table and policies already exist unless you know you need to reset them.
+
+Privacy and fairness:
+- The leaderboard stores only the display name entered by a player, their score, and an automatic timestamp.
+- The browser's local personal-best score still works without Supabase.
+- Because this is a static public website, the online leaderboard is casual and cannot reliably prevent fabricated scores. Do not use it for prizes or anything requiring verified results.
+- No Supabase service-role key is needed or should ever be placed in website files.
+
+No other Supabase changes are required for the styling, footer, sound, or catalog visibility changes in this ZIP.

@@ -1348,3 +1348,255 @@ body.theme-eighties .footer-top-link {
   color:#fff5ff;
   border-color:#ff4db8;
 }
+
+
+/* Final usability pass: centered Explore nav item, clear day-mode accents, tidy footer. */
+.site-header {position:relative}
+.top-nav a[href="explore.html"] {
+  position:absolute;
+  left:50%;
+  transform:translateX(-50%);
+  z-index:2;
+  white-space:nowrap;
+}
+@media(max-width:760px) {
+  .site-header {display:flex;flex-wrap:wrap;justify-content:center;gap:10px}
+  .site-header .header-logo-link {flex:0 0 auto}
+  .top-nav {position:relative;width:100%;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .top-nav a[href="explore.html"] {position:static;left:auto;transform:none;grid-column:1 / -1;justify-self:center;min-width:45%;text-align:center}
+}
+body.theme-day .section-heading h2,
+body.theme-day .section h2,
+body.theme-day .contact-section h2,
+body.theme-day .watch-live-promo h2 {
+  color:#bd3e22 !important;
+  text-shadow:none !important;
+}
+body.theme-day .track-counter {
+  background:linear-gradient(135deg,#f2dfc4,#ead1ad);
+  color:#8f3b1f;
+  border-color:#c5a47e;
+  box-shadow:inset 0 1px rgba(255,255,255,.75);
+}
+body.theme-day .random-request-song,
+body.theme-day #random-request-song,
+body.theme-day #check-last-request {
+  background:linear-gradient(110deg,#ff702f,#ed3d25) !important;
+  color:#fff !important;
+  border-color:#f28b58 !important;
+  box-shadow:0 3px 0 #9e351f !important;
+}
+body.theme-day #check-last-request {min-height:42px;padding:9px 14px;font-size:.78rem;letter-spacing:.04em}
+body.theme-day .rock-meter-numbers strong {color:#ed4b27}
+body.theme-day .decade-filters button,
+body.theme-day .decade-filter,
+body.theme-day #decade-filters button {
+  background:#fff0df;
+  color:#b83b21;
+  border-color:#df7b4c;
+}
+body.theme-day .decade-filters button[aria-pressed="true"],
+body.theme-day .decade-filters button.active,
+body.theme-day #decade-filters button[aria-pressed="true"] {
+  background:linear-gradient(110deg,#ff702f,#ed3d25);
+  color:#fff;
+  border-color:#ed6d43;
+}
+body.theme-day .song-reveal > summary {
+  background:linear-gradient(110deg,#ff702f,#ed3d25);
+  color:#17110d !important;
+  border-color:#ed6d43;
+}
+body.theme-day .song-reveal > summary *,
+body.theme-day .song-reveal > summary .song-reveal-label {color:#17110d !important}
+body.theme-day .song-reveal-content {
+  background:#dedbd6;
+  color:#231d18;
+  border-color:#bdb5aa;
+}
+body.theme-day .song-reveal-content .song-row {color:#241b16;border-bottom-color:#c4bcb1}
+body.theme-day .song-reveal-content .song-title {color:#bd3e22}
+body.theme-day .song-reveal-content .song-meta {color:#5e5147}
+body.theme-day .song-reveal-content .song-row:hover {background:#f5e6d5}
+body.theme-day .song-list-heading {
+  background:linear-gradient(110deg,#ff702f,#ed3d25);
+  color:#17110d;
+}
+body.theme-day .close-song-list {
+  background:linear-gradient(110deg,#ff702f,#ed3d25);
+  color:#fff;
+  border-color:#f28b58;
+}
+body.theme-day .song-request-tip {
+  background:linear-gradient(120deg,#fff1df,#f4dfc7);
+  color:#6f2b18;
+  border-color:#df7b4c;
+}
+body.theme-day .payment-method-banner,
+body.theme-day .payment-method-card,
+body.theme-day .support-main-card .payment-method-banner {
+  background:linear-gradient(135deg,#fff7e9,#ead8bf);
+  color:#302219;
+  border-color:#d1b99a;
+  box-shadow:0 4px 14px rgba(75,45,24,.10);
+}
+body.theme-day .payment-method-banner strong,
+body.theme-day .payment-method-banner small,
+body.theme-day .payment-method-banner .payment-method-copy,
+body.theme-day .payment-method-banner .payment-method-copy * {color:#302219}
+body.theme-day .social-link,
+body.theme-day .contact-actions .button {
+  background:linear-gradient(135deg,#fff7e9,#ead8bf);
+  color:#302219;
+  border-color:#d1b99a;
+}
+body.theme-day .footer-top-link {color:#33251b !important;white-space:nowrap;display:inline-flex;align-items:center;gap:4px}
+body.theme-day .footer-logo-link img {filter:brightness(1.07) contrast(1.08) drop-shadow(0 2px 3px rgba(58,36,22,.16))}
+.footer-bottom-row {display:flex;align-items:center;justify-content:space-between;gap:16px;width:100%;flex:0 0 100%;order:20}
+.footer-logo-link {display:flex;align-items:center;justify-content:flex-start;max-width:42%;margin-right:auto}
+.footer-logo-link img,.footer-logo {display:block;width:clamp(110px,22vw,190px);height:auto;object-fit:contain}
+.footer-top-link {display:inline-flex;align-items:center;justify-content:center;white-space:nowrap;word-break:keep-all;flex:0 0 auto;font-size:.9rem;font-weight:800}
+.contact-actions {align-items:center;text-align:center;gap:10px}
+.contact-email,.contact-actions .contact-email,.contact-actions #copy-email {align-self:center;text-align:center}
+.social-links {display:flex;justify-content:center;align-items:center;gap:10px;flex-wrap:wrap}
+.social-links a {display:inline-flex;align-items:center;justify-content:center}
+.secret-stage-trigger {
+  position:relative;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  width:max-content;
+  max-width:100%;
+  margin:14px auto 4px;
+  padding:12px 24px;
+  border:1px solid #d7a65b;
+  border-radius:999px;
+  background:linear-gradient(120deg,rgba(31,20,33,.96),rgba(51,27,46,.96));
+  color:#fff0ce;
+  font-size:.95rem;
+  font-weight:900;
+  letter-spacing:.06em;
+  opacity:1;
+  box-shadow:0 0 0 1px rgba(255,213,137,.16),0 0 18px rgba(255,180,73,.14);
+  overflow:hidden;
+}
+.secret-stage-trigger::after {
+  content:"";
+  position:absolute;
+  top:-40%;
+  bottom:-40%;
+  left:-35%;
+  width:24%;
+  transform:rotate(22deg);
+  background:linear-gradient(90deg,transparent,rgba(255,255,230,.7),transparent);
+  animation:secret-menu-glimmer 4.8s ease-in-out infinite;
+  pointer-events:none;
+}
+@keyframes secret-menu-glimmer {
+  0%,68% {left:-35%;opacity:0}
+  76% {opacity:.8}
+  100% {left:125%;opacity:0}
+}
+@media(prefers-reduced-motion:reduce) {.secret-stage-trigger::after{animation:none}}
+.secret-stage-panel .secret-close {
+  width:46px;height:46px;border-radius:50%;font-size:1.7rem;line-height:1;
+  display:grid;place-items:center;
+}
+.secret-stage-panel .secret-sound-toggle,
+.secret-stage-panel .secret-kicker,
+.secret-stage-panel .secret-intro,
+.secret-stage-panel .secret-stage-footer {display:none !important}
+.secret-stage-panel #secret-stage-title {margin-top:4px}
+.secret-stage-grid {margin-bottom:18px}
+.secret-tile small {display:none !important}
+.secret-content {scroll-margin-top:20px}
+.secret-content h3 {text-align:center}
+.arcade-pick {display:grid;place-items:center}
+.arcade-pick-art {
+  display:block;
+  width:31px;height:40px;
+  background:linear-gradient(145deg,#ffe8a2,#eaa83e 58%,#a95b25);
+  clip-path:polygon(50% 0,91% 22%,83% 65%,50% 100%,17% 65%,9% 22%);
+  border:1px solid #fff0b4;
+  filter:drop-shadow(0 0 5px rgba(255,202,89,.45));
+}
+.arcade-leaderboard {margin-top:20px;padding:14px;border:1px solid #76503b;border-radius:12px;background:rgba(0,0,0,.18)}
+.arcade-leaderboard h4 {text-align:center;margin:0 0 10px;letter-spacing:.12em}
+.arcade-leaderboard ol {margin:0;padding-left:24px;display:grid;gap:7px}
+.arcade-leaderboard li {display:flex;justify-content:space-between;gap:16px;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.08)}
+.arcade-leaderboard li b {font-variant-numeric:tabular-nums}
+body.theme-eighties .arcade-pick-art {background:linear-gradient(145deg,#45f4f0,#ff4fb7 52%,#ff9b34);filter:drop-shadow(0 0 8px rgba(69,244,240,.55))}
+body.theme-eighties .arcade-leaderboard {background:linear-gradient(135deg,#241036,#102b38);border-color:#45f4f0}
+body.theme-eighties .arcade-leaderboard h4 {color:#45f4f0}
+body.theme-eighties .arcade-leaderboard li b {color:#ff6fc9}
+body.theme-eighties .payment-method-banner .payment-action,
+body.theme-eighties .payment-method-banner .button,
+body.theme-eighties .payment-method-banner a {
+  background:linear-gradient(135deg,#211032,#102b38) !important;
+  color:#fff !important;
+  border-color:#45f4f0 !important;
+}
+body.theme-eighties .payment-wallet-logos,
+body.theme-eighties .wallet-badge {color:#fff !important}
+body.theme-eighties .payment-wallet-logos * {color:#fff !important}
+body.theme-eighties .social-link {background:linear-gradient(135deg,#241039,#102b38);border-color:#ff4db8;color:#fff}
+body.theme-eighties h1,
+body.theme-eighties h2,
+body.theme-eighties h3,
+body.theme-eighties .section-heading h2 {
+  animation:gh3-neon-glow 6.5s ease-in-out infinite alternate !important;
+}
+@keyframes gh3-neon-glow {
+  from {filter:drop-shadow(0 0 0 rgba(255,67,169,0));text-shadow:0 0 3px rgba(255,100,190,.18),0 2px 0 #43113f}
+  to {filter:drop-shadow(0 0 2px rgba(69,244,240,.2));text-shadow:0 0 7px rgba(255,67,169,.28),0 0 12px rgba(69,244,240,.12),0 2px 0 #43113f}
+}
+body.theme-eighties .header-logo {filter:saturate(1.8) hue-rotate(275deg) contrast(1.12) drop-shadow(0 0 8px rgba(255,62,170,.62)) drop-shadow(0 0 13px rgba(69,244,240,.48))}
+body.theme-eighties .rock-meter-numbers strong,
+body.theme-eighties .rock-meter-percent,
+body.theme-eighties #rock-meter-percent {color:#45f4f0;text-shadow:0 0 12px rgba(69,244,240,.24)}
+body.theme-eighties .song-reveal > summary {color:#160820 !important}
+body.theme-eighties .song-reveal > summary * {color:#160820 !important}
+body.theme-eighties .close-song-list {background:linear-gradient(135deg,#45f4f0,#25cfd0);color:#071522;border-color:#8affff}
+body.theme-eighties .song-request-tip {background:linear-gradient(120deg,#241039,#102b38);color:#fff5ff;border-color:#45f4f0}
+body.theme-eighties .payment-method-banner {background:linear-gradient(135deg,#241039,#102b38);border-color:#45f4f0}
+body.theme-eighties .payment-method-banner .payment-method-copy,
+body.theme-eighties .payment-method-banner .payment-method-copy * {color:#fff !important}
+body.theme-eighties .payment-method-banner .payment-action,
+body.theme-eighties .payment-method-banner .button {background:linear-gradient(135deg,#211032,#102b38)!important;color:#fff!important;border-color:#45f4f0!important}
+body.theme-eighties .payment-wallet-logos button,
+body.theme-eighties .payment-wallet-logos a {color:#fff !important}
+body.theme-day .rock-meter-numbers strong {color:#ed4b27 !important}
+body.theme-day .song-request-tip,
+body.theme-day .close-song-list {transition:opacity .32s ease,transform .32s ease,visibility .32s ease}
+body:not(.catalog-tools-active) .song-request-tip,
+body:not(.catalog-tools-active) .close-song-list {opacity:0!important;visibility:hidden!important;pointer-events:none!important;transform:translateY(10px)!important}
+
+
+/* Footer hierarchy: booking contact -> horizontal appearance -> Secret Menu -> logo/back-to-top row. */
+footer.site-footer {
+  display:flex;
+  flex-direction:column;
+  align-items:stretch;
+  justify-content:flex-start;
+  gap:14px;
+}
+footer.site-footer .footer-explore-link {order:8;align-self:center}
+footer.site-footer .footer-appearance-slot {order:9;width:100%;display:flex;justify-content:center}
+footer.site-footer .gig-theme-controls {
+  display:flex;flex-direction:row;align-items:center;justify-content:center;flex-wrap:wrap;
+  gap:8px;width:100%;padding:12px 10px;margin:0 auto;
+}
+footer.site-footer .gig-theme-controls .gig-mode-label {flex:0 0 100%;text-align:center}
+footer.site-footer .gig-theme-controls button {min-width:76px;min-height:42px;padding:8px 13px}
+footer.site-footer .secret-stage-trigger {order:10;align-self:center}
+footer.site-footer .footer-bottom-row {order:11}
+body.theme-day footer.site-footer .gig-theme-controls {background:#fff7e9;border:1px solid #d1b99a;border-radius:14px}
+body.theme-day footer.site-footer .gig-theme-controls button {background:#f0dfc8;color:#3b291d;border-color:#c8ac8b}
+body.theme-day footer.site-footer .gig-theme-controls button[aria-pressed="true"] {background:linear-gradient(110deg,#ff702f,#ed3d25);color:#fff;border-color:#ed6d43}
+body.theme-eighties footer.site-footer .gig-theme-controls {background:linear-gradient(135deg,#241039,#102b38);border:1px solid #ff4db8;border-radius:14px}
+body.theme-eighties footer.site-footer .gig-theme-controls button {background:linear-gradient(135deg,#211032,#102b38);color:#fff;border-color:#45f4f0}
+body.theme-eighties footer.site-footer .gig-theme-controls button[aria-pressed="true"] {background:linear-gradient(105deg,#ff702f,#ff329d 58%,#45f4f0);color:#160820;border-color:#ff9ad9}
+
+body.theme-eighties .header-logo {width:clamp(140px,20vw,225px);max-height:72px}
+@media(max-width:700px){body.theme-eighties .header-logo{width:clamp(138px,42vw,185px);max-height:58px}}
