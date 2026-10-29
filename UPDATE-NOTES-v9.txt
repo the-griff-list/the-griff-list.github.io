@@ -1,0 +1,17 @@
+THE GRIFFLIST WEBSITE UPDATE v9
+
+New feature: local live-show recording on Watch Live
+- Viewers can choose Video + audio (WebM) or Audio only (WebM).
+- Recordings are created in the browser and downloaded directly to the user's device when Stop & Save is pressed.
+- Video recording uses a moderate target bitrate (about 1.2 Mbps) and audio recording targets 64 kbps to keep files lighter.
+- Recording controls are disabled until a LiveKit stream is connected; video recording requires video subscription and is unavailable in Low-data mode.
+- Recording is local only. No recording is uploaded to Supabase or another server.
+
+File cleanup
+- Removed unreferenced .wav files. The active HTML, JavaScript and service-worker asset list use the MP3 versions; no active code references the removed WAV assets.
+- Kept all referenced MP3 and OGG assets, images, pages, scripts, SQL and documentation.
+- Bumped the offline service-worker cache name so clients can receive the new Watch Live code.
+
+Notes
+- Browser support for MediaRecorder and WebM varies by browser/device. Current Chrome on Android is the recommended test target.
+- Recording depends on the live stream's subscribed remote tracks and the device's available storage.
