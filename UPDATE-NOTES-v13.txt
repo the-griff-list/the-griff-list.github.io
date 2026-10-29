@@ -1,0 +1,16 @@
+THE GRIFFLIST WEBSITE UPDATE v13
+
+Changes in this package:
+- Added a Share Live Video action using native phone sharing where available, with clipboard/prompt fallback.
+- Renamed payment action buttons from Tip to Donate and changed Interac e-Transfer action to Copy ✉️.
+- Added the Watch Live e-transfer copy button.
+- Simplified Sober Drive text and taxi page headings/status, centered taxi actions, and changed return action to Return home (links to the Sober Drive section).
+- Day-mode footer logo contrast increased and background kept transparent. Rock-O-Meter CSS background is transparent.
+- Day-mode Remember my name checkbox is transparent inside with an outline.
+- Song catalog selection scrolls to the request form without focusing the name field or opening the phone keyboard. Pressing Enter in catalog search closes the keyboard and scrolls to filtered results.
+- Guitar Pick Panic has a clearer instruction line and a 3-2-1-GO countdown overlay.
+- Secret-menu lost-track message updated. Secret-menu music boosted by 25% with peak limiting.
+- Added basic inappropriate-name filtering to arcade score display/submission, including the known inappropriate examples. This is a practical denylist, not a guarantee of catching every offensive term or language.
+- Included arcade-leaderboard-cleanup-known-fakes.sql for an optional targeted cleanup of the known fake names. Review and run it in Supabase if you want those existing rows removed; website code cannot delete database rows automatically.
+
+Testing: HTML/JS syntax checks and ZIP integrity check performed locally. Live device/browser and Supabase integration still require user-side testing.

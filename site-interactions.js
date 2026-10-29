@@ -173,10 +173,10 @@
     },true);
     overlay.querySelector('.secret-close').addEventListener('click',()=>{close();if(!pageIsHome)window.location.href='index.html#top';else window.scrollTo({top:0,behavior:reducedMotion()?'auto':'smooth'});});document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!overlay.hidden)close();});
     const content=$('#secret-content',overlay);
-    $('#lost-cassette',overlay).addEventListener('click',()=>{content.innerHTML='<div class="cassette-flip"><div class="cassette-art large"><i></i><b></b></div><h3>SIDE B: THE LOST TRACK</h3><p class="secret-note">For now, the tape is a teaser. Add your chosen recording when you are ready.</p></div>';content.scrollIntoView({behavior:reducedMotion()?'auto':'smooth',block:'start'});});
+    $('#lost-cassette',overlay).addEventListener('click',()=>{content.innerHTML='<div class="cassette-flip"><div class="cassette-art large"><i></i><b></b></div><h3>SIDE B: THE LOST TRACK</h3><p class="secret-note">Original music is on the way. Stay tuned for new sounds from The Grifflist.</p></div>';content.scrollIntoView({behavior:reducedMotion()?'auto':'smooth',block:'start'});});
     $('#secret-message-open',overlay).addEventListener('click',()=>{content.innerHTML='<h3>YOU FOUND IT. 🤘</h3><p>Thanks for taking the time to explore The Grifflist. The best things in rock and roll are often hidden just offstage.</p><p class="secret-note">- Griff</p>';content.scrollIntoView({behavior:reducedMotion()?'auto':'smooth',block:'start'});});
     $('#high-score-open',overlay).addEventListener('click',()=>{
-      content.innerHTML='<div class="mini-arcade"><h3>GUITAR PICK PANIC</h3><p>Tap as many picks as you can in 15 seconds.</p><div class="arcade-score">Score: <strong id="arcade-score">0</strong> · Time: <strong id="arcade-time">15</strong></div><div id="arcade-board" class="arcade-board"><button type="button" class="arcade-pick" aria-label="Catch guitar pick"><img class="arcade-pick-art" src="arcade-pick-treynor.png" alt="" aria-hidden="true" draggable="false"></button></div><button type="button" class="button button-hot" id="arcade-start">START GAME</button><p id="arcade-status" role="status" aria-live="polite"></p><section class="arcade-leaderboard" aria-labelledby="arcade-leaderboard-title"><h4 id="arcade-leaderboard-title">HIGH SCORES</h4><ol id="arcade-leaderboard-list"><li>Loading scores…</li></ol></section></div>';
+      content.innerHTML='<div class="mini-arcade"><h3>GUITAR PICK PANIC</h3><p class="arcade-instructions">TAP THE PICKS — 15 SECONDS!</p><div class="arcade-score">Score: <strong id="arcade-score">0</strong> · Time: <strong id="arcade-time">15</strong></div><div id="arcade-board" class="arcade-board"><div id="arcade-countdown" class="arcade-countdown" aria-live="assertive" hidden></div><button type="button" class="arcade-pick" aria-label="Catch guitar pick"><img class="arcade-pick-art" src="arcade-pick-treynor.png" alt="" aria-hidden="true" draggable="false"></button></div><button type="button" class="button button-hot" id="arcade-start">START GAME</button><p id="arcade-status" role="status" aria-live="polite"></p><section class="arcade-leaderboard" aria-labelledby="arcade-leaderboard-title"><h4 id="arcade-leaderboard-title">HIGH SCORES</h4><ol id="arcade-leaderboard-list"><li>Loading scores…</li></ol></section></div>';
       const board=$('#arcade-board'),start=$('#arcade-start'),scoreEl=$('#arcade-score'),timeEl=$('#arcade-time'),status=$('#arcade-status'),leaderboard=$('#arcade-leaderboard-list');let score=0,time=15,timer=null;
       const loadLeaderboard=async()=>{
         const client=window.supabaseClient;
@@ -187,16 +187,22 @@
           if(error)throw error;
           leaderboard.innerHTML='';
           if(!data?.length){leaderboard.innerHTML='<li>Be the first on the board!</li>';return;}
-          data.forEach((entry,index)=>{const li=document.createElement('li');const name=document.createElement('span');name.textContent=entry.player_name;const points=document.createElement('b');points.textContent=String(entry.score);li.append(name,points);leaderboard.append(li);});
+          const blockedDisplayNames=/\b(mike\s*hunt|gabe\s*owners?|rock\s*star|asshole|arsehole|bastard|bitch|blowjob|bullshit|cock|cocksucker|cunt|dickhead|dick|dildo|fag|faggot|fuck\w*|motherfucker|nigger|nonce|piss|porn|prick|rape|retard|shag|shit\w*|slut|spunk|twat|wanker|whore)\b/i;const cleanEntries=data.filter(entry=>!blockedDisplayNames.test(String(entry.player_name||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'')));if(!cleanEntries.length){leaderboard.innerHTML='<li>Be the first on the board!</li>';return;}cleanEntries.forEach((entry,index)=>{const li=document.createElement('li');const name=document.createElement('span');name.textContent=entry.player_name;const points=document.createElement('b');points.textContent=String(entry.score);li.append(name,points);leaderboard.append(li);});
         }catch(_){leaderboard.innerHTML='<li>Leaderboard will appear after Supabase setup.</li>';}
       };
       loadLeaderboard();
       const saveLeaderboardScore=async(finalScore)=>{
         const client=window.supabaseClient;if(!client)return;
         let playerName=window.localStorage?.getItem('grifflistArcadeName')||'';
-        if(!playerName){playerName=window.prompt('Choose a display name for the high-score board (optional):','Rock Star')||'';}
-        playerName=playerName.trim().replace(/[<>]/g,'').slice(0,24);
-        if(!playerName)return;
+        if(finalScore<=0)return;
+        status.textContent='YOU WON A HIGH SCORE!';
+        const blockedNamePatterns=[/\bmike\s*hunt\b/,/\bgabe\s*owners?\b/,/\brock\s*star\b/,/\basshole\b/,/\barsehole\b/,/\bbastard\b/,/\bbitch\b/,/\bblowjob\b/,/\bbullshit\b/,/\bcock\b/,/\bcocksucker\b/,/\bcunt\b/,/\bdickhead\b/,/\bdick\b/,/\bdildo\b/,/\bfag\b/,/\bfaggot\b/,/\bfuck\w*\b/,/\bmotherfucker\b/,/\bnigger\b/,/\bnonce\b/,/\bpiss\b/,/\bporn\b/,/\bprick\b/,/\brape\b/,/\bretard\b/,/\bshag\b/,/\bshit\w*\b/,/\bslut\b/,/\bspunk\b/,/\btwat\b/,/\bwanker\b/,/\bwhore\b/];
+        const normalizeName=value=>String(value||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[0@]/g,m=>m==='0'?'o':'a').replace(/[1!]/g,'i').replace(/[$]/g,'s').replace(/[^a-z]+/g,' ');
+        const validName=value=>{const clean=String(value||'').trim().replace(/[<>]/g,'').replace(/\s+/g,' ').slice(0,24);const normalized=normalizeName(clean);return clean.length>=2&&/[a-zA-ZÀ-ÿ]/.test(clean)&&!blockedNamePatterns.some(rx=>rx.test(normalized))&&!/\b(mikehunt|gabeowners?)\b/.test(normalized.replace(/\s/g,''));};
+        if(!playerName){playerName=window.prompt('YOU WON A HIGH SCORE!\nEnter your name for the leaderboard.','')||'';}
+        playerName=String(playerName).trim().replace(/[<>]/g,'').replace(/\s+/g,' ').slice(0,24);
+        if(!validName(playerName)){playerName=window.prompt('Please enter a respectful name for the leaderboard (up to 24 characters).','')||'';playerName=String(playerName).trim().replace(/[<>]/g,'').replace(/\s+/g,' ').slice(0,24);}
+        if(!validName(playerName)){status.textContent='Name not accepted. Your score was not submitted.';return;}
         try{window.localStorage?.setItem('grifflistArcadeName',playerName);}catch(_){}
         try{
           const {error}=await client.from('arcade_leaderboard').insert({player_name:playerName,score:Math.max(0,Math.min(150,Math.floor(finalScore)))});
@@ -206,7 +212,7 @@
       };
       content.scrollIntoView({behavior:reducedMotion()?'auto':'smooth',block:'start'});
       const pick=$('.arcade-pick',board);pick.addEventListener('click',()=>{if(!timer)return;score++;scoreEl.textContent=score;pick.style.left=(5+Math.random()*75)+'%';pick.style.top=(5+Math.random()*70)+'%';playSecretEffect('pickup');});
-      start.addEventListener('click',()=>{if(timer)clearInterval(timer);score=0;time=15;scoreEl.textContent=score;timeEl.textContent=time;status.textContent='Rock on!';timer=setInterval(()=>{time--;timeEl.textContent=time;if(time<=0){clearInterval(timer);timer=null;status.textContent=`FINAL SCORE: ${score}.`;try{const previous=Number(localStorage.getItem('grifflistArcadeBest')||0);if(score>previous){localStorage.setItem('grifflistArcadeBest',score);status.textContent+=` NEW PERSONAL BEST: ${score}!`;playRandomHighScore(); }else{status.textContent+=` Personal best: ${previous}.`;}}catch(_){}saveLeaderboardScore(score);}},1000);});
+      start.addEventListener('click',()=>{if(timer)clearInterval(timer);score=0;time=15;scoreEl.textContent=score;timeEl.textContent=time;const count=$('#arcade-countdown',board);start.disabled=true;let n=3;if(count){count.hidden=false;count.textContent='3';}status.textContent='Get ready!';const countTimer=setInterval(()=>{n--;if(count)count.textContent=n>0?String(n):'GO!';if(n<=0){clearInterval(countTimer);if(count){setTimeout(()=>{count.hidden=true;},450);}start.disabled=false;status.textContent='Rock on!';timer=setInterval(()=>{time--;timeEl.textContent=time;if(time<=0){clearInterval(timer);timer=null;status.textContent=`FINAL SCORE: ${score}.`;try{const previous=Number(localStorage.getItem('grifflistArcadeBest')||0);if(score>previous){localStorage.setItem('grifflistArcadeBest',score);status.textContent='YOU WON A HIGH SCORE!';playRandomHighScore();}else{status.textContent+=` Personal best: ${previous}.`;}}catch(_){}saveLeaderboardScore(score);}},1000);}},1000);});
     });
   }
 

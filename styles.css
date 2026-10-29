@@ -1953,3 +1953,47 @@ footer.site-footer{background:transparent!important;box-shadow:none!important}
 footer.site-footer .footer-bottom-row{background:transparent!important;border-top:0!important;padding-top:0!important}
 footer.site-footer .footer-logo-link,footer.site-footer .footer-top-link{background:transparent!important;box-shadow:none!important}
 @media(max-width:560px){.watch-live-page .live-recording-overlay{width:min(250px,calc(100% - 12px));left:6px;bottom:6px}.watch-live-page .live-recording-overlay .recording-actions .button{font-size:.65rem;min-height:30px}.watch-live-page .live-tip-actions .payment-method-banner{padding:10px}.watch-live-page .live-player-controls label,.watch-live-page .live-player-controls span,.watch-live-page .live-player-controls button{font-size:.74rem}}
+
+
+/* Watch Live v12: keep every viewer control together beneath the video. */
+.watch-live-page .live-player-shell .live-recording-overlay{display:none!important}
+.watch-live-page .live-controls-stack{display:flex;flex-direction:column;align-items:stretch;gap:9px;margin-top:10px}
+.watch-live-page .live-controls-stack .live-recording-panel{order:1;width:100%;box-sizing:border-box;margin:0;padding:12px;border:1px solid var(--line);border-radius:12px;background:rgba(8,8,8,.34);backdrop-filter:blur(5px);gap:8px}
+.watch-live-page .live-recording-heading h2{font-size:1.15rem;letter-spacing:.04em;text-transform:uppercase}
+.watch-live-page #recording-mode{width:100%;min-height:40px;padding:8px 12px;border:1px solid var(--line);border-radius:8px;background:rgba(8,8,8,.48);color:var(--text);font:inherit}
+.watch-live-page .recording-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.watch-live-page .recording-actions .button{min-height:42px;padding:8px 10px;font-size:.82rem}
+.watch-live-page #recording-status{min-height:0;margin:0;font-size:.78rem;line-height:1.3;overflow-wrap:anywhere}
+.watch-live-page .low-data-control{order:2;display:flex;align-items:center;gap:10px;width:fit-content;max-width:100%;box-sizing:border-box;padding:11px 13px;border:1px solid var(--line);border-radius:10px;background:rgba(8,8,8,.3);font-weight:800}
+.watch-live-page .live-audio-enable{order:3;align-self:flex-start;margin:0}
+.watch-live-page #viewer-health{order:4;font-size:.78rem;opacity:.75;min-height:0}
+.watch-live-page .live-screen-button{display:flex;align-items:center;justify-content:center;text-align:center;font-size:2rem;font-weight:900;line-height:1;width:64px;height:64px;min-height:64px;padding:0;border-radius:18px}
+.watch-live-page .live-player-shell:fullscreen .live-screen-button{width:56px;height:56px;min-height:56px;font-size:2rem}
+@media(max-width:560px){.watch-live-page .live-controls-stack .live-recording-panel{padding:10px}.watch-live-page .recording-actions .button{font-size:.76rem;min-height:40px}.watch-live-page .live-screen-button{width:60px;height:60px;min-height:60px;font-size:2rem}}
+
+
+/* v13 consistency, accessibility and compact interaction polish */
+.payment-action{background:#3a3a3a!important;color:#fff!important;border-color:#666!important}
+.payment-method-banner .payment-action{background:#3a3a3a!important;color:#fff!important;border-color:#666!important}
+.payment-kofi-wallet .wallet-badge{background:#dedede!important;color:#262626!important;border-color:#bdbdbd!important}
+.payment-kofi-wallet .wallet-apple{color:#262626!important}
+body.theme-day .payment-kofi-wallet .wallet-badge{background:#dedede!important;color:#262626!important;border-color:#bdbdbd!important}
+body.theme-day .remember-name-option input{background:transparent!important;appearance:none;border:2px solid #4b382c!important;width:18px;height:18px;padding:0;border-radius:3px}
+body.theme-day .remember-name-option input:checked{background:#f45a2b!important;box-shadow:inset 0 0 0 3px #fffaf2}
+body.theme-day .footer-logo{filter:brightness(1.2) contrast(1.28) saturate(1.12) drop-shadow(0 1px 0 #fff) drop-shadow(0 2px 3px rgba(55,32,17,.38))!important}
+body.theme-day .footer-logo-link{background:transparent!important;box-shadow:none!important}
+body.theme-day .rock-meter-art{background:transparent!important;mix-blend-mode:multiply;filter:contrast(1.12) saturate(1.05) drop-shadow(0 2px 2px rgba(44,27,16,.12))!important}
+.rock-meter-art-wrap,.rock-meter-art{background:transparent!important}
+.safe-ride-copy h2{font-size:clamp(2.3rem,5vw,3.7rem)!important}
+.safe-ride-copy p{display:none!important}
+#booking-copy{background:linear-gradient(110deg,#ff7c32,#ff3f72)!important;color:#fff!important}
+.live-share-button{display:flex;margin:12px auto 0;min-height:42px;max-width:240px}
+.taxi-actions a:last-child{background:#3a3a3a;color:#fff;border-color:#666}
+.taxi-actions a:first-child{display:flex;align-items:center;justify-content:center}
+.arcade-instructions{font-size:1.05rem;font-weight:900;letter-spacing:.04em;line-height:1.35}
+.arcade-score{font-size:1.1rem;font-weight:800;line-height:1.6}
+.arcade-board{position:relative}
+.arcade-countdown{position:absolute;z-index:4;inset:0;display:grid;place-items:center;background:#09090999;color:#fff;font:900 clamp(5rem,20vw,9rem)/1 'Barlow Condensed',Impact,sans-serif;text-shadow:0 0 24px #ff3f72;pointer-events:none}
+.arcade-countdown[hidden]{display:none}
+
+.live-screen-button{display:grid!important;place-items:center!important;text-align:center!important;font-size:2rem!important;font-weight:900!important;line-height:1!important;padding:0!important}
