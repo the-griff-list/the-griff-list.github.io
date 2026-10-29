@@ -1,6 +1,6 @@
 services:
   mediamtx:
-    image: bluenviron/mediamtx:latest
+    image: bluenviron/mediamtx:1
     container_name: grifflist-mediamtx
     restart: unless-stopped
     volumes:

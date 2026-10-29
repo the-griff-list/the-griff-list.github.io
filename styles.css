@@ -1795,3 +1795,28 @@ body.theme-eighties .hospitality-thanks strong,body.theme-eighties .safe-ride-co
 #contact .contact-actions { gap:6px!important; }
 #contact #booking-status { min-height:0!important; margin:0!important; }
 #contact .social-links-branded { margin-top:4px!important; }
+
+
+/* Sober Drive / catalog / footer refinements — Oct 2026 */
+.top-nav a[href*="safe-ride-home"]{color:#ff9a42}
+.safe-ride-section{scroll-margin-top:95px}
+.safe-ride-button{background:linear-gradient(110deg,#ff7c32,#ff3f72)!important;border-color:#ff8b5a!important;box-shadow:0 4px 0 #74294f!important}
+body.theme-eighties .safe-ride-button{background:linear-gradient(110deg,#ff7c32,#ff3f72)!important;color:#fff!important}
+body.theme-day .safe-ride-copy{background:#fff7e9!important;border-color:#e9a06d!important}
+body.theme-day .safe-ride-copy h2{color:#c84b20!important}
+body.theme-day .encore-card-simple{background:#fff7e9!important;border:1px solid #e9a06d!important;border-radius:16px!important;color:#241b17!important;box-shadow:0 8px 22px #6d3a1714!important}
+body.theme-day .encore-card-simple .encore-poll-status{color:#49372b!important}
+body.theme-day .encore-card-simple .encore-option{background:#fff!important;border-color:#e4c7aa!important;color:#241b17!important}
+body.theme-day .footer-logo-link img{filter:brightness(1.13) contrast(1.35) saturate(1.08) drop-shadow(0 2px 3px rgba(58,36,22,.35))!important}
+footer.site-footer{display:flex!important;flex-direction:column!important;align-items:center!important;gap:14px!important}
+footer.site-footer .footer-appearance-slot{order:1!important;align-self:stretch!important;justify-content:center!important}
+footer.site-footer .secret-stage-trigger{order:2!important}
+footer.site-footer .footer-bottom-row{order:3!important;position:static!important;display:flex!important;align-items:center!important;justify-content:center!important;gap:18px!important;width:100%!important;margin-top:4px!important}
+footer.site-footer .footer-logo-link,footer.site-footer .footer-top-link{position:static!important;float:none!important}
+footer.site-footer .gig-theme-controls{margin-inline:auto!important;justify-content:center!important}
+#request-hint.hint-pulse{border:1px solid #ff8a35!important;background:rgba(255,125,42,.12)!important;color:#ffad62!important;box-shadow:none!important;outline:0!important}
+body.theme-night #request-hint.hint-pulse{border-color:#ff8a35!important;color:#ffad62!important}
+#catalog .song-reveal[open] .song-reveal-content{display:block}
+#catalog .song-row{width:100%;text-align:left}
+
+.stream-setup-help{border:1px solid var(--line);border-radius:8px;padding:12px;margin:14px 0;background:#101010}.stream-setup-help summary{cursor:pointer;font-weight:850;color:var(--gold)}.stream-setup-help ol{padding-left:22px;line-height:1.6}.stream-setup-help li{margin:6px 0}.stream-setup-help code{overflow-wrap:anywhere;color:var(--hot)}body.theme-day .stream-setup-help{background:#fffaf2;color:#211711;border-color:#cbb8a3}
