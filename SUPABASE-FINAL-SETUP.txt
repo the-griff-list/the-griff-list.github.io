@@ -5,8 +5,8 @@ If these migrations have already been run successfully, do not run them again ju
 
 For Crowd Favourites and Encore voting:
 - Open Supabase Dashboard > SQL Editor.
-- Run grifflist-next-update.sql if you have not already run it.
-- This migration includes live-show settings, crowd-favourite pins, the public-safe get_crowd_favourites() RPC, and request tracking support.
+- Review grifflist-combined-reviewed-migration.sql against your current schema before considering it. It has not been run against production; do not run it until review is complete.
+- The combined migration includes live-show settings, crowd-favourite pins, the public-safe get_crowd_favourites() RPC, request tracking support, and compatible Rockometer/Encore table handling.
 
 For the Rock Wall / confirmed tip entries:
 - Run bonus-features-migration.sql if the confirmed_tips table has not already been created.

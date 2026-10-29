@@ -1,0 +1,22 @@
+THE GRIFFLIST — LIVEKIT REVIEW PACKAGE v4
+
+Changes in this review build:
+- Added a migration preflight guard for the confirmed admin Auth UID, required song_requests columns, and existing Encore RPC signatures/JSONB return types.
+- Kept existing Encore function bodies and grants; hardened their function search_path settings without changing return types.
+- Fixed manual Watch Live settings so starting a session records session_started_at, allowing Crowd Favourites' This Show range to work.
+- Made Low-data mode unsubscribe from remote video tracks instead of only hiding the video element.
+- Made the homepage Watch Live call-to-action respect the admin's public show_enabled setting, including an explicit CSS hidden rule.
+- Added Cache-Control: no-store to Cloudflare Worker responses.
+- Bumped cache-busting query strings for updated assets.
+- Updated the combined SQL copies and review documentation.
+
+Validation performed locally:
+- ZIP archive integrity check.
+- Node.js syntax checks for changed JavaScript files.
+- Local HTML asset-reference check (no missing local href/src references found).
+- Confirmed the standalone migration matches both SQL copies in this package.
+
+Important limitations:
+- The migration has NOT been executed against production or a disposable Supabase clone.
+- No end-to-end LiveKit camera/audio broadcast test has been run.
+- The current GitHub Pages repository could not be fetched from this environment, so this package still needs comparison against the latest live repository before upload. Do not overwrite the live website wholesale.

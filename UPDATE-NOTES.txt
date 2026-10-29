@@ -48,10 +48,10 @@ Request-flow usability update (2026-10-28): moved song-selection confirmation ab
 NEXT FEATURE UPDATE (2026-10-28)
 - Renamed the public meter to Rockometer and the request section to Request a Song.
 - Title-screen sound no longer attempts autoplay at page load; it starts only after the title-screen click/tap.
-- Added Watch Live homepage callout, dedicated watch-live.html page, phone browser broadcast controls (WHIP), public playback (WHEP), venue settings, and in-video Rockometer overlay.
+- Added Watch Live homepage callout, dedicated watch-live.html page, LiveKit browser broadcast/playback, venue settings, and Rockometer overlay.
 - Added Crowd Favourites with this-month/all-time ranges, request counts, played-status counts, category filter for pinned songs, request buttons, share action, and admin pinning.
-- Added Supabase migration grifflist-next-update.sql. Run it before using Watch Live settings or Crowd Favourites.
-- Added free self-hosted MediaMTX/Caddy examples and detailed setup guide in WATCH-LIVE-AND-FAVOURITES-SETUP.txt.
+- Added a combined Supabase migration draft. Review it against the live schema and test safely before applying; do not run it blindly.
+- Live video uses LiveKit Cloud and a Cloudflare Worker; see WATCH-LIVE-DEPLOYMENT-GUIDE.md and LIVEKIT-WORKER-SETUP.md.
 - The streaming software is free; public hosting still requires a reachable server, DNS/HTTPS, and sufficient upload bandwidth. The stream is not ready to go live until the server is configured and tested.
 
 

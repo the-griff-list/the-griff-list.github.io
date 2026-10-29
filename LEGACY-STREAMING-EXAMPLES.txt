@@ -1,0 +1,5 @@
+LEGACY SELF-HOSTED STREAMING EXAMPLES
+
+Caddyfile.example, docker-compose.streaming.yml.example, and mediamtx.yml.example are retained from an older version of The Grifflist for archival purposes only.
+
+The current Watch Live implementation uses LiveKit Cloud and cloudflare-livekit-worker.js. Do not follow the old MediaMTX/WHIP/WHEP/Docker instructions for the current LiveKit site. These example files are not used by the public website.

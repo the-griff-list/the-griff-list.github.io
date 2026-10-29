@@ -6,7 +6,7 @@ Added:
 - Private-by-token request status lookup (apply the updated Supabase SQL first).
 - Generated shareable PNG song cards from Crowd Favourites, with download/share fallback.
 - Share Crowd Favourites link.
-- Audio-only low-data mode for WHEP/WebRTC playback.
+- Audio-first low-data display mode for LiveKit playback.
 - Basic admin stream-health indicator for connection, camera and microphone tracks.
 - Quick admin Go Live, End Live and Refresh Requests actions.
 - New show-session timestamp and This Show crowd-favourite filter. Monthly and all-time stats remain.
@@ -15,11 +15,11 @@ Added:
 
 IMPORTANT SETUP
 1. Back up the existing repository.
-2. Read grifflist-next-update.sql and verify the admin UUID in its RLS policies matches the correct admin account before running it in Supabase SQL Editor.
-3. Apply the SQL migration before publishing the new scripts. It adds a tracking_token column and a status RPC; existing request rows remain unchanged.
+2. Review grifflist-combined-reviewed-migration.sql against the live schema. The file is a draft and must not be run until the full review is complete.
+3. Do not apply the SQL migration yet. It adds a tracking_token column and a status RPC; existing request rows are intended to remain unchanged, but the migration still requires final schema review and safe testing.
 4. Upload the extracted website files to the repository root, preserving the existing Supabase configuration and assets.
 5. Test song requests, status lookup, pinning, favourites and admin controls before using them at a show.
-6. Configure the self-hosted MediaMTX server, HTTPS, WHIP/WHEP URLs and CORS/firewall settings separately. Audio-only mode requires the streaming server to accept an audio-only WHEP session.
+6. Configure the included Cloudflare Worker with LiveKit secrets and the allowed GitHub Pages origin. The current viewer uses LiveKit; no WHEP endpoint is required.
 
 LIMITATIONS
 - The stream health display is a basic browser-side indicator, not a full bitrate or server monitoring dashboard.

@@ -1,65 +1,72 @@
-# The Grifflist Watch Live — Direct phone-to-website streaming
+# The Grifflist — LiveKit Watch Live Deployment Guide
 
-This package is configured for a phone browser to publish camera + microphone to **MediaMTX over WHIP**, while visitors watch through **WebRTC/WHEP** on `watch-live.html`. The public page reads the venue name and live state from Supabase, overlays the Rock-O-Meter, and links to the existing Ko-fi, PayPal and e-transfer options.
+This version uses the existing **LiveKit Cloud** project and the Cloudflare Worker token service. It does **not** use MediaMTX, WHIP, or WHEP. GitHub Pages serves the static website; LiveKit Cloud carries the audio/video stream.
 
-## What is already in the website package
+## Components
 
-- `admin.html` has the venue name, WHIP/WHEP endpoints, public visibility and LIVE status controls.
-- START BROADCAST requests the phone's camera and microphone and publishes to MediaMTX.
-- END BROADCAST closes the local stream and marks the show offline.
-- `watch-live.html` receives the stream and displays the admin-controlled venue name.
-- The Rock-O-Meter overlay reads `rock_meter_settings` from Supabase. Update its goal and confirmed raised amount in the admin panel. **Tips do not automatically change the meter**; automatic totals require verified payment-provider webhooks and should not be faked client-side.
-- The existing tipping buttons link to Ko-fi, PayPal and the homepage e-transfer instructions. The site does not collect or verify card details itself.
+- `watch-live.html` + `live-show.js`: public viewer; requests a viewer-only token from the Cloudflare Worker.
+- `admin.html` + `admin-features.js`: admin controls and phone broadcaster; requests a publisher token after the broadcaster password is checked by the Worker.
+- `cloudflare-livekit-worker.js`: signs short-lived LiveKit tokens. LiveKit API credentials must remain in Worker secrets.
+- `grifflist-combined-reviewed-migration.sql`: review draft for Watch Live settings, Crowd Favourites, request tracking, Rockometer, and Encore Vote.
 
-## Architecture
+## Before deploying
 
-`Phone camera/mic → HTTPS WHIP → MediaMTX → WebRTC/WHEP → viewers' browsers`
+1. Back up/download the currently published GitHub Pages repository.
+2. Compare this package with the current repository before copying files. This package may not include the very latest visual-only changes. Do not blindly replace the entire site if you need to preserve newer edits.
+3. Open the SQL migration and confirm the hardcoded admin UUID (`7c4c9232-2c28-47f3-a00a-a371ed23cef5`) is your actual Supabase Auth user ID. Confirm the live schema matches the assumptions. The migration has not been run or tested against the production database. It includes a preflight guard for the inspected admin UID, song-request columns, and Encore RPC signatures, but this is not a substitute for testing against a safe copy.
+4. Test the migration in a non-production Supabase project or after taking a suitable backup. Do not run it until reviewed.
 
-GitHub Pages serves the static website only. It does not host the media relay. MediaMTX is free, open-source software; the server, domain/DNS if used, internet connection, bandwidth and maintenance may cost money.
+## Cloudflare Worker
 
-## One-time setup
+The worker is configured in the included source for the existing endpoint:
 
-1. **Back up the current GitHub Pages repository.** Publish the contents of this update's `grifflist-update` directory to the repository root, preserving existing assets.
-2. In Supabase SQL Editor, run `grifflist-next-update.sql` if this version's live settings table is not already installed. Confirm the hard-coded admin UUID in the migration belongs to your actual admin account before running it. Never put a Supabase `service_role` key in website code.
-3. On an always-on Linux VPS or a computer on a suitable home connection, install Docker Engine and the Docker Compose plugin.
-4. Copy `mediamtx.yml.example` to `mediamtx.yml`, `docker-compose.streaming.yml.example` to `docker-compose.yml`, and `Caddyfile.example` to `Caddyfile`.
-5. Replace `stream.example.com` in the MediaMTX and Caddy files with a real hostname. Point its DNS record to the server's public IP. Replace `https://YOUR-USERNAME.github.io` in `mediamtx.yml` with the exact website origin; for a custom website domain, use that origin instead.
-6. Replace `REPLACE_WITH_A_LONG_RANDOM_PASSWORD` with a unique password. Do not reuse an email or bank password. The public website must never contain this publisher password.
-7. Router/firewall: allow TCP 80 and 443 to Caddy, and UDP 8189 to MediaMTX. Keep MediaMTX's HTTP/WebRTC signaling port 8889 inaccessible directly from the public internet; Caddy proxies the HTTPS signaling requests. If UDP is blocked, WebRTC may need TCP ICE or a TURN relay, which can add latency/cost.
-8. From the folder containing the files, run `docker compose up -d`, then inspect `docker compose logs -f`. Verify `https://YOUR-STREAM-HOSTNAME` has a valid TLS certificate before opening camera permissions. The supplied Caddyfile obtains certificates automatically when DNS and ports are correct.
-9. Sign into `admin.html` over HTTPS. Enter the venue name, public WHEP URL `https://YOUR-STREAM-HOSTNAME/live/whep`, phone WHIP URL `https://YOUR-STREAM-HOSTNAME/live/whip`, username `publisher`, and the unique password. Enable the public Watch Live page and save.
-10. On the phone, allow camera/microphone access and tap START BROADCAST. Keep the tab open and the phone awake. Test `watch-live.html` from a separate device/network, check audio/video and Rock-O-Meter, then tap END BROADCAST.
+`https://odd-unit-91b9.grar0842.workers.dev/token`
 
-## Hosting cost planning (CAD estimates, not quotes)
+Required Worker environment variables/secrets:
 
-- **Software:** MediaMTX, Docker and Caddy are free/open source.
-- **If using an existing home computer:** potentially $0 additional server rental, but electricity, internet, upload speed, router setup and public-IP/CGNAT limitations still apply. A home connection may not allow inbound hosting.
-- **If renting a VPS:** budget roughly **C$10–30/month** for a modest starting server, depending on provider, region, CPU/RAM, taxes and billing currency. A very small server may be fine for a private test, but actual concurrency and transcoding needs must be measured. MediaMTX relays rather than transcodes by default.
-- **Domain/DNS:** a domain commonly costs an additional annual fee; free dynamic DNS may be adequate for testing. A public hostname and valid HTTPS certificate are required for camera access.
-- **Bandwidth is the main variable.** At an illustrative 2.5 Mbps video stream, one viewer uses about 1.1 GB per hour. Ten simultaneous viewers for a one-hour set could use around 11 GB of outbound media, before overhead. Check the provider's included outbound traffic and overage rates. Lowering the broadcast resolution/bitrate can reduce cost but also reduces quality.
-- **TURN relay:** not necessarily required, but may be needed when UDP connectivity fails. A relay can materially increase bandwidth costs.
-- **No automatic payment-to-meter integration is included.** For accurate automatic tipping totals, integrate verified provider webhooks on a secure backend; do not trust browser-only payment success callbacks.
+- `LIVEKIT_API_KEY` — secret
+- `LIVEKIT_API_SECRET` — secret
+- `LIVEKIT_URL` — `wss://the-grifflist-watch-live-2h1716g8.livekit.cloud`
+- `BROADCASTER_PASSWORD` — choose a strong, unique secret
+- `ALLOWED_ORIGIN` — `https://the-griff-list.github.io`
 
-A reference point for pricing: Hetzner's official June 2026 price adjustment lists some entry-level EU cloud plans starting around US$6.49/month before VAT, but region, availability, bandwidth and suitability vary. That is not a Canada-specific quote. See official pricing notes: https://docs.hetzner.com/general/infrastructure-and-availability/price-adjustment/ and traffic rules: https://docs.hetzner.com/robot/general/traffic/.
+Replace the Worker source with `cloudflare-livekit-worker.js` only after reviewing it. Set the variables/secrets in Cloudflare's dashboard; never put the API secret or broadcaster password in GitHub or browser JavaScript. The Worker checks the configured origin and only issues publisher tokens when the correct password is provided. Viewer tokens are short-lived and cannot publish.
 
-## Safety and privacy
+The website JavaScript has the Worker URL hardcoded in `live-show.js` and `admin-features.js`. If the Worker URL changes, update both files. The viewer includes a tap-to-enable-audio fallback for browsers that block autoplay; viewers should tap it if they see video but hear no sound.
 
-- Tell venue staff and attendees that a live camera is operating; frame the stage and avoid recording private conversations or patrons without appropriate permission.
-- Keep the publisher credential private. It is stored in local storage on the admin browser for convenience; use a trusted personal device and clear browser storage if the device is shared.
-- The public viewer endpoint is read-only. Do not give visitors publisher credentials.
-- Camera/microphone access requires HTTPS. A mobile browser may suspend capture if the screen locks or the tab goes into the background.
-- Start with a private test, use headphones to avoid feedback, and verify that the public status changes back to offline when the broadcast ends.
+## Safe rollout order
 
-## Troubleshooting
+1. Keep the public Watch Live button hidden while configuring and testing.
+2. Deploy the Worker source and configure the secrets/variables.
+3. Test `POST /token` with `{ "role": "viewer" }`; verify the response contains `token` and `serverUrl`. Never share the token publicly.
+4. Test publisher token issuance only from the admin workflow using the configured broadcaster password. Do not publish the password.
+5. Apply the reviewed SQL only after checking the admin UUID and schema. This SQL does not configure LiveKit credentials.
+6. Publish only the needed website files after comparing against the current repository and preserving newer assets/changes.
+7. For a real playback test, temporarily enable Watch Live and mark the show live. This briefly makes the Watch Live button visible to the public; do this only when you are ready for a public test, or use a separate staging project for a fully private test.
+8. Sign in to `admin.html` over HTTPS, enter the broadcaster password, and tap **START BROADCAST**. Allow camera/microphone access and keep the page open and phone awake.
+9. Open `watch-live.html` on a second device, confirm video and audio (tap **Tap to enable live audio** if prompted), then end the broadcast and confirm the page returns offline.
+10. Turn the public Watch Live setting off after the test. Enable it again only when ready for a real show.
 
-- **Camera/mic prompt missing:** open admin on HTTPS, use a supported mobile browser, grant permissions and close other apps using the camera.
-- **WHIP HTTP error:** check `/live/whip`, username/password, Caddy hostname, MediaMTX logs and CORS origin.
-- **WHEP viewer won't connect:** check `/live/whep`, HTTPS certificate, `webrtcAllowOrigins`, public hostname in `webrtcAdditionalHosts`, and UDP 8189 firewall/forwarding.
-- **Works on same network but not mobile data:** likely public routing, firewall, CGNAT or ICE configuration.
-- **Video plays but no audio:** check phone microphone permission, browser track indicators and audio routing. Use the phone preview before going live.
-- **Meter absent:** check Supabase connection and whether `rock_meter_settings` contains the expected row; the overlay is hidden if no meter data can be read.
-- **Venue not updated:** save the venue in admin and wait up to 15 seconds or reload the public page.
+## Database features included in the migration draft
 
-## Important limitation
+- `live_show_settings` for venue/show state
+- `crowd_favourite_pins` and `get_crowd_favourites`
+- `song_requests.tracking_token` and `get_my_request_status`
+- `rock_meter_settings`
+- `encore_polls`, `encore_choices`, `encore_votes`, `get_active_encore_poll`, and `cast_encore_vote`
 
-The bundle supplies the website integration and example server configuration, not a deployed server. Before a real public gig, someone must provision the server, configure DNS/firewall, run the stack, set the correct website origin and credentials, and test from an outside network. Do not announce the stream as operational until that end-to-end test succeeds.
+The migration assumes `public.song_requests` already exists with `song_title`, `artist_name`, `status`, and `created_at`. Existing request rows are not deleted or rewritten. Existing rows without tracking tokens won't be discoverable through the new request-status button.
+
+## v5 offline fixes and local checks
+
+- The service-worker cache list now references the real `grifflist-logo.webp` asset, includes `taxi-services.html`, and uses a new cache version. The previous missing logo path could cause the entire precache operation to fail.
+- Cache lookup ignores query strings so versioned script/style URLs can use cached base assets when offline.
+- The Cloudflare Worker now rejects unknown roles and invalid/missing LiveKit configuration. Run `node tests/cloudflare-livekit-worker.test.mjs` with Node.js to test the Worker locally using dummy credentials.
+
+## Limitations and safety notes
+
+- No end-to-end stream test has been run against your actual LiveKit project from this package review. A syntax check is not a live-stream test.
+- Encore duplicate-vote prevention uses a browser-generated voter key and is a lightweight barrier, not strong identity verification.
+- The Rockometer is manually maintained in the admin page; tips do not automatically increase the amount.
+- Check the administrator UUID before running SQL. The same hardcoded UUID appears in the existing database setup and the new policies, but this does not independently prove it matches your account.
+- Do not expose a Supabase service-role key, LiveKit API secret, or broadcaster password in public files.

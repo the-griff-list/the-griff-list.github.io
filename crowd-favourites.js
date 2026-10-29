@@ -1,7 +1,7 @@
 /* Public, privacy-safe crowd-favourite display. Counts come from a Supabase RPC that never exposes requester details. */
 (()=>{
  const client=window.supabaseClient, list=document.querySelector('#crowd-favourites-list');
- async function loadLiveButton(){if(!client)return;try{const {data}=await client.from('live_show_settings').select('venue_name,show_enabled,is_live').eq('id',1).maybeSingle();const btn=document.querySelector('#home-watch-live-button'),copy=document.querySelector('#home-live-copy');if(btn&&data){const venue=(data.venue_name||'').trim();btn.textContent=data.is_live&&venue?`● WATCH LIVE AT ${venue.toUpperCase()}`:venue?`WATCH LIVE AT ${venue.toUpperCase()}`:'WATCH LIVE';if(copy&&data.is_live)copy.textContent=`The show is live from ${venue||'the venue'} - watch, request a song, and support the music.`;}}catch(e){}}
+ async function loadLiveButton(){if(!client)return;try{const {data}=await client.from('live_show_settings').select('venue_name,show_enabled,is_live').eq('id',1).maybeSingle();const btn=document.querySelector('#home-watch-live-button'),copy=document.querySelector('#home-live-copy');if(btn&&data){btn.hidden=!data.show_enabled;const venue=(data.venue_name||'').trim();btn.textContent=data.is_live&&venue?`● WATCH LIVE AT ${venue.toUpperCase()}`:venue?`WATCH LIVE AT ${venue.toUpperCase()}`:'WATCH LIVE';if(copy){copy.hidden=!data.show_enabled;if(data.show_enabled&&data.is_live)copy.textContent=`The show is live from ${venue||'the venue'} - watch, request a song, and support the music.`;}}}catch(e){}}
  loadLiveButton();window.setInterval(loadLiveButton,15000);
  if(!list)return;
  let range='month', category='all', cache=[];

@@ -1,25 +1,15 @@
-THE GRIFFLIST — WEBSITE UPDATE (OCTOBER 27)
+THE GRIFFLIST — SAFE GITHUB PAGES DEPLOYMENT (MERGED RELEASE v6)
 
-1. Extract this ZIP on your device.
-2. Open https://github.com/the-griff-list/the-grifflist
-3. Upload the files in this ZIP to the repository ROOT (not inside a new folder), replacing files with matching names.
-4. Commit the changes to the main branch.
-5. In the repository, open Settings → Pages and confirm the site publishes from main / (root).
-6. Wait for GitHub Pages to finish publishing, then open https://the-griff-list.github.io/the-grifflist/ and refresh.
+IMPORTANT: Do not upload this ZIP file into the repository. Extract it first.
 
-WHAT'S UPDATED
-- Encore admin accepts TWO or THREE options. Leave Song option 3 blank for a two-option vote.
-- The public encore vote and Rock Meter refresh every 8 seconds while the page is visible, and refresh immediately when you return to the tab.
-- Asset version strings are bumped to help browsers load the latest CSS and JavaScript instead of old cached files.
-- Navigation has a more Guitar Hero-inspired, metallic menu style and button animations.
-- The splash prompt is positioned over the splash artwork and uses a bold condensed fallback font with a pulsing animation. The exact proprietary in-game font file is not included.
-- Support links and buttons trigger the existing title-screen MP3 sound effect, subject to browser sound/autoplay settings.
-- The private request dashboard uses larger, stage-readable text.
+1. Download a backup of the current GitHub Pages repository before changing anything.
+2. Extract Grifflist-GitHub-LiveKit-Merged-v6.zip. Open the the-griff-list.github.io-main folder.
+3. Compare its contents against the live repository. This merge is based on the user-supplied repository ZIP dated 2026-10-29; preserve any newer changes made since that download.
+4. Upload the contents of the folder to the repository root (not the enclosing folder), replacing corresponding files only after review. Keep all baseline audio/artwork assets and repository configuration files.
+5. Commit changes to the branch used by GitHub Pages and wait for the deployment workflow to finish.
+6. Verify the homepage, song request, Check My Last Request, Encore voting, Rockometer, Crowd Favourites, taxi page, archive/admin login, and offline shell.
+7. Test LiveKit using a private/staging setup first. Confirm Cloudflare Worker environment variables and secrets before broadcasting.
 
-IMPORTANT
-- Keep supabase-config.js as included. Never put a Supabase secret/service_role key in this public repository.
-- The live features require the separate Supabase live-features SQL migration to have been run successfully.
-- The browser checks for new Rock Meter and encore data every 8 seconds; this is near-live polling, not instant database push.
-- If an item still appears old after deployment, open the site in a private/incognito tab or hard refresh, then verify that the commit completed and Pages deployed it.
+DATABASE SAFETY: Do not run the SQL migration against production until it has been tested on a safe copy of the current Supabase database.
 
-IMPORTANT ROCK METER IMAGE: You said you already uploaded Rockmeter_gh3(1).webp to the repository root. Keep it there with the exact filename. This website update references that local file.
+STREAMING NOTE: The current implementation uses LiveKit Cloud and the Cloudflare Worker. Caddyfile.example, docker-compose.streaming.yml.example, and mediamtx.yml.example are legacy examples only and are not used by the LiveKit site.

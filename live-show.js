@@ -1,249 +1,27 @@
-
-/* LiveKit viewer for The Grifflist. */
-(() => {
-  const client = window.supabaseClient;
-  const video = document.querySelector("#live-video");
-  const placeholder = document.querySelector("#live-placeholder");
-  const heading = document.querySelector("#live-venue-heading");
-  const desc = document.querySelector("#live-description");
-  const status = document.querySelector("#live-player-status");
-  const badge = document.querySelector("#live-badge");
-  const health = document.querySelector("#viewer-health");
-  const lowDataControl = document.querySelector("#low-data-mode");
-
-  const TOKEN_URL =
-    "https://odd-unit-91b9.grar0842.workers.dev/token";
-
-  let room = null;
-  let lowData = false;
-  let connecting = false;
-  let liveEnabled = false;
-  let LiveKit = null;
-
-  function setOffline(message) {
-    if (health) health.textContent = message || "Stream offline";
-    if (placeholder) placeholder.hidden = false;
-    if (status) {
-      status.textContent = message || "The show isn't live right now.";
-    }
-    if (badge) badge.hidden = true;
-    if (video) video.style.display = "";
-  }
-
-  async function stopViewer() {
-    if (room) {
-      room.disconnect();
-      room = null;
-    }
-    if (video) {
-      video.srcObject = null;
-      video.pause();
-    }
-    document.querySelectorAll("[data-livekit-audio]").forEach(el => el.remove());
-    connecting = false;
-  }
-
-  async function startViewer() {
-    if (!liveEnabled || connecting || room) return;
-    connecting = true;
-    setOffline("Connecting to the live show…");
-
-    try {
-      if (!LiveKit) {
-        LiveKit = await import(
-          "https://cdn.jsdelivr.net/npm/livekit-client/+esm"
-        );
-      }
-
-      const response = await fetch(TOKEN_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ role: "viewer" })
-      });
-
-      if (!response.ok) {
-        throw new Error("Viewer token request failed: " + response.status);
-      }
-
-      const data = await response.json();
-      const newRoom = new LiveKit.Room();
-      room = newRoom;
-
-      newRoom.on(LiveKit.RoomEvent.TrackSubscribed, (track) => {
-        if (track.kind === LiveKit.Track.Kind.Video) {
-          if (lowData) {
-            track.detach();
-            return;
-          }
-          track.attach(video);
-          video.style.display = "";
-          if (placeholder) placeholder.hidden = true;
-          if (badge) badge.hidden = false;
-          if (health) health.textContent = "Connected · live video and audio";
-          video.play().catch(() => {});
-        } else if (track.kind === LiveKit.Track.Kind.Audio) {
-          const audio = track.attach();
-          audio.dataset.livekitAudio = "true";
-          document.body.appendChild(audio);
-          if (placeholder) placeholder.hidden = true;
-          if (badge) badge.hidden = false;
-          if (health) {
-            health.textContent = lowData
-              ? "Connected · audio-only mode"
-              : "Connected · live audio";
-          }
-        }
-      });
-
-      newRoom.on(LiveKit.RoomEvent.TrackUnsubscribed, (track) => {
-        track.detach().forEach(el => {
-          if (el.dataset.livekitAudio) el.remove();
-        });
-      });
-
-      newRoom.on(LiveKit.RoomEvent.Disconnected, () => {
-        if (room === newRoom) {
-          room = null;
-          setOffline("Disconnected. Tap Reconnect or refresh the page.");
-        }
-      });
-
-      await newRoom.connect(data.serverUrl, data.token);
-
-      if (room !== newRoom) return;
-
-      for (const participant of newRoom.remoteParticipants.values()) {
-        for (const publication of participant.trackPublications.values()) {
-          if (
-            lowData &&
-            publication.kind === LiveKit.Track.Kind.Video
-          ) {
-            publication.setSubscribed(false);
-          } else {
-            publication.setSubscribed(true);
-          }
-        }
-      }
-
-      if (newRoom.remoteParticipants.size === 0) {
-        setOffline("Connected. Waiting for a live performance…");
-      } else {
-        if (health) health.textContent = "Connected. Waiting for media…";
-      }
-    } catch (error) {
-      console.error("Live playback failed:", error);
-      if (room) {
-        room.disconnect();
-        room = null;
-      }
-      setOffline("Could not connect. The stream may be offline. Please retry.");
-    } finally {
-      connecting = false;
-    }
-  }
-
-  async function refreshSettings() {
-    if (!client) {
-      setOffline("The live page needs the Supabase configuration.");
-      return;
-    }
-
-    try {
-      const { data, error } = await client
-        .from("live_show_settings")
-        .select("venue_name,show_enabled,is_live")
-        .eq("id", 1)
-        .maybeSingle();
-
-      if (error) throw error;
-
-      const venue = data?.venue_name?.trim() || "Live";
-      if (heading) heading.textContent = venue;
-      if (desc) {
-        desc.textContent = data?.is_live
-          ? `You're watching live from ${venue}. Request a song or support the show below.`
-          : `Watch the show from ${venue}, request a song, and support the music.`;
-      }
-
-      liveEnabled = !!(data && data.show_enabled && data.is_live);
-
-      if (!liveEnabled) {
-        await stopViewer();
-        setOffline(
-          data?.show_enabled
-            ? "The show is not marked live right now."
-            : "The next live show will appear here."
-        );
-        return;
-      }
-
-      if (!room && !connecting) await startViewer();
-    } catch (error) {
-      console.error("Live settings failed:", error);
-      await stopViewer();
-      setOffline("Watch Live settings could not be loaded.");
-    }
-  }
-
-  const bars = document.querySelector("#live-rockometer-bars");
-  if (bars) {
-    bars.replaceChildren();
-    for (let i = 0; i < 10; i++) {
-      bars.appendChild(document.createElement("span"));
-    }
-  }
-
-  async function refreshMeter() {
-    if (!client || !bars) return;
-
-    try {
-      const { data, error } = await client
-        .from("rock_meter_settings")
-        .select("goal_amount,raised_amount")
-        .eq("id", 1)
-        .maybeSingle();
-
-      if (error || !data) return;
-
-      const goal = Math.max(1, Number(data.goal_amount) || 200);
-      const raised = Math.max(0, Number(data.raised_amount) || 0);
-      const pct = Math.min(100, Math.round(raised / goal * 100));
-
-      document.querySelector("#live-rockometer").hidden = false;
-      document.querySelector("#live-rockometer-percent").textContent = pct + "%";
-      document.querySelector("#live-rockometer-raised").textContent =
-        `$${raised.toFixed(0)} / $${goal.toFixed(0)}`;
-
-      [...bars.children].forEach((bar, i) => {
-        bar.classList.toggle("on", i < Math.round(pct / 10));
-      });
-    } catch (error) {
-      console.error("Rockometer refresh failed:", error);
-    }
-  }
-
-  lowDataControl?.addEventListener("change", async event => {
-    lowData = event.target.checked;
-    await stopViewer();
-    if (liveEnabled) await startViewer();
-  });
-
-  const retryButton = document.createElement("button");
-  retryButton.type = "button";
-  retryButton.textContent = "Reconnect";
-  retryButton.className = "button button-quiet";
-  retryButton.style.marginTop = "12px";
-  retryButton.addEventListener("click", async () => {
-    await stopViewer();
-    await refreshSettings();
-  });
-
-  const shell = document.querySelector(".live-player-shell");
-  if (shell) shell.appendChild(retryButton);
-
-  refreshSettings();
-  refreshMeter();
-  window.setInterval(refreshSettings, 15000);
-  window.setInterval(refreshMeter, 20000);
-  window.addEventListener("pagehide", stopViewer);
+/* LiveKit viewer. Viewer tokens are issued by the Cloudflare Worker; no API secret belongs in this file. */
+(()=>{
+ const client=window.supabaseClient, video=document.querySelector('#live-video'), placeholder=document.querySelector('#live-placeholder');
+ const heading=document.querySelector('#live-venue-heading'), desc=document.querySelector('#live-description'), status=document.querySelector('#live-player-status'), badge=document.querySelector('#live-badge'), audioButton=document.querySelector('#enable-live-audio');
+ const TOKEN_ENDPOINT='https://odd-unit-91b9.grar0842.workers.dev/token';
+ let room=null, lowData=false, activeKey='';
+ function offline(message){const h=document.querySelector('#viewer-health');if(h)h.textContent=message||'Stream offline';if(placeholder){placeholder.hidden=false;status.textContent=message||"The show isn't live right now.";}if(badge)badge.hidden=true;if(audioButton)audioButton.hidden=true;}
+ function cleanup(){if(room){room.disconnect();room=null;}document.querySelectorAll('[data-livekit-audio="true"]').forEach(el=>el.remove());if(video){video.pause();video.srcObject=null;video.removeAttribute('src');}activeKey='';if(audioButton)audioButton.hidden=true;}
+ async function connect(){if(!client){offline('Live page needs its Supabase configuration.');return;}try{
+  const {data,error}=await client.from('live_show_settings').select('venue_name,show_enabled,is_live').eq('id',1).maybeSingle();if(error)throw error;
+  const venue=data?.venue_name?.trim()||'Live';heading.textContent=venue;desc.textContent=data?.is_live?`You're watching live from ${venue}. Request a song or support the show below.`:`Watch the show from ${venue}, request a song, and support the music.`;
+  if(!data||!data.show_enabled||!data.is_live){cleanup();offline(data?.show_enabled?'The show is not marked live right now.':'The next live show will appear here.');return;}
+  if(room&&room.state==='connected')return;
+  const resp=await fetch(TOKEN_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({role:'viewer'})});if(!resp.ok)throw new Error('Could not obtain a viewer token ('+resp.status+').');const payload=await resp.json();if(!payload.token||!payload.serverUrl)throw new Error('The token service response is missing token or serverUrl.');
+  const LK=window.LivekitClient;if(!LK)throw new Error('LiveKit browser SDK did not load.');
+  cleanup();room=new LK.Room({adaptiveStream:true,dynacast:true});activeKey='live';
+  room.on(LK.RoomEvent.TrackSubscribed,(track,publication)=>{if(track.kind==='video'){if(lowData){track.detach();publication?.setSubscribed(false);return;}track.attach(video);video.style.display='';video.play().catch(()=>{});}else if(track.kind==='audio'){const el=track.attach();el.autoplay=true;el.dataset.livekitAudio='true';document.body.appendChild(el);el.play().then(()=>{if(audioButton)audioButton.hidden=true;}).catch(()=>{if(audioButton)audioButton.hidden=false;});}});
+  room.on(LK.RoomEvent.TrackUnsubscribed,(track)=>{track.detach();});
+  room.on(LK.RoomEvent.Disconnected,()=>{offline('The stream disconnected. Reconnecting shortly…');});
+  await room.connect(payload.serverUrl,payload.token);try{await room.startAudio();if(audioButton)audioButton.hidden=true;}catch(e){if(audioButton)audioButton.hidden=false;}placeholder.hidden=true;badge.hidden=false;const h=document.querySelector('#viewer-health');if(h)h.textContent=lowData?'Connected · audio-first mode':'Connected · live video and audio';
+ }catch(e){console.error('LiveKit playback failed',e);cleanup();offline(e.message||'Could not connect to the live show.');}}
+ audioButton?.addEventListener('click',async()=>{if(!room)return;audioButton.disabled=true;try{await room.startAudio();for(const el of document.querySelectorAll('[data-livekit-audio="true"]'))await el.play();audioButton.hidden=true;const h=document.querySelector('#viewer-health');if(h)h.textContent=lowData?'Connected · audio enabled · audio-first mode':'Connected · live video and audio';}catch(e){const h=document.querySelector('#viewer-health');if(h)h.textContent='Tap again to enable audio, or check your device volume.';}finally{audioButton.disabled=false;}});
+ const bars=document.querySelector('#live-rockometer-bars');if(bars){bars.replaceChildren();for(let i=0;i<10;i++)bars.append(document.createElement('span'));}
+ async function refreshMeter(){if(!client)return;try{const {data,error}=await client.from('rock_meter_settings').select('goal_amount,raised_amount').eq('id',1).maybeSingle();if(error||!data)return;const goal=Math.max(1,Number(data.goal_amount)||200),raised=Math.max(0,Number(data.raised_amount)||0),pct=Math.min(100,Math.round(raised/goal*100));document.querySelector('#live-rockometer').hidden=false;document.querySelector('#live-rockometer-percent').textContent=pct+'%';document.querySelector('#live-rockometer-raised').textContent=`$${raised.toFixed(0)} / $${goal.toFixed(0)}`;[...bars.children].forEach((b,i)=>b.classList.toggle('on',i<Math.round(pct/10)));}catch(e){}}
+ document.querySelector('#low-data-mode')?.addEventListener('change',e=>{lowData=e.target.checked;if(video)video.style.display=lowData?'none':'';if(room){room.remoteParticipants.forEach(participant=>participant.trackPublications.forEach(publication=>{if(publication.kind==='video')publication.setSubscribed(!lowData);}));}const h=document.querySelector('#viewer-health');if(h&&room?.state==='connected')h.textContent=lowData?'Connected · audio-only mode':'Connected · live video and audio';});
+ connect();refreshMeter();window.setInterval(()=>{if(!document.hidden&&(!room||room.state!=='connected'))connect();},15000);window.setInterval(()=>{if(!document.hidden)refreshMeter();},20000);window.addEventListener('pagehide',cleanup);
 })();

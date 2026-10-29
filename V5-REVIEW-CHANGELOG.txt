@@ -1,0 +1,24 @@
+THE GRIFFLIST — LIVEKIT REVIEW PACKAGE v5
+
+Additional corrections after v4:
+- Hardened the Cloudflare Worker configuration check: an empty API secret or non-wss:// LiveKit URL now fails closed with HTTP 503.
+- Cleared the broadcaster password input after a broadcast-start attempt so it is not left sitting in the admin form.
+- Rejected unknown token roles instead of silently treating them as viewer requests.
+- Fixed a stale, nonexistent logo filename in the service-worker precache list. That missing file caused the whole addAll precache operation to fail.
+- Added taxi-services.html to the offline shell cache.
+- Bumped the service-worker cache version and made cache lookups ignore query strings so cache-busting URLs can reuse the cached base assets.
+
+Local validation performed:
+- ZIP archive integrity check.
+- JavaScript syntax checks for all bundled JavaScript files.
+- HTML local href/src reference checks.
+- Service-worker precache path check.
+- Cloudflare Worker tests with dummy credentials: CORS allow/deny, route and method handling, malformed JSON, invalid role, missing secret, invalid URL, viewer JWT signature and claims, publisher password rejection, publisher JWT signature and claims, expiry windows, and no-store response headers.
+- SQL copies compared byte-for-byte.
+
+Not validated in this environment:
+- The GitHub repository could not be fetched from this environment; no live repository edits were made.
+- The SQL migration has not been executed against a disposable or production Supabase database.
+- No real LiveKit camera/microphone broadcast has been tested against the deployed Cloudflare Worker and LiveKit Cloud project.
+
+Do not upload the package over the live repository wholesale or execute the SQL until the final live-repository comparison and real-service tests are completed.

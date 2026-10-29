@@ -350,7 +350,7 @@ if(songReveal&&closeSongList){
 }
 renderDecades();renderArtists();renderSongs();
 
-// Rockometer and encore poll use the existing Supabase project. Apply supabase-live-features.sql to enable live data.
+// Rockometer and encore poll use the existing Supabase project. Apply grifflist-combined-reviewed-migration.sql to enable the database features.
 const rockMeterGoalLabel=document.querySelector("#rock-meter-goal-label");
 const rockMeterRaised=document.querySelector("#rock-meter-raised");
 const rockMeterGoal=document.querySelector("#rock-meter-goal");
@@ -370,7 +370,7 @@ async function loadRockMeter(){
  try{
   const {data,error}=await client.from("rock_meter_settings").select("goal_label,goal_amount,raised_amount").eq("id",1).maybeSingle();
   if(error)throw error;
-  if(!data)throw new Error("No Rockometer settings found. Run the live-features SQL migration in Supabase.");
+  if(!data)throw new Error("No Rockometer settings found. Apply grifflist-combined-reviewed-migration.sql in Supabase.");
   const goal=Math.max(1,Number(data.goal_amount)||200),raised=Math.max(0,Number(data.raised_amount)||0),pct=Math.min(100,Math.round(raised/goal*100));
   // Six supplied meter illustrations: nearest 20% increment of the configured goal.
   const meterStep=Math.min(5,Math.round(pct/20));
@@ -391,9 +391,9 @@ async function loadEncorePoll(){
  encoreTitle.textContent=poll.title||"VOTE FOR THE ENCORE";encoreStatus.textContent="";encoreOptions.replaceChildren();
  const choices=Array.isArray(poll.choices)?poll.choices:[];const total=choices.reduce((sum,c)=>sum+(Number(c.votes)||0),0);let voterKey="";try{voterKey=localStorage.getItem("grifflistEncoreVoter")||"";if(!voterKey){voterKey="v-"+crypto.randomUUID();localStorage.setItem("grifflistEncoreVoter",voterKey);}}catch(e){voterKey="v-"+Math.random().toString(36).slice(2);}
  let alreadyVoted=false;try{alreadyVoted=localStorage.getItem("grifflistEncoreVoted:"+poll.poll_id)==="yes";}catch(e){}
- choices.forEach(choice=>{const button=document.createElement("button");button.type="button";button.className="encore-option";button.disabled=alreadyVoted;const label=document.createElement("strong");label.textContent=choice.song_title+(choice.artist_name?" - "+choice.artist_name:"");const count=document.createElement("span");count.textContent=`${Number(choice.votes)||0} vote${Number(choice.votes)===1?"":"s"}`;button.append(label,count);button.addEventListener("click",async()=>{button.disabled=true;encoreStatus.textContent="Submitting your vote…";try{const result=await client.rpc("cast_encore_vote",{p_poll_id:poll.poll_id,p_choice_id:choice.choice_id,p_voter_key:voterKey});if(result.error)throw result.error;try{localStorage.setItem("grifflistEncoreVoted:"+poll.poll_id,"yes");}catch(e){}encoreStatus.textContent="Vote counted! Thanks for helping choose the encore.";playSfx("you-rock-sfx");await loadEncorePoll();}catch(e){button.disabled=false;encoreStatus.textContent=e.message||"Could not submit your vote. Please try again.";}});encoreOptions.append(button);});
+ choices.forEach(choice=>{const button=document.createElement("button");button.type="button";button.className="encore-option";button.disabled=alreadyVoted;const label=document.createElement("strong");label.textContent=choice.song_title+(choice.artist_name?" - "+choice.artist_name:"");const count=document.createElement("span");count.textContent=`${Number(choice.votes)||0} vote${Number(choice.votes)===1?"":"s"}`;button.append(label,count);button.addEventListener("click",async()=>{button.disabled=true;encoreStatus.textContent="Submitting your vote…";try{const result=await client.rpc("cast_encore_vote",{p_poll_id:poll.poll_id,p_choice_id:choice.choice_id,p_voter_key:voterKey});if(result.error)throw result.error;if(result.data===false)throw new Error("This browser has already voted in this poll, or the poll is no longer active.");try{localStorage.setItem("grifflistEncoreVoted:"+poll.poll_id,"yes");}catch(e){}encoreStatus.textContent="Vote counted! Thanks for helping choose the encore.";playSfx("you-rock-sfx");await loadEncorePoll();}catch(e){button.disabled=false;encoreStatus.textContent=e.message||"Could not submit your vote. Please try again.";}});encoreOptions.append(button);});
  if(alreadyVoted)encoreStatus.textContent=`Your vote is in. ${total} vote${total===1?"":"s"} so far.`;
- }catch(e){encoreStatus.textContent="Encore voting will be available after the live-features database setup.";console.info("Encore poll needs the Supabase live-features migration.",e.message);}
+ }catch(e){encoreStatus.textContent="Encore voting will be available after the database setup is complete.";console.info("Encore poll needs the combined Supabase migration.",e.message);}
 }
 loadRockMeter();loadEncorePoll();window.setInterval(()=>{if(!document.hidden){loadRockMeter();loadEncorePoll();}},8000);document.addEventListener("visibilitychange",()=>{if(!document.hidden){loadRockMeter();loadEncorePoll();}});
 

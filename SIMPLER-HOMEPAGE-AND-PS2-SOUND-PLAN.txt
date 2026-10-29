@@ -17,5 +17,5 @@ Secret Menu audio
 Rock Wall and Supabase
 - The Rock Wall displays only real confirmed tip records from public.confirmed_tips.
 - No fake names or donation amounts are generated.
-- Crowd Favourites requires the get_crowd_favourites() function and crowd_favourite_pins table in grifflist-next-update.sql.
+- Crowd Favourites requires the get_crowd_favourites() function and crowd_favourite_pins table in grifflist-combined-reviewed-migration.sql.
 - Run SQL migrations manually in Supabase if they have not already been applied. The ZIP cannot apply SQL to the live database itself.

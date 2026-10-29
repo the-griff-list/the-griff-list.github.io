@@ -1,88 +1,34 @@
-THE GRIFFLIST — WATCH LIVE + CROWD FAVOURITES UPDATE
+THE GRIFFLIST — LIVEKIT + CROWD FAVOURITES UPDATE
 
-WHAT THIS UPDATE ADDS
-- Renames the public section and toolbar item to “Rockometer”. The meter is shown as a compact, semi-transparent overlay on top of the live video.
-- Renames “Make a Request” to “Request a Song”.
-- Adds a Watch Live promo button on the homepage and a dedicated watch-live.html page.
-- Adds Google Pay / Apple Pay (via the existing Ko-fi link), e-Transfer instructions via the homepage, and the existing PayPal payment link on the live page.
-- Adds Crowd Favourites with this-month/all-time views, request and played counters, a category filter, one-tap request, share link, and admin pinning.
-- Adds admin settings for venue name, public WHEP playback URL, show visibility, and live status.
-- Adds browser-based phone broadcast controls using WHIP, plus a muted camera preview.
-- Removes title-screen audio autoplay on page load. The title sound starts only after the visitor presses the title screen, then transitions to menu music.
+This package version uses LiveKit Cloud and the Cloudflare Worker token endpoint. It does not require MediaMTX, WHIP, WHEP, Docker, Caddy, router port forwarding, or a self-hosted media server.
 
-IMPORTANT: THE STREAMING SOFTWARE IS FREE; THE INTERNET CONNECTION IS NOT MAGIC
-This package includes a self-hosted MediaMTX + Caddy example. It does not depend on YouTube Live or another hosted streaming platform. The server must run on a computer you control, stay powered on during the show, and be reachable from the internet. Your home upload speed, router, firewall, DNS, HTTPS certificate, and mobile signal affect reliability. If you do not already have a suitable always-on computer and internet connection, a fully public stream may not be reliable or truly zero-cost.
+IMPORTANT: REVIEW BEFORE DEPLOYING
+- Back up the current GitHub Pages repository.
+- Compare files before copying them; preserve any newer visual/design changes in the current site.
+- Review grifflist-combined-reviewed-migration.sql before running it. It has not been run against the live database.
+- Confirm the hardcoded admin UUID is your actual Supabase Auth user ID.
 
-STEP 1 — APPLY THE DATABASE MIGRATION
-1. Open the Supabase project used by this website.
-2. Open SQL Editor and create a new query.
-3. Paste and run grifflist-next-update.sql.
-4. If the editor reports a policy/permission error, stop and resolve it before publishing. Do not expose a Supabase service_role key in website files.
-5. This migration uses the same admin auth UUID already present in the existing request-archive migration. Confirm that it is the correct admin account before running it.
+INCLUDED FEATURES
+- LiveKit public Watch Live viewer and phone camera/microphone broadcaster.
+- Cloudflare Worker token service source; API credentials stay in Worker secrets.
+- Rockometer and Encore Vote tables/functions in the combined migration.
+- Crowd Favourites, pinned songs, and request-status tracking.
 
-STEP 2 — PUBLISH THE WEBSITE FILES
-1. Back up/download the current GitHub Pages repository first.
-2. Extract this ZIP and upload the contents of the grifflist-update folder to the repository root, preserving all existing audio and artwork files.
-3. Commit and push to the branch used by GitHub Pages.
-4. Test the homepage, request form, payment links, archive, admin login, and Rockometer before enabling Watch Live.
+CLOUDFLARE WORKER VARIABLES/SECRETS
+- LIVEKIT_API_KEY (secret)
+- LIVEKIT_API_SECRET (secret)
+- LIVEKIT_URL = wss://the-grifflist-watch-live-2h1716g8.livekit.cloud
+- BROADCASTER_PASSWORD (secret; choose a unique strong password)
+- ALLOWED_ORIGIN = https://the-griff-list.github.io
 
-STEP 3 — SET UP A FREE SELF-HOSTED STREAM SERVER
-1. Use a computer that can remain on during the show. Install Docker Engine / Docker Desktop.
-2. Copy mediamtx.yml.example to mediamtx.yml, docker-compose.streaming.yml.example to docker-compose.yml, and Caddyfile.example to Caddyfile.
-3. Choose a DNS hostname for your server (a free dynamic-DNS provider may work). Point it at your public IP. Replace stream.example.com in both files with that hostname.
-4. Replace REPLACE_WITH_A_LONG_RANDOM_PASSWORD with a long unique password. Do not share it or put it in the public website.
-5. Replace https://YOUR-USERNAME.github.io with the exact origin of your GitHub Pages site in mediamtx.yml. If you use a custom domain, use that origin instead.
-6. Configure your router/firewall to forward TCP 80 and 443 to the server for Caddy and UDP 8189 to the server for WebRTC media. Do not expose the raw MediaMTX HTTP port to the public internet.
-7. From the folder containing the files, run: docker compose up -d
-8. Check logs with: docker compose logs -f
-9. Verify HTTPS works at https://YOUR-STREAM-HOSTNAME before configuring the website. Use a real public hostname and valid TLS; camera/microphone access requires a secure context.
-10. If your internet provider uses carrier-grade NAT or blocks inbound connections, direct hosting from home may not work without a tunnel or a different network. Some tunnels/proxies have usage limits and may not relay UDP media reliably.
+Worker endpoint referenced in the website:
+https://odd-unit-91b9.grar0842.workers.dev/token
 
-STEP 4 — CONFIGURE THE ADMIN PAGE
-1. Sign in to admin.html.
-2. Open Watch Live Settings.
-3. Venue name: enter the bar name (for example, Hunter’s Ale House).
-4. Public WHEP URL: https://YOUR-STREAM-HOSTNAME/live/whep
-5. Phone broadcast WHIP URL: https://YOUR-STREAM-HOSTNAME/live/whip
-6. Broadcast username: publisher
-7. Broadcast password: the password you set in mediamtx.yml. It is saved only in local storage on this admin browser, not in the public database.
-8. Enable “Show Watch Live button publicly”, then save.
-9. On the phone, open admin.html in Chrome over HTTPS, allow camera/microphone access, and tap START BROADCAST. Leave the tab open and keep the phone awake while streaming. Open the public watch-live.html page on a second device to test playback.
-10. End the stream with END BROADCAST. Confirm the public status returns to offline.
+SAFE TEST ORDER
+1. Keep the public Live toggle off.
+2. Review and test the migration away from production first, if possible.
+3. Deploy the Worker source and configure secrets/variables in Cloudflare.
+4. Publish only the reviewed website files after comparing with the live repository.
+5. Test broadcaster and viewer on separate devices before enabling public Watch Live.
 
-STEP 5 — CROWD FAVOURITES
-- The list counts requests in song_requests. “This Month” filters to the current calendar month; “All-Time” uses the available request history in that table.
-- “Played” counts use requests whose status is Played. This is a proxy for played-live history, not a complete setlist log. For accurate played-live history independent of requests, a future update should add a dedicated setlist log.
-- To feature a song, use the Crowd Favourites form in the admin page. Pins are stored in Supabase and visible on the public homepage.
-- The “Request” button fills the song and artist into the existing request form.
-- Share uses the browser share sheet where supported, otherwise copies the link.
-- Category filters apply to pinned songs; ordinary request rows are not automatically assigned genre labels. Use pinned categories for reliable category filtering until a repertoire-to-category mapping is added.
-
-PAYMENTS
-- The live page reuses the existing Ko-fi and PayPal links and directs e-Transfer users to the existing homepage instructions. Google Pay / Apple Pay availability is determined by Ko-fi checkout, the viewer's device, and their browser. This website does not directly process or verify payments.
-- The Rockometer amount still needs to be updated through the existing admin controls; tips do not automatically increment the meter unless a verified payment webhook is configured.
-
-TROUBLESHOOTING
-- “Apply migration” message: run grifflist-next-update.sql in the correct Supabase project.
-- Camera unavailable: use HTTPS, allow permissions, close other apps using the camera, and test in Chrome.
-- WHIP/WHEP fails: check the URL path, server logs, password, CORS origin, HTTPS, firewall, UDP 8189, and public host setting.
-- Video connects but no media: check WebRTC UDP routing and the `webrtcAdditionalHosts` hostname/public IP.
-- Phone tab stops broadcasting: prevent screen lock, keep the tab foregrounded, and use a stable power/network connection. Mobile browsers may suspend background tabs.
-- If public live settings remain stale, wait up to 15 seconds or reload the live page.
-
-SECURITY NOTES
-- Keep the Supabase service_role key private. Only the existing publishable/anon key belongs in the website.
-- Keep the WHIP publisher password private. The public WHEP endpoint is read-only by design; only the publisher account should have publish permission.
-- The provided sample CORS origin is a placeholder. Replace it with your actual GitHub Pages/custom-domain origin.
-- This is a starting setup and should be tested with a private stream before a public gig. Free software does not guarantee zero setup effort or a reliable public internet route.
-
-
-VISITOR-FRIENDLY ADDITIONS
-- One-tap requests: visitors can opt to remember their name on that device; selecting a catalog song submits immediately only when the opt-in is enabled and a saved name exists. Otherwise it fills the form without sending.
-- Request status: the migration adds a random tracking token and a privacy-safe RPC. A visitor can check only the latest request token saved in their own browser. Apply the updated grifflist-next-update.sql before using it. Existing requests without tokens are unaffected.
-- Low-data mode: on the Watch Live page, select Audio only before connecting to receive no video track. This requires a WebRTC/WHEP server that accepts audio-only sessions.
-- Stream health: admin status reports the WebRTC connection and whether camera/microphone tracks are live. It is a basic browser-side health check, not a full network bitrate monitor.
-- Automatic show reset: each Start Broadcast records a new session_started_at timestamp; ending a broadcast marks the show offline. All-time and monthly crowd favourites remain intact.
-- Shareable song cards: use SHARE on a favourite. Compatible mobile browsers can share the generated image; other browsers download a PNG and provide a share link.
-- Sounds: the added Watch Live, admin, and archive pages reuse the same MP3 sound effects as the homepage. Sound playback is browser-permission dependent and may be muted by in-app browsers.
-- Privacy: watching and browsing favourites do not require an account. Remember-name storage is opt-in and remains on that device; visitors can uncheck it to clear the saved name.
+See WATCH-LIVE-DEPLOYMENT-GUIDE.md for details. No database SQL has been run by this package.

@@ -1,0 +1,15 @@
+THE GRIFFLIST — START HERE (MERGED RELEASE v6)
+
+This package is merged against the user-provided current GitHub ZIP from 2026-10-29. It preserves the baseline files and assets while applying the reviewed LiveKit changes.
+
+1. Read WATCH-LIVE-DEPLOYMENT-GUIDE.md and GITHUB-BASELINE-MERGE-REPORT-v6.md.
+2. Do not run SQL until the migration has been tested against a safe copy of the database. The admin UUID and current table/function signatures were checked from the schema output you supplied, but production execution has not been tested.
+3. Back up the GitHub repository. Upload the CONTENTS of this folder to the repository root only after reviewing the diff; do not upload this ZIP itself. Preserve any files added after the supplied baseline.
+4. Configure Cloudflare Worker secrets privately; never commit LiveKit API secrets or the broadcaster password.
+5. Run local Worker tests with Node.js: node tests/cloudflare-livekit-worker.test.mjs (uses dummy test credentials only).
+6. Test with a private broadcast and a second device before enabling Watch Live publicly.
+
+Authoritative SQL migration: grifflist-combined-reviewed-migration.sql (identical to grifflist-next-update.sql in this package). Do not run either until the final database review/staging test is complete.
+Worker source: cloudflare-livekit-worker.js
+Public viewer: watch-live.html + live-show.js
+Admin broadcaster: admin.html + admin-features.js
