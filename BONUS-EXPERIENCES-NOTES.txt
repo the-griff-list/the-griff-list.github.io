@@ -11,3 +11,7 @@ THE GRIFFLIST - SECRET MENU AND PUBLIC FEATURES
 - Seasonal holiday mode is intentionally deferred until the final design review.
 - PWA offline cache contains static site assets. Online requests, tip updates, and live video still require connectivity.
 - Supabase migrations are included but must be run manually in the Supabase SQL Editor if not already applied.
+
+
+ARCADE PICK ART UPDATE
+- Guitar Pick Panic now uses the supplied Treynor 1.2mm purple pick, enhanced as an isolated glossy game asset at arcade-pick-treynor.png.

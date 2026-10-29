@@ -1515,10 +1515,10 @@ body.theme-day .footer-logo-link img {filter:brightness(1.07) contrast(1.08) dro
 .arcade-pick {display:grid;place-items:center}
 .arcade-pick-art {
   display:block;
-  width:31px;height:40px;
-  background:linear-gradient(145deg,#ffe8a2,#eaa83e 58%,#a95b25);
-  clip-path:polygon(50% 0,91% 22%,83% 65%,50% 100%,17% 65%,9% 22%);
-  border:1px solid #fff0b4;
+  width:35px;height:43px;
+  object-fit:contain;
+  user-select:none;
+  pointer-events:none;
   filter:drop-shadow(0 0 5px rgba(255,202,89,.45));
 }
 .arcade-leaderboard {margin-top:20px;padding:14px;border:1px solid #76503b;border-radius:12px;background:rgba(0,0,0,.18)}
@@ -1526,7 +1526,7 @@ body.theme-day .footer-logo-link img {filter:brightness(1.07) contrast(1.08) dro
 .arcade-leaderboard ol {margin:0;padding-left:24px;display:grid;gap:7px}
 .arcade-leaderboard li {display:flex;justify-content:space-between;gap:16px;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.08)}
 .arcade-leaderboard li b {font-variant-numeric:tabular-nums}
-body.theme-eighties .arcade-pick-art {background:linear-gradient(145deg,#45f4f0,#ff4fb7 52%,#ff9b34);filter:drop-shadow(0 0 8px rgba(69,244,240,.55))}
+body.theme-eighties .arcade-pick-art {filter:hue-rotate(16deg) saturate(1.22) drop-shadow(0 0 8px rgba(69,244,240,.55))}
 body.theme-eighties .arcade-leaderboard {background:linear-gradient(135deg,#241036,#102b38);border-color:#45f4f0}
 body.theme-eighties .arcade-leaderboard h4 {color:#45f4f0}
 body.theme-eighties .arcade-leaderboard li b {color:#ff6fc9}
