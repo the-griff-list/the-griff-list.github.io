@@ -195,11 +195,11 @@
         const client=window.supabaseClient;if(!client)return;
         let playerName=window.localStorage?.getItem('grifflistArcadeName')||'';
         if(finalScore<=0)return;
-        status.textContent='YOU WON A HIGH SCORE!';
+        status.textContent='YOU WON THE HIGH SCORE!';
         const blockedNamePatterns=[/\bmike\s*hunt\b/,/\bgabe\s*owners?\b/,/\brock\s*star\b/,/\basshole\b/,/\barsehole\b/,/\bbastard\b/,/\bbitch\b/,/\bblowjob\b/,/\bbullshit\b/,/\bcock\b/,/\bcocksucker\b/,/\bcunt\b/,/\bdickhead\b/,/\bdick\b/,/\bdildo\b/,/\bfag\b/,/\bfaggot\b/,/\bfuck\w*\b/,/\bmotherfucker\b/,/\bnigger\b/,/\bnonce\b/,/\bpiss\b/,/\bporn\b/,/\bprick\b/,/\brape\b/,/\bretard\b/,/\bshag\b/,/\bshit\w*\b/,/\bslut\b/,/\bspunk\b/,/\btwat\b/,/\bwanker\b/,/\bwhore\b/];
         const normalizeName=value=>String(value||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[0@]/g,m=>m==='0'?'o':'a').replace(/[1!]/g,'i').replace(/[$]/g,'s').replace(/[^a-z]+/g,' ');
         const validName=value=>{const clean=String(value||'').trim().replace(/[<>]/g,'').replace(/\s+/g,' ').slice(0,24);const normalized=normalizeName(clean);return clean.length>=2&&/[a-zA-ZÀ-ÿ]/.test(clean)&&!blockedNamePatterns.some(rx=>rx.test(normalized))&&!/\b(mikehunt|gabeowners?)\b/.test(normalized.replace(/\s/g,''));};
-        if(!playerName){playerName=window.prompt('YOU WON A HIGH SCORE!\nEnter your name for the leaderboard.','')||'';}
+        if(!playerName){playerName=window.prompt('YOU WON THE HIGH SCORE!\nEnter your name for the leaderboard.','')||'';}
         playerName=String(playerName).trim().replace(/[<>]/g,'').replace(/\s+/g,' ').slice(0,24);
         if(!validName(playerName)){playerName=window.prompt('Please enter a respectful name for the leaderboard (up to 24 characters).','')||'';playerName=String(playerName).trim().replace(/[<>]/g,'').replace(/\s+/g,' ').slice(0,24);}
         if(!validName(playerName)){status.textContent='Name not accepted. Your score was not submitted.';return;}
@@ -212,7 +212,7 @@
       };
       content.scrollIntoView({behavior:reducedMotion()?'auto':'smooth',block:'start'});
       const pick=$('.arcade-pick',board);pick.addEventListener('click',()=>{if(!timer)return;score++;scoreEl.textContent=score;pick.style.left=(5+Math.random()*75)+'%';pick.style.top=(5+Math.random()*70)+'%';playSecretEffect('pickup');});
-      start.addEventListener('click',()=>{if(timer)clearInterval(timer);score=0;time=15;scoreEl.textContent=score;timeEl.textContent=time;const count=$('#arcade-countdown',board);start.disabled=true;let n=3;if(count){count.hidden=false;count.textContent='3';}status.textContent='Get ready!';const countTimer=setInterval(()=>{n--;if(count)count.textContent=n>0?String(n):'GO!';if(n<=0){clearInterval(countTimer);if(count){setTimeout(()=>{count.hidden=true;},450);}start.disabled=false;status.textContent='Rock on!';timer=setInterval(()=>{time--;timeEl.textContent=time;if(time<=0){clearInterval(timer);timer=null;status.textContent=`FINAL SCORE: ${score}.`;try{const previous=Number(localStorage.getItem('grifflistArcadeBest')||0);if(score>previous){localStorage.setItem('grifflistArcadeBest',score);status.textContent='YOU WON A HIGH SCORE!';playRandomHighScore();}else{status.textContent+=` Personal best: ${previous}.`;}}catch(_){}saveLeaderboardScore(score);}},1000);}},1000);});
+      start.addEventListener('click',()=>{if(timer)clearInterval(timer);score=0;time=15;scoreEl.textContent=score;timeEl.textContent=time;const count=$('#arcade-countdown',board);start.disabled=true;let n=3;if(count){count.hidden=false;count.textContent='3';}status.textContent='Get ready!';const countTimer=setInterval(()=>{n--;if(count)count.textContent=n>0?String(n):'GO!';if(n<=0){clearInterval(countTimer);if(count){setTimeout(()=>{count.hidden=true;},450);}start.disabled=false;status.textContent='Rock on!';timer=setInterval(()=>{time--;timeEl.textContent=time;if(time<=0){clearInterval(timer);timer=null;status.textContent=`FINAL SCORE: ${score}.`;try{const previous=Number(localStorage.getItem('grifflistArcadeBest')||0);if(score>previous){localStorage.setItem('grifflistArcadeBest',score);status.textContent='YOU WON THE HIGH SCORE!';playRandomHighScore();}else{status.textContent+=` Personal best: ${previous}.`;}}catch(_){}saveLeaderboardScore(score);}},1000);}},1000);});
     });
   }
 

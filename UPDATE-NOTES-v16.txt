@@ -1,0 +1,9 @@
+THE GRIFFLIST WEBSITE UPDATE v16
+
+Sober Drive taxi page audio update
+- Adds the user-provided Cars Drive audio as a lightweight 128 kbps MP3 loop.
+- Uses a 2-second crossfade from the end of the track into its beginning to reduce the audible loop seam.
+- Attempts to start playback when the taxi page opens. Browsers may block autoplay with sound; if blocked, a Play Cars Drive button appears, and the page retries on the next user interaction.
+- Audio is limited to the taxi-services page; it does not play across the rest of the website.
+
+Note: Browser autoplay rules vary by device/browser, so automatic playback cannot be guaranteed without a user gesture on every device.

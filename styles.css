@@ -1997,3 +1997,33 @@ body.theme-day .rock-meter-art{background:transparent!important;mix-blend-mode:m
 .arcade-countdown[hidden]{display:none}
 
 .live-screen-button{display:grid!important;place-items:center!important;text-align:center!important;font-size:2rem!important;font-weight:900!important;line-height:1!important;padding:0!important}
+
+/* v15 polish: compact, centered Watch Live controls and consistent page utilities. */
+.watch-live-page #live-description{font-size:clamp(1.05rem,3vw,1.25rem);margin:0 auto 18px;text-align:center}
+.live-player-placeholder strong:empty{display:none}
+.live-screen-button{width:clamp(54px,10vw,68px);height:clamp(54px,10vw,68px);min-height:0;padding:0;border-width:2px;border-radius:17px;display:grid;place-items:center;line-height:1;}
+.live-screen-button span{display:block!important;width:100%;height:100%;padding:0!important;margin:0!important;background:transparent!important;border:0!important;border-radius:inherit!important;display:grid!important;place-items:center!important;font-size:clamp(2rem,6vw,2.7rem)!important;font-weight:900!important;line-height:1!important;}
+.live-recording-panel{grid-template-columns:minmax(0,1fr);padding:10px 12px;gap:8px;background:rgba(8,8,8,.3)}
+#recording-mode{width:100%;min-height:42px;font-weight:800}
+.recording-actions{display:flex;align-items:stretch;gap:7px;flex-wrap:nowrap}
+.recording-actions .button{min-width:0;flex:1 1 0;padding:8px 10px;min-height:40px;font-size:.78rem}
+.recording-actions .low-data-control{flex:1 1 0;min-width:0;justify-content:center;white-space:nowrap}
+.live-recording-panel #recording-status:empty{display:none}
+.share-symbol{width:1.05em;height:1.05em;display:inline-block;vertical-align:-.15em;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.live-join-actions{display:flex;justify-content:center;gap:10px}
+.live-join-actions .button{display:none!important}
+.footer-bottom-row{background:transparent!important;box-shadow:none!important;border:0!important}
+.footer-top-link{background:var(--panel)!important;color:var(--text)!important;border:1px solid var(--line)!important;text-shadow:none!important}
+.taxi-card>div{margin-right:auto;text-align:left;flex:1;min-width:0}
+.taxi-card h2{text-align:left}
+.taxi-actions{align-items:center;text-align:center}
+.taxi-actions a{display:flex;align-items:center;justify-content:center;text-align:center;margin-inline:auto}
+.taxi-road-effect{height:36px;position:relative;overflow:hidden;border-radius:9px;margin:12px 0 16px;background:linear-gradient(180deg,transparent 0 43%,var(--line) 44% 48%,transparent 49% 100%);opacity:0;max-height:0;transition:opacity .2s,max-height .2s}
+.taxi-road-effect.is-driving{opacity:1;max-height:36px}
+.taxi-road-effect .driving-car{position:absolute;left:-48px;top:2px;font-size:27px;filter:drop-shadow(0 2px 2px #0005);animation:taxi-drive-across 1.6s ease-in-out forwards}
+@keyframes taxi-drive-across{to{left:calc(100% + 48px)}}
+.arcade-pick,.arcade-pick:focus,.arcade-pick:focus-visible{outline:none!important;box-shadow:none!important;-webkit-tap-highlight-color:transparent}
+.arcade-pick{-webkit-appearance:none;appearance:none;touch-action:manipulation}
+#remember-requester-name{background:transparent!important;appearance:none;-webkit-appearance:none;border:2px solid var(--line)!important;box-shadow:none!important}
+#remember-requester-name:checked{background:var(--hot)!important;box-shadow:inset 0 0 0 4px var(--panel)!important}
+@media(max-width:560px){.recording-actions{gap:5px}.recording-actions .button{font-size:.72rem;padding:8px 5px}.recording-actions .low-data-control{font-size:.68rem!important;padding:7px 5px!important}.live-screen-button{width:54px;height:54px}.live-screen-button span{font-size:2.2rem!important}}

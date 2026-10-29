@@ -5,11 +5,11 @@
  const TOKEN_ENDPOINT='https://odd-unit-91b9.grar0842.workers.dev/token';
  let room=null, lowData=false, activeKey='';
  const remoteTracks=new Set();let mediaRecorder=null,recordingChunks=[],recordingStream=null;
- function offline(message){const h=document.querySelector('#viewer-health');if(h)h.textContent=message||'Stream offline';if(placeholder){placeholder.hidden=false;status.textContent=message||"The show isn't live right now.";}if(badge)badge.hidden=true;if(audioButton)audioButton.hidden=true;}
+ function offline(message){const h=document.querySelector('#viewer-health');if(h)h.textContent=message||'Stream offline';if(placeholder){placeholder.hidden=false;if(status)status.textContent='';}if(badge)badge.hidden=true;if(audioButton)audioButton.hidden=true;}
  function cleanup(){if(mediaRecorder&&mediaRecorder.state!=='inactive'){try{mediaRecorder.stop();}catch(e){}}remoteTracks.clear();if(room){room.disconnect();room=null;}document.querySelectorAll('[data-livekit-audio="true"]').forEach(el=>el.remove());if(video){video.pause();video.srcObject=null;video.removeAttribute('src');}activeKey='';if(audioButton)audioButton.hidden=true;}
  async function connect(){if(!client){offline('Live page needs its Supabase configuration.');return;}try{
   const {data,error}=await client.from('live_show_settings').select('venue_name,show_enabled,is_live').eq('id',1).maybeSingle();if(error)throw error;
-  const venue=data?.venue_name?.trim()||'Live';heading.textContent=venue;desc.textContent=data?.is_live?`You're watching live from ${venue}. Request a song or support the show below.`:`Watch the show from ${venue}, request a song, and support the music.`;
+  const venue=data?.venue_name?.trim()||'Live';heading.textContent=venue;if(desc)desc.innerHTML=data?.is_live?`📡 <strong>You're watching live from ${venue}.</strong>`:'📡 <strong>The next live show will appear here.</strong>'; 
   if(!data||!data.show_enabled||!data.is_live){cleanup();offline(data?.show_enabled?'The show is not marked live right now.':'The next live show will appear here.');return;}
   if(room&&room.state==='connected')return;
   const resp=await fetch(TOKEN_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({role:'viewer'})});if(!resp.ok)throw new Error('Could not obtain a viewer token ('+resp.status+').');const payload=await resp.json();if(!payload.token||!payload.serverUrl)throw new Error('The token service response is missing token or serverUrl.');
@@ -31,7 +31,7 @@
  async function exitLandscape(){try{if(document.fullscreenElement&&document.exitFullscreen)await document.exitFullscreen();}catch(e){}try{if(screen.orientation&&screen.orientation.unlock)screen.orientation.unlock();}catch(e){}syncFullscreenControls();}
  expandButton?.addEventListener('click',enterLandscape);exitButton?.addEventListener('click',exitLandscape);
  document.addEventListener('fullscreenchange',()=>{syncFullscreenControls();if(!document.fullscreenElement){try{if(screen.orientation&&screen.orientation.unlock)screen.orientation.unlock();}catch(e){}}});
- playerShell?.addEventListener('click',e=>{if(e.target.closest('button,select,label,a,input'))return;playerShell.classList.add('controls-visible');if(controlsHideTimer)clearTimeout(controlsHideTimer);if(document.fullscreenElement===playerShell)controlsHideTimer=setTimeout(()=>playerShell.classList.remove('controls-visible'),4500);});
+ playerShell?.addEventListener('click',e=>{if(e.target.closest('button,select,label,a,input'))return;if(room&&room.state==='connected'&&!audioButton){room.startAudio?.().catch(()=>{});document.querySelectorAll('[data-livekit-audio="true"]').forEach(el=>el.play().catch(()=>{}));}playerShell.classList.add('controls-visible');if(controlsHideTimer)clearTimeout(controlsHideTimer);if(document.fullscreenElement===playerShell)controlsHideTimer=setTimeout(()=>playerShell.classList.remove('controls-visible'),4500);});
  playerShell?.addEventListener('touchstart',()=>{playerShell.classList.add('controls-visible');if(controlsHideTimer)clearTimeout(controlsHideTimer);if(document.fullscreenElement===playerShell)controlsHideTimer=setTimeout(()=>playerShell.classList.remove('controls-visible'),4500);},{passive:true});
 
  const recordMode=document.querySelector('#recording-mode'),recordStart=document.querySelector('#recording-start'),recordStop=document.querySelector('#recording-stop'),recordStatus=document.querySelector('#recording-status');

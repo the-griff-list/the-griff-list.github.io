@@ -1,0 +1,17 @@
+THE GRIFFLIST WEBSITE UPDATE v15
+
+Changes in this package:
+- Watch Live intro now uses the satellite-dish message and avoids repeating the offline message inside the player.
+- Expand / return controls have a more centered, larger symbol in a slightly smaller button.
+- Recording controls are simplified into one clip selector and a compact row for Record, Stop & Save, and Low-data mode.
+- Removed the separate Tap to Enable Live Audio button; tapping the player can retry audio playback when connected.
+- Updated the share control with a standard three-node share symbol.
+- Removed the Crowd Favourites page section and its Watch Live shortcut while preserving Encore Vote.
+- Taxi page uses Google Search for nearby taxis, removes the long disclaimer, centers the Google action, and adds a small taxi-driving interaction when a taxi card is tapped.
+- “Check My Last Request” now offers “Add a request” and scrolls to the request form without focusing the name field or opening the mobile keyboard.
+- Updated the dedication placeholder and removed the footer background block.
+
+Notes:
+- Browser and device support still affects fullscreen orientation and local recording.
+- Location-based taxi search requires the visitor to grant browser location permission; no IP-based location is used.
+- The Supabase leaderboard cleanup remains a separate SQL action and is not executed by uploading this static website ZIP.

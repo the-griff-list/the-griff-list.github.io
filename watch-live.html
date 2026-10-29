@@ -1,34 +1,31 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#080808"><meta name="description" content="Watch The Grifflist live, request a song, and support the show."><title>Watch Live - The Grifflist</title><link rel="stylesheet" href="styles.css?v=grifflist-watch-layout-v14"><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#080808"></head><body><header class="site-header"><a class="header-logo-link" href="index.html"><img class="header-logo" src="grifflist-logo.webp" alt="The Grifflist"></a><nav class="top-nav" aria-label="Main navigation"><a href="index.html#request">Request a Song 🎤</a><a href="index.html#encore">Encore Vote 🎤</a><a href="index.html#tip-options">Send a Tip 🫶</a><a href="index.html#safe-ride-home">Sober Drive 🚕</a><a href="index.html">Home ↗</a></nav></header><main class="watch-live-page">
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#080808"><meta name="description" content="Watch The Grifflist live, request a song, and support the show."><title>Watch Live - The Grifflist</title><link rel="stylesheet" href="styles.css?v=grifflist-watch-layout-v15"><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#080808"></head><body><header class="site-header"><a class="header-logo-link" href="index.html"><img class="header-logo" src="grifflist-logo.webp" alt="The Grifflist"></a><nav class="top-nav" aria-label="Main navigation"><a href="index.html#request">Request a Song 🎤</a><a href="index.html#encore">Encore Vote 🎤</a><a href="index.html#tip-options">Send a Tip 🫶</a><a href="index.html#safe-ride-home">Sober Drive 🚕</a><a href="index.html">Home ↗</a></nav></header><main class="watch-live-page">
 <h1>Watch <span id="live-venue-heading">Live</span></h1>
-<p id="live-description">Watch the show, request a song, and support the music.</p>
+<p id="live-description"><strong>📡 The next live show will appear here.</strong></p>
 <section class="live-player-section" aria-label="Live show">
   <div class="live-player-shell" aria-label="Live video player">
     <video id="live-video" playsinline autoplay controls></video>
     <div id="live-placeholder" class="live-player-placeholder">
       <span class="live-placeholder-icon" aria-hidden="true">📡</span>
-      <strong id="live-player-status">The show isn't live right now.</strong>
+      <strong id="live-player-status" aria-label="Live show status"></strong>
     </div>
     <span id="live-badge" class="live-badge" hidden>● LIVE</span>
-    <button id="live-expand" class="live-screen-button" type="button" aria-label="Expand live video" title="Expand to fullscreen">⤢</button>
-    <button id="live-exit-fullscreen" class="live-screen-button live-exit-fullscreen" type="button" aria-label="Exit fullscreen" title="Return to normal view" hidden>⤡</button>
+    <button id="live-expand" class="live-screen-button" type="button" aria-label="Expand live video" title="Expand to fullscreen"><span aria-hidden="true">⤢</span></button>
+    <button id="live-exit-fullscreen" class="live-screen-button live-exit-fullscreen" type="button" aria-label="Exit fullscreen" title="Return to normal view" hidden><span aria-hidden="true">⤡</span></button>
     <div id="live-rockometer" class="live-rockometer-overlay" hidden>
       <img id="live-rockometer-dial" src="rock-meter-0.webp" alt="Rockometer progress" loading="lazy">
       <strong id="live-rockometer-raised">$0 / $200</strong>
     </div>
   </div>
   <div class="live-player-controls live-controls-stack">
-    <section class="live-recording-panel" aria-labelledby="recording-title">
-      <div class="live-recording-heading"><h2 id="recording-title">Record</h2></div>
-      <label class="recording-mode-label" for="recording-mode">Recording type</label><select id="recording-mode" aria-label="Recording type"><option value="video">Video + audio</option><option value="audio">Audio only</option></select>
-      <div class="recording-actions"><button id="recording-start" class="button button-hot" type="button" aria-label="Start recording" disabled>● Record</button><button id="recording-stop" class="button button-quiet" type="button" aria-label="Stop recording and save file" disabled>■ Stop &amp; Save</button></div>
-      <p id="recording-status" role="status" aria-live="polite" aria-atomic="true">Recording is available when a live show is connected.</p>
+    <section class="live-recording-panel" aria-label="Clip recording controls">
+      <select id="recording-mode" aria-label="Record a clip"><option value="">Record a clip</option><option value="video">Video + audio</option><option value="audio">Audio only</option></select>
+      <div class="recording-actions"><button id="recording-start" class="button button-hot" type="button" aria-label="Start recording" disabled>● Record</button><button id="recording-stop" class="button button-quiet" type="button" aria-label="Stop recording and save file" disabled>■ Stop &amp; Save</button><label class="low-data-control"><input id="low-data-mode" type="checkbox"> Low-data</label></div>
+      <p id="recording-status" role="status" aria-live="polite" aria-atomic="true"></p>
     </section>
-    <label class="low-data-control"><input id="low-data-mode" type="checkbox"> Low-data mode (audio only)</label>
-    <button id="enable-live-audio" class="button button-hot live-audio-enable" type="button" hidden>Tap to enable live audio</button>
-    <span id="viewer-health" role="status" aria-live="polite">Waiting for stream</span>
+    <span id="viewer-health" role="status" aria-live="polite"></span>
   </div>
 </section>
-<button id="live-share" class="button button-quiet live-share-button" type="button" aria-label="Share or copy the Watch Live link">↗ Share live video</button><p id="live-share-status" class="visually-hidden" role="status" aria-live="polite"></p>
+<button id="live-share" class="button button-quiet live-share-button" type="button" aria-label="Share or copy the Watch Live link"><svg class="share-symbol" viewBox="0 0 24 24" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.7 10.6 15.3 6.4M8.7 13.4l6.6 4.2"/></svg> Share live video</button><p id="live-share-status" class="visually-hidden" role="status" aria-live="polite"></p>
 <div class="live-page-grid">
   <section class="live-tip-card">
     <h2>Support the Show</h2>
@@ -43,7 +40,7 @@
   </section>
   <section class="live-info-card">
     <h2>Join the Show</h2>
-    <div class="live-join-actions"><a class="button button-hot" href="index.html#request">REQUEST A SONG ↗</a><a class="button button-quiet" href="explore.html#crowd-favourites">CROWD FAVOURITES ↗</a></div>
+    <div class="live-join-actions"><a class="button button-hot" href="index.html#request">REQUEST A SONG ↗</a></div>
   </section>
 </div>
 </main><footer class="site-footer">
@@ -59,4 +56,4 @@
  share?.addEventListener('click',async()=>{const data={title:'The Grifflist — Watch Live',text:'Watch The Grifflist live',url:location.href};try{if(navigator.share){await navigator.share(data);if(shareStatus)shareStatus.textContent='Share sheet opened.';}else if(navigator.clipboard?.writeText){await navigator.clipboard.writeText(location.href);share.textContent='Link copied ✓';if(shareStatus)shareStatus.textContent='Live link copied to clipboard.';}else{window.prompt('Copy the live video link:',location.href);if(shareStatus)shareStatus.textContent='Copy the link from the dialog.';}}catch(e){if(e?.name!=='AbortError'){if(shareStatus)shareStatus.textContent='Sharing failed. You can copy the page address from your browser.';}}});
  const copy=document.getElementById('copy-live-email');copy?.addEventListener('click',async()=>{const email='acdckicksass@hotmail.com';try{await navigator.clipboard.writeText(email);copy.textContent='Copied ✓';}catch(e){window.prompt('Copy the e-transfer email:',email);}});
 })();
-</script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="https://cdn.jsdelivr.net/npm/livekit-client/dist/livekit-client.umd.min.js"></script><script src="supabase-config.js"></script><script src="live-show.js?v=grifflist-watch-layout-v14"></script><script src="site-interactions.js?v=grifflist-watch-layout-v14"></script></body></html>
+</script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="https://cdn.jsdelivr.net/npm/livekit-client/dist/livekit-client.umd.min.js"></script><script src="supabase-config.js"></script><script src="live-show.js?v=grifflist-watch-layout-v15"></script><script src="site-interactions.js?v=grifflist-watch-layout-v15"></script></body></html>
