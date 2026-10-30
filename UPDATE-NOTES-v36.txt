@@ -1,0 +1,12 @@
+THE GRIFFLIST — V36 UPDATE
+
+What's New seasonal leaves refinement
+- Falling leaves now animate for 1.5 seconds with a gentle fade-in and fade-out.
+- The animation is clipped and painted strictly inside the What's New dialog; particles cannot cover the blurred page outside the pop-up.
+- Fall distance scales to the dialog height, with a restrained movement range to keep the effect elegant.
+- The effect layer ignores pointer input and respects reduced-motion preferences.
+- Release ID and offline cache version bumped to v36.
+
+Testing
+- JavaScript syntax, CSS parsing, local asset references, and ZIP integrity checked.
+- Actual live browser and physical-device appearance still require HTTPS/browser-device testing.

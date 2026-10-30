@@ -1,14 +1,15 @@
 (()=>{
  'use strict';
  // Bump RELEASE_ID and RELEASE_AT for every meaningful public release.
- const RELEASE_ID='v35-seasonal-holiday-effects';
+ const RELEASE_ID='v37-seasonal-fx-lifecycle';
  const RELEASE_AT=new Date('2026-10-29T00:00:00-03:00').getTime();
  const RELEASE_WINDOW=7*24*60*60*1000;
  const WITHIN_SEVEN_DAYS=Date.now()>=RELEASE_AT && Date.now()-RELEASE_AT<=RELEASE_WINDOW;
  const STORAGE_KEY='grifflistWhatsNewSeen.v1';
  const dialog=document.getElementById('whats-new-dialog'); if(!dialog)return;
  const done=document.getElementById('whats-new-done');
- let entered=false,previousFocus=null;
+ let entered=false,previousFocus=null,activeSeasonalFx=null,seasonalFxTimer=null;
+ const clearSeasonalFx=()=>{if(seasonalFxTimer!==null){window.clearTimeout(seasonalFxTimer);seasonalFxTimer=null;}if(activeSeasonalFx){activeSeasonalFx.classList.remove('is-visible');activeSeasonalFx.classList.add('is-closing');activeSeasonalFx.remove();activeSeasonalFx=null;}};
  const seen=()=>{try{return localStorage.getItem(STORAGE_KEY)===RELEASE_ID;}catch(_){return false;}};
  const markSeen=()=>{try{localStorage.setItem(STORAGE_KEY,RELEASE_ID);}catch(_){}};
  const dateOnly=d=>new Date(d.getFullYear(),d.getMonth(),d.getDate());
@@ -87,18 +88,22 @@
     particle.style.setProperty('--delay',(Math.random()*.42).toFixed(2)+'s');
     particle.style.setProperty('--drift',((Math.random()-.5)*90).toFixed(0)+'px');
     particle.style.setProperty('--spin',(Math.random()*360).toFixed(0)+'deg');
+    particle.style.setProperty('--fall-distance',Math.max(110,Math.min(190,(dialog.clientHeight||360)*.48))+'px');
     fx.appendChild(particle);
    }
    dialog.insertBefore(fx,dialog.firstChild);
-   window.setTimeout(()=>fx.remove(),3000);
+   activeSeasonalFx=fx;
+   // Fade the complete effect in and out; it remains clipped to the dialog.
+   requestAnimationFrame(()=>{if(activeSeasonalFx===fx)fx.classList.add('is-visible');});
+   seasonalFxTimer=window.setTimeout(()=>{if(activeSeasonalFx===fx){fx.classList.remove('is-visible');fx.classList.add('is-closing');seasonalFxTimer=window.setTimeout(clearSeasonalFx,260);}},1550);
   }
  }
   const open=()=>{if(dialog.open)return;previousFocus=document.activeElement;if(typeof dialog.showModal==='function')dialog.showModal();else{dialog.setAttribute('open','');document.body.classList.add('whats-new-fallback-lock');}done?.focus();};
- const close=()=>{if(dialog.open&&typeof dialog.close==='function')dialog.close();else{dialog.removeAttribute('open');document.body.classList.remove('whats-new-fallback-lock');previousFocus?.focus?.();}markSeen();};
+ const close=()=>{clearSeasonalFx();if(dialog.open&&typeof dialog.close==='function')dialog.close();else{dialog.removeAttribute('open');document.body.classList.remove('whats-new-fallback-lock');previousFocus?.focus?.();}markSeen();};
  done?.addEventListener('click',close);
  // The announcement is intentionally non-dismissible except for the explicit completion action.
  dialog.addEventListener('cancel',e=>e.preventDefault());
  dialog.addEventListener('click',e=>{if(e.target===dialog)e.preventDefault();});
- dialog.addEventListener('close',()=>{markSeen();previousFocus?.focus?.();});
+ dialog.addEventListener('close',()=>{clearSeasonalFx();markSeen();previousFocus?.focus?.();});
  window.addEventListener('grifflist:entered',()=>{if(entered)return;entered=true;if(WITHIN_SEVEN_DAYS&&!seen())window.setTimeout(open,420);});
 })();
