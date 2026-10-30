@@ -1,0 +1,7 @@
+THE GRIFFLIST WEBSITE UPDATE v23
+
+Taxi page adjustment:
+- Removed the message: "Showing taxi search for your current location. For the most accurate local listings, open Google Maps."
+- Location lookup and the Taxis Near Me Google Maps link continue to work as before.
+
+This package is based on the v22 website update. Replace matching repository files with the contents of this ZIP and commit the changes.

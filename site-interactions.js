@@ -35,6 +35,14 @@
     themeControls.addEventListener('click',e=>{const b=e.target.closest('[data-theme]');if(b){applyTheme(b.dataset.theme);play('select-sfx');}});
   }
   let savedTheme='night'; try{savedTheme=localStorage.getItem('grifflistTheme.v1')||'night';}catch(_){} applyTheme(savedTheme);
+  // Direct toolbar destinations never route through the title screen; highlight requested anchors.
+  const highlightTarget=(el)=>{if(!el)return;el.classList.remove('section-highlight','secret-highlight');void el.offsetWidth;el.classList.add(el.id==='secret-menu-button'?'secret-highlight':'section-highlight');window.setTimeout(()=>el.classList.remove('section-highlight','secret-highlight'),3200);};
+  const highlightSecret=()=>{const target=$('#secret-menu-button')||$('.secret-stage-trigger');if(target){target.scrollIntoView({behavior:reducedMotion()?'auto':'smooth',block:'center'});highlightTarget(target);}};
+  if(location.hash==='#secret-menu-button'){window.setTimeout(()=>{const splash=$('#splash');if(splash){splash.classList.add('dismissed');document.body.classList.remove('splash-open');}highlightSecret();},350);}
+  document.addEventListener('click',e=>{const a=e.target.closest('.top-nav a[href*="secret-menu-button"]');if(a&&location.pathname.endsWith('watch-live.html')){e.preventDefault();window.location.href='index.html#secret-menu-button';}});
+  // Rock-O-Meter is a shortcut to the donation options.
+  const meter=$('.rock-meter-card');if(meter){meter.setAttribute('role','link');meter.setAttribute('tabindex','0');meter.setAttribute('aria-label','Go to donation options');const goDonate=()=>{const target=$('#tip-options');if(!target)return;target.scrollIntoView({behavior:reducedMotion()?'auto':'smooth',block:'start'});highlightTarget(target);if(history.replaceState)history.replaceState(null,'','#tip-options');};meter.addEventListener('click',goDonate);meter.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();goDonate();}});}
+
 
 
 
@@ -171,7 +179,7 @@
       else if(button.classList.contains('secret-tile'))playSecretEffect('transition');
       else playSecretEffect('select');
     },true);
-    overlay.querySelector('.secret-close').addEventListener('click',()=>{close();if(!pageIsHome)window.location.href='index.html#top';else window.scrollTo({top:0,behavior:reducedMotion()?'auto':'smooth'});});document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!overlay.hidden)close();});
+    overlay.querySelector('.secret-close').addEventListener('click',()=>{close();if(!pageIsHome)window.location.href='index.html#secret-menu-button';else window.scrollTo({top:0,behavior:reducedMotion()?'auto':'smooth'});});document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!overlay.hidden)close();});
     const content=$('#secret-content',overlay);
     $('#lost-cassette',overlay).addEventListener('click',()=>{content.innerHTML='<div class="cassette-flip"><div class="cassette-art large"><i></i><b></b></div><h3>SIDE B: THE LOST TRACK</h3><p class="secret-note">Original music is on the way. Stay tuned for new sounds from The Grifflist.</p></div>';content.scrollIntoView({behavior:reducedMotion()?'auto':'smooth',block:'start'});});
     $('#secret-message-open',overlay).addEventListener('click',()=>{content.innerHTML='<h3>YOU FOUND IT. 🤘</h3><p>Thanks for taking the time to explore The Grifflist. The best things in rock and roll are often hidden just offstage.</p><p class="secret-note">- Griff</p>';content.scrollIntoView({behavior:reducedMotion()?'auto':'smooth',block:'start'});});

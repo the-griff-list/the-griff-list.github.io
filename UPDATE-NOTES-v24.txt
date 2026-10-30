@@ -1,0 +1,23 @@
+THE GRIFFLIST WEBSITE UPDATE V24
+
+Applied changes:
+- Taxi page now uses the full compact toolbar, with concise navigation labels and no Home button.
+- Removed the initial explanatory taxi-location message while retaining live permission/error status feedback for accessibility.
+- Standardized taxi card title alignment and spacing.
+- Removed the extra Watch Live promo spacer between the hospitality note and Sober Drive section.
+- Shortened the hospitality crew message.
+- Matched main-page and taxi-page background music volume at 42%.
+- Condensed the toolbar into a four-column, two-row layout on typical phones and desktops, with a three-column fallback on very narrow screens.
+- Unified major section headings around the Sober Drive heading scale and theme-aware colour.
+- Toolbar links with section hashes now bypass the title splash and land directly on their destination.
+- Watch Live toolbar no longer includes a Home button; toolbar destinations use their respective page/section links.
+- Secret Menu return from Watch Live goes to the home page's Secret Menu button and highlights it.
+- Rock-O-Meter is keyboard accessible and links directly to Donate, highlighting the donation section.
+- Removed the Rock-O-Meter inner frame and image shadow/backdrop so the artwork's transparent exterior remains clean, including 80s mode.
+- Day-mode unchecked priority/remember checkboxes use a transparent interior and grey outline.
+- Cache-busted public styles and navigation script references to v24.
+
+Validation:
+- JavaScript syntax checked for script.js, site-interactions.js, and live-show.js.
+- Original v23 archive passed ZIP integrity testing before edits.
+- Please test the live pages after committing; browser/device behaviour and audio playback require a live-device check.

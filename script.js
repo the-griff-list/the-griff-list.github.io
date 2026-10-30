@@ -219,7 +219,7 @@ const splash=$("#splash");
 const titleAudio=$("#title-screen-audio"), menuAudio=$("#menu-screen-audio");
 const audioVolumes={
   "title-screen-audio":0.78,
-  "menu-screen-audio":0.30,
+  "menu-screen-audio":0.42,
   "cash-sfx":0.78,
   "highway-riser-sfx":0.78,
   "notes-ripple-sfx":0.78,
@@ -267,6 +267,14 @@ function maybeCrossfadeTitle(){
 if(titleAudio){
  titleAudio.addEventListener("timeupdate",maybeCrossfadeTitle);
  titleAudio.addEventListener("ended",()=>{if(siteEntered&&!crossfadeStarted)startMenuMusic();});
+}
+// Cross-page toolbar links with a hash should land on the requested section, not the title screen.
+if(location.hash && location.hash !== "#top"){
+ siteEntered=true;
+ splash?.classList.add("dismissed");
+ document.body.classList.remove("splash-open");
+ startMenuMusic();
+ window.setTimeout(()=>{const target=document.getElementById(decodeURIComponent(location.hash.slice(1)));target?.scrollIntoView({behavior:"auto",block:"start"});},120);
 }
 function enterSite(){
  if(splash.classList.contains("dismissed"))return;
