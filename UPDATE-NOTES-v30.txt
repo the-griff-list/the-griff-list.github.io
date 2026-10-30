@@ -1,0 +1,11 @@
+THE GRIFFLIST — UPDATE v30
+
+What's New refinement:
+- Re-announces this release to returning visitors with a new release identifier.
+- Adds complete neon theme styling alongside Night, Day, and 80s.
+- Improves small-screen sizing with safe-area padding and stable viewport sizing.
+- Prevents background page scrolling while the modal is open where supported.
+- Improves fallback keyboard dismissal, focus handling, and hidden-tab timing.
+- Honors reduced-motion preferences.
+
+No Supabase schema, credentials, payment destinations, or LiveKit settings were changed.

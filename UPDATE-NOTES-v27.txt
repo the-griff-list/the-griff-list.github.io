@@ -1,0 +1,29 @@
+THE GRIFFLIST WEBSITE UPDATE v27
+
+Reliability and quality-assurance pass based on the v26 package.
+
+FIXES
+- Taxi page: removed the accidental instruction that hid every taxi-card fallback. The three verified local taxi numbers remain visible while location permission is requested, denied, unavailable, or times out.
+- Taxi and Watch Live pages: added a real #top target so their Back to top links work reliably.
+- Service worker: bumped the offline cache to v27, added Premium Insights dashboard assets to the offline shell, and corrected cleanup so older Grifflist offline caches are removed during activation.
+- Updated local Grifflist CSS/JavaScript cache-busting versions to v27 so browsers fetch the matching files after deployment.
+
+QUALITY CHECKS COMPLETED
+- ZIP source package extracted and inspected.
+- All 7 HTML pages checked for duplicate IDs, missing local scripts/styles/images/audio, missing local page links, and broken local anchor fragments: passed.
+- All bundled JavaScript files passed Node syntax checks.
+- Main stylesheet passed CSS parsing with zero top-level parse errors.
+- All 17 PNG/JPEG/WebP assets decoded successfully.
+- All service-worker precache entries exist (54/54).
+- Web app manifest parsed successfully.
+- ZIP integrity check passed after packaging.
+
+TESTING LIMITATION
+- A live browser/device interaction run could not be completed in this build environment because Chromium navigation to the local preview was blocked by the environment. Therefore this update does not claim full visual, mobile-device, autoplay, Supabase, LiveKit, or end-to-end production QA. Those checks should be performed on the deployed GitHub Pages site.
+- Browser autoplay restrictions can still require a visitor's first tap for background audio.
+- LiveKit broadcast and Supabase operations are not simulated by static package checks.
+
+QUALITY STANDARD
+- Preserve the existing Grifflist visual identity and working features.
+- Prefer small, verifiable fixes over broad untested redesigns.
+- Report any tests that could not be run rather than claiming zero bugs.

@@ -1,0 +1,16 @@
+THE GRIFFLIST — UPDATE v29
+WHAT'S NEW EXPERIENCE
+
+- Added a polished, theme-aware “What’s New” dialog that appears after the title screen for returning visitors when a meaningful release highlight is new.
+- The dialog uses a blurred backdrop, compact highlight cards, clear close/continue controls, and adapts to Night, Day, and 80s themes.
+- Visitors see this release announcement once per browser. Dismissing it is remembered locally; the footer’s “What’s New” link lets visitors reopen the highlights at any time.
+- First-time visitors are not interrupted by a release announcement.
+- Highlights focus on the key visitor experiences: song requests and request status, Watch Live, Encore voting, and Sober Drive taxi options.
+- Added a dedicated whats-new.js file and included it in the offline service-worker precache.
+- Bumped homepage asset references and service-worker cache namespace to v29.
+
+INSTALL
+Replace the website files with the contents of this ZIP and commit/push the update to GitHub Pages.
+
+NOTE
+The once-per-browser behavior uses existing local browser data to distinguish established visitors from first-time visitors. Visitors using a new browser/device or cleared site storage are treated as new. No personal data is sent to a server for this feature.

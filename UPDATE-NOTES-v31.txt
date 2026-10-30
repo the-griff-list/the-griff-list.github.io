@@ -1,0 +1,9 @@
+THE GRIFFLIST — UPDATE V31
+
+- Updated cache-busting release identifiers to v31.
+- Added PWA app categories and three installable-app shortcuts: Song Catalog, Watch Live, and Sober Drive.
+- Added a repeatable Playwright browser-test setup for desktop Chromium, Pixel-sized touch Chromium, and iPhone-sized WebKit.
+- Added tests for homepage errors, horizontal overflow, title-screen entry, What's New dismissal/reopen, and PWA manifest availability.
+- Added instructions for running browser QA against the deployed HTTPS website.
+
+Testing limitation: the browser suite is included but was not executed in this environment because local browser navigation is blocked. This release is not represented as fully browser- or hardware-tested.

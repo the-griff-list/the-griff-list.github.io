@@ -1,0 +1,15 @@
+THE GRIFFLIST WEBSITE UPDATE v28
+
+FOOLPROOF-FOCUSED QUALITY PASS
+
+- Corrected the Booking Contact heading, which previously repeated the word Booking.
+- Standardized homepage section heading labels and emojis to match the toolbar: Request a Song 🎤, Song Catalog 🎸, Encore Vote 🗳️, Donate 🫶, Sober Drive 🚕, and Booking Contact 📞.
+- Removed an accidental duplicate nested Rock-O-Meter card wrapper to simplify its DOM and prevent duplicate click handling.
+- Added a search description to the taxi page.
+- Marked private Admin and Premium Insights pages noindex/nofollow so search engines are not invited to index private dashboards. This is not an authentication control; existing Supabase authentication and row-level security remain the security boundary.
+- Bumped local stylesheet references and the offline cache version to v28 so deployed clients request the matching release assets.
+
+QUALITY GATES
+- Run structural HTML, local asset/link, JavaScript syntax, stylesheet parse, image decode, manifest and service-worker precache checks before packaging.
+- A local Chromium interaction run was attempted but the environment blocks navigation to both localhost and file URLs. No live visual, audio, Supabase, LiveKit or real-device pass is claimed.
+- This update is a conservative quality pass, not a claim of zero defects. Test the deployed GitHub Pages build on a phone before treating it as production-verified.

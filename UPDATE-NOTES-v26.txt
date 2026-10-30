@@ -1,0 +1,18 @@
+THE GRIFFLIST WEBSITE UPDATE v26
+
+Stability and mobile polish based on the supplied screenshots.
+
+- Logo shimmer is now alpha-masked to the logo artwork only; the title-screen artwork remains unchanged.
+- Stabilized same-page toolbar anchor navigation: dismisses the title layer first, scrolls to the correct target once, and highlights the destination. Removed duplicate hash scrolling that could cause upward jumps.
+- Mobile toolbar now uses a balanced three-column layout rather than four cramped columns.
+- Simplified Secret Menu opening by removing the glitch-in transition and boot delay. Constrained the panel to the mobile viewport and prevented horizontal overflow/zoom-like layout shifts.
+- Guitar Pick Panic uses the existing UI beep for the countdown and the existing You Rock achievement sound for GO.
+- Taxi background music target volume and homepage menu music target volume are both set to 48%, with the existing user-gesture fallback retained for mobile autoplay restrictions.
+- Day-mode priority payment selector now matches the light request form palette.
+- Repaired small transparent breaks along the Rock-O-Meter dial edge while retaining transparent exterior pixels, and restored empty meter image assets in the source package.
+- Standardized toolbar labels/icons for Request a Song, Song Catalog, Donate, Watch Live, Encore Vote, Sober Drive, Booking Contact, and Secret Menu.
+
+Notes:
+- Browser autoplay policies can still require the visitor's first tap before taxi music starts; the visible Play Cars Drive fallback remains available when autoplay is blocked.
+- The Rock-O-Meter 80% state was an empty file in the supplied baseline; it has been restored using the valid 60% image as a fallback. Please review that state visually before relying on it in production.
+- Tested JavaScript syntax for the updated shared interaction scripts. Full live-browser/device QA still requires checking the deployed GitHub Pages site.
