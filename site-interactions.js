@@ -85,7 +85,7 @@
   if (footer) {
     const secret=footer.querySelector('.secret-stage-trigger') || document.createElement('button');secret.type='button';secret.className='secret-stage-trigger';secret.setAttribute('aria-label','Open Secret Menu');secret.title='Open the PS2-inspired Secret Menu';secret.innerHTML='♬ <span>Secret Menu</span>';if(!secret.isConnected)footer.insertBefore(secret,footer.querySelector('.footer-bottom-row'));
     const overlay=document.createElement('div');overlay.className='secret-stage-overlay';overlay.id='secret-stage-overlay';overlay.hidden=true;
-    overlay.innerHTML=`<div class="secret-stage-panel" role="dialog" aria-modal="true" aria-labelledby="secret-stage-title"><button type="button" class="secret-close" aria-label="Return to home screen" title="Home">⌂</button><h2 id="secret-stage-title">SECRET MENU</h2><div class="secret-stage-grid"><button type="button" class="secret-tile" id="lost-cassette"><span class="cassette-art" aria-hidden="true"><i></i><b></b></span><strong>THE LOST CASSETTE</strong></button><button type="button" class="secret-tile" id="high-score-open"><span class="arcade-icon" aria-hidden="true">★<br>HI-SCORE</span><strong>BACKSTAGE ARCADE</strong></button><button type="button" class="secret-tile" id="secret-message-open"><span class="secret-sparkle" aria-hidden="true">✦</span><strong>THE HIDDEN NOTE</strong></button></div><div id="secret-content" class="secret-content" aria-live="polite"></div></div>`;
+    overlay.innerHTML=`<div class="secret-stage-panel" role="dialog" aria-modal="true" aria-labelledby="secret-stage-title"><button type="button" class="secret-close" aria-label="Return to home screen" title="Home">⌂</button><h2 id="secret-stage-title">SECRET MENU</h2><div class="secret-stage-grid"><button type="button" class="secret-tile" id="high-score-open"><span class="arcade-icon" aria-hidden="true">★<br>HI-SCORE</span><strong>BACKSTAGE ARCADE</strong></button><button type="button" class="secret-tile" id="lost-cassette"><span class="cassette-art" aria-hidden="true"><i></i><b></b></span><strong>THE LOST CASSETTE</strong></button><button type="button" class="secret-tile" id="secret-message-open"><span class="secret-sparkle" aria-hidden="true">✦</span><strong>THE HIDDEN NOTE</strong></button></div><div id="secret-content" class="secret-content" aria-live="polite"></div></div>`;
     document.body.append(overlay);
     // PS2 effects are isolated to the Secret Menu; homepage menu audio pauses while it is open.
     const homeMenuAudio=document.getElementById('menu-screen-audio');
@@ -187,7 +187,7 @@
           if(error)throw error;
           leaderboard.innerHTML='';
           if(!data?.length){leaderboard.innerHTML='<li>Be the first on the board!</li>';return;}
-          const blockedDisplayNames=/\b(mike\s*hunt|gabe\s*owners?|rock\s*star|asshole|arsehole|bastard|bitch|blowjob|bullshit|cock|cocksucker|cunt|dickhead|dick|dildo|fag|faggot|fuck\w*|motherfucker|nigger|nonce|piss|porn|prick|rape|retard|shag|shit\w*|slut|spunk|twat|wanker|whore)\b/i;const cleanEntries=data.filter(entry=>!blockedDisplayNames.test(String(entry.player_name||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'')));if(!cleanEntries.length){leaderboard.innerHTML='<li>Be the first on the board!</li>';return;}cleanEntries.forEach((entry,index)=>{const li=document.createElement('li');const name=document.createElement('span');name.textContent=entry.player_name;const points=document.createElement('b');points.textContent=String(entry.score);li.append(name,points);leaderboard.append(li);});
+          const blockedDisplayNames=/\b(mike\s*hunt|gabe\s*owners?|rock\s*star|asshole|arsehole|bastard|bitch|blowjob|bullshit|cock|cocksucker|cunt|dickhead|dick|dildo|fag|faggot|fuck\w*|motherfucker|nigger|nonce|piss|porn|prick|rape|retard|shag|shit\w*|slut|spunk|twat|wanker|whore)\b/i;const cleanEntries=data.filter(entry=>!blockedDisplayNames.test(String(entry.player_name||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'')));const bestByName=new Map();cleanEntries.forEach(entry=>{const key=String(entry.player_name||'').trim().toLocaleLowerCase();if(!bestByName.has(key)||Number(entry.score)>Number(bestByName.get(key).score))bestByName.set(key,entry);});const uniqueEntries=[...bestByName.values()].sort((a,b)=>Number(b.score)-Number(a.score)).slice(0,10);if(!uniqueEntries.length){leaderboard.innerHTML='<li>Be the first on the board!</li>';return;}uniqueEntries.forEach((entry,index)=>{const li=document.createElement('li');const name=document.createElement('span');name.textContent=entry.player_name;const points=document.createElement('b');points.textContent=String(entry.score);li.append(name,points);leaderboard.append(li);});
         }catch(_){leaderboard.innerHTML='<li>Leaderboard will appear after Supabase setup.</li>';}
       };
       loadLeaderboard();
@@ -205,14 +205,24 @@
         if(!validName(playerName)){status.textContent='Name not accepted. Your score was not submitted.';return;}
         try{window.localStorage?.setItem('grifflistArcadeName',playerName);}catch(_){}
         try{
-          const {error}=await client.from('arcade_leaderboard').insert({player_name:playerName,score:Math.max(0,Math.min(150,Math.floor(finalScore)))});
-          if(error)throw error;
+          const safeScore=Math.max(0,Math.min(150,Math.floor(finalScore)));
+          const {data:existing,error:lookupError}=await client.from('arcade_leaderboard').select('id,score').ilike('player_name',playerName).order('score',{ascending:false}).limit(1);
+          if(lookupError)throw lookupError;
+          if(existing?.length){
+            if(safeScore>Number(existing[0].score||0)){
+              const {error:updateError}=await client.from('arcade_leaderboard').update({score:safeScore,created_at:new Date().toISOString()}).eq('id',existing[0].id);
+              if(updateError)throw updateError;
+            }
+          }else{
+            const {error:insertError}=await client.from('arcade_leaderboard').insert({player_name:playerName,score:safeScore});
+            if(insertError)throw insertError;
+          }
           await loadLeaderboard();
         }catch(_){status.textContent+=' Score could not be saved online yet.';}
       };
       content.scrollIntoView({behavior:reducedMotion()?'auto':'smooth',block:'start'});
       const pick=$('.arcade-pick',board);pick.addEventListener('click',()=>{if(!timer)return;score++;scoreEl.textContent=score;pick.style.left=(5+Math.random()*75)+'%';pick.style.top=(5+Math.random()*70)+'%';playSecretEffect('pickup');});
-      start.addEventListener('click',()=>{if(timer)clearInterval(timer);score=0;time=15;scoreEl.textContent=score;timeEl.textContent=time;const count=$('#arcade-countdown',board);start.disabled=true;let n=3;if(count){count.hidden=false;count.textContent='3';}status.textContent='Get ready!';const countTimer=setInterval(()=>{n--;if(count)count.textContent=n>0?String(n):'GO!';if(n<=0){clearInterval(countTimer);if(count){setTimeout(()=>{count.hidden=true;},450);}start.disabled=false;status.textContent='Rock on!';timer=setInterval(()=>{time--;timeEl.textContent=time;if(time<=0){clearInterval(timer);timer=null;status.textContent=`FINAL SCORE: ${score}.`;try{const previous=Number(localStorage.getItem('grifflistArcadeBest')||0);if(score>previous){localStorage.setItem('grifflistArcadeBest',score);status.textContent='YOU WON THE HIGH SCORE!';playRandomHighScore();}else{status.textContent+=` Personal best: ${previous}.`;}}catch(_){}saveLeaderboardScore(score);}},1000);}},1000);});
+      start.addEventListener('click',()=>{if(timer)clearInterval(timer);score=0;time=15;scoreEl.textContent=score;timeEl.textContent=time;const count=$('#arcade-countdown',board);start.disabled=true;let n=3;const playCountdownCue=(go=false)=>{const cue=new Audio(go?'ui_sound_10R.mp3':'ui_sound_09R.mp3');cue.volume=.55;cue.play().catch(()=>{});};if(count){count.hidden=false;count.textContent='3';}playCountdownCue();status.textContent='Get ready!';const countTimer=setInterval(()=>{n--;if(count)count.textContent=n>0?String(n):'GO!';if(n>0)playCountdownCue();else playCountdownCue(true);if(n<=0){clearInterval(countTimer);if(count){setTimeout(()=>{count.hidden=true;},450);}start.disabled=false;status.textContent='Rock on!';timer=setInterval(()=>{time--;timeEl.textContent=time;if(time<=0){clearInterval(timer);timer=null;status.textContent=`FINAL SCORE: ${score}.`;try{const previous=Number(localStorage.getItem('grifflistArcadeBest')||0);if(score>previous){localStorage.setItem('grifflistArcadeBest',score);status.textContent='YOU WON THE HIGH SCORE!';playRandomHighScore();}else{status.textContent+=` Personal best: ${previous}.`;}}catch(_){}saveLeaderboardScore(score);}},1000);}},1000);});
     });
   }
 

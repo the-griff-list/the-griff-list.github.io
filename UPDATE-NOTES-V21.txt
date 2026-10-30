@@ -1,0 +1,29 @@
+THE GRIFFLIST — UPDATE V21
+Baseline: The-Grifflist-Website-Update-v20.zip
+Prepared: 2026-10-29
+
+Implemented in this package:
+- Watch Live toolbar now follows the homepage navigation order and includes Contact, Secret Menu and Home destinations.
+- Removed the satellite graphic and redundant next-show text from the Watch Live page.
+- Removed the Join the Show card.
+- Reduced the expand/fullscreen control size; retained fullscreen and landscape orientation locking where supported.
+- Made the Watch Live Rock-O-Meter overlay more transparent.
+- Restyled and centered the Record a Clip controls.
+- Taxi lookup now asks for current geolocation on each Taxis Near Me activation and opens Google Maps centered on that location; Charlottetown-only hardcoded taxi cards are hidden rather than shown to visitors elsewhere.
+- Added a Google-coloured G mark to Taxis Near Me.
+- Removed the Remember My Name checkbox and now remembers the entered name locally on that browser/device.
+- Arcade leaderboard display collapses legacy duplicate names to their highest score; score submission updates an existing named player's record instead of inserting another row.
+- Added countdown cues for 2 and 1, and a GO cue using existing bundled sound assets.
+- Reordered Secret Menu tiles: Backstage Arcade, Lost Cassette, Hidden Note.
+- Added 80s-mode wallet badge and Back to Top styling.
+- Added Contact and Secret Menu destinations to homepage navigation.
+- Bumped static asset cache references to V21 where applicable.
+
+Important limitations / remaining work:
+- Browser orientation locking is permission/platform dependent; users may need to rotate manually on unsupported browsers.
+- Google Maps supplies current local taxi listings; this package does not maintain a verified global taxi-company directory. Location is requested again on each Taxis Near Me click.
+- Arcade update uses a client-side lookup/update flow. For strict race-safe one-row-per-name enforcement, apply a reviewed unique index or database RPC after deduplicating existing arcade_leaderboard records in Supabase.
+- Premium Insights / live visitor analytics were not added: they require a separate analytics schema and secure ingestion/query design.
+- Several visual changes in the master request (all-page toolbar unification, all section header typography/background normalization, all theme-wide payment/logo variants, and full PS2 Secret Menu redesign) need visual QA against the live site and are not represented as fully completed here.
+- No Supabase migration has been run, no live GitHub deployment has been performed, and no payment credentials or secrets were changed.
+- Review UPDATE-NOTES-V21.txt before deploying.

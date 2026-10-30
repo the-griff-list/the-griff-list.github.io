@@ -2037,3 +2037,65 @@ body.theme-day .rock-meter-art{background:transparent!important;mix-blend-mode:m
 #safe-ride-home .safe-ride-button{display:flex!important;width:100%!important;min-height:60px!important;align-items:center!important;justify-content:center!important;text-align:center!important;margin:0!important}
 body.theme-day #safe-ride-home .safe-ride-heading{color:#c84b20!important}
 @media(max-width:700px){#safe-ride-home.safe-ride-section{padding:26px 0!important}#safe-ride-home .safe-ride-heading{font-size:clamp(2.3rem,7vw,3rem)!important;margin-bottom:16px!important}}
+
+
+/* V21 polish: consistent live player, recording controls, navigation and taxi UI */
+.live-screen-button{
+  width:54px!important;height:54px!important;min-width:54px!important;
+  border-radius:18px!important;padding:0!important;font-size:1.45rem!important;
+  border:2px solid rgba(190,105,225,.68)!important;
+  background:rgba(20,7,31,.68)!important;backdrop-filter:blur(7px);
+  box-shadow:0 7px 22px rgba(0,0,0,.28)!important;
+}
+.live-rockometer-overlay{opacity:.68!important;transition:opacity .2s ease}
+.live-rockometer-overlay img{opacity:.68!important}
+.live-recording-panel{
+  max-width:680px;width:calc(100% - 28px);margin:18px auto 0!important;
+  padding:18px!important;border-radius:18px!important;
+  display:flex;flex-direction:column;align-items:stretch;gap:14px;
+}
+.live-recording-panel select{width:100%;min-height:54px;text-align:center}
+.live-recording-panel .recording-actions{
+  display:flex;justify-content:center;align-items:center;flex-wrap:wrap;gap:12px;
+}
+.live-recording-panel .recording-actions button{min-width:150px;min-height:52px}
+.live-recording-panel .low-data-control{margin:0 auto;display:flex;align-items:center;gap:10px}
+#recording-status{text-align:center;margin:0;min-height:1.2em}
+.live-placeholder-icon{display:none!important}
+.live-player-placeholder{pointer-events:none}
+.live-page-grid .live-info-card{display:none!important}
+.taxi-card{align-items:center!important;justify-content:space-between!important;text-align:left!important}
+.taxi-card>div{flex:1;text-align:left!important}
+.taxi-card h2,.taxi-card p{text-align:left!important}
+.google-maps-link{display:inline-flex;align-items:center;gap:9px;text-decoration:none;border:0!important;box-shadow:none!important;background:transparent!important;padding:12px 0!important}
+.google-g-mark{font-family:Arial,sans-serif;font-weight:800;font-size:1.35rem;background:conic-gradient(from -45deg,#4285f4 0 25%,#34a853 25% 48%,#fbbc05 48% 72%,#ea4335 72%);color:transparent;background-clip:text;-webkit-background-clip:text}
+.top-nav a{white-space:nowrap}
+@media(max-width:680px){
+ .live-screen-button{width:48px!important;height:48px!important;min-width:48px!important;border-radius:16px!important}
+ .live-recording-panel{width:calc(100% - 20px);padding:14px!important}
+ .live-recording-panel .recording-actions{display:grid;grid-template-columns:1fr 1fr}
+ .live-recording-panel .recording-actions button{min-width:0;width:100%}
+ .taxi-card{align-items:flex-start!important}
+}
+
+body.mode-80s .wallet-badge,body.theme-80s .wallet-badge{
+  color:#111!important;background:#fff!important;font-weight:800!important;
+  border:1px solid rgba(255,255,255,.9);box-shadow:0 0 12px rgba(255,75,220,.25)
+}
+body.mode-80s .wallet-google .google-g,body.theme-80s .wallet-google .google-g{
+  background:conic-gradient(#4285f4 0 25%,#34a853 25% 50%,#fbbc05 50% 75%,#ea4335 75%);
+  color:transparent;background-clip:text;-webkit-background-clip:text
+}
+body.mode-80s .wallet-apple,body.theme-80s .wallet-apple{color:#111!important}
+body.mode-80s .apple-pay-mark,body.theme-80s .apple-pay-mark{color:#111!important}
+body.mode-80s .footer-top-link,body.theme-80s .footer-top-link{
+  color:#fff!important;background:linear-gradient(110deg,#ff35cf,#7c4dff,#16d9ff)!important;
+  border:1px solid #ff8ce8!important;box-shadow:0 0 12px #f0f,0 0 24px #09f!important;
+  text-shadow:0 1px 3px #111
+}
+body:not(.mode-80s):not(.theme-80s) .footer-top-link{
+  color:var(--text)!important;background:var(--panel)!important;border:1px solid var(--hot)!important
+}
+.safe-ride-heading,.contact-section h2,.live-tip-card h2,.section-heading h2{
+  font-family:inherit
+}

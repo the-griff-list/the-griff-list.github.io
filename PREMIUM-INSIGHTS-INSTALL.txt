@@ -1,0 +1,12 @@
+THE GRIFFLIST — PREMIUM INSIGHTS INSTALL
+
+1. Upload all website files in this package to the existing GitHub Pages repository and commit to main.
+2. In Supabase Dashboard, open SQL Editor, create a new query, paste premium-insights.sql, and run it once. This creates the event table and privacy-conscious insert/admin-read policies.
+3. Open the private Admin page, sign in, and select PREMIUM INSIGHTS.
+4. Visit the public website from a separate browser/device. Refresh Insights after a minute to see new events.
+
+PRIVACY: The tracker stores a random browser visitor ID and session ID, page path, coarse device category, referring domain, event type, and limited click metadata. It does not collect IP addresses, names, emails, precise location, or full referrer URLs. IDs are stored in localStorage and can be cleared by the visitor.
+
+LIMITATIONS IN THIS FIRST RELEASE: Session duration is not yet calculated; the dashboard reports sessions and active sessions based on events seen in the last five minutes. Song catalogue search tracking is best-effort based on form submissions. Booking and donation clicks are inferred from visible link/button labels and URLs, so review event counts after deployment. Events begin only after SQL and website deployment; no historical analytics are imported.
+
+SECURITY: Public visitors can insert constrained analytics events but cannot read them. Only the configured admin UUID can select events. Do not add a Supabase service-role key to website files.

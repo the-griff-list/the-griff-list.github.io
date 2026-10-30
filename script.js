@@ -196,10 +196,10 @@ function setPrioritySelected(selected,{alreadyTipped=false}={}){
  if(!selected){const method=document.querySelector("#priority-payment-method");if(method)method.value="";}
 }
 priorityToggle.addEventListener("change",()=>setPrioritySelected(priorityToggle.checked));
-const requesterNameInput=$("#requester-name"), rememberNameCheckbox=$("#remember-requester-name");
-try{if(localStorage.getItem("grifflistRememberName.v1")==="yes"){rememberNameCheckbox.checked=true;requesterNameInput.value=localStorage.getItem("grifflistRememberedName.v1")||"";}}catch(e){}
-rememberNameCheckbox?.addEventListener("change",()=>{try{if(rememberNameCheckbox.checked){localStorage.setItem("grifflistRememberName.v1","yes");if(requesterNameInput.value.trim())localStorage.setItem("grifflistRememberedName.v1",requesterNameInput.value.trim());}else{localStorage.removeItem("grifflistRememberName.v1");localStorage.removeItem("grifflistRememberedName.v1");}}catch(e){}});
-requesterNameInput?.addEventListener("change",()=>{try{if(rememberNameCheckbox?.checked&&requesterNameInput.value.trim())localStorage.setItem("grifflistRememberedName.v1",requesterNameInput.value.trim());}catch(e){}});
+const requesterNameInput=$("#requester-name");
+try{const savedName=localStorage.getItem("grifflistRememberedName.v2");if(savedName&&requesterNameInput)requesterNameInput.value=savedName;}catch(e){}
+requesterNameInput?.addEventListener("change",()=>{try{const value=requesterNameInput.value.trim();if(value)localStorage.setItem("grifflistRememberedName.v2",value);}catch(e){}});
+requesterNameInput?.addEventListener("blur",()=>{try{const value=requesterNameInput.value.trim();if(value)localStorage.setItem("grifflistRememberedName.v2",value);}catch(e){}});
 const requestStatusButton=$("#check-last-request"), requestStatusResult=$("#request-status-result");
 requestStatusButton?.addEventListener("click",async()=>{const token=localStorage.getItem("grifflistLastRequestToken.v1");if(!token){requestStatusResult.textContent="No recent request is saved on this device yet.";return;}if(!window.supabaseClient){requestStatusResult.textContent="Request status is temporarily unavailable.";return;}requestStatusButton.disabled=true;requestStatusResult.textContent="Checking…";try{const {data,error}=await window.supabaseClient.rpc("get_my_request_status",{p_tracking_token:token});if(error)throw error;const row=Array.isArray(data)?data[0]:data;if(!row){requestStatusResult.textContent="We couldn't find that request. It may have been archived or the status link expired.";}else{requestStatusResult.textContent=`${row.song_title}${row.artist_name?" - "+row.artist_name:""}: ${row.status||"Received"}.`;}}catch(e){requestStatusResult.textContent="Status lookup needs the included Supabase migration. Please try again later.";}finally{requestStatusButton.disabled=false;}});
 requestForm.addEventListener("submit",async e=>{
