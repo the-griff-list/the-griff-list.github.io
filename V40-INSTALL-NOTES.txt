@@ -1,0 +1,23 @@
+THE GRIFFLIST V40 — INDIVIDUAL FILE UPDATE
+
+Replace these existing files in your GitHub Pages website root:
+- index.html
+- styles.css
+- script.js
+- whats-new.js
+- taxi-services.html
+
+Keep all other existing files and assets unchanged.
+
+Important:
+- Preserve the exact filenames and current folder locations.
+- This is a partial V40 implementation of the requested screenshot refinements.
+- Browser autoplay, cross-page toolbar sound timing, exact viewport centering, and visual appearance still require live-browser/device testing.
+- The holiday calendar was expanded, but it is not a guarantee that every local, provincial, federal, cultural, and international observance is included.
+
+
+V40 ADMIN LINK ADDITION
+- index.html: adds a small, discreet Admin link directly below Secret Menu.
+- styles.css: styles the link subtly and preserves keyboard focus visibility.
+- The link opens the existing admin.html sign-in page. Existing Supabase email/password authentication remains in place.
+- IMPORTANT SECURITY LIMITATION: a website cannot reliably guarantee access from one exact physical phone using a hidden link or browser-only device fingerprint. This update does NOT claim device-exclusive security. For true phone-bound access, implement server-verified passkey/WebAuthn enrollment and enforce it on the server for every protected admin operation. Keep the existing strong Supabase authentication enabled.
