@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-"""Dependency-light Grifflist release smoke checks. Run: python3 qa/qa-smoke-test.py"""
+"""Dependency-light Grifflist release smoke checks. Run: python3 qa-smoke-test.py"""
 from pathlib import Path
 from html.parser import HTMLParser
 from collections import Counter
 import json, re, subprocess, sys
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parent
 issues = []
 class Audit(HTMLParser):
     def __init__(self):

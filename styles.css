@@ -2183,8 +2183,7 @@ body.theme-day .priority-payment-wrap select{background:#e7e7e7!important;color:
 .whats-new-item p{margin:0;color:#bfb2b1;font-size:.78rem;line-height:1.5}
 .whats-new-footer{margin-top:20px;padding-top:16px;border-top:1px solid #49343a}
 .whats-new-footer .button{min-width:142px}
-.whats-new-reopen{border:0;background:transparent;color:var(--muted);font-family:inherit;font-size:.72rem;font-weight:800;cursor:pointer;padding:10px 4px;text-decoration:underline;text-decoration-color:#ff8a3a70;text-underline-offset:4px}
-.whats-new-reopen:hover,.whats-new-reopen:focus-visible{color:var(--hot)}
+
 body.theme-day .whats-new-dialog{background:linear-gradient(145deg,#fffaf2,#f0e2d1);color:#211711;border-color:#b98961;box-shadow:0 25px 90px #4b2a1d55}
 body.theme-day .whats-new-dialog::backdrop{background:#34271fc0}
 body.theme-day .whats-new-kicker,body.theme-day .whats-new-release{color:#81501e}
@@ -2221,3 +2220,123 @@ body.theme-neon .whats-new-x{background:#160d2b;border-color:#754a9d;}
 body.theme-neon .whats-new-footer{border-color:#593f91;}
 @media(max-width:520px){.whats-new-dialog{width:calc(100% - 20px);max-height:calc(100svh - 20px);margin:auto;padding:16px 14px max(16px,env(safe-area-inset-bottom));}.whats-new-intro{margin-bottom:14px}.whats-new-list{gap:8px}.whats-new-item{padding:10px}.whats-new-footer{margin-top:14px;padding-top:12px}}
 @media(prefers-reduced-motion:reduce){.whats-new-dialog[open]{animation:none!important;scroll-behavior:auto}}
+
+
+/* v32 refinement: nine compact, orderly navigation destinations. */
+.top-nav{display:grid!important;grid-template-columns:repeat(9,minmax(0,1fr));gap:5px!important;flex:1;max-width:1040px;align-items:stretch}
+.top-nav a{display:flex;align-items:center;justify-content:center;gap:4px;min-width:0;min-height:34px;padding:6px 4px!important;border:1px solid #49363b;border-radius:7px;background:linear-gradient(180deg,#1c171b,#100e12);font-size:clamp(.58rem,.75vw,.72rem)!important;line-height:1.1;text-align:center;white-space:normal!important;letter-spacing:0!important}
+.top-nav a:hover,.top-nav a:focus-visible{border-color:var(--hot);background:#251510}
+.top-nav .nav-emoji{flex:0 0 auto}
+@media(max-width:980px){.top-nav{grid-template-columns:repeat(5,minmax(0,1fr))!important}.top-nav a{font-size:.68rem!important;min-height:36px}}
+@media(max-width:700px){.top-nav{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:5px!important}.top-nav a{font-size:.67rem!important;min-height:36px;padding:6px 3px!important}.top-nav a:nth-child(7),.top-nav a:nth-child(8),.top-nav a:nth-child(9){grid-column:auto}}
+/* Footer: remove the oversized translucent link shimmer; animate only the visible logo image. */
+.footer-logo-link::after{content:none!important;display:none!important}
+.footer-logo-link img{position:relative;animation:footer-logo-glow 4.8s ease-in-out infinite}
+@keyframes footer-logo-glow{0%,58%{filter:brightness(1)}78%{filter:brightness(1.55) drop-shadow(0 0 9px #fff8)}100%{filter:brightness(1)}}
+@media(prefers-reduced-motion:reduce){.footer-logo-link img{animation:none!important}}
+/* What's New: compact modal with visible blurred context, scrollable release notes and one completion action. */
+.whats-new-dialog{width:min(520px,calc(100% - 28px));max-height:min(74svh,650px);padding:18px 18px 14px;display:none;flex-direction:column;overflow:hidden}
+.whats-new-dialog[open]{display:flex}
+.whats-new-topline{justify-content:flex-start;min-height:8px}
+.whats-new-topline .whats-new-mark{margin:0 0 7px;width:30px;height:30px}
+.whats-new-dialog h2{font-size:clamp(2rem,6vw,2.7rem)}
+.whats-new-intro{margin:7px 0 12px}
+.whats-new-list{overflow-y:auto;min-height:0;overscroll-behavior:contain;padding:1px 3px 5px 1px;scrollbar-width:thin}
+.whats-new-footer{position:sticky;bottom:0;flex:0 0 auto;margin-top:10px;padding-top:10px;background:inherit}
+.whats-new-footer .button{width:100%;min-height:46px}
+.whats-new-dialog::backdrop{background:#050406a8;backdrop-filter:blur(9px);-webkit-backdrop-filter:blur(9px)}
+@media(max-width:520px){.whats-new-dialog{width:calc(100% - 34px);max-height:72svh;padding:15px 14px 12px}.whats-new-item{padding:9px}.whats-new-intro{font-size:.82rem}.whats-new-list{gap:7px}}
+/* Secret menu header: home control and title share one aligned row. */
+.secret-stage-heading-row{display:flex;align-items:center;justify-content:space-between;gap:14px;margin:0 0 20px}
+.secret-stage-panel #secret-stage-title{position:static!important;max-width:none!important;margin:0!important;white-space:normal!important;font-size:clamp(2rem,6vw,4.2rem)!important;line-height:.98}
+.secret-stage-panel .secret-close{position:static!important;flex:0 0 48px;width:48px;height:48px;display:grid;place-items:center;margin:0}
+@media(max-width:650px){.secret-stage-panel{padding:22px 16px 18px!important}.secret-stage-panel #secret-stage-title{font-size:clamp(1.9rem,7vw,3rem)!important}.secret-stage-heading-row{margin-bottom:16px}}
+/* The first taxi card starts on the same clean baseline as the others. */
+.taxi-road-effect{display:none!important}
+/* 80s wallet marks: dark neon-glass treatment instead of bright white slabs. */
+body.theme-eighties .wallet-badge,body.mode-80s .wallet-badge,body.theme-80s .wallet-badge{background:linear-gradient(135deg,#28133d,#17152f)!important;color:#f8eaff!important;border:1px solid #ff54c8!important;box-shadow:0 0 10px #ff42c955,inset 0 0 12px #38e8f522!important;text-shadow:0 0 8px #ff65d7!important}
+body.theme-eighties .wallet-google .google-g,body.mode-80s .wallet-google .google-g,body.theme-80s .wallet-google .google-g{background:none!important;color:#4df5ef!important;-webkit-text-fill-color:#4df5ef!important}
+body.theme-eighties .wallet-apple,body.mode-80s .wallet-apple,body.theme-80s .wallet-apple{color:#fff!important}
+body.theme-eighties .apple-pay-mark,body.mode-80s .apple-pay-mark,body.theme-80s .apple-pay-mark{color:#fff!important}
+
+
+/* v32 refinement: nine compact, orderly navigation destinations. */
+.top-nav{display:grid!important;grid-template-columns:repeat(9,minmax(0,1fr));gap:5px!important;flex:1;max-width:1040px;align-items:stretch}
+.top-nav a{display:flex;align-items:center;justify-content:center;gap:4px;min-width:0;min-height:34px;padding:6px 4px!important;border:1px solid #49363b;border-radius:7px;background:linear-gradient(180deg,#1c171b,#100e12);font-size:clamp(.58rem,.75vw,.72rem)!important;line-height:1.1;text-align:center;white-space:normal!important;letter-spacing:0!important}
+.top-nav a:hover,.top-nav a:focus-visible{border-color:var(--hot);background:#251510}
+.top-nav .nav-emoji{flex:0 0 auto}
+@media(max-width:980px){.top-nav{grid-template-columns:repeat(5,minmax(0,1fr))!important}.top-nav a{font-size:.68rem!important;min-height:36px}}
+@media(max-width:700px){.top-nav{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:5px!important}.top-nav a{font-size:.67rem!important;min-height:36px;padding:6px 3px!important}.top-nav a:nth-child(7),.top-nav a:nth-child(8),.top-nav a:nth-child(9){grid-column:auto}}
+/* Footer: remove the oversized translucent link shimmer; animate only the visible logo image. */
+.footer-logo-link::after{content:none!important;display:none!important}
+.footer-logo-link img{position:relative;animation:footer-logo-glow 4.8s ease-in-out infinite}
+@keyframes footer-logo-glow{0%,58%{filter:brightness(1)}78%{filter:brightness(1.55) drop-shadow(0 0 9px #fff8)}100%{filter:brightness(1)}}
+@media(prefers-reduced-motion:reduce){.footer-logo-link img{animation:none!important}}
+/* What's New: compact modal with visible blurred context, scrollable release notes and one completion action. */
+.whats-new-dialog{width:min(520px,calc(100% - 28px));max-height:min(74svh,650px);padding:18px 18px 14px;display:none;flex-direction:column;overflow:hidden}
+.whats-new-dialog[open]{display:flex}
+.whats-new-topline{justify-content:flex-start;min-height:8px}
+.whats-new-topline .whats-new-mark{margin:0 0 7px;width:30px;height:30px}
+.whats-new-dialog h2{font-size:clamp(2rem,6vw,2.7rem)}
+.whats-new-intro{margin:7px 0 12px}
+.whats-new-list{overflow-y:auto;min-height:0;overscroll-behavior:contain;padding:1px 3px 5px 1px;scrollbar-width:thin}
+.whats-new-footer{position:sticky;bottom:0;flex:0 0 auto;margin-top:10px;padding-top:10px;background:inherit}
+.whats-new-footer .button{width:100%;min-height:46px}
+.whats-new-dialog::backdrop{background:#050406a8;backdrop-filter:blur(9px);-webkit-backdrop-filter:blur(9px)}
+@media(max-width:520px){.whats-new-dialog{width:calc(100% - 34px);max-height:72svh;padding:15px 14px 12px}.whats-new-item{padding:9px}.whats-new-intro{font-size:.82rem}.whats-new-list{gap:7px}}
+/* Secret menu header: home control and title share one aligned row. */
+.secret-stage-heading-row{display:flex;align-items:center;justify-content:space-between;gap:14px;margin:0 0 20px}
+.secret-stage-panel #secret-stage-title{position:static!important;max-width:none!important;margin:0!important;white-space:normal!important;font-size:clamp(2rem,6vw,4.2rem)!important;line-height:.98}
+.secret-stage-panel .secret-close{position:static!important;flex:0 0 48px;width:48px;height:48px;display:grid;place-items:center;margin:0}
+@media(max-width:650px){.secret-stage-panel{padding:22px 16px 18px!important}.secret-stage-panel #secret-stage-title{font-size:clamp(1.9rem,7vw,3rem)!important}.secret-stage-heading-row{margin-bottom:16px}}
+/* The first taxi card starts on the same clean baseline as the others. */
+.taxi-road-effect{display:none!important}
+/* 80s wallet marks: dark neon-glass treatment instead of bright white slabs. */
+body.theme-eighties .wallet-badge,body.mode-80s .wallet-badge,body.theme-80s .wallet-badge{background:linear-gradient(135deg,#28133d,#17152f)!important;color:#f8eaff!important;border:1px solid #ff54c8!important;box-shadow:0 0 10px #ff42c955,inset 0 0 12px #38e8f522!important;text-shadow:0 0 8px #ff65d7!important}
+body.theme-eighties .wallet-google .google-g,body.mode-80s .wallet-google .google-g,body.theme-80s .wallet-google .google-g{background:none!important;color:#4df5ef!important;-webkit-text-fill-color:#4df5ef!important}
+body.theme-eighties .wallet-apple,body.mode-80s .wallet-apple,body.theme-80s .wallet-apple{color:#fff!important}
+body.theme-eighties .apple-pay-mark,body.mode-80s .apple-pay-mark,body.theme-80s .apple-pay-mark{color:#fff!important}
+
+/* v33: the footer mark stays static; no ambient shimmer or translucent ghost logo. */
+.footer-logo-link::before,.footer-logo-link::after{content:none!important;display:none!important;animation:none!important}
+.footer-logo-link img{animation:none!important;filter:none!important}
+/* v33: holiday styling is scoped strictly to the What's New dialog. */
+.whats-new-dialog[class*="holiday-"] .whats-new-mark{font-size:1.2rem}
+.whats-new-dialog.holiday-halloween{background:radial-gradient(circle at 90% 0%,#482052 0,#211126 35%,#100d16 78%);border-color:#ff8738;box-shadow:0 0 0 1px #ff873833,0 28px 110px #000d,0 0 38px #ff873833}
+.whats-new-dialog.holiday-halloween h2{color:#ff9b42;text-shadow:2px 2px #51205c}
+.whats-new-dialog.holiday-halloween .whats-new-mark,.whats-new-dialog.holiday-halloween .whats-new-icon{background:#321b3e;border-color:#ff8738;color:#ffb34d}
+.whats-new-dialog.holiday-christmas,.whats-new-dialog.holiday-boxing-day{background:linear-gradient(145deg,#142b22,#10151a 72%);border-color:#c8a65b;box-shadow:0 0 0 1px #c8a65b33,0 28px 110px #000d}
+.whats-new-dialog.holiday-christmas h2,.whats-new-dialog.holiday-boxing-day h2{color:#e6c66e}
+.whats-new-dialog.holiday-christmas .whats-new-mark,.whats-new-dialog.holiday-boxing-day .whats-new-mark{background:#173b2b;border-color:#c8a65b;color:#f1d47c}
+.whats-new-dialog.holiday-new-year{background:linear-gradient(145deg,#111d3d,#170f28 75%);border-color:#e7c96b}
+.whats-new-dialog.holiday-new-year h2{color:#f5d879}
+.whats-new-dialog.holiday-easter{background:linear-gradient(145deg,#28203b,#17152a 75%);border-color:#d6a9df}
+.whats-new-dialog.holiday-easter h2{color:#e6b9ee}
+.whats-new-dialog.holiday-canada-day{background:linear-gradient(145deg,#381b25,#17111a 75%);border-color:#f06a72}
+.whats-new-dialog.holiday-canada-day h2{color:#ff858a}
+.whats-new-dialog.holiday-thanksgiving{background:linear-gradient(145deg,#382316,#1b1211 75%);border-color:#d99a4b}
+.whats-new-dialog.holiday-thanksgiving h2{color:#ffbd68}
+.whats-new-dialog.holiday-valentines-day,.whats-new-dialog.holiday-family-day{background:linear-gradient(145deg,#351a2a,#17111d 75%);border-color:#e78bad}
+.whats-new-dialog.holiday-valentines-day h2,.whats-new-dialog.holiday-family-day h2{color:#ff9ec5}
+.whats-new-dialog.holiday-victoria-day{background:linear-gradient(145deg,#2a1d3c,#14111e 75%);border-color:#c5a1e8}
+.whats-new-dialog.holiday-victoria-day h2{color:#d7b5ff}
+.whats-new-dialog.holiday-civic-holiday,.whats-new-dialog.holiday-labour-day{background:linear-gradient(145deg,#173044,#10141d 75%);border-color:#65c8d8}
+.whats-new-dialog.holiday-civic-holiday h2,.whats-new-dialog.holiday-labour-day h2{color:#78e1e8}
+.whats-new-dialog.holiday-good-friday{background:linear-gradient(145deg,#26302b,#111714 75%);border-color:#a8b9a7}
+.whats-new-dialog.holiday-good-friday h2{color:#c3d1bd}
+body.theme-day .whats-new-dialog[class*="holiday-"]{color:#241a17}
+body.theme-day .whats-new-dialog[class*="holiday-"] .whats-new-item{background:#fffaf3}
+body.theme-eighties .whats-new-dialog[class*="holiday-"]{box-shadow:0 0 0 1px #ff4f9330,0 25px 90px #000d,0 0 40px #42f5f233}
+@media(prefers-reduced-motion:reduce){.footer-logo-link img{animation:none!important}}
+
+/* v35 seasonal What's New accents: brief decorative motion, isolated to the dialog. */
+.whats-new-dialog{position:relative;isolation:isolate}
+.whats-new-seasonal-fx{position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none;border-radius:inherit}
+.whats-new-dialog>*:not(.whats-new-seasonal-fx){position:relative;z-index:1}
+.seasonal-particle{position:absolute;top:-34px;left:var(--x);font-size:clamp(17px,3vw,25px);line-height:1;opacity:0;animation:seasonal-fall 2.55s ease-in var(--delay) both;filter:drop-shadow(0 2px 2px #0005)}
+.seasonal-egg{width:17px;height:23px;border-radius:52% 48% 48% 52%/62% 62% 38% 38%;background:linear-gradient(145deg,#fff8e9,var(--egg-color) 45%,color-mix(in srgb,var(--egg-color),#7b4c8b 24%));border:1px solid #ffffffa8;box-shadow:inset -3px -3px 4px #0002,0 2px 5px #0003}
+@keyframes seasonal-fall{0%{transform:translate3d(0,-8px,0) rotate(var(--spin));opacity:0}12%{opacity:.95}100%{transform:translate3d(var(--drift),calc(74svh + 50px),0) rotate(calc(var(--spin) + 460deg));opacity:0}}
+.whats-new-dialog.holiday-halloween .seasonal-particle,.whats-new-dialog.holiday-thanksgiving .seasonal-particle{font-size:24px}
+.whats-new-dialog.holiday-christmas .seasonal-particle{color:#e7f4ff;text-shadow:0 0 8px #b9dcff}
+.whats-new-dialog.holiday-canada-day .seasonal-particle{filter:drop-shadow(0 0 4px #f44)}
+@media(prefers-reduced-motion:reduce){.whats-new-seasonal-fx{display:none!important}.seasonal-particle{animation:none!important}}

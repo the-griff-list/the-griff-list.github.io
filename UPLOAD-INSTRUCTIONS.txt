@@ -1,0 +1,7 @@
+THE GRIFFLIST V35 — UPLOAD INSTRUCTIONS
+
+This ZIP is split into numbered transfer batches. The folders 100 and 36 are packaging containers, NOT website URL directories.
+
+To publish: open 100 and copy its contents into the ROOT of your GitHub Pages repository. Then open 36 and copy its contents into that same repository root. If asked, merge/replace matching files and preserve any existing nested asset folders. Do NOT upload the numbered containers as folders, because that would change website paths.
+
+The website source files remain at the repository root with their original names. QA scripts are included at the root level, not in a qa/ folder.

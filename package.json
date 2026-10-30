@@ -2,8 +2,8 @@
   "name": "the-grifflist-browser-qa",
   "private": true,
   "scripts": {
-    "test:browser": "playwright test -c qa/playwright.config.js",
-    "test:browser:headed": "playwright test -c qa/playwright.config.js --headed"
+    "test:browser": "playwright test -c playwright.config.js site.spec.js",
+    "test:browser:headed": "playwright test -c playwright.config.js site.spec.js --headed"
   },
   "devDependencies": {
     "@playwright/test": "^1.55.0"
