@@ -1,0 +1,19 @@
+THE GRIFFLIST WEBSITE — V41 UPDATE NOTES
+
+Taxi page
+- Added a subtle shimmer/glow animation to call buttons, respecting reduced-motion preferences.
+- Kept City Taxi and provider names left-aligned.
+- Fixed Cars Drive visibility handling: audio pauses when Chrome is backgrounded and resumes from its existing playback position when visible again.
+
+Secret Menu
+- Increased the boot and long ambience sound volumes.
+- Swapped the existing Last Cassette and Backstage Arcade sounds: Last Cassette now uses the former Backstage Arcade sound; Backstage Arcade now uses the former Last Cassette sound. Other tile sounds are unchanged.
+- Stops Secret Menu audio when the browser/app is backgrounded.
+- Home returns to the main page toolbar/top.
+
+Homepage / Hospitality
+- Preserved the concise Watch Live section.
+- Condensed the hospitality tipping message to a heading plus one short line.
+
+Packaging
+- Root contains folders named 100 and 42 (100 files and 42 files respectively). No extra V41 folder is nested inside the ZIP.

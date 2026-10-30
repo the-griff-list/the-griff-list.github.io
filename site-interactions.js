@@ -101,8 +101,8 @@
     let resumeHomeMenuOnClose=false;
     const secretBootAudio=new Audio('secret-stage-boot.mp3');
     const secretAmbience=new Audio('secret-stage-ambience.ogg');
-    secretBootAudio.preload='none'; secretBootAudio.volume=.58;
-    secretAmbience.preload='none'; secretAmbience.loop=true; secretAmbience.volume=.72;
+    secretBootAudio.preload='none'; secretBootAudio.volume=.72;
+    secretAmbience.preload='none'; secretAmbience.loop=true; secretAmbience.volume=.86;
     const secretEffects={
       select:new Audio('secret-menu-select.mp3'),
       pickup:new Audio('secret-pickup.mp3'),
@@ -146,6 +146,7 @@
     const stopSecretAudio=()=>{
       [secretBootAudio,secretAmbience,...Object.values(secretEffects)].forEach(a=>{a.pause();try{a.currentTime=0;}catch(_){}});
     };
+    document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')stopSecretAudio();});
     const startSecretAmbience=()=>{
       if(overlay.hidden||!document.body.classList.contains('secret-stage-open'))return;
       if(!secretBootAudio.paused&&!secretBootAudio.ended)return;
@@ -176,11 +177,12 @@
       if(e.target===overlay){close();return;}
       const button=e.target.closest('button');if(!button||!overlay.contains(button))return;
       if(button.matches('.secret-close,.secret-sound-toggle,.arcade-pick'))return;
-      if(button.id==='lost-cassette')playSecretEffect('lostCassette');
+      if(button.id==='lost-cassette')playSecretEffect('transition');
+      else if(button.id==='high-score-open')playSecretEffect('lostCassette');
       else if(button.classList.contains('secret-tile'))playSecretEffect('transition');
       else playSecretEffect('select');
     },true);
-    overlay.querySelector('.secret-close').addEventListener('click',()=>{close();if(!pageIsHome)window.location.href='index.html#secret-menu-button';else window.scrollTo({top:0,behavior:reducedMotion()?'auto':'smooth'});});document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!overlay.hidden)close();});
+    overlay.querySelector('.secret-close').addEventListener('click',()=>{close();if(!pageIsHome)window.location.href='index.html#top';else window.scrollTo({top:0,behavior:reducedMotion()?'auto':'smooth'});});document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!overlay.hidden)close();});
     const content=$('#secret-content',overlay);
     $('#lost-cassette',overlay).addEventListener('click',()=>{content.innerHTML='<div class="cassette-flip"><div class="cassette-art large"><i></i><b></b></div><h3>SIDE B: THE LOST TRACK</h3><p class="secret-note">Original music is on the way. Stay tuned for new sounds from The Grifflist.</p></div>';content.scrollIntoView({behavior:reducedMotion()?'auto':'smooth',block:'start'});});
     $('#secret-message-open',overlay).addEventListener('click',()=>{content.innerHTML='<h3>YOU FOUND IT. 🤘</h3><p>Thanks for taking the time to explore The Grifflist. The best things in rock and roll are often hidden just offstage.</p><p class="secret-note">- Griff</p>';content.scrollIntoView({behavior:reducedMotion()?'auto':'smooth',block:'start'});});
