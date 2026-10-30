@@ -313,6 +313,15 @@ document.addEventListener("click",event=>{
    const toolbarSounds=["ui-sound-01r","ui-sound-05r","ui-sound-06r"];
    const chosen=toolbarSounds[Math.floor(Math.random()*toolbarSounds.length)];
    playSfx(chosen);
+   const href=control.getAttribute("href")||"";
+   const isExternalPage=/^(https?:)?\/\//i.test(href)||(!href.startsWith("#")&&!href.startsWith("javascript:"));
+   if(isExternalPage){
+     event.preventDefault();
+     window.setTimeout(()=>{window.location.href=href;},420);
+   }else if(href.startsWith("#")){
+     const target=document.querySelector(href);
+     if(target){event.preventDefault();target.scrollIntoView({behavior:"smooth",block:"center"});target.classList.remove("section-highlight");void target.offsetWidth;target.classList.add("section-highlight");window.setTimeout(()=>target.classList.remove("section-highlight"),2600);}
+   }
  } else if(control.matches("a[href^='#']"))playSfx("scroll-sfx");
  if(control.closest(".support-grid")||control.id==="show-kofi-qr")playSfx("cash-sfx");
  if(control.matches("button,a")){control.classList.remove("button-pressed");void control.offsetWidth;control.classList.add("button-pressed");window.setTimeout(()=>control.classList.remove("button-pressed"),220);}

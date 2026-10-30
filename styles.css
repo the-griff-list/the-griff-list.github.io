@@ -2395,3 +2395,33 @@ body.theme-eighties footer.site-footer .footer-logo-link img{filter:saturate(1.8
 @media(prefers-reduced-motion:reduce){.footer-logo-link::after{animation:none!important;display:none!important}.footer-logo-link img{animation:none!important}}
 /* V39 highlight is drawn inside the section so ancestor clipping cannot cut off its lower edge. */
 .section.section-highlight{outline:0!important;outline-offset:0!important;box-shadow:inset 0 0 0 3px var(--hot),inset 0 0 0 6px color-mix(in srgb,var(--hot),transparent 68%),inset 0 0 22px color-mix(in srgb,var(--hot),transparent 82%)!important;}
+
+
+/* V40 refinements: cleaner navigation, centered section landings, and mode-consistent highlights. */
+.site-header .top-nav a{font-size:clamp(.82rem,1.15vw,.98rem);font-weight:900;color:#fff!important;-webkit-text-stroke:0!important;text-shadow:0 1px 2px #0008!important}
+.section.section-highlight{outline:2px solid var(--hot)!important;outline-offset:4px!important;box-shadow:0 0 0 2px color-mix(in srgb,var(--hot) 35%,transparent),0 0 22px color-mix(in srgb,var(--hot) 42%,transparent)!important;animation:section-border-pulse 1.15s cubic-bezier(.2,.8,.2,1) 2}
+body.theme-night .section.section-highlight{outline-color:#ff8c43!important;box-shadow:0 0 0 2px #ff8c4355,0 0 24px #ff8c4366!important}
+body.theme-night .appearance-option[aria-pressed="true"],body.theme-night .theme-option[aria-pressed="true"]{border-color:#ff8c43!important;color:#ffad63!important;box-shadow:0 0 0 2px #ff8c4355,0 0 22px #ff8c4380!important}
+body.theme-night .footer-top-link{border-color:#ff8c43!important;box-shadow:0 0 14px #ff8c4355!important}
+body.theme-day .song-reveal>summary,body.theme-day .song-reveal .song-list-heading{color:#fff!important}
+body.theme-day .contact-section h2{color:var(--heading)!important}
+.rock-meter-art{border-radius:22px!important;clip-path:inset(0 round 22px)}
+body.theme-day .rock-meter-card,body.theme-day .rock-meter-art-wrap{border-color:#9b958b!important}
+.hospitality-thanks p{max-width:34ch;margin-inline:auto;line-height:1.35}
+.taxi-card h2{text-align:left!important;margin-left:0!important}
+.taxi-card a.call{position:relative;overflow:hidden}
+.taxi-card a.call::after{content:"";position:absolute;top:-40%;left:-70%;width:38%;height:180%;transform:skewX(-22deg);background:linear-gradient(90deg,transparent,#ffffff88,transparent);animation:taxi-call-glimmer 3.8s ease-in-out infinite}
+@keyframes taxi-call-glimmer{0%,55%{left:-70%}85%,100%{left:140%}}
+.whats-new-dialog{position:relative;isolation:isolate;overflow-x:hidden;overflow-y:auto;clip-path:inset(0 round 10px)}
+.whats-new-dialog>.whats-new-seasonal-fx{position:absolute;inset:0;z-index:4;overflow:hidden;border-radius:inherit;clip-path:inset(0 round 10px);pointer-events:none}
+.whats-new-dialog>.whats-new-topline,.whats-new-dialog>.whats-new-intro,.whats-new-dialog>.whats-new-list,.whats-new-dialog>.whats-new-footer{position:relative;z-index:1}
+.whats-new-topline{justify-content:flex-start;gap:12px}
+.whats-new-dialog h2{margin:0}
+.whats-new-mark{display:inline-grid;flex:0 0 32px;width:32px;height:32px;margin:0;border:0;background:transparent;box-shadow:none}
+.whats-new-intro:empty{display:none}
+@media(prefers-reduced-motion:reduce){.taxi-card a.call::after{animation:none}}
+
+
+/* V40: discreet administrator entry below the Secret Menu control. */
+.secret-admin-link{display:inline-block;margin:7px auto 0;padding:3px 8px;color:var(--muted);font-size:.68rem;font-weight:600;letter-spacing:.08em;text-decoration:none;opacity:.72;border:0;background:transparent}
+.secret-admin-link:hover,.secret-admin-link:focus-visible{color:var(--hot);opacity:1;text-decoration:underline}

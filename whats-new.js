@@ -1,8 +1,8 @@
 (()=>{
  'use strict';
  // Bump RELEASE_ID and RELEASE_AT for every meaningful public release.
- const RELEASE_ID='v39-navigation-audio-polish';
- const RELEASE_AT=new Date('2026-10-30T03:30:00-03:00').getTime();
+ const RELEASE_ID='v40-seasonal-navigation-polish';
+ const RELEASE_AT=new Date('2026-10-30T04:30:00-03:00').getTime();
  const RELEASE_WINDOW=7*24*60*60*1000;
  const WITHIN_SEVEN_DAYS=Date.now()>=RELEASE_AT && Date.now()-RELEASE_AT<=RELEASE_WINDOW;
  const STORAGE_KEY='grifflistWhatsNewSeen.v1';
@@ -34,10 +34,16 @@
    {id:'labour-day-us',date:nthWeekday(year,8,1,1),title:'What’s new, weekend crew?',intro:'A long-weekend soundtrack for our American neighbours, too.',emoji:'🇺🇸',effect:'stars',priority:2},
    {id:'truth-reconciliation',date:new Date(year,8,30),title:'Honouring truth and remembrance',intro:'A moment to listen, learn, and honour Indigenous communities.',emoji:'🧡',respectful:true,priority:1},
    {id:'thanksgiving',date:nthWeekday(year,9,1,2),title:'What’s new, thankful crew?',intro:'Grateful for the music, the moments, and the crowd.',emoji:'🍂',effect:'leaves',priority:1},
-   {id:'halloween',date:new Date(year,9,31),title:'What’s new, Griffy-Doo?',intro:'A spooky little update has entered the stage.',emoji:'👻',effect:'leaves',priority:1},
+   {id:'halloween',date:new Date(year,9,31),title:'What’s new, Griffy-Doo?',intro:'',emoji:'👻',effect:'leaves',priority:1},
    {id:'veterans-day-us',date:new Date(year,10,11),title:'Honouring those who served',intro:'A respectful moment to recognize American veterans.',emoji:'🇺🇸',respectful:true,priority:2},
    {id:'remembrance-day',date:new Date(year,10,11),title:'We remember',intro:'Honouring those who served and those who continue to serve.',emoji:'🌺',respectful:true,priority:1},
    {id:'thanksgiving-us',date:nthWeekday(year,10,4,4),title:'What’s new, grateful crew?',intro:'Wishing our American neighbours a warm and joyful Thanksgiving.',emoji:'🦃',effect:'leaves',priority:2},
+   {id:'st-patricks-day',date:new Date(year,2,17),title:'What’s new, lucky crew?',intro:'A little green, a little gold, and plenty of good music.',emoji:'☘️',effect:'stars',priority:3},
+   {id:'mothers-day',date:nthWeekday(year,4,0,2),title:'What’s new, wonderful crew?',intro:'Celebrating the people who keep the rhythm going.',emoji:'💐',effect:'hearts',priority:3},
+   {id:'fathers-day',date:nthWeekday(year,5,0,3),title:'What’s new, rock crew?',intro:'A little appreciation for the dads and father figures.',emoji:'🎸',effect:'stars',priority:3},
+   {id:'national-indigenous-peoples-day',date:new Date(year,5,21),title:'Recognizing Indigenous Peoples',intro:'Recognizing the histories, cultures, and contributions of First Nations, Inuit, and Métis peoples.',emoji:'🧡',respectful:true,priority:1},
+   {id:'canadian-thanksgiving-eve',date:nthWeekday(year,9,1,2),title:'What’s new, thankful crew?',intro:'Grateful for the music, the moments, and the crowd.',emoji:'🍂',effect:'leaves',priority:1},
+   {id:'black-friday',date:nthWeekday(year,10,5,4),title:'What’s new, music crew?',intro:'A little seasonal surprise for the crowd.',emoji:'🎸',effect:'stars',priority:4},
    {id:'christmas',date:new Date(year,11,25),start:new Date(year,11,18),end:new Date(year,11,25),title:'What’s new, jingle crew?',intro:'Wishing you a rockin’ Christmas and a bright holiday season.',emoji:'🎄',effect:'snow',priority:1},
    {id:'boxing-day',date:new Date(year,11,26),start:new Date(year,11,26),end:new Date(year,11,26),title:'What’s new, gift crew?',intro:'One more day for good tunes and good company.',emoji:'🎁',effect:'stars',priority:1},
    {id:'new-year-eve',date:new Date(year+1,0,1),start:new Date(year,11,27),end:new Date(year+1,0,1),title:'What’s new, midnight crew?',intro:'Count down to another year of great music.',emoji:'🥂',effect:'stars',priority:1}
@@ -70,7 +76,7 @@
   const intro=document.getElementById('whats-new-intro');
   const mark=dialog.querySelector('.whats-new-mark');
   if(title)title.textContent=seasonal.title;
-  if(intro)intro.textContent=seasonal.intro;
+  if(intro){intro.textContent=seasonal.intro;if(!seasonal.intro)intro.hidden=true;}
   if(mark)mark.textContent=seasonal.emoji;
   dialog.classList.add('holiday-'+seasonal.id);
   dialog.dataset.holiday=seasonal.id;
@@ -84,7 +90,7 @@
     const pool=symbols[seasonal.effect]||symbols.stars;
     if(seasonal.effect==='eggs'){particle.classList.add('seasonal-egg');particle.style.setProperty('--egg-color',palette[i%palette.length]);}
     else particle.textContent=pool[i%pool.length];
-    particle.style.setProperty('--x',(Math.random()*100).toFixed(2)+'%');
+    particle.style.setProperty('--x',(2+Math.random()*96).toFixed(2)+'%');
     particle.style.setProperty('--delay',(Math.random()*.42).toFixed(2)+'s');
     particle.style.setProperty('--drift',((Math.random()-.5)*90).toFixed(0)+'px');
     particle.style.setProperty('--spin',(Math.random()*360).toFixed(0)+'deg');
