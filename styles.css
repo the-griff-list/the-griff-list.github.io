@@ -2342,3 +2342,56 @@ body.theme-eighties .whats-new-dialog[class*="holiday-"]{box-shadow:0 0 0 1px #f
 .whats-new-dialog.holiday-christmas .seasonal-particle{color:#e7f4ff;text-shadow:0 0 8px #b9dcff}
 .whats-new-dialog.holiday-canada-day .seasonal-particle{filter:drop-shadow(0 0 4px #f44)}
 @media(prefers-reduced-motion:reduce){.whats-new-seasonal-fx{display:none!important;transition:none!important}.seasonal-particle{animation:none!important}}
+
+
+/* V38: longer seasonal motion across the complete What's New panel. */
+.whats-new-seasonal-fx{inset:0;z-index:2;opacity:0;transition:opacity .85s ease-in-out;border-radius:inherit}
+.whats-new-seasonal-fx.is-visible{opacity:1}
+.whats-new-seasonal-fx.is-closing{opacity:0;transition:opacity .85s ease-in-out}
+.whats-new-dialog>*:not(.whats-new-seasonal-fx){position:relative;z-index:1}
+.seasonal-particle{animation-duration:4.5s; font-size:clamp(18px,3.2vw,27px)}
+@media(prefers-reduced-motion:reduce){.whats-new-seasonal-fx{display:none!important;transition:none!important}.seasonal-particle{animation:none!important}}
+
+
+/* V38 follow-up: concise request controls, taxi CTA and matching footer mark across themes. */
+#request-form .random-request-song{display:flex!important;align-self:center!important;justify-content:center!important;margin:12px auto 10px!important;width:min(100%,360px)!important;}
+#request-form>button[type="submit"]{display:flex!important;width:100%!important;}
+#request .request-status-panel{grid-column:1/-1!important;width:100%!important;margin:4px 0 0!important;padding:0!important;border:0!important;outline:0!important;background:transparent!important;box-shadow:none!important;border-radius:0!important;}
+#request .request-status-actions{display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;width:100%!important;margin:0!important;padding:0!important;background:transparent!important;border:0!important;box-shadow:none!important;text-align:center!important;}
+#request #check-last-request{width:fit-content!important;max-width:100%!important;margin:0 auto!important;}
+#request #request-status-result{max-width:100%;text-align:center;}
+#safe-ride-home .safe-ride-copy{width:100%!important;max-width:720px!important;margin:0 auto!important;padding:0!important;border:0!important;outline:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;}
+#safe-ride-home .safe-ride-button{display:flex!important;align-items:center!important;justify-content:center!important;width:100%!important;min-height:64px!important;border-radius:12px!important;box-shadow:0 4px 0 #74294f!important;}
+#safe-ride-home.section{padding-inline:clamp(0px,2vw,12px)!important;}
+#contact #booking-copy{box-shadow:0 4px 0 #74294f!important;}
+/* The footer uses the same original transparent logo artwork as the header, without extra tinting. */
+footer.site-footer .footer-logo-link img{display:block!important;opacity:1!important;filter:drop-shadow(0 1px 1px rgba(45,28,18,.38))!important;animation:none!important;}
+footer.site-footer .footer-logo-link::before,footer.site-footer .footer-logo-link::after{content:none!important;display:none!important;}
+body.theme-day footer.site-footer .footer-logo-link img{filter:drop-shadow(0 1px 1px rgba(45,28,18,.38)) drop-shadow(0 0 2px rgba(255,255,255,.7))!important;}
+
+
+/* V39: consistent navigation hierarchy, visible focus/highlight edges and footer branding. */
+.top-nav{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;grid-template-rows:repeat(3,minmax(42px,auto))!important;grid-auto-flow:column!important;gap:7px!important;overflow:visible!important;padding:5px!important;}
+.top-nav a{font-size:clamp(.76rem,1.15vw,.9rem)!important;line-height:1.15!important;min-height:42px!important;padding:8px 6px!important;text-shadow:0 1px 2px #000!important;-webkit-text-stroke:.18px currentColor;overflow:visible!important;}
+.top-nav a:focus-visible{outline:3px solid var(--hot)!important;outline-offset:3px!important;}
+.top-nav,.site-header{overflow:visible!important;}
+.section.section-highlight{outline:3px solid var(--hot)!important;outline-offset:5px!important;box-shadow:0 0 0 2px var(--panel),0 0 0 6px color-mix(in srgb,var(--hot),transparent 55%),0 0 24px color-mix(in srgb,var(--hot),transparent 40%)!important;clip-path:none!important;}
+.section{scroll-margin-top:calc(var(--header-height,100px) + 18px)!important;}
+/* Keep the footer mark's artwork transparent while matching the header's theme-specific finish. */
+.footer-logo-link{position:relative!important;isolation:isolate!important;overflow:visible!important;}
+.footer-logo-link::after{content:""!important;display:block!important;position:absolute!important;inset:0!important;pointer-events:none!important;background:linear-gradient(110deg,transparent 35%,#ffffffa8 49%,#ffffff10 56%,transparent 68%)!important;-webkit-mask-image:url("grifflist-logo.webp")!important;mask-image:url("grifflist-logo.webp")!important;-webkit-mask-repeat:no-repeat!important;mask-repeat:no-repeat!important;-webkit-mask-position:center!important;mask-position:center!important;-webkit-mask-size:contain!important;mask-size:contain!important;animation:logo-image-shimmer 4.8s ease-in-out infinite!important;}
+.footer-logo-link img{display:block!important;opacity:1!important;animation:inherit!important;filter:drop-shadow(0 1px 1px rgba(45,28,18,.38))!important;}
+body.theme-day footer.site-footer .footer-logo-link img{filter:contrast(1.16) saturate(1.08) drop-shadow(0 1px 1px #3c2a1b) drop-shadow(0 0 2px #fffaf2)!important;}
+body.theme-night footer.site-footer .footer-logo-link img{filter:drop-shadow(0 2px 5px rgba(255,230,236,.32)) drop-shadow(0 0 12px rgba(191,47,70,.16))!important;}
+body.theme-eighties footer.site-footer .footer-logo-link img{filter:saturate(1.8) hue-rotate(275deg) contrast(1.12) drop-shadow(0 0 8px rgba(255,62,170,.62)) drop-shadow(0 0 13px rgba(69,244,240,.48))!important;}
+.whats-new-dialog{overflow:hidden!important;}
+.whats-new-topline{display:flex!important;align-items:center!important;justify-content:flex-start!important;gap:12px!important;margin:0 0 12px!important;}
+.whats-new-topline h2{margin:0!important;}
+.whats-new-topline .whats-new-mark{display:inline-grid!important;flex:0 0 auto!important;width:auto!important;height:auto!important;margin:0!important;padding:0!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;font-size:1.35em!important;}
+.whats-new-seasonal-fx{inset:0!important;z-index:2!important;overflow:hidden!important;border-radius:inherit!important;clip-path:inset(0 round 10px)!important;}
+.seasonal-particle{animation-duration:3s!important;}
+#safe-ride-home .safe-ride-copy{border:0!important;outline:0!important;background:transparent!important;box-shadow:none!important;}
+#safe-ride-home .safe-ride-button{border:0!important;outline:0!important;box-shadow:0 5px 0 #74294f!important;}
+@media(prefers-reduced-motion:reduce){.footer-logo-link::after{animation:none!important;display:none!important}.footer-logo-link img{animation:none!important}}
+/* V39 highlight is drawn inside the section so ancestor clipping cannot cut off its lower edge. */
+.section.section-highlight{outline:0!important;outline-offset:0!important;box-shadow:inset 0 0 0 3px var(--hot),inset 0 0 0 6px color-mix(in srgb,var(--hot),transparent 68%),inset 0 0 22px color-mix(in srgb,var(--hot),transparent 82%)!important;}

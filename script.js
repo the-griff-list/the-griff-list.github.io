@@ -271,6 +271,7 @@ if(titleAudio){
 // Cross-page toolbar links with a hash should land on the requested section, not the title screen.
 if(location.hash && location.hash !== "#top"){
  siteEntered=true;
+ try{sessionStorage.setItem("grifflistEntered.v1","yes");}catch(e){}
  splash?.classList.add("dismissed");
  document.body.classList.remove("splash-open");
  startMenuMusic();
@@ -286,9 +287,12 @@ function enterSite(){
    catch(e){startMenuMusic();}
  }else startMenuMusic();
 }
-document.body.classList.add("splash-open");
-splash.addEventListener("click",enterSite);
-splash.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();enterSite();}});
+let restoredMenu=false;
+try{restoredMenu=sessionStorage.getItem("grifflistEntered.v1")==="yes";}catch(e){}
+if(restoredMenu){siteEntered=true;splash?.classList.add("dismissed");document.body.classList.remove("splash-open");startMenuMusic();}
+else document.body.classList.add("splash-open");
+splash?.addEventListener("click",enterSite);
+splash?.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();enterSite();}});
 document.addEventListener("keydown",e=>{if(!splash.classList.contains("dismissed")&&(e.key==="Enter"||e.key===" "))enterSite();});
 // Pause background music when the tab/app is hidden; resume only after the visitor has entered the site.
 document.addEventListener("visibilitychange",()=>{
