@@ -2331,12 +2331,14 @@ body.theme-eighties .whats-new-dialog[class*="holiday-"]{box-shadow:0 0 0 1px #f
 
 /* v35 seasonal What's New accents: brief decorative motion, isolated to the dialog. */
 .whats-new-dialog{position:relative;isolation:isolate}
-.whats-new-seasonal-fx{position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none;border-radius:inherit}
+.whats-new-seasonal-fx{position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none;border-radius:inherit;contain:paint;opacity:0;transition:opacity .32s ease-out}
+.whats-new-seasonal-fx.is-visible{opacity:1}
+.whats-new-seasonal-fx.is-closing{opacity:0;transition:opacity .24s ease-in}
 .whats-new-dialog>*:not(.whats-new-seasonal-fx){position:relative;z-index:1}
-.seasonal-particle{position:absolute;top:-34px;left:var(--x);font-size:clamp(17px,3vw,25px);line-height:1;opacity:0;animation:seasonal-fall 2.55s ease-in var(--delay) both;filter:drop-shadow(0 2px 2px #0005)}
+.seasonal-particle{position:absolute;top:0;left:var(--x);font-size:clamp(17px,3vw,25px);line-height:1;opacity:0;animation:seasonal-fall 1.5s ease-in-out var(--delay) both;filter:drop-shadow(0 2px 2px #0005);will-change:transform,opacity}
 .seasonal-egg{width:17px;height:23px;border-radius:52% 48% 48% 52%/62% 62% 38% 38%;background:linear-gradient(145deg,#fff8e9,var(--egg-color) 45%,color-mix(in srgb,var(--egg-color),#7b4c8b 24%));border:1px solid #ffffffa8;box-shadow:inset -3px -3px 4px #0002,0 2px 5px #0003}
-@keyframes seasonal-fall{0%{transform:translate3d(0,-8px,0) rotate(var(--spin));opacity:0}12%{opacity:.95}100%{transform:translate3d(var(--drift),calc(74svh + 50px),0) rotate(calc(var(--spin) + 460deg));opacity:0}}
+@keyframes seasonal-fall{0%{transform:translate3d(0,-12px,0) rotate(var(--spin));opacity:0}18%{opacity:.9}78%{opacity:.82}100%{transform:translate3d(var(--drift),var(--fall-distance,160px),0) rotate(calc(var(--spin) + 150deg));opacity:0}}
 .whats-new-dialog.holiday-halloween .seasonal-particle,.whats-new-dialog.holiday-thanksgiving .seasonal-particle{font-size:24px}
 .whats-new-dialog.holiday-christmas .seasonal-particle{color:#e7f4ff;text-shadow:0 0 8px #b9dcff}
 .whats-new-dialog.holiday-canada-day .seasonal-particle{filter:drop-shadow(0 0 4px #f44)}
-@media(prefers-reduced-motion:reduce){.whats-new-seasonal-fx{display:none!important}.seasonal-particle{animation:none!important}}
+@media(prefers-reduced-motion:reduce){.whats-new-seasonal-fx{display:none!important;transition:none!important}.seasonal-particle{animation:none!important}}
