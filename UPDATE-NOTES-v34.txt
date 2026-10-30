@@ -1,0 +1,26 @@
+THE GRIFFLIST — UPDATE v34
+
+SEASONAL WHAT'S NEW
+- Removed overlapping holiday announcement windows with an explicit winter-holiday schedule.
+- Christmas announcement runs December 18–25 (inclusive).
+- Boxing Day receives its own single-day announcement on December 26.
+- New Year's Eve / New Year's Day share one announcement from December 27 through January 1 (inclusive).
+- This prevents Christmas, Boxing Day and New Year announcements from competing during overlapping seven-day windows.
+- Easter uses one Easter campaign beginning seven days before Easter Sunday; Good Friday is folded into that campaign to avoid competing announcements.
+- Other Canadian holiday announcements use a seven-day lead-in through the holiday itself.
+- Seasonal headlines now use short rhyme/near-rhyme pairings: Griffy-Doo, jingle crew, midnight crew, bunny crew, maple crew, etc.
+
+SEASONAL ANIMATIONS
+- Halloween and Thanksgiving: brief falling autumn leaves.
+- Christmas: brief falling snowflakes.
+- Easter: brief falling pastel eggs.
+- Canada Day: brief falling maple leaves.
+- Valentine's Day and Family Day: brief falling hearts.
+- Other celebratory holidays: brief falling stars/sparkles.
+- Respectful observances (Truth and Reconciliation Day and Remembrance Day) remain calm and have no celebratory particle animation.
+- Effects run for approximately 2.6 seconds, only inside What's New, and are disabled for reduced-motion preferences.
+
+TECHNICAL
+- Updated release identifier to v34.
+- Updated HTML cache-busting references and service-worker cache name.
+- Preserved website root file structure; QA scripts remain in repository root, not in a qa folder.

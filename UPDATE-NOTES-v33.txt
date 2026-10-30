@@ -1,0 +1,9 @@
+THE GRIFFLIST — UPDATE v33
+
+- Removed the permanent What's New footer button. The announcement now opens only automatically after the title screen when a release is within its seven-day announcement window and has not already been seen on that browser.
+- Added seasonal What's New titles and dialog-only colour treatments for Canadian holiday windows beginning seven days before each holiday. Halloween title: “What’s new, Griffy-Doo?”
+- Added seasonal wording for Christmas, New Year, Easter, Canada Day, Thanksgiving, Family Day, Victoria Day, Civic Holiday, Labour Day and other supported dates. Good Friday uses respectful rather than jokey wording.
+- Removed the footer logo shimmer/filter animation to prevent the unwanted translucent background/shimmer effect.
+- Bumped asset query versions and service-worker cache to v33.
+
+Seasonal timing is based on the visitor device's local calendar. The What's New seasonal treatment is scoped to the dialog only; the rest of the site theme is unchanged.

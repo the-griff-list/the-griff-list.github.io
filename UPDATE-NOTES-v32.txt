@@ -1,0 +1,16 @@
+THE GRIFFLIST — UPDATE v32
+
+- Added Rock-O-Meter 🎚️ as the ninth toolbar destination across pages.
+- Toolbar anchors now aim to center their target section in the visible viewport.
+- Reworked What's New: removed the kicker, X button, and slogan; updates scroll inside a smaller modal; visitors use LET'S ROCK to finish.
+- What's New auto-opens for returning visitors only during the seven days after this release date.
+- Removed the decorative taxi-road strip that appeared as a blue line above City Taxi.
+- Taxi music now pauses when the browser is backgrounded and attempts to resume at its previous playback position when the visitor returns.
+- Reused shared toolbar interaction sounds on pages with the shared toolbar.
+- Raised Secret Menu ambience volume after the boot sound.
+- Aligned Secret Menu heading and Home button side-by-side.
+- Refined 80s Google Pay / Apple Pay badge styling to match neon mode.
+- Replaced footer-link shimmer with a restrained shimmer effect on the actual footer logo image.
+- Updated asset and offline cache versions.
+
+NOTE: Browser and physical-device testing still needs to be run against the published HTTPS build. Background audio resumption is subject to browser/OS autoplay policies.

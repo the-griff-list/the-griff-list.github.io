@@ -1,0 +1,10 @@
+THE GRIFFLIST — UPDATE v35
+
+- Added selected US holiday observances alongside Canadian seasonal campaigns.
+- Added US Memorial Day, Juneteenth, Independence Day, Labour Day, Veterans Day, and Thanksgiving.
+- Canadian observances take precedence when dates coincide (including Thanksgiving and Remembrance Day).
+- Seasonal campaigns are clipped so two What's New themes do not compete; Christmas, Boxing Day, and New Year retain their dedicated winter sequence.
+- Updated release/cache identifiers to v35.
+- Positive world-event themes are not automatically invented: only a dated, verified, editorially approved event should be added, with an expiry date.
+
+Packaging note: this ZIP is grouped into numbered batches for easier transfer. Merge the contents of each batch into the GitHub repository root, preserving paths; do not publish the numbered batch folders as website paths.
