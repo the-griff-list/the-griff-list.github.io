@@ -7,5 +7,37 @@
   "display": "standalone",
   "background_color": "#080808",
   "theme_color": "#080808",
-  "icons": [{"src":"./app-icon.png","sizes":"512x512","type":"image/png","purpose":"any maskable"}]
+  "icons": [
+    {
+      "src": "./app-icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": [
+    "music",
+    "entertainment",
+    "lifestyle"
+  ],
+  "shortcuts": [
+    {
+      "name": "Song Catalog",
+      "short_name": "Catalog",
+      "description": "Browse the live song repertoire",
+      "url": "./index.html#catalog"
+    },
+    {
+      "name": "Watch Live",
+      "short_name": "Watch Live",
+      "description": "Open the live show page",
+      "url": "./watch-live.html"
+    },
+    {
+      "name": "Sober Drive",
+      "short_name": "Sober Drive",
+      "description": "Find a safe ride home",
+      "url": "./taxi-services.html"
+    }
+  ]
 }

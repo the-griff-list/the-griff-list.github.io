@@ -219,7 +219,7 @@ const splash=$("#splash");
 const titleAudio=$("#title-screen-audio"), menuAudio=$("#menu-screen-audio");
 const audioVolumes={
   "title-screen-audio":0.78,
-  "menu-screen-audio":0.42,
+  "menu-screen-audio":0.48,
   "cash-sfx":0.78,
   "highway-riser-sfx":0.78,
   "notes-ripple-sfx":0.78,
@@ -274,12 +274,13 @@ if(location.hash && location.hash !== "#top"){
  splash?.classList.add("dismissed");
  document.body.classList.remove("splash-open");
  startMenuMusic();
- window.setTimeout(()=>{const target=document.getElementById(decodeURIComponent(location.hash.slice(1)));target?.scrollIntoView({behavior:"auto",block:"start"});},120);
+ 
 }
 function enterSite(){
  if(splash.classList.contains("dismissed"))return;
  siteEntered=true;
  splash.classList.add("dismissed");document.body.classList.remove("splash-open");
+ window.dispatchEvent(new Event("grifflist:entered"));
  if(titleAudio){
    try{titleAudio.pause();titleAudio.currentTime=0;titleAudio.volume=audioVolumes["title-screen-audio"];const p=titleAudio.play();if(p&&p.then){p.then(()=>{titleStarted=true;}).catch(()=>{startMenuMusic();});}else titleStarted=true;}
    catch(e){startMenuMusic();}

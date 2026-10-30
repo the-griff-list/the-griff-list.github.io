@@ -35,11 +35,12 @@
     themeControls.addEventListener('click',e=>{const b=e.target.closest('[data-theme]');if(b){applyTheme(b.dataset.theme);play('select-sfx');}});
   }
   let savedTheme='night'; try{savedTheme=localStorage.getItem('grifflistTheme.v1')||'night';}catch(_){} applyTheme(savedTheme);
-  // Direct toolbar destinations never route through the title screen; highlight requested anchors.
-  const highlightTarget=(el)=>{if(!el)return;el.classList.remove('section-highlight','secret-highlight');void el.offsetWidth;el.classList.add(el.id==='secret-menu-button'?'secret-highlight':'section-highlight');window.setTimeout(()=>el.classList.remove('section-highlight','secret-highlight'),3200);};
-  const highlightSecret=()=>{const target=$('#secret-menu-button')||$('.secret-stage-trigger');if(target){target.scrollIntoView({behavior:reducedMotion()?'auto':'smooth',block:'center'});highlightTarget(target);}};
-  if(location.hash==='#secret-menu-button'){window.setTimeout(()=>{const splash=$('#splash');if(splash){splash.classList.add('dismissed');document.body.classList.remove('splash-open');}highlightSecret();},350);}
-  document.addEventListener('click',e=>{const a=e.target.closest('.top-nav a[href*="secret-menu-button"]');if(a&&location.pathname.endsWith('watch-live.html')){e.preventDefault();window.location.href='index.html#secret-menu-button';}});
+  // Stable anchor navigation: dismiss the title layer first, then scroll once layout is ready.
+  const highlightTarget=(el)=>{if(!el)return;el.classList.remove('section-highlight','secret-highlight');el.classList.add(el.id==='secret-menu-button'?'secret-highlight':'section-highlight');window.setTimeout(()=>el.classList.remove('section-highlight','secret-highlight'),2600);};
+  const scrollToAnchor=(id,updateHash=true)=>{const target=document.getElementById(id);if(!target)return;const splash=$('#splash');if(splash){splash.classList.add('dismissed');document.body.classList.remove('splash-open');}if(updateHash&&history.replaceState)history.replaceState(null,'','#'+encodeURIComponent(id));requestAnimationFrame(()=>requestAnimationFrame(()=>{const header=$('.site-header');const offset=(header?.getBoundingClientRect().height||0)+12;const top=target.getBoundingClientRect().top+window.scrollY-offset;window.scrollTo({top:Math.max(0,top),behavior:reducedMotion()?'auto':'smooth'});highlightTarget(target);}));};
+  const highlightSecret=()=>scrollToAnchor('secret-menu-button',false);
+  if(location.hash && location.hash!=='#top'){const id=decodeURIComponent(location.hash.slice(1));window.setTimeout(()=>scrollToAnchor(id,false),180);}
+  document.addEventListener('click',e=>{const a=e.target.closest('.top-nav a[href*="#"]');if(!a)return;const u=new URL(a.href,location.href);if(u.pathname!==location.pathname)return;const id=decodeURIComponent(u.hash.slice(1));if(!id)return;e.preventDefault();scrollToAnchor(id,true);});
   // Rock-O-Meter is a shortcut to the donation options.
   const meter=$('.rock-meter-card');if(meter){meter.setAttribute('role','link');meter.setAttribute('tabindex','0');meter.setAttribute('aria-label','Go to donation options');const goDonate=()=>{const target=$('#tip-options');if(!target)return;target.scrollIntoView({behavior:reducedMotion()?'auto':'smooth',block:'start'});highlightTarget(target);if(history.replaceState)history.replaceState(null,'','#tip-options');};meter.addEventListener('click',goDonate);meter.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();goDonate();}});}
 
@@ -167,9 +168,9 @@
     secret.addEventListener('click',()=>{
       resumeHomeMenuOnClose=Boolean(homeMenuAudio&&!homeMenuAudio.paused);
       if(homeMenuAudio){homeMenuAudio.pause();try{homeMenuAudio.currentTime=0;}catch(_){}}
-      stopSecretAudio();document.body.classList.add('secret-stage-open','secret-glitch-boot');
+      stopSecretAudio();document.body.classList.add('secret-stage-open');
+      reveal();
       secretBootAudio.currentTime=0;secretBootAudio.play().catch(()=>{startSecretAmbience();});
-      if(reducedMotion())reveal();else window.setTimeout(reveal,460);
     });
     overlay.addEventListener('click',e=>{
       if(e.target===overlay){close();return;}
@@ -230,7 +231,7 @@
       };
       content.scrollIntoView({behavior:reducedMotion()?'auto':'smooth',block:'start'});
       const pick=$('.arcade-pick',board);pick.addEventListener('click',()=>{if(!timer)return;score++;scoreEl.textContent=score;pick.style.left=(5+Math.random()*75)+'%';pick.style.top=(5+Math.random()*70)+'%';playSecretEffect('pickup');});
-      start.addEventListener('click',()=>{if(timer)clearInterval(timer);score=0;time=15;scoreEl.textContent=score;timeEl.textContent=time;const count=$('#arcade-countdown',board);start.disabled=true;let n=3;const playCountdownCue=(go=false)=>{const cue=new Audio(go?'ui_sound_10R.mp3':'ui_sound_09R.mp3');cue.volume=.55;cue.play().catch(()=>{});};if(count){count.hidden=false;count.textContent='3';}playCountdownCue();status.textContent='Get ready!';const countTimer=setInterval(()=>{n--;if(count)count.textContent=n>0?String(n):'GO!';if(n>0)playCountdownCue();else playCountdownCue(true);if(n<=0){clearInterval(countTimer);if(count){setTimeout(()=>{count.hidden=true;},450);}start.disabled=false;status.textContent='Rock on!';timer=setInterval(()=>{time--;timeEl.textContent=time;if(time<=0){clearInterval(timer);timer=null;status.textContent=`FINAL SCORE: ${score}.`;try{const previous=Number(localStorage.getItem('grifflistArcadeBest')||0);if(score>previous){localStorage.setItem('grifflistArcadeBest',score);status.textContent='YOU WON THE HIGH SCORE!';playRandomHighScore();}else{status.textContent+=` Personal best: ${previous}.`;}}catch(_){}saveLeaderboardScore(score);}},1000);}},1000);});
+      start.addEventListener('click',()=>{if(timer)clearInterval(timer);score=0;time=15;scoreEl.textContent=score;timeEl.textContent=time;const count=$('#arcade-countdown',board);start.disabled=true;let n=3;const playCountdownCue=(go=false)=>{const cue=new Audio(go?'you_rockR.mp3':'ui_sound_09R.mp3');cue.volume=go ? .72 : .62;cue.play().catch(()=>{});};if(count){count.hidden=false;count.textContent='3';}playCountdownCue();status.textContent='Get ready!';const countTimer=setInterval(()=>{n--;if(count)count.textContent=n>0?String(n):'GO!';if(n>0)playCountdownCue();else playCountdownCue(true);if(n<=0){clearInterval(countTimer);if(count){setTimeout(()=>{count.hidden=true;},450);}start.disabled=false;status.textContent='Rock on!';timer=setInterval(()=>{time--;timeEl.textContent=time;if(time<=0){clearInterval(timer);timer=null;status.textContent=`FINAL SCORE: ${score}.`;try{const previous=Number(localStorage.getItem('grifflistArcadeBest')||0);if(score>previous){localStorage.setItem('grifflistArcadeBest',score);status.textContent='YOU WON THE HIGH SCORE!';playRandomHighScore();}else{status.textContent+=` Personal best: ${previous}.`;}}catch(_){}saveLeaderboardScore(score);}},1000);}},1000);});
     });
   }
 
