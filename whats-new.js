@@ -1,8 +1,8 @@
 (()=>{
  'use strict';
  // Bump RELEASE_ID and RELEASE_AT for every meaningful public release.
- const RELEASE_ID='v37-seasonal-fx-lifecycle';
- const RELEASE_AT=new Date('2026-10-29T00:00:00-03:00').getTime();
+ const RELEASE_ID='v39-navigation-audio-polish';
+ const RELEASE_AT=new Date('2026-10-30T03:30:00-03:00').getTime();
  const RELEASE_WINDOW=7*24*60*60*1000;
  const WITHIN_SEVEN_DAYS=Date.now()>=RELEASE_AT && Date.now()-RELEASE_AT<=RELEASE_WINDOW;
  const STORAGE_KEY='grifflistWhatsNewSeen.v1';
@@ -88,14 +88,14 @@
     particle.style.setProperty('--delay',(Math.random()*.42).toFixed(2)+'s');
     particle.style.setProperty('--drift',((Math.random()-.5)*90).toFixed(0)+'px');
     particle.style.setProperty('--spin',(Math.random()*360).toFixed(0)+'deg');
-    particle.style.setProperty('--fall-distance',Math.max(110,Math.min(190,(dialog.clientHeight||360)*.48))+'px');
+    particle.style.setProperty('--fall-distance',Math.max(110,(dialog.clientHeight||520)-18)+'px');
     fx.appendChild(particle);
    }
    dialog.insertBefore(fx,dialog.firstChild);
    activeSeasonalFx=fx;
-   // Fade the complete effect in and out; it remains clipped to the dialog.
+   // Full-panel effect, clipped by the dialog's rounded boundary.
    requestAnimationFrame(()=>{if(activeSeasonalFx===fx)fx.classList.add('is-visible');});
-   seasonalFxTimer=window.setTimeout(()=>{if(activeSeasonalFx===fx){fx.classList.remove('is-visible');fx.classList.add('is-closing');seasonalFxTimer=window.setTimeout(clearSeasonalFx,260);}},1550);
+   seasonalFxTimer=window.setTimeout(()=>{if(activeSeasonalFx===fx){fx.classList.remove('is-visible');fx.classList.add('is-closing');seasonalFxTimer=window.setTimeout(clearSeasonalFx,700);}},3000);
   }
  }
   const open=()=>{if(dialog.open)return;previousFocus=document.activeElement;if(typeof dialog.showModal==='function')dialog.showModal();else{dialog.setAttribute('open','');document.body.classList.add('whats-new-fallback-lock');}done?.focus();};
