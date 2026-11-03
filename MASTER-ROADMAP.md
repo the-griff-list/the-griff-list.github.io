@@ -23,6 +23,12 @@
 - Apple Pay / Google Pay are payment methods through a compatible processor, not standalone payout rails; confirm provider and eligibility before implementation.
 - Keep priority-request payment status separate from general tips and require verified provider evidence before marking paid.
 
+## Admin experience and business trust
+- Stage Mode, persistent on-device preference, instant request search, and request filters are implemented in the development branch.
+- Donation terminology replaces visible tip wording; voluntary donations are separated from the paid priority-request add-on.
+- A plain-language privacy, terms, donations, and music-rights information page is added. Legal review and accuracy review remain pending.
+- Stage Mode and filtering have passed source-level JavaScript syntax checks; actual phone/browser usability testing is still required.
+
 ## Phase 2 — Watch Live
 - Complete phone-browser WHIP broadcast and viewer WHEP playback against a reachable HTTPS streaming server.
 - Validate camera/microphone permissions, reconnect behavior, stream health, mobile battery/network behavior, viewer playback, and graceful shutdown.
