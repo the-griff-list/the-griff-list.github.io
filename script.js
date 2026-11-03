@@ -109,7 +109,7 @@ const songs = [
 
 // Site settings - replace these placeholders when you're ready.
 const config = {
-  tipEmail: "acdckicksass@hotmail.com",
+  tipEmail: "Griffen.transfers@hotmail.com",
   bookingUrl: "mailto:griffenarsenaultmusic@hotmail.com",
   previewSeconds: 15
 };
@@ -311,7 +311,7 @@ function focusPaymentMethod(method){
  const targets={etransfer:document.querySelector(".payment-etransfer"),paypal:document.querySelector(".payment-paypal"),kofi:document.querySelector(".payment-kofi-wallet")};
  const target=targets[method];const status=document.querySelector("#payment-flow-status");
  if(!target)return;
- if(status){status.hidden=false;status.textContent=method==="etransfer"?"Your request is saved. Copy the e-transfer email below, then send your $5 CAD tip in your banking app.":method==="paypal"?"Your request is saved. Complete your $5 CAD tip through PayPal below.":"Your request is saved. Complete your $5 CAD tip through Ko-fi below.";}
+ if(status){status.hidden=false;status.textContent=method==="etransfer"?"Your request is saved. Send $5 CAD to Griffen.transfers@hotmail.com. In your banking app, use the security question “What song did you request?” and the exact song title as the answer. Your song title will appear in the admin request inbox so the transfer can be deposited.":method==="paypal"?"Your request is saved. Complete your $5 CAD tip through PayPal below.":"Your request is saved. Complete your $5 CAD tip through Ko-fi below.";}
  document.querySelectorAll(".payment-method-banner.payment-highlight").forEach(el=>el.classList.remove("payment-highlight"));
  target.classList.add("payment-highlight");target.scrollIntoView({behavior:"smooth",block:"center"});
  window.setTimeout(()=>target.classList.remove("payment-highlight"),1700);
