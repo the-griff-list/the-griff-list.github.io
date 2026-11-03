@@ -16,7 +16,8 @@
 - Add idempotent, verified CAD tip contribution to Rock-O-Meter; do not silently convert foreign currencies.
 - Review and confirm payment providers, business rules, fees, refunds, chargebacks, reconciliation, and manual verification policy.
 - Evaluate PayPal webhook/API integration before automatically marking PayPal payments verified.
-- E-transfer remains manually verified unless a supported bank/business integration is deliberately approved.
+- E-transfer is temporarily disabled on the public website while the user's bank investigates unauthorized Autodeposit destination changes. Do not display the recipient email or accept e-transfer priority selections until the user explicitly re-enables this method.
+- Do not connect the website to personal banking credentials or automate bank-app acceptance. Keep e-transfer manual unless a supported, authorized bank/business integration is confirmed.
 - Apple Pay / Google Pay are payment methods through a compatible processor, not standalone payout rails; confirm provider and eligibility before implementation.
 - Keep priority-request payment status separate from general tips and require verified provider evidence before marking paid.
 
