@@ -9,7 +9,7 @@ THE GRIFFLIST - SECRET MENU AND PUBLIC FEATURES
 - The Supporter Wall shows only confirmed real donation records; it never invents donors or donation amounts. Admin must verify payments before recording donations.
 - Day, Gothic Night, and neon 80s modes apply to public pages only.
 - Seasonal holiday mode is intentionally deferred until the final design review.
-- PWA offline cache contains static site assets. Online requests, tip updates, and live video still require connectivity.
+- PWA offline cache contains static site assets. Online requests, donation updates, and live video still require connectivity.
 - Supabase migrations are included but must be run manually in the Supabase SQL Editor if not already applied.
 
 
