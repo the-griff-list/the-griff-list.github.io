@@ -135,34 +135,19 @@ Deno.serve(async (request) => {
       return new Response("Completed capture details did not qualify", { status: 200 });
     }
 
-    // Insert the capture into an idempotent ledger. The database trigger
-    // increments the Rock-O-Meter only once per unique PayPal capture ID.
-    await supabaseRequest(supabaseUrl, serviceKey, "/rest/v1/paypal_payments?on_conflict=capture_id", {
+    // Atomically match the verified capture, mark the request paid, and
+    // record the Rock-O-Meter event once per unique capture ID.
+    const recorded = await supabaseRequest(supabaseUrl, serviceKey, "/rest/v1/rpc/record_verified_paypal_capture", {
       method: "POST",
-      headers: { "Prefer": "resolution=ignore-duplicates,return=minimal" },
       body: JSON.stringify({
-        capture_id: captureId,
-        order_id: orderId,
-        payment_reference: customId.toUpperCase(),
-        amount,
-        currency: "CAD",
-        received_at: new Date().toISOString()
+        p_capture_id: captureId,
+        p_order_id: orderId,
+        p_payment_reference: customId.toUpperCase(),
+        p_amount: amount,
+        p_currency: "CAD"
       })
     });
-
-    const updatePath = "/rest/v1/song_requests?payment_checkout_reference=eq." + encodeURIComponent(orderId) +
-      "&payment_reference=eq." + encodeURIComponent(customId.toUpperCase()) +
-      "&payment_method=eq.paypal&payment_status=eq.pending";
-    await supabaseRequest(supabaseUrl, serviceKey, updatePath, {
-      method: "PATCH",
-      headers: { "Prefer": "return=minimal" },
-      body: JSON.stringify({
-        payment_status: "paid",
-        payment_provider: "paypal",
-        payment_provider_reference: captureId,
-        payment_verified_at: new Date().toISOString()
-      })
-    });
+    if (recorded !== true) return new Response("No matching pending request for this capture", { status: 200 });
 
     return new Response("Webhook processed", { status: 200 });
   } catch (error) {
