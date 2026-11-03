@@ -6,7 +6,7 @@ grant select on table public.kofi_tips to authenticated;
 drop policy if exists "Dashboard users can read Ko-fi tips" on public.kofi_tips;
 create policy "Dashboard users can read Ko-fi tips"
 on public.kofi_tips for select to authenticated
-using (auth.role() = 'authenticated');
+using (auth.uid() = '7c4c9232-2c28-47f3-a00a-a371ed23cef5'::uuid);
 
 -- Automatically add CAD-denominated tips to the existing Rock-O-Meter.
 -- Other currencies remain visible in the admin tip history but are not
