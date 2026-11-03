@@ -5,8 +5,8 @@ THE GRIFFLIST - SECRET MENU AND PUBLIC FEATURES
 - PS2 effects are used for menu selection, guitar-pick pickup, transition, Lost Cassette discovery, and randomized high-score celebrations.
 - No Secret Menu background music or sound-mode dropdown is used.
 - Guitar Pick Panic mini-game stores a local personal-best score.
-- Explore contains Crowd Favourites, Encore Vote, and the Rock Wall.
-- The Rock Wall shows only confirmed real tip records; it never invents donors or tip amounts. Admin must verify payments before recording tips.
+- Explore contains Crowd Favourites, Encore Vote, and the Supporter Wall.
+- The Supporter Wall shows only confirmed real donation records; it never invents donors or tip amounts. Admin must verify payments before recording donations.
 - Day, Gothic Night, and neon 80s modes apply to public pages only.
 - Seasonal holiday mode is intentionally deferred until the final design review.
 - PWA offline cache contains static site assets. Online requests, tip updates, and live video still require connectivity.
