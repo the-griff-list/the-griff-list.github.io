@@ -48,7 +48,7 @@ begin
   new.payment_verified_at := null;
   new.payment_status := 'not_required';
 
-  if coalesce(new.note,'') ~* '\[PRIORITY TIP (PENDING|REPORTED)[^]]*VERIFY PAYMENT\]' then
+  if coalesce(new.note,'') ~* 'PRIORITY TIP (PENDING|REPORTED)' then
     v_method := lower((regexp_match(coalesce(new.note,''), 'Method:\s*(kofi|paypal|etransfer)', 'i'))[1]);
     if v_method is not null then
       new.payment_method := v_method;
