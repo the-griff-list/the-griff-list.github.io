@@ -9,6 +9,7 @@ alter table public.song_requests
   add column if not exists payment_status text not null default 'not_required',
   add column if not exists payment_provider text,
   add column if not exists payment_provider_reference text,
+  add column if not exists payment_checkout_reference text,
   add column if not exists payment_verified_at timestamptz;
 
 alter table public.song_requests
@@ -46,6 +47,7 @@ begin
   new.payment_method := null;
   new.payment_provider := null;
   new.payment_provider_reference := null;
+  new.payment_checkout_reference := null;
   new.payment_verified_at := null;
   new.payment_status := 'not_required';
 
