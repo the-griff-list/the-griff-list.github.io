@@ -1822,3 +1822,6 @@ body.theme-night #request-hint.hint-pulse{border-color:#ff8a35!important;color:#
 .stream-setup-help{border:1px solid var(--line);border-radius:8px;padding:12px;margin:14px 0;background:#101010}.stream-setup-help summary{cursor:pointer;font-weight:850;color:var(--gold)}.stream-setup-help ol{padding-left:22px;line-height:1.6}.stream-setup-help li{margin:6px 0}.stream-setup-help code{overflow-wrap:anywhere;color:var(--hot)}body.theme-day .stream-setup-help{background:#fffaf2;color:#211711;border-color:#cbb8a3}
 
 .payment-reference-copy{justify-self:start;margin:0 0 8px;padding:9px 13px;min-height:38px;font-size:.82rem}
+
+.donation-intro{max-width:720px;margin:0 auto 18px;text-align:center;line-height:1.6;color:var(--muted)}
+.footer-legal-links{padding:10px 0;text-align:center}.footer-legal-links a{color:var(--muted);text-decoration:underline;text-underline-offset:3px}
