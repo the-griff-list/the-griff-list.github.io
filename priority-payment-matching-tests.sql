@@ -110,6 +110,56 @@ begin
   if v_ref is null then
     raise exception 'FAIL: request payment-details RPC did not return its own reference';
   end if;
+  -- A completed PayPal capture should atomically mark the request paid and
+  -- increment the Rock-O-Meter exactly once, even if the webhook is replayed.
+  declare
+    v_paypal_token uuid := gen_random_uuid();
+    v_paypal_ref text;
+    v_before numeric;
+    v_after numeric;
+    v_result boolean;
+  begin
+    select raised_amount into v_before from public.rock_meter_settings where id = 1;
+    insert into public.song_requests
+      (requester_name, song_title, artist_name, note, tracking_token)
+    values
+      ('Payment Test', 'Test Song - PayPal', 'Test Artist',
+       '[PRIORITY TIP PENDING - VERIFY PAYMENT] Method: paypal', v_paypal_token)
+    returning payment_reference into v_paypal_ref;
+
+    update public.song_requests
+       set payment_checkout_reference = 'TEST-ORDER-' || v_paypal_token::text
+     where tracking_token = v_paypal_token;
+
+    v_result := public.record_verified_paypal_capture(
+      'TEST-CAPTURE-' || v_paypal_token::text,
+      'TEST-ORDER-' || v_paypal_token::text,
+      v_paypal_ref,
+      5.00,
+      'CAD'
+    );
+    if v_result is distinct from true then
+      raise exception 'FAIL: valid PayPal capture was not recorded';
+    end if;
+
+    select raised_amount into v_after from public.rock_meter_settings where id = 1;
+    if v_after <> coalesce(v_before,0) + 5.00 then
+      raise exception 'FAIL: Rock-O-Meter should increase by exactly $5.00 once; before %, after %', v_before, v_after;
+    end if;
+
+    v_result := public.record_verified_paypal_capture(
+      'TEST-CAPTURE-' || v_paypal_token::text,
+      'TEST-ORDER-' || v_paypal_token::text,
+      v_paypal_ref,
+      5.00,
+      'CAD'
+    );
+    select raised_amount into v_after from public.rock_meter_settings where id = 1;
+    if v_result is distinct from true or v_after <> coalesce(v_before,0) + 5.00 then
+      raise exception 'FAIL: duplicate PayPal capture must be idempotent';
+    end if;
+  end;
+
 end;
 $$;
 
