@@ -311,7 +311,7 @@ function focusPaymentMethod(method,paymentReference=""){
  const targets={paypal:document.querySelector(".payment-paypal"),kofi:document.querySelector(".payment-kofi-wallet")};
  const target=targets[method];const status=document.querySelector("#payment-flow-status");
  if(!target)return;
- if(status){status.hidden=false;if(paymentReferenceCopy)paymentReferenceCopy.hidden=!paymentReference;const instructions=method==="paypal"?"Complete your $5 CAD priority payment through PayPal.":"Complete your $5 CAD priority payment through Ko-fi.";status.textContent=paymentReference?instructions+" Add this exact reference to the payment message: "+paymentReference+". The website will match verified CAD payments automatically.":instructions;}
+ if(status){status.hidden=false;if(paymentReferenceCopy)paymentReferenceCopy.hidden=!paymentReference;const instructions=method==="paypal"?"Complete your $5 CAD priority payment through PayPal. PayPal automatic matching is not active yet, so this payment may need manual verification.":"Complete your $5 CAD priority payment through Ko-fi.";status.textContent=paymentReference?(method==="kofi"?instructions+" Add this exact reference to the Ko-fi message. The website will match verified CAD payments automatically.":"Your payment reference is "+paymentReference+". Include it in the PayPal note if available; automatic PayPal matching is not active yet. "+instructions):instructions;}
  document.querySelectorAll(".payment-method-banner.payment-highlight").forEach(el=>el.classList.remove("payment-highlight"));
  target.classList.add("payment-highlight");target.scrollIntoView({behavior:"smooth",block:"center"});
  window.setTimeout(()=>target.classList.remove("payment-highlight"),1700);
