@@ -118,6 +118,7 @@ begin
     v_before numeric;
     v_after numeric;
     v_result boolean;
+    v_paypal_status text;
   begin
     select raised_amount into v_before from public.rock_meter_settings where id = 1;
     if not found then raise exception 'FAIL: rock_meter_settings row id=1 is required for meter accounting'; end if;
@@ -141,6 +142,10 @@ begin
     );
     if v_result is distinct from true then
       raise exception 'FAIL: valid PayPal capture was not recorded';
+    end if;
+    select payment_status into v_paypal_status from public.song_requests where tracking_token = v_paypal_token;
+    if v_paypal_status <> 'paid' then
+      raise exception 'FAIL: PayPal capture did not mark the request paid';
     end if;
 
     select raised_amount into v_after from public.rock_meter_settings where id = 1;
