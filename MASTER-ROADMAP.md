@@ -17,7 +17,7 @@
 - Rollback-only SQL integration tests cover exact CAD matches, under-$5 payments, foreign currency, mismatched references, and the request-specific payment-details RPC. Tests are authored but have not been executed against Supabase.
 - Add idempotent, verified CAD tip contribution to Rock-O-Meter; do not silently convert foreign currencies.
 - Review and confirm payment providers, business rules, fees, refunds, chargebacks, reconciliation, and manual verification policy.
-- Evaluate PayPal webhook/API integration before automatically marking PayPal payments verified.
+- PayPal Orders API checkout and signature-verified webhook source are authored in the development branch; sandbox credentials, webhook registration, deployment, and end-to-end tests remain pending. Do not mark PayPal payments verified until a completed capture is verified.
 - E-transfer is temporarily disabled on the public website while the user's bank investigates unauthorized Autodeposit destination changes. Do not display the recipient email or accept e-transfer priority selections until the user explicitly re-enables this method.
 - Do not connect the website to personal banking credentials or automate bank-app acceptance. Keep e-transfer manual unless a supported, authorized bank/business integration is confirmed.
 - Apple Pay / Google Pay are payment methods through a compatible processor, not standalone payout rails; confirm provider and eligibility before implementation.
