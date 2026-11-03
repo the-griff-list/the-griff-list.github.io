@@ -1820,3 +1820,5 @@ body.theme-night #request-hint.hint-pulse{border-color:#ff8a35!important;color:#
 #catalog .song-row{width:100%;text-align:left}
 
 .stream-setup-help{border:1px solid var(--line);border-radius:8px;padding:12px;margin:14px 0;background:#101010}.stream-setup-help summary{cursor:pointer;font-weight:850;color:var(--gold)}.stream-setup-help ol{padding-left:22px;line-height:1.6}.stream-setup-help li{margin:6px 0}.stream-setup-help code{overflow-wrap:anywhere;color:var(--hot)}body.theme-day .stream-setup-help{background:#fffaf2;color:#211711;border-color:#cbb8a3}
+
+.payment-reference-copy{justify-self:start;margin:0 0 8px;padding:9px 13px;min-height:38px;font-size:.82rem}
