@@ -109,7 +109,6 @@ const songs = [
 
 // Site settings - replace these placeholders when you're ready.
 const config = {
-  tipEmail: "Griffen.transfers@hotmail.com",
   bookingUrl: "mailto:griffenarsenaultmusic@hotmail.com",
   previewSeconds: 15
 };
@@ -210,8 +209,6 @@ requestForm.addEventListener("submit",async e=>{
  if(submit.disabled)return;submit.disabled=true;submit.textContent="SENDING REQUEST…";
  try{const trackingToken=(crypto.randomUUID?crypto.randomUUID():([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g,c=>(c^crypto.getRandomValues(new Uint8Array(1))[0]&15>>c/4).toString(16)));const {error}=await client.from("song_requests").insert({requester_name:name,song_title:song,artist_name:artist||null,note:savedNote||null,tracking_token:trackingToken});if(error)throw error;try{localStorage.setItem("grifflistLastRequestToken.v1",trackingToken);sessionStorage.setItem(storageKey,JSON.stringify({fingerprint,time:Date.now()}));}catch(e){}if(requestStatusResult)requestStatusResult.textContent="Your latest request is saved on this device. Use Check My Last Request to see its status.";status.textContent=priority?(priorityAlreadyTipped?"Priority request submitted. Your payment will be checked manually.":"Request saved! Complete your $5 CAD tip using the highlighted payment option below."):"Request sent! Thanks for helping choose the music.";playSfx("you-rock-sfx");const shouldGoPay=priority&&!priorityAlreadyTipped;const chosenMethod=paymentMethod;requestForm.reset();if(rememberNameCheckbox?.checked||localStorage.getItem("grifflistRememberName.v1")==="yes"){if(rememberNameCheckbox)rememberNameCheckbox.checked=true;if(requesterNameInput)requesterNameInput.value=localStorage.getItem("grifflistRememberedName.v1")||name;}setPrioritySelected(false);$("#request-hint").hidden=true;if(shouldGoPay){window.setTimeout(()=>focusPaymentMethod(chosenMethod),180);}priorityAlreadyTipped=false;}catch(err){console.error("Request submission failed",err);const code=String(err?.code||"");if(code==="42501"||/row-level security|permission denied/i.test(String(err?.message||""))){status.textContent="The request database is blocking public submissions. The Supabase song-request INSERT policy needs to be enabled.";}else if(code==="PGRST204"||/column .* does not exist|schema cache/i.test(String(err?.message||""))){status.textContent="The song-request database is missing a required column. Apply the included Grifflist database migrations in Supabase.";}else{status.textContent="Request could not be saved. Check your connection and the Supabase song_requests table/policies, then try again.";}}finally{submit.disabled=false;submit.textContent="SEND SONG REQUEST ↗";}
 });
-const tipButton=$("#copy-email"),tipStatus=$("#tip-status");
-tipButton.addEventListener("click",async()=>{playSfx("cash-sfx");try{await navigator.clipboard.writeText(config.tipEmail);tipStatus.textContent="E-transfer email copied - open your banking app to send it.";}catch(e){tipStatus.textContent=`E-transfer email: ${config.tipEmail}. If copying was blocked, press and hold the address to copy it.`;}});
 const bookingCopy=$("#booking-copy"), bookingStatus=$("#booking-status");
 bookingCopy.addEventListener("click", async()=>{playSfx("highway-riser-sfx");try{await navigator.clipboard.writeText("griffenarsenaultmusic@hotmail.com");bookingStatus.textContent="Booking email copied.";}catch(e){bookingStatus.textContent="Email: griffenarsenaultmusic@hotmail.com - select and copy it.";}});
 // Audio behavior: never autoplay the title sound on page load. The first title-screen gesture starts it once; menu music crossfades in near the end.
@@ -308,10 +305,10 @@ document.addEventListener("click",event=>{
 const requestFormForAchievement=$("#request-form");
 requestFormForAchievement.addEventListener("submit",()=>{ /* Success cue is triggered after Supabase confirms below. */ });
 function focusPaymentMethod(method){
- const targets={etransfer:document.querySelector(".payment-etransfer"),paypal:document.querySelector(".payment-paypal"),kofi:document.querySelector(".payment-kofi-wallet")};
+ const targets={paypal:document.querySelector(".payment-paypal"),kofi:document.querySelector(".payment-kofi-wallet")};
  const target=targets[method];const status=document.querySelector("#payment-flow-status");
  if(!target)return;
- if(status){status.hidden=false;status.textContent=method==="etransfer"?"Your request is saved. Send $5 CAD to Griffen.transfers@hotmail.com. In your banking app, use the security question “What song did you request?” and the exact song title as the answer. Your song title will appear in the admin request inbox so the transfer can be deposited.":method==="paypal"?"Your request is saved. Complete your $5 CAD tip through PayPal below.":"Your request is saved. Complete your $5 CAD tip through Ko-fi below.";}
+ if(status){status.hidden=false;status.textContent=method==="paypal"?"Your request is saved. Complete your $5 CAD tip through PayPal below.":"Your request is saved. Complete your $5 CAD tip through Ko-fi below.";}
  document.querySelectorAll(".payment-method-banner.payment-highlight").forEach(el=>el.classList.remove("payment-highlight"));
  target.classList.add("payment-highlight");target.scrollIntoView({behavior:"smooth",block:"center"});
  window.setTimeout(()=>target.classList.remove("payment-highlight"),1700);
