@@ -12,7 +12,8 @@
 - Keep the core experience cohesive; avoid clutter, redundant controls, and novelty that harms usability.
 
 ## Phase 1 — Payment infrastructure
-- Complete Ko-fi webhook → Supabase tip ledger → authenticated admin tip history.
+- Ko-fi webhook → Supabase tip ledger → authenticated admin tip history is implemented and previously test-inserted; full production payment-to-request matching remains pending SQL migration and end-to-end test.
+- Server-generated priority payment references and CAD Ko-fi event matching are implemented in the development branch; database migration has not been applied or tested against production.
 - Add idempotent, verified CAD tip contribution to Rock-O-Meter; do not silently convert foreign currencies.
 - Review and confirm payment providers, business rules, fees, refunds, chargebacks, reconciliation, and manual verification policy.
 - Evaluate PayPal webhook/API integration before automatically marking PayPal payments verified.
