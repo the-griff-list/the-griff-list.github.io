@@ -2,6 +2,12 @@
 
 This integration is prepared in source but is **not deployed or enabled**. Test in PayPal Sandbox first. Do not paste API credentials into GitHub, chat, or browser code.
 
+## Official PayPal references
+
+- [Orders API integration](https://developer.paypal.com/whats-an-order/)
+- [Subscribe to checkout webhooks](https://developer.paypal.com/payment-methods/webhooks/)
+- [Webhook signature verification](https://developer.paypal.com/docs/api/webhooks/v1/#verify-webhook-signature_post)
+
 ## What it does
 
 1. The public request form saves a priority request and receives its server-generated `GRF-XXXXXXXX` reference.
