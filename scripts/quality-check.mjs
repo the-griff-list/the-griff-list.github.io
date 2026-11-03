@@ -50,6 +50,7 @@ assert.match(files.index, /Griff &amp; <span>Guest|GRIFF &amp; <span>GUEST/);
 assert.match(files.index, /Friday, November 6, 2026/);
 assert.match(files.index, /rihg\.ca\/events\/category\/hunters\/2026-11/);
 assert.match(files.index, /not operated by or affiliated with Hunter’s Ale House/);
+assert.match(files.legal, /not operated by, sponsored by, endorsed by, or officially affiliated with Hunter’s Ale House/);
 assert.match(files.styles, /prefers-reduced-motion:reduce/);
 assert.match(files.publicJs, /request-success-flash/);
 assert.doesNotMatch(files.index, /Send a Tip|Tip ↗|TIP THE HOSPITALITY CREW/i);
