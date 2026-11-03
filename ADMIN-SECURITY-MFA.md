@@ -9,7 +9,7 @@ The admin dashboard now supports Supabase Authenticator (TOTP) enrollment and a 
 3. Choose **Set Up Authenticator**.
 4. Scan the QR code with an authenticator app, or enter the manual setup key.
 5. Enter the current six-digit code to complete enrollment.
-6. Keep the authenticator protected and consider enrolling a second trusted device as a backup factor.
+6. Keep the authenticator protected and ensure you have a secure recovery path through your authenticator provider.
 
 The dashboard will require a current authenticator code on subsequent sign-ins once a factor is enrolled.
 
