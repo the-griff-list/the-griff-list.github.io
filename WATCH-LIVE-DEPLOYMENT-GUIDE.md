@@ -1,6 +1,6 @@
 # The Grifflist Watch Live — Direct phone-to-website streaming
 
-This package is configured for a phone browser to publish camera + microphone to **MediaMTX over WHIP**, while visitors watch through **WebRTC/WHEP** on `watch-live.html`. The public page reads the venue name and live state from Supabase, overlays the Rock-O-Meter, and links to the existing Ko-fi, PayPal and e-transfer options.
+This package is configured for a phone browser to publish camera + microphone to **MediaMTX over WHIP**, while visitors watch through **WebRTC/WHEP** on `watch-live.html`. The public page reads the venue name and live state from Supabase, overlays the Rock-O-Meter, and links to the existing Ko-fi and PayPal donation options; e-transfer is currently disabled.
 
 ## What is already in the website package
 
@@ -9,7 +9,7 @@ This package is configured for a phone browser to publish camera + microphone to
 - END BROADCAST closes the local stream and marks the show offline.
 - `watch-live.html` receives the stream and displays the admin-controlled venue name.
 - The Rock-O-Meter overlay reads `rock_meter_settings` from Supabase. Update its goal and confirmed raised amount in the admin panel. **Tips do not automatically change the meter**; automatic totals require verified payment-provider webhooks and should not be faked client-side.
-- The existing tipping buttons link to Ko-fi, PayPal and the homepage e-transfer instructions. The site does not collect or verify card details itself.
+- The donation buttons link to Ko-fi and PayPal. E-transfer is disabled while payment security is reviewed. The site does not collect or verify card details itself.
 
 ## Architecture
 
