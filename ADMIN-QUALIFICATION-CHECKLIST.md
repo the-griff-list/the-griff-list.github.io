@@ -5,7 +5,7 @@ This checklist defines the release gate for the Stage Control dashboard. Source-
 ## Stage Control — live-use workflow
 
 - [ ] Sign in from the phone browser on the same device used on stage.
-- [ ] Enable Stage Mode; reload the page and confirm the preference persists.
+- [ ] Confirm Stage Mode is the default view; exit it, reload the page, and confirm the preference persists.
 - [ ] Confirm the main screen shows only the request queue, search/filter controls, show status, and Go Live / End Live / Refresh actions.
 - [ ] Confirm the advanced settings panel is hidden in Stage Mode and accessible after exiting it.
 - [ ] Search by song title, artist, and requester; confirm results update immediately.
