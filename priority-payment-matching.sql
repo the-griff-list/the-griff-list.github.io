@@ -195,7 +195,7 @@ declare
   v_existing_order text;
   v_existing_reference text;
 begin
-  if p_capture_id is null or p_order_id is null
+  if p_capture_id is null or p_order_id is null or p_payment_reference is null
      or p_payment_reference !~* '^GRF-[A-F0-9]{12}
 comment on column public.song_requests.payment_reference is
   'Server-generated, non-secret reference for matching verified payment provider events.';
