@@ -61,7 +61,8 @@ assert.match(files.adminJs, /applyRequestFilters/);
 assert.match(files.adminJs, /auth\.mfa\.enroll/);
 assert.match(files.adminJs, /auth\.mfa\.verify/);
 assert.match(files.adminFeatures, /syncShowStatus/);
-assert.match(files.adminFeatures, /startCancelled/);\nassert.match(files.adminFeatures, /Show marked offline/);
+assert.match(files.adminFeatures, /startCancelled/);
+assert.match(files.adminFeatures, /Show marked offline/);
 console.log("PASS stage dashboard, request filters, live status and MFA controls");
 
 assert.match(files.paymentSql, /GRF-\[A-F0-9\]\{12\}/);
