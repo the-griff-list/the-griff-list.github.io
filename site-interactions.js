@@ -240,7 +240,7 @@
             const title=document.createElement('h3');title.textContent=(row.display_name||'Anonymous Rocker')+' · '+new Intl.NumberFormat(undefined,{style:'currency',currency:'CAD'}).format(Number(row.amount_cad)||0);
             details.append(title);
             if(row.requested_song){const song=document.createElement('p');song.className='request-meta';song.textContent=row.requested_song;details.append(song);}
-            const date=document.createElement('p');date.className='request-meta';date.textContent=fmtDate(row.created_at);details.append(date);
+            const date=document.createElement('p');date.className='request-meta';date.textContent=new Date(row.created_at).toLocaleString();details.append(date);
             const remove=document.createElement('button');remove.type='button';remove.className='button button-danger';remove.textContent='REMOVE';remove.addEventListener('click',async()=>{
               if(!window.confirm('Remove this confirmed donation from the public Supporter Wall?'))return;
               remove.disabled=true;
