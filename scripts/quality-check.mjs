@@ -5,6 +5,7 @@ import vm from "node:vm";
 const read = (path) => readFileSync(new URL("../" + path, import.meta.url), "utf8");
 const files = {
   index: read("index.html"),
+  styles: read("styles.css"),
   admin: read("admin.html"),
   legal: read("legal.html"),
   watch: read("watch-live.html"),
@@ -44,6 +45,13 @@ assert.match(files.index, /<h2><span>Donations<\/span><\/h2>/);
 assert.match(files.index, /payment-action">Donate/);
 assert.match(files.index, /href="legal\.html"/);
 assert.match(files.index, /nav-booking-cta/);
+assert.match(files.index, /id="next-show"/);
+assert.match(files.index, /Griff &amp; <span>Guest|GRIFF &amp; <span>GUEST/);
+assert.match(files.index, /Friday, November 6, 2026/);
+assert.match(files.index, /rihg\.ca\/events\/category\/hunters\/2026-11/);
+assert.match(files.index, /not operated by or affiliated with Hunter’s Ale House/);
+assert.match(files.styles, /prefers-reduced-motion:reduce/);
+assert.match(files.publicJs, /request-success-flash/);
 assert.doesNotMatch(files.index, /Send a Tip|Tip ↗|TIP THE HOSPITALITY CREW/i);
 assert.doesNotMatch(files.index, /Griffen\.transfers@hotmail\.com|acdckicksass@hotmail\.com/);
 for (const [name, html] of [["watch-live.html", files.watch], ["explore.html", files.explore], ["taxi-services.html", files.taxi]]) {
