@@ -109,7 +109,6 @@ const songs = [
 
 // Site settings - replace these placeholders when you're ready.
 const config = {
-  ,
   bookingUrl: "mailto:griffenarsenaultmusic@hotmail.com",
   previewSeconds: 15
 };
