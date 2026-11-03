@@ -177,6 +177,84 @@ create trigger verified_paypal_payment_updates_rockometer
 after insert on public.paypal_payments
 for each row execute function public.add_verified_paypal_payment_to_rockometer();
 
+-- Atomically verify a PayPal capture, update its request, and record the meter event.
+create or replace function public.record_verified_paypal_capture(
+  p_capture_id text,
+  p_order_id text,
+  p_payment_reference text,
+  p_amount numeric,
+  p_currency text
+)
+returns boolean
+language plpgsql
+security definer
+set search_path = pg_catalog, public
+as $
+declare
+  v_request_id bigint;
+  v_existing_order text;
+  v_existing_reference text;
+begin
+  if p_capture_id is null or p_order_id is null
+     or p_payment_reference !~* '^GRF-[A-F0-9]{12}
+comment on column public.song_requests.payment_reference is
+  'Server-generated, non-secret reference for matching verified payment provider events.';
+comment on column public.song_requests.payment_status is
+  'Payment status; only verified server-side provider events may set paid.';
+
+     or upper(coalesce(p_currency,'')) <> 'CAD'
+     or coalesce(p_amount,0) < 5 then
+    return false;
+  end if;
+
+  select r.id into v_request_id
+    from public.song_requests r
+   where r.payment_checkout_reference = p_order_id
+     and r.payment_reference = upper(p_payment_reference)
+     and r.payment_method = 'paypal'
+     and r.payment_status = 'pending'
+   for update;
+
+  if v_request_id is null then
+    select p.order_id, p.payment_reference
+      into v_existing_order, v_existing_reference
+      from public.paypal_payments p
+     where p.capture_id = p_capture_id;
+    return v_existing_order = p_order_id
+       and v_existing_reference = upper(p_payment_reference);
+  end if;
+
+  insert into public.paypal_payments
+    (capture_id, order_id, payment_reference, amount, currency, received_at)
+  values
+    (p_capture_id, p_order_id, upper(p_payment_reference), p_amount, 'CAD', now())
+  on conflict (capture_id) do nothing;
+
+  select p.order_id, p.payment_reference
+    into v_existing_order, v_existing_reference
+    from public.paypal_payments p
+   where p.capture_id = p_capture_id;
+
+  if v_existing_order is distinct from p_order_id
+     or v_existing_reference is distinct from upper(p_payment_reference) then
+    raise exception 'PayPal capture ID is already associated with another order';
+  end if;
+
+  update public.song_requests
+     set payment_status = 'paid',
+         payment_provider = 'paypal',
+         payment_provider_reference = p_capture_id,
+         payment_verified_at = now()
+   where id = v_request_id
+     and payment_status = 'pending';
+
+  return true;
+end;
+$;
+
+revoke all on function public.record_verified_paypal_capture(text,text,text,numeric,text) from public, anon, authenticated;
+grant execute on function public.record_verified_paypal_capture(text,text,text,numeric,text) to service_role;
+
 -- The provider event is inserted by the verified server-side webhook.
 -- Do not grant browser roles write access to payment fields.
 comment on column public.song_requests.payment_reference is
