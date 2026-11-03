@@ -11,6 +11,7 @@ declare
   v_tables text[] := array[
     'song_requests',
     'kofi_tips',
+    'confirmed_tips',
     'rock_meter_settings',
     'live_show_settings',
     'crowd_favourite_pins',
