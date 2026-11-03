@@ -50,7 +50,7 @@
    sessionUrl=res.headers.get('Location');if(sessionUrl&&!/^https?:\/\//i.test(sessionUrl))sessionUrl=new URL(sessionUrl,url).href;
    await pc.setRemoteDescription({type:'answer',sdp:await res.text()});
    if(startCancelled)throw new Error('Broadcast start cancelled.');
-   await setLive(true);setShowStatus(true);stop.disabled=false;set('You are broadcasting. Keep this page open and your phone awake.');const healthLabel=$('#stream-health-label');if(healthLabel)healthLabel.textContent='Connected · monitoring camera, microphone and network';
+   await setLive(true);if(startCancelled){await setLive(false);throw new Error('Broadcast start cancelled.');}setShowStatus(true);stop.disabled=false;set('You are broadcasting. Keep this page open and your phone awake.');const healthLabel=$('#stream-health-label');if(healthLabel)healthLabel.textContent='Connected · monitoring camera, microphone and network';
   }catch(e){console.error(e);set(e.message||'Could not start broadcast. Check camera permissions and server settings.');await cleanup(false);}
   finally{broadcastStarting=false;start.disabled=false;}
  });
