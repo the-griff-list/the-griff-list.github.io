@@ -143,7 +143,7 @@ Deno.serve(async (request) => {
         p_capture_id: captureId,
         p_order_id: orderId,
         p_payment_reference: customId.toUpperCase(),
-        p_amount: amount,
+        p_amount: Number(capture.amount.value),
         p_currency: "CAD"
       })
     });
