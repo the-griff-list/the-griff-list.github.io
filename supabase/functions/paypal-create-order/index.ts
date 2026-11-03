@@ -80,12 +80,10 @@ Deno.serve(async (request) => {
     if (row.payment_checkout_reference) {
       const existing = await paypalRequest(base, accessToken, "/v2/checkout/orders/" + encodeURIComponent(row.payment_checkout_reference));
       const existingApproval = (existing.links || []).find((link) => ["approve", "payer-action"].includes(link.rel));
-      if (existing.status === "CREATED" && existingApproval?.href) {
+      if ((existing.status === "CREATED" || existing.status === "PAYER_ACTION_REQUIRED") && existingApproval?.href) {
         return json(200, { approve_url: existingApproval.href, order_id: existing.id, payment_reference: row.payment_reference });
       }
-      if (existing.status === "APPROVED" || existing.status === "COMPLETED") {
-        return json(409, { error: "A PayPal checkout already exists for this request. Refresh the request status before trying again." });
-      }
+      return json(409, { error: "A PayPal checkout was already created for this request. Check its status before attempting another payment." });
     }
 
     const returnUrl = "https://the-griff-list.github.io/?paypal=return&ref=" + encodeURIComponent(row.payment_reference);
@@ -99,7 +97,6 @@ Deno.serve(async (request) => {
         purchase_units: [{
           reference_id: row.payment_reference,
           custom_id: row.payment_reference,
-          invoice_id: row.payment_reference,
           description: "The Grifflist priority song request",
           amount: { currency_code: "CAD", value: "5.00" }
         }],
