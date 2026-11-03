@@ -135,6 +135,21 @@ Deno.serve(async (request) => {
       return new Response("Completed capture details did not qualify", { status: 200 });
     }
 
+    // Insert the capture into an idempotent ledger. The database trigger
+    // increments the Rock-O-Meter only once per unique PayPal capture ID.
+    await supabaseRequest(supabaseUrl, serviceKey, "/rest/v1/paypal_payments?on_conflict=capture_id", {
+      method: "POST",
+      headers: { "Prefer": "resolution=ignore-duplicates,return=minimal" },
+      body: JSON.stringify({
+        capture_id: captureId,
+        order_id: orderId,
+        payment_reference: customId.toUpperCase(),
+        amount,
+        currency: "CAD",
+        received_at: new Date().toISOString()
+      })
+    });
+
     const updatePath = "/rest/v1/song_requests?payment_checkout_reference=eq." + encodeURIComponent(orderId) +
       "&payment_reference=eq." + encodeURIComponent(customId.toUpperCase()) +
       "&payment_method=eq.paypal&payment_status=eq.pending";
