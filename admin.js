@@ -63,7 +63,7 @@ mfaEnrollForm?.addEventListener("submit",async e=>{
  try{
   const challenge=await client.auth.mfa.challenge({factorId:enrollmentFactorId});if(challenge.error)throw challenge.error;
   const result=await client.auth.mfa.verify({factorId:enrollmentFactorId,challengeId:challenge.data.id,code:$("#admin-mfa-enroll-code").value.trim()});if(result.error)throw result.error;
-  enrollmentFactorId=null;mfaEnrollStatus.textContent="Two-step verification enabled. Your other sessions may need to sign in again.";
+  enrollmentFactorId=null;mfaEnroll.hidden=true;mfaQr.hidden=true;mfaQr.removeAttribute("src");mfaSecret.textContent="";mfaEnrollStatus.textContent="Two-step verification enabled. Your other sessions may need to sign in again.";
   await showSession();
  }catch(err){mfaEnrollStatus.textContent=err.message||"The code was not accepted. Check your authenticator and try again.";}
  finally{button.disabled=false;}
@@ -92,7 +92,7 @@ async function showSession(){
   }
   if(mfaStatus){
    mfaStatus.textContent=mfa.verified.length?"Two-step verification is enabled for this account.":"Two-step verification is not enabled yet. Set up an authenticator app to protect the dashboard.";
-   if(mfaStart){mfaStart.hidden=mfa.verified.length>0;mfaStart.disabled=false;}
+   if(mfaStart){mfaStart.hidden=mfa.verified.length>0;mfaStart.disabled=false;}if(mfa.verified.length&&mfaEnroll){mfaEnroll.hidden=true;if(mfaQr){mfaQr.hidden=true;mfaQr.removeAttribute("src");}if(mfaSecret)mfaSecret.textContent="";}
   }
  }catch(err){loginStatus.textContent="Could not verify admin security state: "+(err.message||"Please try again.");return;}
  loginPanel.hidden=true;if(mfaGatePanel)mfaGatePanel.hidden=true;inboxPanel.hidden=false;$("#logout-button").hidden=false;if(stageToggle)stageToggle.hidden=false;
