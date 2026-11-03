@@ -28,7 +28,7 @@ function setStageMode(enabled){
  try{localStorage.setItem("grifflist.admin.stageMode",enabled?"on":"off");}catch(e){}
 }
 if(stageToggle){
- let stageSaved=false;try{stageSaved=localStorage.getItem("grifflist.admin.stageMode")==="on";}catch(e){}
+ let stageSaved=true;try{stageSaved=localStorage.getItem("grifflist.admin.stageMode")!=="off";}catch(e){}
  setStageMode(stageSaved);
  stageToggle.addEventListener("click",()=>setStageMode(!document.body.classList.contains("stage-mode")));
 }
