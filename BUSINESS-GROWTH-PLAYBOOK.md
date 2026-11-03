@@ -51,6 +51,16 @@ Add a privacy-conscious dashboard only when reliable event data exists. Useful m
 
 Do not invent revenue, infer individual behaviour unnecessarily, or expose donor details in public views. Separate gross receipts from payment fees, refunds, and net revenue.
 
+## Hunter’s Ale House partnership-safe show companion
+
+- Promote only publicly confirmed dates and link directly to the venue’s own event listing.
+- Use the venue name as plain factual event information only; do not use its logo, brand assets, staff photos, menu images, or language implying sponsorship, endorsement, partnership, or approval without written permission.
+- Keep the artist website clearly independent and direct guests to the venue for current hours, reservations, menu, accessibility, age rules, and event changes.
+- Make the night valuable through music discovery, accessible setlist participation, and useful planning—not pressure to buy alcohol, excessive consumption, or paid chance-based mechanics.
+- Promote food, non-alcoholic choices, responsible transportation, and respectful venue behaviour only in ways that match current venue policies and approved offers.
+- Do not invent discounts, table availability, menu prices, audience counts, scarcity, or venue revenue claims. Any co-branded offer, tracked referral, QR placement, giveaway, or revenue-share arrangement requires the venue’s prior written approval and clear terms.
+- If the venue agrees to collaborate, use a written one-page agreement covering name/logo permission, approved copy, dates, offer terms, tracking, payment/revenue share, privacy, cancellation, and each party’s responsibilities.
+
 ## 5. Conversion principles
 
 - Show the full price and purpose before the user commits.
