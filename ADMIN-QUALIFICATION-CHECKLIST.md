@@ -41,6 +41,7 @@ This checklist defines the release gate for the Stage Control dashboard. Source-
 
 - [ ] Apply the reviewed SQL migrations in the documented order.
 - [ ] Apply `confirmed-donation-wall.sql` and verify public read is limited to confirmed rows and admin writes are restricted.
+- [ ] Confirm the public Supporter Wall uses aliases/Anonymous Rocker unless the supporter explicitly consents to display.
 - [ ] Execute `priority-payment-matching-tests.sql` and verify rollback.
 - [ ] Test a valid Ko-fi CAD payment with the exact reference.
 - [ ] Test wrong currency, underpayment, missing reference, unknown reference, duplicate event, and unrelated donation.
