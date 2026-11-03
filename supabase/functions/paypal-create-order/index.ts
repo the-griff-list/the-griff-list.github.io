@@ -79,7 +79,7 @@ Deno.serve(async (request) => {
     const accessToken = await paypalAccessToken(base, clientId, clientSecret);
     if (row.payment_checkout_reference) {
       const existing = await paypalRequest(base, accessToken, "/v2/checkout/orders/" + encodeURIComponent(row.payment_checkout_reference));
-      const existingApproval = (existing.links || []).find((link) => link.rel === "approve");
+      const existingApproval = (existing.links || []).find((link) => ["approve", "payer-action"].includes(link.rel));
       if (existing.status === "CREATED" && existingApproval?.href) {
         return json(200, { approve_url: existingApproval.href, order_id: existing.id, payment_reference: row.payment_reference });
       }
@@ -116,7 +116,7 @@ Deno.serve(async (request) => {
       })
     });
 
-    const approval = (order.links || []).find((link) => link.rel === "approve");
+    const approval = (order.links || []).find((link) => ["approve", "payer-action"].includes(link.rel));
     if (!order.id || !approval?.href) throw new Error("PayPal did not return an approval link");
 
     const save = await fetch(
