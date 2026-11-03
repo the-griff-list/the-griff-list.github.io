@@ -102,7 +102,7 @@ Deno.serve(async (request) => {
     const amount = Number(orderAmount.value || 0);
     const currency = String(orderAmount.currency_code || "");
 
-    if (!/^GRF-[A-F0-9]{8}$/i.test(customId) || currency.toUpperCase() !== "CAD" || amount < 5) {
+    if (!/^GRF-[A-F0-9]{12}$/i.test(customId) || currency.toUpperCase() !== "CAD" || amount < 5) {
       console.warn("PayPal order did not meet priority payment rules", { event_id: event.id, currency, amount });
       return new Response("Order does not qualify for priority payment", { status: 200 });
     }
