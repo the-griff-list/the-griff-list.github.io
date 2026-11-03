@@ -22,7 +22,7 @@ begin
      '[PRIORITY TIP PENDING - VERIFY PAYMENT] Method: kofi', v_token)
   returning payment_reference into v_ref;
 
-  if v_ref is null or v_ref !~ '^GRF-[A-F0-9]{8}$' then
+  if v_ref is null or v_ref !~ '^GRF-[A-F0-9]{12}$' then
     raise exception 'FAIL: priority reference was not generated correctly';
   end if;
 
@@ -96,7 +96,7 @@ begin
     (message_id, amount, currency, supporter_name, supporter_message, is_public, payment_type, received_at)
   values
     ('TEST-' || gen_random_uuid()::text, 5.00, 'CAD', 'Payment Test',
-     'Priority request GRF-FFFFFFFF', true, 'Tip', now());
+     'Priority request GRF-FFFFFFFFFFFF', true, 'Tip', now());
 
   select payment_status into v_status
   from public.song_requests where payment_reference = v_wrong_ref;
