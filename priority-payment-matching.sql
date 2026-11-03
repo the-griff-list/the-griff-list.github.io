@@ -34,7 +34,7 @@ create or replace function public.prepare_priority_payment_request()
 returns trigger
 language plpgsql
 security definer
-set search_path = public
+set search_path = pg_catalog, public
 as $$
 declare
   v_method text;
@@ -82,7 +82,7 @@ returns table(payment_reference text, payment_status text)
 language sql
 stable
 security definer
-set search_path = public
+set search_path = pg_catalog, public
 as $$
   select r.payment_reference, r.payment_status
   from public.song_requests r
@@ -101,7 +101,7 @@ create or replace function public.match_kofi_tip_to_priority_request()
 returns trigger
 language plpgsql
 security definer
-set search_path = public
+set search_path = pg_catalog, public
 as $$
 declare
   v_reference text;
