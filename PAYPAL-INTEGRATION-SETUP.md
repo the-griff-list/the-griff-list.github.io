@@ -10,7 +10,7 @@ This integration is prepared in source but is **not deployed or enabled**. Test 
 
 ## What it does
 
-1. The public request form saves a priority request and receives its server-generated `GRF-XXXXXXXX` reference.
+1. The public request form saves a priority request and receives its server-generated `GRF-XXXXXXXXXXXX` reference.
 2. For PayPal priority requests, the browser invokes `paypal-create-order` with the request's unguessable tracking token.
 3. The Edge Function looks up the request server-side and confirms it is pending and specifically assigned to PayPal. The amount is fixed server-side at CAD $5.00.
 4. PayPal receives the generated reference as `custom_id` for reconciliation.
