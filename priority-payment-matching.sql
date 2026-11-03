@@ -30,6 +30,9 @@ create unique index if not exists song_requests_payment_reference_unique
 create unique index if not exists song_requests_payment_provider_reference_unique
   on public.song_requests(payment_provider, payment_provider_reference)
   where payment_provider_reference is not null;
+create unique index if not exists song_requests_payment_checkout_reference_unique
+  on public.song_requests(payment_checkout_reference)
+  where payment_checkout_reference is not null;
 
 create or replace function public.prepare_priority_payment_request()
 returns trigger
