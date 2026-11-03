@@ -15,7 +15,7 @@ The dashboard will require a current authenticator code on subsequent sign-ins o
 
 ## Enforce MFA in the database
 
-After enrollment succeeds, apply `admin-mfa-enforcement.sql` in the Supabase SQL Editor. This adds restrictive RLS policies requiring the designated admin's JWT to have `aal2` for the sensitive admin tables. Existing table-specific RLS policies remain responsible for the actual row permissions.
+After enrollment succeeds, apply `confirmed-donation-wall.sql` if that table is not already present, then apply `admin-mfa-enforcement.sql` in the Supabase SQL Editor. This adds restrictive RLS policies requiring the designated admin's JWT to have `aal2` for the sensitive admin tables. Existing table-specific RLS policies remain responsible for the actual row permissions.
 
 Do not apply the enforcement migration before the admin account has a verified TOTP factor, or the admin may be locked out of these tables.
 
