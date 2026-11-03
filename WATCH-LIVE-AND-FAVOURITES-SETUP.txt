@@ -4,7 +4,7 @@ WHAT THIS UPDATE ADDS
 - Renames the public section and toolbar item to “Rockometer”. The meter is shown as a compact, semi-transparent overlay on top of the live video.
 - Renames “Make a Request” to “Request a Song”.
 - Adds a Watch Live promo button on the homepage and a dedicated watch-live.html page.
-- Adds Google Pay / Apple Pay (via the existing Ko-fi link), e-Transfer instructions via the homepage, and the existing PayPal payment link on the live page.
+- Adds Ko-fi card/wallet checkout and the existing PayPal donation link on the live page. E-transfer is currently disabled while payment security is reviewed.
 - Adds Crowd Favourites with this-month/all-time views, request and played counters, a category filter, one-tap request, share link, and admin pinning.
 - Adds admin settings for venue name, public WHEP playback URL, show visibility, and live status.
 - Adds browser-based phone broadcast controls using WHIP, plus a muted camera preview.
@@ -60,7 +60,7 @@ STEP 5 — CROWD FAVOURITES
 
 PAYMENTS
 - The live page reuses the existing Ko-fi and PayPal links and directs e-Transfer users to the existing homepage instructions. Google Pay / Apple Pay availability is determined by Ko-fi checkout, the viewer's device, and their browser. This website does not directly process or verify payments.
-- The Rockometer amount still needs to be updated through the existing admin controls; tips do not automatically increment the meter unless a verified payment webhook is configured.
+- The Rockometer amount still needs to be updated through the existing admin controls; verified Ko-fi donations and PayPal priority-request captures can update the meter through server-side payment reconciliation; general PayPal donations are not automatically matched yet.
 
 TROUBLESHOOTING
 - “Apply migration” message: run grifflist-next-update.sql in the correct Supabase project.
