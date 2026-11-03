@@ -28,6 +28,7 @@
 - Donation terminology replaces visible tip wording; voluntary donations are separated from the paid priority-request add-on.
 - A plain-language privacy, terms, donations, and music-rights information page is added. Legal review and accuracy review remain pending.
 - Stage Mode and filtering have passed source-level JavaScript syntax checks; actual phone/browser usability testing is still required.
+- Authenticator-app MFA enrollment and sign-in verification are implemented using Supabase TOTP APIs; database-level AAL2 enforcement is provided as a separate migration to apply after successful enrollment. Live Supabase MFA testing remains pending.
 
 ## Phase 2 — Watch Live
 - Complete phone-browser WHIP broadcast and viewer WHEP playback against a reachable HTTPS streaming server.
