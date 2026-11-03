@@ -7,6 +7,7 @@
 do $$
 declare
   v_table text;
+  v_rls_enabled boolean;
   v_tables text[] := array[
     'song_requests',
     'kofi_tips',
@@ -19,7 +20,10 @@ declare
 begin
   foreach v_table in array v_tables loop
     if to_regclass('public.' || v_table) is not null then
-      execute format('alter table public.%I enable row level security', v_table);
+      select relrowsecurity into v_rls_enabled from pg_class where oid = to_regclass('public.' || v_table);
+      if not v_rls_enabled then
+        raise exception 'RLS must already be enabled on public.% before adding the admin MFA policy', v_table;
+      end if;
       execute format('drop policy if exists admin_requires_aal2 on public.%I', v_table);
       execute format(
         'create policy admin_requires_aal2 on public.%I as restrictive for all to authenticated using ((select auth.uid()) <> %L::uuid or (select auth.jwt() ->> ''aal'') = ''aal2'') with check ((select auth.uid()) <> %L::uuid or (select auth.jwt() ->> ''aal'') = ''aal2'')',
