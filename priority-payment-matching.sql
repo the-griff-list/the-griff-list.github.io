@@ -160,7 +160,7 @@ returns trigger
 language plpgsql
 security definer
 set search_path = pg_catalog, public
-as $
+as $function$
 begin
   if upper(new.currency) = 'CAD' then
     update public.rock_meter_settings
@@ -170,7 +170,7 @@ begin
   end if;
   return new;
 end;
-$;
+$function$;
 
 drop trigger if exists verified_paypal_payment_updates_rockometer on public.paypal_payments;
 create trigger verified_paypal_payment_updates_rockometer
@@ -189,7 +189,7 @@ returns boolean
 language plpgsql
 security definer
 set search_path = pg_catalog, public
-as $
+as $function$
 declare
   v_request_id bigint;
   v_existing_order text;
@@ -250,7 +250,7 @@ comment on column public.song_requests.payment_status is
 
   return true;
 end;
-$;
+$function$;
 
 revoke all on function public.record_verified_paypal_capture(text,text,text,numeric,text) from public, anon, authenticated;
 grant execute on function public.record_verified_paypal_capture(text,text,text,numeric,text) to service_role;
