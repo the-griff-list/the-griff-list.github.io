@@ -68,7 +68,7 @@ The webhook ID shown by PayPal must be stored as `PAYPAL_WEBHOOK_ID`.
 ## Sandbox acceptance tests
 
 - Valid pending PayPal request creates a CAD $5.00 order.
-- The order contains the exact server-generated reference in `custom_id` and `invoice_id`.
+- The order contains the exact server-generated reference in `custom_id`.
 - Repeated create-order calls reuse the existing CREATED order.
 - A forged webhook signature is rejected.
 - An APPROVED event for an unknown order/reference does not trigger capture.
