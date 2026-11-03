@@ -60,7 +60,7 @@ begin
       new.payment_method := v_method;
       new.payment_status := 'pending';
       loop
-        v_reference := 'GRF-' || upper(substr(replace(gen_random_uuid()::text,'-',''),1,8));
+        v_reference := 'GRF-' || upper(substr(replace(gen_random_uuid()::text,'-',''),1,12));
         v_attempt := v_attempt + 1;
         exit when not exists (
           select 1 from public.song_requests r where r.payment_reference = v_reference
@@ -115,7 +115,7 @@ begin
     return new;
   end if;
 
-  v_reference := upper((regexp_match(coalesce(new.supporter_message,''), '(?i)(GRF-[A-F0-9]{8})'))[1]);
+  v_reference := upper((regexp_match(coalesce(new.supporter_message,''), '(?i)(GRF-[A-F0-9]{12})'))[1]);
   if v_reference is null then
     return new;
   end if;
