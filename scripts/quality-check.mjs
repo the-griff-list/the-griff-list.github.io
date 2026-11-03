@@ -58,6 +58,8 @@ assert.match(files.admin, /admin-show-status/);
 assert.match(files.admin, /mfa-gate-form/);
 assert.match(files.admin, /admin-mfa-enroll-form/);
 assert.match(files.adminJs, /applyRequestFilters/);
+assert.match(files.adminJs, /let stageSaved=true/);
+assert.match(files.siteInteractions, /panel\.append\(ledger\)/);
 assert.match(files.adminJs, /auth\.mfa\.enroll/);
 assert.match(files.adminJs, /auth\.mfa\.verify/);
 assert.match(files.adminFeatures, /syncShowStatus/);
