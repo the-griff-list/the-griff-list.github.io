@@ -1825,3 +1825,5 @@ body.theme-night #request-hint.hint-pulse{border-color:#ff8a35!important;color:#
 
 .donation-intro{max-width:720px;margin:0 auto 18px;text-align:center;line-height:1.6;color:var(--muted)}
 .footer-legal-links{padding:10px 0;text-align:center}.footer-legal-links a{color:var(--muted);text-decoration:underline;text-underline-offset:3px}
+
+.top-nav a.nav-booking-cta{border:1px solid #d99b45;background:linear-gradient(180deg,#3a2414,#1b110b);color:#ffe0a4;font-weight:900}.top-nav a.nav-booking-cta:hover,.top-nav a.nav-booking-cta:focus-visible{background:linear-gradient(180deg,#68401c,#2a180c);border-color:#ffd17a}
