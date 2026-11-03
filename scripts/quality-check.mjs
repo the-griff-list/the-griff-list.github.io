@@ -7,6 +7,9 @@ const files = {
   index: read("index.html"),
   admin: read("admin.html"),
   legal: read("legal.html"),
+  watch: read("watch-live.html"),
+  explore: read("explore.html"),
+  taxi: read("taxi-services.html"),
   publicJs: read("script.js"),
   adminJs: read("admin.js"),
   adminFeatures: read("admin-features.js"),
@@ -30,7 +33,7 @@ for (const [name, source] of Object.entries({
   console.log("PASS JavaScript syntax:", name);
 }
 
-for (const [name, html] of [["index.html", files.index], ["admin.html", files.admin], ["legal.html", files.legal]]) {
+for (const [name, html] of [["index.html", files.index], ["admin.html", files.admin], ["legal.html", files.legal], ["watch-live.html", files.watch], ["explore.html", files.explore], ["taxi-services.html", files.taxi]]) {
   const ids = [...html.matchAll(/\bid="([^"]+)"/g)].map((match) => match[1]);
   const duplicates = ids.filter((id, index) => ids.indexOf(id) !== index);
   assert.deepEqual(duplicates, [], name + " contains duplicate IDs");
@@ -43,6 +46,9 @@ assert.match(files.index, /href="legal\.html"/);
 assert.match(files.index, /nav-booking-cta/);
 assert.doesNotMatch(files.index, /Send a Tip|Tip ↗|TIP THE HOSPITALITY CREW/i);
 assert.doesNotMatch(files.index, /Griffen\.transfers@hotmail\.com|acdckicksass@hotmail\.com/);
+for (const [name, html] of [["watch-live.html", files.watch], ["explore.html", files.explore], ["taxi-services.html", files.taxi]]) {
+  assert.doesNotMatch(html, /Send a Tip|TIP ↗|Interac e-Transfer|Griffen\.transfers@hotmail\.com|acdckicksass@hotmail\.com/i, name + " contains retired payment wording");
+}
 console.log("PASS public donation wording and e-transfer security pause");
 
 assert.match(files.admin, /stage-mode-toggle/);
