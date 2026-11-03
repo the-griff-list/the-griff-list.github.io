@@ -65,7 +65,9 @@ assert.match(files.paypalWebhook, /PAYMENT\.CAPTURE\.COMPLETED/);
 assert.match(files.paypalWebhook, /payment_status=eq\.pending/);
 assert.match(files.paypalCreate, /amount: \{ currency_code: "CAD", value: "5\.00" \}/);
 assert.match(files.mfaSql, /as restrictive for all to authenticated/);
-assert.match(files.mfaSql, /aal2/);\nassert.match(files.donationWallSql, /confirmed = true/);\nassert.match(files.donationWallSql, /Admin manages confirmed donations/);
+assert.match(files.mfaSql, /aal2/);
+assert.match(files.donationWallSql, /confirmed = true/);
+assert.match(files.donationWallSql, /Admin manages confirmed donations/);
 console.log("PASS payment reference, verified payment and database MFA contracts");
 
 assert.match(files.legal, /Privacy notice/);
