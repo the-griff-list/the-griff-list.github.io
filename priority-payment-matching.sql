@@ -33,6 +33,7 @@ create unique index if not exists song_requests_payment_provider_reference_uniqu
 create or replace function public.prepare_priority_payment_request()
 returns trigger
 language plpgsql
+security definer
 set search_path = public
 as $$
 declare
