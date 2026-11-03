@@ -74,6 +74,8 @@ assert.match(files.paypalWebhook, /verify-webhook-signature/);
 assert.match(files.paypalWebhook, /PAYMENT\.CAPTURE\.COMPLETED/);
 assert.match(files.paypalWebhook, /record_verified_paypal_capture/);
 assert.match(files.paymentSql, /record_verified_paypal_capture/);
+assert.match(files.paymentSql, /create table if not exists public\.paypal_payments/);
+assert.match(files.paymentSql, /verified_paypal_payment_updates_rockometer/);
 assert.match(files.paypalCreate, /amount: \{ currency_code: "CAD", value: "5\.00" \}/);
 assert.match(files.mfaSql, /as restrictive for all to authenticated/);
 assert.match(files.mfaSql, /aal2/);
