@@ -13,7 +13,7 @@ This integration is prepared in source but is **not deployed or enabled**. Test 
 1. The public request form saves a priority request and receives its server-generated `GRF-XXXXXXXX` reference.
 2. For PayPal priority requests, the browser invokes `paypal-create-order` with the request's unguessable tracking token.
 3. The Edge Function looks up the request server-side and confirms it is pending and specifically assigned to PayPal. The amount is fixed server-side at CAD $5.00.
-4. PayPal receives the generated reference as both `custom_id` and `invoice_id`.
+4. PayPal receives the generated reference as `custom_id` for reconciliation.
 5. PayPal sends `CHECKOUT.ORDER.APPROVED`; the webhook verifies the signature, checks the matching pending request and order details, then captures the approved order.
 6. PayPal sends `PAYMENT.CAPTURE.COMPLETED`; the webhook verifies the signature and completed capture, then marks the matching request paid.
 7. The admin inbox receives the database update through the existing Realtime subscription.
