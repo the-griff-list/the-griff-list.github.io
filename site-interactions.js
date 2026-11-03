@@ -226,7 +226,33 @@
   if ($('#inbox-panel')) {
     const panel=$('#live-tools-panel');if(panel){const ledger=document.createElement('section');ledger.className='admin-panel';ledger.id='confirmed-tip-admin';ledger.innerHTML='<h2><span>Confirmed Donation Wall</span></h2><p>Add a donation record only after verifying it in the payment provider or bank. The public page displays a chosen display name, amount, and optional requested song - never dates or payment references.</p><form id="confirmed-tip-form" class="admin-form"><label>Display name (optional)<input id="confirmed-tip-name" maxlength="50" placeholder="Nickname or Anonymous Rocker"></label><label>Confirmed amount (CAD)<input id="confirmed-tip-amount" type="number" min="0.01" step="0.01" required></label><label>Song requested (optional)<input id="confirmed-tip-song" maxlength="200" placeholder="Song title - artist"></label><button type="submit" class="button button-hot">ADD CONFIRMED DONATION</button><p id="confirmed-tip-status" class="admin-status" role="status" aria-live="polite"></p></form><div id="confirmed-tip-admin-list"></div>';
       panel.insertAdjacentElement('afterend',ledger);
-      $('#confirmed-tip-form').addEventListener('submit',async e=>{e.preventDefault();const status=$('#confirmed-tip-status'),client=window.supabaseClient;const amount=Number($('#confirmed-tip-amount').value);if(!client){status.textContent='Database unavailable.';return;}try{const {error}=await client.from('confirmed_tips').insert({display_name:$('#confirmed-tip-name').value.trim()||'Anonymous Rocker',amount_cad:amount,requested_song:$('#confirmed-tip-song').value.trim()||null,confirmed:true});if(error)throw error;status.textContent='Confirmed donation added to the Supporter Wall.';e.target.reset();}catch(err){status.textContent='Could not save donation. Apply the included SQL migration and confirm you are signed in as the authorized admin.';}});
+      const donationAdminList=$('#confirmed-tip-admin-list'),donationAdminStatus=$('#confirmed-tip-status');
+      async function refreshConfirmedDonations(){
+        const client=window.supabaseClient;if(!client||!donationAdminList)return;
+        donationAdminList.replaceChildren();
+        try{
+          const {data,error}=await client.from('confirmed_tips').select('id,display_name,amount_cad,requested_song,created_at').order('created_at',{ascending:false}).limit(100);
+          if(error)throw error;
+          if(!data?.length){const empty=document.createElement('p');empty.className='empty-inbox';empty.textContent='No confirmed donations have been added yet.';donationAdminList.append(empty);return;}
+          data.forEach(row=>{
+            const item=document.createElement('article');item.className='request-card';
+            const details=document.createElement('div');details.className='request-details';
+            const title=document.createElement('h3');title.textContent=(row.display_name||'Anonymous Rocker')+' · '+new Intl.NumberFormat(undefined,{style:'currency',currency:'CAD'}).format(Number(row.amount_cad)||0);
+            details.append(title);
+            if(row.requested_song){const song=document.createElement('p');song.className='request-meta';song.textContent=row.requested_song;details.append(song);}
+            const date=document.createElement('p');date.className='request-meta';date.textContent=fmtDate(row.created_at);details.append(date);
+            const remove=document.createElement('button');remove.type='button';remove.className='button button-danger';remove.textContent='REMOVE';remove.addEventListener('click',async()=>{
+              if(!window.confirm('Remove this confirmed donation from the public Supporter Wall?'))return;
+              remove.disabled=true;
+              try{const {error}=await client.from('confirmed_tips').delete().eq('id',row.id);if(error)throw error;donationAdminStatus.textContent='Donation removed from the Supporter Wall.';refreshConfirmedDonations();}
+              catch(err){donationAdminStatus.textContent=err.message||'Could not remove donation.';remove.disabled=false;}
+            });
+            item.append(details,remove);donationAdminList.append(item);
+          });
+        }catch(err){donationAdminStatus.textContent='Could not load the Supporter Wall. Apply confirmed-donation-wall.sql and confirm admin access.';}
+      }
+      $('#confirmed-tip-form').addEventListener('submit',async e=>{e.preventDefault();const status=$('#confirmed-tip-status'),client=window.supabaseClient;const amount=Number($('#confirmed-tip-amount').value);if(!client){status.textContent='Database unavailable.';return;}if(!Number.isFinite(amount)||amount<=0){status.textContent='Enter a valid confirmed amount.';return;}try{const {error}=await client.from('confirmed_tips').insert({display_name:$('#confirmed-tip-name').value.trim()||'Anonymous Rocker',amount_cad:amount,requested_song:$('#confirmed-tip-song').value.trim()||null,confirmed:true});if(error)throw error;status.textContent='Confirmed donation added to the Supporter Wall.';e.target.reset();await refreshConfirmedDonations();}catch(err){status.textContent='Could not save donation. Apply confirmed-donation-wall.sql and confirm you are signed in as the authorized admin.';}});
+      refreshConfirmedDonations();
     }
   }
 
