@@ -38,9 +38,33 @@ async function loadKofiTips(){
 }
 $("#refresh-kofi-tips")?.addEventListener("click",loadKofiTips);
 
-// Keep the inbox fresh while the dashboard is open.
-window.setInterval(()=>{if(!inboxPanel.hidden)loadRequests();},20000);
-document.addEventListener("visibilitychange",()=>{if(!document.hidden&&!inboxPanel.hidden)loadRequests();});
+// Live admin inbox: use Supabase Realtime instead of frequent full-table polling.
+let requestInboxChannel=null, requestInboxRealtimeReady=false, requestRefreshTimer=null;
+function queueRequestRefresh(){
+ if(inboxPanel.hidden||document.hidden)return;
+ window.clearTimeout(requestRefreshTimer);
+ requestRefreshTimer=window.setTimeout(()=>loadRequests(),250);
+}
+async function connectRequestInboxRealtime(){
+ if(!client||requestInboxChannel)return;
+ requestInboxChannel=client.channel("admin-song-requests-live")
+  .on("postgres_changes",{event:"*",schema:"public",table:"song_requests"},queueRequestRefresh)
+  .subscribe(status=>{
+   requestInboxRealtimeReady=status==="SUBSCRIBED";
+   if(status==="SUBSCRIBED"){queueRequestRefresh();}
+   else if(status==="CHANNEL_ERROR"||status==="TIMED_OUT"||status==="CLOSED"){
+    requestInboxRealtimeReady=false;
+   }
+  });
+}
+connectRequestInboxRealtime();
+// Safety fallback only while Realtime is disconnected; 5 seconds as requested.
+window.setInterval(()=>{
+ if(!inboxPanel.hidden&&!document.hidden&&!requestInboxRealtimeReady)loadRequests();
+},5000);
+document.addEventListener("visibilitychange",()=>{
+ if(!document.hidden&&!inboxPanel.hidden){loadRequests();connectRequestInboxRealtime();}
+});
 
 // Live-show settings: requires supabase-live-features.sql to be applied first.
 const rockForm=$("#rock-meter-form"),rockAdminStatus=$("#rock-meter-admin-status"),pollForm=$("#encore-poll-form"),pollAdminStatus=$("#encore-admin-status");
