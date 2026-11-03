@@ -39,6 +39,7 @@ for (const [name, html] of [["index.html", files.index], ["admin.html", files.ad
 assert.match(files.index, /<h2><span>Donations<\/span><\/h2>/);
 assert.match(files.index, /payment-action">Donate/);
 assert.match(files.index, /href="legal\.html"/);
+assert.match(files.index, /nav-booking-cta/);
 assert.doesNotMatch(files.index, /Send a Tip|Tip ↗|TIP THE HOSPITALITY CREW/i);
 assert.doesNotMatch(files.index, /Griffen\.transfers@hotmail\.com|acdckicksass@hotmail\.com/);
 console.log("PASS public donation wording and e-transfer security pause");
