@@ -195,13 +195,10 @@ declare
   v_existing_order text;
   v_existing_reference text;
 begin
-  if p_capture_id is null or p_order_id is null or p_payment_reference is null
-     or p_payment_reference !~* '^GRF-[A-F0-9]{12}
-comment on column public.song_requests.payment_reference is
-  'Server-generated, non-secret reference for matching verified payment provider events.';
-comment on column public.song_requests.payment_status is
-  'Payment status; only verified server-side provider events may set paid.';
-
+  if p_capture_id is null
+     or p_order_id is null
+     or p_payment_reference is null
+     or p_payment_reference !~* '^GRF-[A-F0-9]{12}$'
      or upper(coalesce(p_currency,'')) <> 'CAD'
      or coalesce(p_amount,0) < 5 then
     return false;
@@ -251,7 +248,6 @@ comment on column public.song_requests.payment_status is
   return true;
 end;
 $function$;
-
 revoke all on function public.record_verified_paypal_capture(text,text,text,numeric,text) from public, anon, authenticated;
 grant execute on function public.record_verified_paypal_capture(text,text,text,numeric,text) to service_role;
 
