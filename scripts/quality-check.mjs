@@ -10,6 +10,7 @@ const files = {
   publicJs: read("script.js"),
   adminJs: read("admin.js"),
   adminFeatures: read("admin-features.js"),
+  siteInteractions: read("site-interactions.js"),
   paypalCreate: read("supabase/functions/paypal-create-order/index.ts"),
   paypalWebhook: read("supabase/functions/paypal-webhook/index.ts"),
   paymentSql: read("priority-payment-matching.sql"),
@@ -20,6 +21,7 @@ for (const [name, source] of Object.entries({
   publicJs: files.publicJs,
   adminJs: files.adminJs,
   adminFeatures: files.adminFeatures,
+  siteInteractions: files.siteInteractions,
   paypalCreate: files.paypalCreate,
   paypalWebhook: files.paypalWebhook
 })) {
