@@ -32,6 +32,21 @@ async function paypalRequest(base, token, path, options = {}) {
   return payload;
 }
 
+async function supabaseRequest(url, serviceKey, path, options = {}) {
+  const response = await fetch(url + path, {
+    ...options,
+    headers: {
+      "apikey": serviceKey,
+      "Authorization": "Bearer " + serviceKey,
+      "Content-Type": "application/json",
+      ...(options.headers || {})
+    }
+  });
+  if (!response.ok) throw new Error("Payment database request failed with HTTP " + response.status);
+  if (response.status === 204) return null;
+  return response.json().catch(() => null);
+}
+
 Deno.serve(async (request) => {
   if (request.method !== "POST") return new Response("Method not allowed", { status: 405 });
 
@@ -70,52 +85,69 @@ Deno.serve(async (request) => {
       return new Response("Invalid signature", { status: 401 });
     }
 
-    if (event.event_type !== "PAYMENT.CAPTURE.COMPLETED") {
+    const eventType = String(event.event_type || "");
+    if (!["CHECKOUT.ORDER.APPROVED", "PAYMENT.CAPTURE.COMPLETED"].includes(eventType)) {
       return new Response("Event acknowledged", { status: 200 });
     }
 
-    const capture = event.resource || {};
-    const captureId = String(capture.id || "");
-    const orderId = String(capture.supplementary_data?.related_ids?.order_id || "");
-    if (!captureId || !orderId || capture.status !== "COMPLETED") {
-      return new Response("Capture details incomplete", { status: 202 });
-    }
+    const orderId = eventType === "CHECKOUT.ORDER.APPROVED"
+      ? String(event.resource?.id || "")
+      : String(event.resource?.supplementary_data?.related_ids?.order_id || "");
+    if (!orderId) return new Response("Order reference missing", { status: 202 });
 
     const order = await paypalRequest(base, accessToken, "/v2/checkout/orders/" + encodeURIComponent(orderId));
-    if (order.status !== "COMPLETED") return new Response("Order not completed", { status: 202 });
-
     const purchaseUnit = (order.purchase_units || [])[0];
     const customId = String(purchaseUnit?.custom_id || "");
-    const orderAmount = purchaseUnit?.payments?.captures?.find((item) => item.id === captureId);
-    const currency = String(orderAmount?.amount?.currency_code || capture.amount?.currency_code || "");
-    const amount = Number(orderAmount?.amount?.value || capture.amount?.value || 0);
+    const orderAmount = purchaseUnit?.amount || {};
+    const amount = Number(orderAmount.value || 0);
+    const currency = String(orderAmount.currency_code || "");
 
-    if (!/^GRF-[A-F0-9]{8}$/i.test(customId) || currency.toUpperCase() !== "CAD" || amount < 5 || !orderAmount || orderAmount.status !== "COMPLETED") {
-      console.warn("PayPal capture did not meet priority payment rules", { event_id: event.id, currency, amount });
-      return new Response("Capture does not qualify for priority payment", { status: 200 });
+    if (!/^GRF-[A-F0-9]{8}$/i.test(customId) || currency.toUpperCase() !== "CAD" || amount < 5) {
+      console.warn("PayPal order did not meet priority payment rules", { event_id: event.id, currency, amount });
+      return new Response("Order does not qualify for priority payment", { status: 200 });
     }
 
-    const headers = {
-      "apikey": serviceKey,
-      "Authorization": "Bearer " + serviceKey,
-      "Content-Type": "application/json",
-      "Prefer": "return=minimal"
-    };
-    const update = await fetch(
-      supabaseUrl + "/rest/v1/song_requests?payment_reference=eq." + encodeURIComponent(customId.toUpperCase()) +
-      "&payment_method=eq.paypal&payment_status=eq.pending&payment_checkout_reference=eq." + encodeURIComponent(orderId),
-      {
-        method: "PATCH",
-        headers,
-        body: JSON.stringify({
-          payment_status: "paid",
-          payment_provider: "paypal",
-          payment_provider_reference: captureId,
-          payment_verified_at: new Date().toISOString()
-        })
-      }
-    );
-    if (!update.ok) throw new Error("Could not update the matching priority request");
+    const filter = "?payment_checkout_reference=eq." + encodeURIComponent(orderId) +
+      "&payment_reference=eq." + encodeURIComponent(customId.toUpperCase()) +
+      "&payment_method=eq.paypal&payment_status=eq.pending&select=tracking_token&limit=1";
+    const matches = await supabaseRequest(supabaseUrl, serviceKey, "/rest/v1/song_requests" + filter);
+    if (!matches?.length) return new Response("No pending request matches this PayPal order", { status: 200 });
+
+    if (eventType === "CHECKOUT.ORDER.APPROVED") {
+      if (order.status === "COMPLETED") return new Response("Order already completed", { status: 200 });
+      if (order.status !== "APPROVED") return new Response("Order is not approved", { status: 202 });
+
+      // PayPal requires the merchant to capture an approved Orders API payment.
+      await paypalRequest(base, accessToken, "/v2/checkout/orders/" + encodeURIComponent(orderId) + "/capture", {
+        method: "POST",
+        headers: { "PayPal-Request-Id": "capture-" + orderId },
+        body: "{}"
+      });
+      return new Response("Approved order capture requested", { status: 200 });
+    }
+
+    if (order.status !== "COMPLETED") return new Response("Order not completed", { status: 202 });
+    const captureId = String(event.resource?.id || "");
+    const capture = purchaseUnit?.payments?.captures?.find((item) => item.id === captureId);
+    if (!captureId || !capture || capture.status !== "COMPLETED" ||
+        String(capture.amount?.currency_code || "").toUpperCase() !== "CAD" ||
+        Number(capture.amount?.value || 0) < 5) {
+      return new Response("Completed capture details did not qualify", { status: 200 });
+    }
+
+    const updatePath = "/rest/v1/song_requests?payment_checkout_reference=eq." + encodeURIComponent(orderId) +
+      "&payment_reference=eq." + encodeURIComponent(customId.toUpperCase()) +
+      "&payment_method=eq.paypal&payment_status=eq.pending";
+    await supabaseRequest(supabaseUrl, serviceKey, updatePath, {
+      method: "PATCH",
+      headers: { "Prefer": "return=minimal" },
+      body: JSON.stringify({
+        payment_status: "paid",
+        payment_provider: "paypal",
+        payment_provider_reference: captureId,
+        payment_verified_at: new Date().toISOString()
+      })
+    });
 
     return new Response("Webhook processed", { status: 200 });
   } catch (error) {
