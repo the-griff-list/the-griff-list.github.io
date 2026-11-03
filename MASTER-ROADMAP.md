@@ -30,6 +30,7 @@
 - Stage Mode and filtering have passed source-level JavaScript syntax checks; actual phone/browser usability testing is still required.
 - Authenticator-app MFA enrollment and sign-in verification are implemented using Supabase TOTP APIs; database-level AAL2 enforcement is provided as a separate migration to apply after successful enrollment. Live Supabase MFA testing remains pending.
 - Added a direct-to-fan business growth playbook covering bookings, donations, priority requests, merch, audience relationships, ethical conversion, and performance metrics.
+- Added a secured, admin-managed confirmed Donation Wall migration and admin list/removal controls; only confirmed rows are public, and supporters should be anonymous unless they explicitly consent to display.
 - Added a prominent Book a Show action in the public navigation.
 
 ## Phase 2 — Watch Live
