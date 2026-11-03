@@ -120,6 +120,7 @@ begin
     v_result boolean;
   begin
     select raised_amount into v_before from public.rock_meter_settings where id = 1;
+    if not found then raise exception 'FAIL: rock_meter_settings row id=1 is required for meter accounting'; end if;
     insert into public.song_requests
       (requester_name, song_title, artist_name, note, tracking_token)
     values
