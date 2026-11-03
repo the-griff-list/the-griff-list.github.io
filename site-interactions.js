@@ -225,7 +225,7 @@
   // Admin-only tip ledger entry. The DB RLS policy remains the security boundary.
   if ($('#inbox-panel')) {
     const panel=$('#live-tools-panel');if(panel){const ledger=document.createElement('section');ledger.className='admin-panel';ledger.id='confirmed-tip-admin';ledger.innerHTML='<h2><span>Confirmed Donation Wall</span></h2><p>Add a donation record only after verifying it in the payment provider or bank. Use a nickname or Anonymous Rocker unless the supporter has explicitly agreed to public display. The public page shows the chosen display name, amount, and optional requested song - never dates or payment references.</p><form id="confirmed-tip-form" class="admin-form"><label>Display name (optional)<input id="confirmed-tip-name" maxlength="50" placeholder="Nickname or Anonymous Rocker"></label><label>Confirmed amount (CAD)<input id="confirmed-tip-amount" type="number" min="0.01" step="0.01" required></label><label>Song requested (optional)<input id="confirmed-tip-song" maxlength="200" placeholder="Song title - artist"></label><button type="submit" class="button button-hot">ADD CONFIRMED DONATION</button><p id="confirmed-tip-status" class="admin-status" role="status" aria-live="polite"></p></form><div id="confirmed-tip-admin-list"></div>';
-      panel.insertAdjacentElement('afterend',ledger);
+      panel.append(ledger);
       const donationAdminList=$('#confirmed-tip-admin-list'),donationAdminStatus=$('#confirmed-tip-status');
       async function refreshConfirmedDonations(){
         const client=window.supabaseClient;if(!client||!donationAdminList)return;
