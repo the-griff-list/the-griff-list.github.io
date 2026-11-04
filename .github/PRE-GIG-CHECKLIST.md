@@ -26,6 +26,7 @@
 - [ ] Confirm the service-worker cache version is bumped when public shell assets or their versioned query strings change.
 - [ ] Verify admin, analytics, request-archive pages, Supabase config and API responses are never cached by the offline worker.
 - [ ] With the network disabled, confirm cached catalogue access is clearly offline and no request, live stream or payment is shown as successful or queued.
+- [ ] Confirm the cached homepage displays its accessible offline status banner and clears it after connectivity returns.
 
 ## Release decision
 
