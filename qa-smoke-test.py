@@ -23,6 +23,16 @@ for file in html_files:
         issues.append(f'{file.name}: duplicate id #{duplicate}')
     for ref in audit.refs:
         if ref and not (ROOT/ref).exists(): issues.append(f'{file.name}: missing local asset/page {ref}')
+# Assert the time-sensitive gig and payment disclosures remain explicit.
+home_html=(ROOT/'index.html').read_text(encoding='utf-8')
+watch_html=(ROOT/'watch-live.html').read_text(encoding='utf-8')
+for required in ('Hunter’s Ale House', 'datetime="2026-11-06"', 'Send a tip', 'Ko-fi (Apple Pay / Google Pay if enabled)', 'eligible Stripe connection'):
+    if required not in home_html:
+        issues.append(f'index.html: missing gig/payment acceptance text: {required}')
+for required in ('Send a tip', 'eligible Stripe connection'):
+    if required not in watch_html:
+        issues.append(f'watch-live.html: missing payment disclosure: {required}')
+
 js_files=sorted(ROOT.glob('*.js'))
 for file in js_files:
     result=subprocess.run(['node','--check',str(file)],capture_output=True,text=True)
