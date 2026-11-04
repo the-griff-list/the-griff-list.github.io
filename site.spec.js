@@ -13,7 +13,7 @@ test('public offline shell registers, falls back offline, and never caches priva
   }, null, { timeout: 15000 });
   await page.reload();
 
-  const cacheName = 'grifflist-livekit-offline-v39';
+  const cacheName = 'grifflist-livekit-offline-v40';
   const initial = await page.evaluate(async (name) => {
     const cache = await caches.open(name);
     return (await cache.keys()).map(request => {
@@ -24,6 +24,13 @@ test('public offline shell registers, falls back offline, and never caches priva
   expect(initial).toContain('/index.html');
   expect(initial).toContain('/offline.html');
   expect(initial).toContain('/script.js?v=payment-security-pause-1');
+  await page.context().setOffline(true);
+  await page.reload();
+  await expect(page.locator('#offline-status')).toBeVisible();
+  await expect(page.locator('#offline-status')).toContainText('Nothing is queued while offline');
+  await page.context().setOffline(false);
+  await expect(page.locator('#offline-status')).toBeHidden();
+
 
   await page.evaluate(async (name) => {
     const cache = await caches.open(name);
