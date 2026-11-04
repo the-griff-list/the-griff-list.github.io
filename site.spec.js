@@ -4,6 +4,52 @@ test('title screen can be entered', async ({ page }) => { await page.goto('/inde
 test('What’s New can be reopened and dismissed', async ({ page }) => { await page.goto('/index.html'); await page.locator('#splash').click(); const reopen=page.locator('#whats-new-reopen'); await expect(reopen).toBeVisible(); await reopen.click(); const dialog=page.locator('#whats-new-dialog'); await expect(dialog).toBeVisible(); await page.locator('#whats-new-done').click(); await expect(dialog).not.toBeVisible(); });
 test('PWA manifest is available with app shortcuts', async ({ request }) => { const response=await request.get('/manifest.webmanifest'); expect(response.ok()).toBeTruthy(); const manifest=await response.json(); expect(manifest.display).toBe('standalone'); expect(manifest.shortcuts.length).toBeGreaterThanOrEqual(3); });
 
+test('public offline shell registers, falls back offline, and never caches private pages', async ({ page }) => {
+  await page.goto('/index.html');
+  await page.waitForFunction(async () => {
+    if (!('serviceWorker' in navigator)) return false;
+    const registration = await navigator.serviceWorker.getRegistration();
+    return Boolean(registration?.active && navigator.serviceWorker.controller);
+  }, null, { timeout: 15000 });
+  await page.reload();
+
+  const cacheName = 'grifflist-livekit-offline-v39';
+  const initial = await page.evaluate(async (name) => {
+    const cache = await caches.open(name);
+    return (await cache.keys()).map(request => {
+      const url = new URL(request.url);
+      return `${url.pathname}${url.search}`;
+    });
+  }, cacheName);
+  expect(initial).toContain('/index.html');
+  expect(initial).toContain('/offline.html');
+  expect(initial).toContain('/script.js?v=payment-security-pause-1');
+
+  await page.evaluate(async (name) => {
+    const cache = await caches.open(name);
+    await cache.delete('/watch-live.html');
+  }, cacheName);
+  await page.context().setOffline(true);
+  await page.goto('/watch-live.html');
+  await expect(page.locator('h1')).toContainText("You're offline");
+  await page.context().setOffline(false);
+
+  await page.goto('/admin.html');
+  await page.goto('/request-archive.html');
+  await page.goto('/analytics.html');
+  const privatePaths = await page.evaluate(async (name) => {
+    const cache = await caches.open(name);
+    const paths = (await cache.keys()).map(request => new URL(request.url).pathname);
+    return [
+      '/admin.html', '/admin.js', '/admin-features.js',
+      '/analytics.html', '/analytics-dashboard.js', '/analytics-tracker.js',
+      '/request-archive.html', '/request-archive.js', '/supabase-config.js'
+    ].filter(path => paths.includes(path));
+  }, cacheName);
+  expect(privatePaths).toEqual([]);
+});
+
+
 test('request form exposes required, keyboard-reachable fields', async ({ page }) => {
   await page.goto('/index.html');
   await page.locator('#splash').click();
