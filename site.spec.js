@@ -114,3 +114,62 @@ test('successful request retains the name only when the visitor opted in', async
   expect(await page.evaluate(() => localStorage.getItem('grifflistRememberName.v1'))).toBe('yes');
   expect(await page.evaluate(() => localStorage.getItem('grifflistRememberedName.v2'))).toBe('Opted-in Listener');
 });
+
+
+test('retries an uncertain request with the same tracking token instead of creating a duplicate', async ({ page }) => {
+  await page.goto('/index.html');
+  await page.locator('#splash').click();
+  await page.evaluate(() => {
+    const rows = new Map();
+    window.__requestTokens = [];
+    let firstAttempt = true;
+    window.supabaseClient = {
+      from: () => ({
+        insert: async (payload) => {
+          window.__requestTokens.push(payload.tracking_token);
+          if (!rows.has(payload.tracking_token)) {
+            rows.set(payload.tracking_token, {
+              song_title: payload.song_title,
+              artist_name: payload.artist_name || '',
+              status: 'Received'
+            });
+          }
+          if (firstAttempt) {
+            firstAttempt = false;
+            return { error: { code: 'NETWORK_ERROR', message: 'response lost after insert' } };
+          }
+          return { error: { code: '23505', message: 'duplicate tracking token' } };
+        }
+      }),
+      rpc: async (_name, args) => ({
+        data: rows.get(args.p_tracking_token) || null,
+        error: null
+      })
+    };
+    window.__requestRows = rows;
+  });
+
+  await page.locator('#requester-name').fill('Retry Listener');
+  await page.locator('#request-song').fill('Retry Song');
+  const submit = page.locator('#request-form button[type="submit"]');
+  await submit.click();
+  await expect(page.locator('#form-status')).toContainText('Request could not be saved');
+
+  const pending = await page.evaluate(() => JSON.parse(sessionStorage.getItem('grifflistLastRequest')));
+  expect(pending.state).toBe('pending');
+  expect(pending.trackingToken).toMatch(/^[0-9a-f-]{36}$/i);
+
+  await submit.click();
+  await expect(page.locator('#form-status')).toHaveText('Request sent! Thanks for helping choose the music.');
+
+  const result = await page.evaluate(() => ({
+    tokens: window.__requestTokens,
+    rowCount: window.__requestRows.size,
+    savedToken: localStorage.getItem('grifflistLastRequestToken.v1'),
+    attempt: JSON.parse(sessionStorage.getItem('grifflistLastRequest'))
+  }));
+  expect(result.tokens).toEqual([pending.trackingToken, pending.trackingToken]);
+  expect(result.rowCount).toBe(1);
+  expect(result.savedToken).toBe(pending.trackingToken);
+  expect(result.attempt.state).toBe('sent');
+});

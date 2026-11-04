@@ -223,14 +223,89 @@ rememberNameCheckbox?.addEventListener("change",()=>{
 requesterNameInput?.addEventListener("change",persistRememberedName);
 requesterNameInput?.addEventListener("blur",persistRememberedName);
 const requestStatusButton=$("#check-last-request"), requestStatusResult=$("#request-status-result");
-requestStatusButton?.addEventListener("click",async()=>{const token=localStorage.getItem("grifflistLastRequestToken.v1");if(!token){requestStatusResult.textContent="No recent request is saved on this device yet.";return;}if(!window.supabaseClient){requestStatusResult.textContent="Request status is temporarily unavailable.";return;}requestStatusButton.disabled=true;requestStatusResult.textContent="Checking…";try{const {data,error}=await window.supabaseClient.rpc("get_my_request_status",{p_tracking_token:token});if(error)throw error;const row=Array.isArray(data)?data[0]:data;if(!row){requestStatusResult.textContent="We couldn't find that request. It may have been archived or the status link expired.";}else{requestStatusResult.textContent=`${row.song_title}${row.artist_name?" - "+row.artist_name:""}: ${row.status||"Received"}.`;}}catch(e){requestStatusResult.textContent="Status lookup needs the included Supabase migration. Please try again later.";}finally{requestStatusButton.disabled=false;}});
+let pendingRequestAttempt=null;
+requestStatusButton?.addEventListener("click",async()=>{const token=localStorage.getItem("grifflistLastRequestToken.v1");if(!token){requestStatusResult.textContent="No recent request is saved on this device yet.";return;}if(!window.supabaseClient){requestStatusResult.textContent="Request status is temporarily unavailable.";return;}requestStatusButton.disabled=true;requestStatusResult.textContent="Checking…";try{const {data,error}=await window.supabaseClient.rpc("get_my_request_status",{p_tracking_token:token});if(error)throw error;const row=Array.isArray(data)?data[0]:data;if(!row){requestStatusResult.textContent="We couldn't find that request. It may have been archived or the status link expired.";}else{requestStatusResult.textContent=row.song_title+(row.artist_name?" - "+row.artist_name:"")+": "+(row.status||"Received")+".";}}catch(e){requestStatusResult.textContent="Status lookup needs the included Supabase migration. Please try again later.";}finally{requestStatusButton.disabled=false;}});
 requestForm.addEventListener("submit",async e=>{
- e.preventDefault();const name=$("#requester-name").value.trim(),song=$("#request-song").value.trim(),artist=$("#request-artist").value.trim(),message=$("#request-message").value.trim(),status=$("#form-status"),submit=requestForm.querySelector('button[type="submit"]');
- status.textContent="";if(!name){status.textContent="Please enter your name.";$("#requester-name").focus();return;}if(!song){status.textContent="Please enter a song name.";$("#request-song").focus();return;}
- const client=window.supabaseClient; if(!client){status.textContent="Online requests are being set up. Please try again later.";return;}
- const priority=isPrioritySelected();const shouldRememberName=Boolean(rememberNameCheckbox?.checked);const paymentMethod=$("#priority-payment-method").value;if(priority&&!paymentMethod){status.textContent="Choose how you’ll send your $5 CAD tip.";$("#priority-payment-method").focus();return;}const priorityMarker=priority?(priorityAlreadyTipped?"[PRIORITY TIP REPORTED - VERIFY PAYMENT]":"[PRIORITY TIP PENDING - VERIFY PAYMENT]"):"";const savedNote=[priority?`${priorityMarker} Method: ${paymentMethod}`:"",message].filter(Boolean).join("\n\n");const fingerprint=[name,song,artist,savedNote].map(v=>v.trim().toLowerCase()).join("|");const storageKey="grifflistLastRequest";let previous=null;try{previous=JSON.parse(sessionStorage.getItem(storageKey)||"null");}catch(e){}if(previous&&previous.fingerprint===fingerprint&&Date.now()-previous.time<5*60*1000){status.textContent="That same request was just sent. Please wait five minutes before sending it again.";return;}
- if(submit.disabled)return;submit.disabled=true;submit.textContent="SENDING REQUEST…";
- try{const trackingToken=(crypto.randomUUID?crypto.randomUUID():([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g,c=>(c^crypto.getRandomValues(new Uint8Array(1))[0]&15>>c/4).toString(16)));const {error}=await client.from("song_requests").insert({requester_name:name,song_title:song,artist_name:artist||null,note:savedNote||null,tracking_token:trackingToken});if(error)throw error;try{localStorage.setItem("grifflistLastRequestToken.v1",trackingToken);sessionStorage.setItem(storageKey,JSON.stringify({fingerprint,time:Date.now()}));}catch(e){}if(shouldRememberName){try{localStorage.setItem(rememberNamePreferenceKey,"yes");localStorage.setItem(rememberedNameKey,name);}catch(e){}}if(requestStatusResult)requestStatusResult.textContent="Your latest request is saved on this device. Use Check My Last Request to see its status.";status.textContent=priority?(priorityAlreadyTipped?"Priority request submitted. Your payment will be checked manually.":"Request saved! Complete your $5 CAD tip using the highlighted payment option below."):"Request sent! Thanks for helping choose the music.";playSfx("you-rock-sfx");const shouldGoPay=priority&&!priorityAlreadyTipped;const chosenMethod=paymentMethod;requestForm.reset();if(shouldRememberName){rememberNameCheckbox.checked=true;requesterNameInput.value=name;}setPrioritySelected(false);$("#request-hint").hidden=true;if(shouldGoPay){window.setTimeout(()=>focusPaymentMethod(chosenMethod),180);}priorityAlreadyTipped=false;}catch(err){console.error("Request submission failed",err);const code=String(err?.code||"");if(code==="42501"||/row-level security|permission denied/i.test(String(err?.message||""))){status.textContent="The request database is blocking public submissions. The Supabase song-request INSERT policy needs to be enabled.";}else if(code==="PGRST204"||/column .* does not exist|schema cache/i.test(String(err?.message||""))){status.textContent="The song-request database is missing a required column. Apply the included Grifflist database migrations in Supabase.";}else{status.textContent="Request could not be saved. Check your connection and the Supabase song_requests table/policies, then try again.";}}finally{submit.disabled=false;submit.textContent="SEND SONG REQUEST ↗";}
+ e.preventDefault();
+ const name=$("#requester-name").value.trim(),song=$("#request-song").value.trim(),artist=$("#request-artist").value.trim(),message=$("#request-message").value.trim(),status=$("#form-status"),submit=requestForm.querySelector('button[type="submit"]');
+ status.textContent="";
+ if(!name){status.textContent="Please enter your name.";$("#requester-name").focus();return;}
+ if(!song){status.textContent="Please enter a song name.";$("#request-song").focus();return;}
+ const client=window.supabaseClient;
+ if(!client){status.textContent="Online requests are being set up. Please try again later.";return;}
+ if(submit.disabled)return;
+
+ const priority=isPrioritySelected();
+ const shouldRememberName=Boolean(rememberNameCheckbox?.checked);
+ const paymentMethod=$("#priority-payment-method").value;
+ if(priority&&!paymentMethod){status.textContent="Choose how you’ll send your $5 CAD tip.";$("#priority-payment-method").focus();return;}
+ const priorityMarker=priority?(priorityAlreadyTipped?"[PRIORITY TIP REPORTED - VERIFY PAYMENT]":"[PRIORITY TIP PENDING - VERIFY PAYMENT]"):"";
+ const savedNote=[priority?priorityMarker+" Method: "+paymentMethod:"",message].filter(Boolean).join("\n\n");
+ const fingerprint=[name,song,artist,savedNote].map(v=>v.trim().toLowerCase()).join("|");
+ const storageKey="grifflistLastRequest";
+ let previous=null;
+ try{previous=JSON.parse(sessionStorage.getItem(storageKey)||"null");}catch(e){}
+ const now=Date.now();
+ const sameFingerprint=previous?.fingerprint===fingerprint;
+ const previousTime=Number(previous?.time);
+ const previousAge=Number.isFinite(previousTime)?now-previousTime:Infinity;
+ const previousWasSent=previous?.state==="sent"||(sameFingerprint&&!previous?.state);
+ if(sameFingerprint&&previousWasSent&&previousAge>=0&&previousAge<5*60*1000){
+  status.textContent="That same request was just sent. Please wait five minutes before sending it again.";
+  return;
+ }
+ const storedPendingToken=sameFingerprint&&previous?.state==="pending"&&previousAge>=0&&previousAge<24*60*60*1000&&typeof previous.trackingToken==="string"&&/^[0-9a-f-]{36}$/i.test(previous.trackingToken)?previous.trackingToken:null;
+ const memoryPendingToken=pendingRequestAttempt?.fingerprint===fingerprint&&now-pendingRequestAttempt.time<24*60*60*1000?pendingRequestAttempt.trackingToken:null;
+ const trackingToken=storedPendingToken||memoryPendingToken||(crypto.randomUUID?crypto.randomUUID():([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g,c=>(c^crypto.getRandomValues(new Uint8Array(1))[0]&15>>c/4).toString(16)));
+ pendingRequestAttempt={fingerprint,trackingToken,time:now};
+ submit.disabled=true;
+ submit.textContent="SENDING REQUEST…";
+ try{
+  // Persist the idempotency key before sending. If the server commits but the
+  // response is lost, a retry of this same form reuses the same unique token.
+  try{sessionStorage.setItem(storageKey,JSON.stringify({fingerprint,time:now,trackingToken,state:"pending"}));}catch(e){}
+  const {error}=await client.from("song_requests").insert({requester_name:name,song_title:song,artist_name:artist||null,note:savedNote||null,tracking_token:trackingToken});
+  if(error){
+   if(String(error.code||"")==="23505"){
+    const {data:existing,error:lookupError}=await client.rpc("get_my_request_status",{p_tracking_token:trackingToken});
+    const row=Array.isArray(existing)?existing[0]:existing;
+    const matchesAttempt=row&&row.song_title===song&&(row.artist_name||"")===artist;
+    if(lookupError||!matchesAttempt)throw error;
+   }else{
+    throw error;
+   }
+  }
+  pendingRequestAttempt=null;
+  try{
+   localStorage.setItem("grifflistLastRequestToken.v1",trackingToken);
+   sessionStorage.setItem(storageKey,JSON.stringify({fingerprint,time:Date.now(),trackingToken,state:"sent"}));
+  }catch(e){}
+  if(shouldRememberName){try{localStorage.setItem(rememberNamePreferenceKey,"yes");localStorage.setItem(rememberedNameKey,name);}catch(e){}}
+  if(requestStatusResult)requestStatusResult.textContent="Your latest request is saved on this device. Use Check My Last Request to see its status.";
+  status.textContent=priority?(priorityAlreadyTipped?"Priority request submitted. Your payment will be checked manually.":"Request saved! Complete your $5 CAD tip using the highlighted payment option below."):"Request sent! Thanks for helping choose the music.";
+  playSfx("you-rock-sfx");
+  const shouldGoPay=priority&&!priorityAlreadyTipped;
+  const chosenMethod=paymentMethod;
+  requestForm.reset();
+  if(shouldRememberName){rememberNameCheckbox.checked=true;requesterNameInput.value=name;}
+  setPrioritySelected(false);
+  $("#request-hint").hidden=true;
+  if(shouldGoPay){window.setTimeout(()=>focusPaymentMethod(chosenMethod),180);}
+  priorityAlreadyTipped=false;
+ }catch(err){
+  console.error("Request submission failed",err);
+  const code=String(err?.code||"");
+  if(code==="42501"||/row-level security|permission denied/i.test(String(err?.message||""))){
+   status.textContent="The request database is blocking public submissions. The Supabase song-request INSERT policy needs to be enabled.";
+  }else if(code==="PGRST204"||/column .* does not exist|schema cache/i.test(String(err?.message||""))){
+   status.textContent="The song-request database is missing a required column. Apply the included Grifflist database migrations in Supabase.";
+  }else{
+   status.textContent="Request could not be saved. Check your connection and the Supabase song_requests table/policies, then try again.";
+  }
+ }finally{
+  submit.disabled=false;
+  submit.textContent="SEND SONG REQUEST ↗";
+ }
 });
 const bookingCopy=$("#booking-copy"), bookingStatus=$("#booking-status");
 bookingCopy.addEventListener("click", async()=>{playSfx("highway-riser-sfx");try{await navigator.clipboard.writeText("griffenarsenaultmusic@hotmail.com");bookingStatus.textContent="Booking email copied.";}catch(e){bookingStatus.textContent="Email: griffenarsenaultmusic@hotmail.com - select and copy it.";}});
