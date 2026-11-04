@@ -87,13 +87,17 @@ else:
         if local in private_paths:
             issues.append(f'sw.js: private asset must not be precached: {asset}')
     for required in (
-        "const CACHE = 'grifflist-livekit-offline-v42'",
+        "const CACHE = 'grifflist-livekit-offline-v43'",
         'function isPrivatePath',
         'function isApiPath',
         "request.headers.has('Authorization')",
         "!vary.includes('cookie')",
         "!vary.includes('authorization')",
         "!vary.includes('*')",
+        'const hasZeroFreshness',
+        'const hasLegacyNoCache',
+        "'must-revalidate'",
+        "'proxy-revalidate'",
         'PUBLIC_NAVIGATION_PATHS',
         'cache.match(request)',
         "new URL('./offline.html', self.registration.scope)",

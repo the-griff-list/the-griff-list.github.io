@@ -1,4 +1,58 @@
 const { test, expect } = require('@playwright/test');
+const fs = require('node:fs');
+const vm = require('node:vm');
+
+const serviceWorkerSource = fs.readFileSync(`${__dirname}/sw.js`, 'utf8');
+const cachePolicyMatch = serviceWorkerSource.match(
+  /function isCacheableResponse\(response\) \{[\s\S]*?\n\}/,
+);
+if (!cachePolicyMatch) throw new Error('Could not extract the production service-worker cache policy.');
+const cachePolicyContext = {};
+vm.runInNewContext(
+  `${cachePolicyMatch[0]}\nglobalThis.isCacheableResponse = isCacheableResponse;`,
+  cachePolicyContext,
+);
+
+test('service worker refuses responses that require HTTP revalidation before reuse', async () => {
+  const isCacheable = cachePolicyContext.isCacheableResponse;
+  const response = ({ cacheControl = '', pragma = '', vary = '', ok = true, type = 'basic' } = {}) => ({
+    ok,
+    type,
+    headers: {
+      get(name) {
+        return ({
+          'Cache-Control': cacheControl,
+          Pragma: pragma,
+          Vary: vary,
+        })[name] || null;
+      },
+    },
+  });
+
+  expect(isCacheable(response({ cacheControl: 'public, max-age=3600' }))).toBe(true);
+  for (const cacheControl of [
+    'no-cache',
+    'no-cache="Set-Cookie"',
+    'must-revalidate',
+    'proxy-revalidate',
+    'private',
+    'no-store',
+    'max-age=0',
+    'max-age="0"',
+    's-maxage=0',
+    'public, max-age=000',
+  ]) {
+    expect(isCacheable(response({ cacheControl })), cacheControl).toBe(false);
+  }
+  expect(isCacheable(response({ pragma: 'no-cache' }))).toBe(false);
+  expect(isCacheable(response({ vary: 'Accept-Language, Cookie' }))).toBe(false);
+  expect(isCacheable(response({ vary: 'Authorization' }))).toBe(false);
+  expect(isCacheable(response({ vary: '*' }))).toBe(false);
+  expect(isCacheable(response({ vary: 'Accept-Language' }))).toBe(true);
+  expect(isCacheable(response({ ok: false }))).toBe(false);
+  expect(isCacheable(response({ type: 'cors' }))).toBe(false);
+});
+
 test('homepage loads without horizontal overflow or page errors', async ({ page }) => { const errors=[]; page.on('pageerror',e=>errors.push(e.message)); await page.goto('/index.html'); await expect(page.locator('#splash')).toBeVisible(); expect(await page.evaluate(()=>document.documentElement.scrollWidth>document.documentElement.clientWidth)).toBe(false); expect(errors).toEqual([]); });
 test('title screen can be entered', async ({ page }) => { await page.goto('/index.html'); await page.locator('#splash').click(); await expect(page.locator('#catalog')).toBeVisible(); });
 test('What’s New can be reopened and dismissed', async ({ page }) => { await page.goto('/index.html'); await page.locator('#splash').click(); const reopen=page.locator('#whats-new-reopen'); await expect(reopen).toBeVisible(); await reopen.click(); const dialog=page.locator('#whats-new-dialog'); await expect(dialog).toBeVisible(); await page.locator('#whats-new-done').click(); await expect(dialog).not.toBeVisible(); });
@@ -13,7 +67,7 @@ test('public offline shell registers, falls back offline, and never caches priva
   }, null, { timeout: 30000 });
   await page.reload();
 
-  const cacheName = 'grifflist-livekit-offline-v42';
+  const cacheName = 'grifflist-livekit-offline-v43';
   const initial = await page.evaluate(async (name) => {
     const cache = await caches.open(name);
     return (await cache.keys()).map(request => {
@@ -73,7 +127,7 @@ test('authenticated same-origin asset requests bypass the offline cache', async 
     if (!response.ok) throw new Error(`Probe request failed: ${response.status}`);
     const cache = await caches.open(name);
     return (await cache.keys()).some(request => request.url === url.href);
-  }, 'grifflist-livekit-offline-v42');
+  }, 'grifflist-livekit-offline-v43');
   expect(cached).toBe(false);
 });
 

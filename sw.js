@@ -1,5 +1,5 @@
 /* Public offline shell only. Requests, tips, live video and private admin pages need a connection. */
-const CACHE = 'grifflist-livekit-offline-v42';
+const CACHE = 'grifflist-livekit-offline-v43';
 const CORE = [
   './',
   './index.html',
@@ -105,12 +105,36 @@ function isApiPath(pathname) {
 
 function isCacheableResponse(response) {
   const cacheControl = response.headers.get('Cache-Control') || '';
+  const cacheDirectives = cacheControl.split(',').map(value => value.trim());
+  const directiveNames = cacheDirectives.map(value =>
+    value.split('=', 1)[0].trim().toLowerCase()
+  );
+  // Cache API does not enforce HTTP freshness/revalidation directives. Since
+  // this worker may serve cached static assets without contacting the origin,
+  // conservatively refuse responses that require validation before reuse.
+  const forbiddenDirectives = new Set([
+    'no-store',
+    'no-cache',
+    'private',
+    'must-revalidate',
+    'proxy-revalidate'
+  ]);
+  const hasZeroFreshness = cacheDirectives.some(value => {
+    const match = /^(?:max-age|s-maxage)\s*=\s*"?([0-9]+)"?$/i.exec(value);
+    return match !== null && Number(match[1]) === 0;
+  });
+  const pragma = response.headers.get('Pragma') || '';
+  const hasLegacyNoCache = pragma.split(',').some(value =>
+    value.trim().toLowerCase() === 'no-cache'
+  );
   const vary = (response.headers.get('Vary') || '')
     .split(',')
     .map(value => value.trim().toLowerCase());
   return response.ok &&
     response.type === 'basic' &&
-    !/\b(?:no-store|private)\b/i.test(cacheControl) &&
+    !directiveNames.some(name => forbiddenDirectives.has(name)) &&
+    !hasZeroFreshness &&
+    !hasLegacyNoCache &&
     !vary.includes('*') &&
     !vary.includes('cookie') &&
     !vary.includes('authorization');
