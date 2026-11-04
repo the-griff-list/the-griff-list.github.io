@@ -33,6 +33,21 @@ for required in ('Send a tip', 'eligible Stripe connection'):
     if required not in watch_html:
         issues.append(f'watch-live.html: missing payment disclosure: {required}')
 
+# Request retry idempotency depends on the reviewed unique-token index and
+# token-status RPC being present in the migration shipped with this source.
+request_migration = ROOT/'grifflist-combined-reviewed-migration.sql'
+if not request_migration.is_file():
+    issues.append('request idempotency: reviewed Supabase migration is missing')
+else:
+    migration_sql = request_migration.read_text(encoding='utf-8')
+    for required in (
+        'create unique index if not exists song_requests_tracking_token_unique',
+        'create or replace function public.get_my_request_status(p_tracking_token uuid)',
+        'grant execute on function public.get_my_request_status(uuid) to anon, authenticated',
+    ):
+        if required not in migration_sql:
+            issues.append(f'request idempotency: migration is missing required SQL contract: {required}')
+
 js_files=sorted(ROOT.glob('*.js'))
 for file in js_files:
     result=subprocess.run(['node','--check',str(file)],capture_output=True,text=True)
