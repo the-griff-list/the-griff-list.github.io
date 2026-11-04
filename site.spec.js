@@ -172,4 +172,59 @@ test('retries an uncertain request with the same tracking token instead of creat
   expect(result.rowCount).toBe(1);
   expect(result.savedToken).toBe(pending.trackingToken);
   expect(result.attempt.state).toBe('sent');
-});
+})
+ 
+test('uses a new idempotency token when the visitor changes the song after an uncertain request', async ({ page }) => {
+  await page.goto('/index.html');
+  await page.locator('#splash').click();
+  await page.evaluate(() => {
+    const rows = new Map();
+    window.__requestTokens = [];
+    let attempt = 0;
+    window.supabaseClient = {
+      from: () => ({
+        insert: async (payload) => {
+          window.__requestTokens.push(payload.tracking_token);
+          if (!rows.has(payload.tracking_token)) {
+            rows.set(payload.tracking_token, {
+              song_title: payload.song_title,
+              artist_name: payload.artist_name || '',
+              status: 'Received'
+            });
+          }
+          attempt += 1;
+          if (attempt === 1) {
+            return { error: { code: 'NETWORK_ERROR', message: 'response lost after insert' } };
+          }
+          return { error: null };
+        }
+      })
+    };
+    window.__requestRows = rows;
+  });
+
+  await page.locator('#requester-name').fill('Changed Request Listener');
+  await page.locator('#request-song').fill('First Uncertain Song');
+  const submit = page.locator('#request-form button[type="submit"]');
+  await submit.click();
+  await expect(page.locator('#form-status')).toContainText('Request could not be saved');
+  const first = await page.evaluate(() => JSON.parse(sessionStorage.getItem('grifflistLastRequest')));
+
+  await page.locator('#request-song').fill('Second Song');
+  await submit.click();
+  await expect(page.locator('#form-status')).toHaveText('Request sent! Thanks for helping choose the music.');
+
+  const result = await page.evaluate(() => ({
+    tokens: window.__requestTokens,
+    rows: Array.from(window.__requestRows.entries()),
+    savedToken: localStorage.getItem('grifflistLastRequestToken.v1'),
+    attempt: JSON.parse(sessionStorage.getItem('grifflistLastRequest'))
+  }));
+  expect(result.tokens).toHaveLength(2);
+  expect(result.tokens[0]).toBe(first.trackingToken);
+  expect(result.tokens[1]).not.toBe(first.trackingToken);
+  expect(result.rows).toHaveLength(2);
+  expect(result.rows.map(([, row]) => row.song_title)).toEqual(['First Uncertain Song', 'Second Song']);
+  expect(result.savedToken).toBe(result.tokens[1]);
+  expect(result.attempt.state).toBe('sent');
+});;
