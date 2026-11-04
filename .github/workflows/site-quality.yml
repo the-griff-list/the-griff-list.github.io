@@ -16,7 +16,9 @@ permissions:
 
 concurrency:
   group: grifflist-site-quality-${{ github.ref }}
-  cancel-in-progress: true
+  # Preserve active static/browser verification when a newer commit arrives.
+  # Pending runs may be replaced by GitHub; in-progress checks must finish.
+  cancel-in-progress: false
 
 jobs:
   static-quality:
