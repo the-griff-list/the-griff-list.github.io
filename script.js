@@ -207,7 +207,7 @@ try{
 }catch(e){}
 function persistRememberedName(){
  if(!rememberNameCheckbox?.checked||!requesterNameInput)return;
- try{const value=requesterNameInput.value.trim();if(value)localStorage.setItem(rememberedNameKey,value);}catch(e){}
+ try{const value=requesterNameInput.value.trim();if(value)localStorage.setItem(rememberedNameKey,value);else localStorage.removeItem(rememberedNameKey);}catch(e){}
 }
 rememberNameCheckbox?.addEventListener("change",()=>{
  try{

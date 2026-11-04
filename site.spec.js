@@ -70,6 +70,9 @@ test('requester name is stored only after explicit on-device opt-in', async ({ p
   await name.blur();
   expect(await page.evaluate(() => localStorage.getItem('grifflistRememberedName.v2'))).toBeNull();
   await remember.check();
+  await name.fill('');
+  await name.blur();
+  expect(await page.evaluate(() => localStorage.getItem('grifflistRememberedName.v2'))).toBeNull();
   await name.fill('Test Listener');
   await name.blur();
   expect(await page.evaluate(() => localStorage.getItem('grifflistRememberName.v1'))).toBe('yes');
