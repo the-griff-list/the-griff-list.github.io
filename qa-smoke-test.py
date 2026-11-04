@@ -81,7 +81,8 @@ else:
     }
     for asset in assets:
         local=asset.split('#',1)[0].split('?',1)[0].removeprefix('./')
-        if not local or not (ROOT/local).exists():
+        asset_path=ROOT/local if local else ROOT
+        if not asset_path.exists():
             issues.append(f'sw.js: missing precache asset {asset}')
         if local in private_paths:
             issues.append(f'sw.js: private asset must not be precached: {asset}')
