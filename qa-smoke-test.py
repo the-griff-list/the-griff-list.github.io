@@ -53,20 +53,63 @@ for file in js_files:
     result=subprocess.run(['node','--check',str(file)],capture_output=True,text=True)
     if result.returncode: issues.append(f'{file.name}: JavaScript syntax error: {result.stderr.strip()}')
 manifest=ROOT/'manifest.webmanifest'
-try: json.loads(manifest.read_text(encoding='utf-8'))
-except Exception as e: issues.append(f'manifest.webmanifest: invalid JSON ({e})')
+manifest_data=None
+try:
+    manifest_data=json.loads(manifest.read_text(encoding='utf-8'))
+    if manifest_data.get('display')!='standalone':
+        issues.append('manifest.webmanifest: display must remain standalone')
+    if manifest_data.get('start_url')!='./index.html' or manifest_data.get('scope')!='./':
+        issues.append('manifest.webmanifest: start_url/scope changed unexpectedly')
+    for icon in manifest_data.get('icons',[]):
+        src=str(icon.get('src','')).split('#',1)[0].split('?',1)[0]
+        local=src.removeprefix('./')
+        if not local or not (ROOT/local).exists():
+            issues.append(f'manifest.webmanifest: missing local icon {src}')
+except Exception as e:
+    issues.append(f'manifest.webmanifest: invalid JSON ({e})')
+
 sw=(ROOT/'sw.js').read_text(encoding='utf-8')
-match=re.search(r'const CORE=\[(.*?)\];',sw,re.S)
-if not match: issues.append('sw.js: could not find CORE precache list')
+match=re.search(r'const CORE\s*=\s*\[(.*?)\];',sw,re.S)
+if not match:
+    issues.append('sw.js: could not find CORE precache list')
 else:
     assets=re.findall(r"'([^']+)'",match.group(1))
+    private_paths={
+        'admin.html','admin.js','admin-features.js',
+        'analytics.html','analytics-dashboard.js','analytics-tracker.js',
+        'request-archive.html','request-archive.js','supabase-config.js'
+    }
     for asset in assets:
-        if not (ROOT/asset.removeprefix('./')).exists(): issues.append(f'sw.js: missing precache asset {asset}')
+        local=asset.split('#',1)[0].split('?',1)[0].removeprefix('./')
+        if not local or not (ROOT/local).exists():
+            issues.append(f'sw.js: missing precache asset {asset}')
+        if local in private_paths:
+            issues.append(f'sw.js: private asset must not be precached: {asset}')
+    for required in (
+        "const CACHE = 'grifflist-livekit-offline-v39'",
+        'function isPrivatePath',
+        'function isApiPath',
+        'PUBLIC_NAVIGATION_PATHS',
+        'cache.match(request)',
+        "new URL('./offline.html', self.registration.scope)",
+    ):
+        if required not in sw:
+            issues.append(f'sw.js: missing offline/privacy safeguard: {required}')
+    if 'ignoreSearch: true' in sw or 'ignoreSearch:true' in sw:
+        issues.append('sw.js: cache matching must preserve versioned query strings')
+    if "isPrivatePath(url.pathname) || isApiPath(url.pathname)" not in sw:
+        issues.append('sw.js: private/API requests must bypass cache handling')
+
+registration=ROOT/'site-interactions.js'
+if not registration.is_file() or "navigator.serviceWorker.register('./sw.js')" not in registration.read_text(encoding='utf-8'):
+    issues.append('PWA: public site no longer registers sw.js')
+
 try:
     import tinycss2
-    parsed=tinycss2.parse_stylesheet((ROOT/'styles.css').read_text(encoding='utf-8'),skip_whitespace=True,skip_comments=True)
-    for token in parsed:
-        if token.type=='error': issues.append(f'styles.css: parse error {token}')
+    for css_file in sorted(ROOT.glob('*.css')):
+        parsed=tinycss2.parse_stylesheet(css_file.read_text(encoding='utf-8'),skip_whitespace=True,skip_comments=True)
+        for token in parsed:
+            if token.type=='error': issues.append(f'{css_file.name}: parse error {token}')
 except ImportError:
     print('NOTE: tinycss2 unavailable; stylesheet parser check skipped.')
 try:
@@ -84,4 +127,4 @@ if issues:
     print(f'FAIL: {len(issues)} issue(s)')
     for issue in issues: print(' -',issue)
     sys.exit(1)
-print('PASS: no duplicate IDs, missing local references, JS syntax errors, invalid manifest, missing precache assets, CSS parse errors, or image decode failures detected.')
+print('PASS: no duplicate IDs, missing local references, JS syntax errors, invalid PWA manifest, missing precache assets, private-cache leaks, CSS parse errors, or image decode failures detected.')
