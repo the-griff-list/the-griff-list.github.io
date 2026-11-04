@@ -1,5 +1,5 @@
 /* Public offline shell only. Requests, tips, live video and private admin pages need a connection. */
-const CACHE = 'grifflist-livekit-offline-v41';
+const CACHE = 'grifflist-livekit-offline-v42';
 const CORE = [
   './',
   './index.html',
@@ -105,10 +105,15 @@ function isApiPath(pathname) {
 
 function isCacheableResponse(response) {
   const cacheControl = response.headers.get('Cache-Control') || '';
+  const vary = (response.headers.get('Vary') || '')
+    .split(',')
+    .map(value => value.trim().toLowerCase());
   return response.ok &&
     response.type === 'basic' &&
     !/\b(?:no-store|private)\b/i.test(cacheControl) &&
-    response.headers.get('Vary') !== '*';
+    !vary.includes('*') &&
+    !vary.includes('cookie') &&
+    !vary.includes('authorization');
 }
 
 self.addEventListener('install', event => {
@@ -143,6 +148,8 @@ self.addEventListener('fetch', event => {
   const request = event.request;
   const url = new URL(request.url);
   if (request.method !== 'GET' || url.origin !== self.location.origin) return;
+  // Never persist a same-origin response fetched with an explicit bearer credential.
+  if (request.headers.has('Authorization')) return;
   if (isPrivatePath(url.pathname) || isApiPath(url.pathname)) return;
 
   const isPublicNavigation =

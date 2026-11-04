@@ -13,7 +13,7 @@ test('public offline shell registers, falls back offline, and never caches priva
   }, null, { timeout: 30000 });
   await page.reload();
 
-  const cacheName = 'grifflist-livekit-offline-v41';
+  const cacheName = 'grifflist-livekit-offline-v42';
   const initial = await page.evaluate(async (name) => {
     const cache = await caches.open(name);
     return (await cache.keys()).map(request => {
@@ -54,6 +54,27 @@ test('public offline shell registers, falls back offline, and never caches priva
     ].filter(path => paths.includes(path));
   }, cacheName);
   expect(privatePaths).toEqual([]);
+});
+
+
+test('authenticated same-origin asset requests bypass the offline cache', async ({ page }) => {
+  await page.goto('/index.html');
+  await page.waitForFunction(async () => {
+    const registration = await navigator.serviceWorker.getRegistration();
+    return Boolean(registration?.active && navigator.serviceWorker.controller);
+  }, null, { timeout: 30000 });
+  await page.reload();
+
+  const cached = await page.evaluate(async (name) => {
+    const url = new URL('/explore.html?auth-cache-probe=1', location.origin);
+    const response = await fetch(url, {
+      headers: { Authorization: 'Bearer test-only' }
+    });
+    if (!response.ok) throw new Error(`Probe request failed: ${response.status}`);
+    const cache = await caches.open(name);
+    return (await cache.keys()).some(request => request.url === url.href);
+  }, 'grifflist-livekit-offline-v42');
+  expect(cached).toBe(false);
 });
 
 
