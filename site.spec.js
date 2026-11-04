@@ -226,5 +226,4 @@ test('uses a new idempotency token when the visitor changes the song after an un
   expect(result.rows).toHaveLength(2);
   expect(result.rows.map(([, row]) => row.song_title)).toEqual(['First Uncertain Song', 'Second Song']);
   expect(result.savedToken).toBe(result.tokens[1]);
-  expect(result.attempt.state).toBe('sent');
-};
+  expect(result.attempt.state).toBe('sent');});
