@@ -1,0 +1,46 @@
+name: Grifflist website quality checks
+
+on:
+  push:
+    branches:
+      - main
+      - site-quality-ci
+      - sitewide-grifflist-experience
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: grifflist-site-quality-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  static-quality:
+    name: Static website integrity
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install optional audit parsers
+        run: python -m pip install --disable-pip-version-check tinycss2==1.4.0 Pillow==11.3.0
+
+      - name: Check HTML references, JavaScript syntax, PWA manifest, service worker, CSS and images
+        run: python qa-smoke-test.py
