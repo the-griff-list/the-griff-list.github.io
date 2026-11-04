@@ -20,6 +20,7 @@
 
 - [ ] Load the homepage once, then test navigation and catalogue access with a weak or interrupted connection.
 - [ ] Confirm a failed request or backend outage gives a clear retry message rather than a false success.
+- [ ] On a designated test backend, simulate a request row being committed while the browser response is lost; retry the identical form and confirm the same tracking token resolves to one row, not a duplicate. Change the song/artist after a failed attempt and confirm a different payload does not inherit the previous request's token.
 - [ ] Confirm missing images or unavailable live-stream services do not block song requests or the tip links.
 - [ ] Verify the service worker serves only the intended cached assets and that a new deployment can update the cache without trapping visitors on stale code.
 
