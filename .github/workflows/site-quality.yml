@@ -27,7 +27,7 @@ jobs:
       github.triggering_actor == 'the-griff-list' &&
       (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
     runs-on: [self-hosted, linux, x64]
-    timeout-minutes: 10
+    timeout-minutes: 20
     steps:
       - name: Check out source
         uses: actions/checkout@v4
@@ -49,3 +49,28 @@ jobs:
 
       - name: Check HTML references, JavaScript syntax, PWA manifest, service worker, CSS and images
         run: python qa-smoke-test.py
+
+      - name: Install pinned Playwright test dependency
+        run: npm install --no-save --no-audit --no-fund --package-lock=false
+
+      - name: Install Chromium for desktop and mobile-size checks
+        run: npx playwright install chromium
+
+      - name: Start local static site server
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m http.server 4173 --bind 127.0.0.1 > "$RUNNER_TEMP/grifflist-site-http.log" 2>&1 &
+          echo "$!" > "$RUNNER_TEMP/grifflist-site-http.pid"
+          for attempt in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:4173/index.html >/dev/null; then
+              echo "Static site server is ready."
+              exit 0
+            fi
+            sleep 1
+          done
+          cat "$RUNNER_TEMP/grifflist-site-http.log"
+          exit 1
+
+      - name: Run desktop and Android-size browser regression tests
+        run: npx playwright test -c playwright.config.js site.spec.js --project=desktop-chromium --project=android-size-touch-chromium
