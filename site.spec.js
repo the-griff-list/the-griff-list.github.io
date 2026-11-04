@@ -13,7 +13,7 @@ test('public offline shell registers, falls back offline, and never caches priva
   }, null, { timeout: 30000 });
   await page.reload();
 
-  const cacheName = 'grifflist-livekit-offline-v40';
+  const cacheName = 'grifflist-livekit-offline-v41';
   const initial = await page.evaluate(async (name) => {
     const cache = await caches.open(name);
     return (await cache.keys()).map(request => {
