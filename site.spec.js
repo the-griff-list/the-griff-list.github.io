@@ -25,3 +25,37 @@ test('tip checkout disclosure does not promise unavailable wallets', async ({ pa
   await expect(page.locator('#tip-options .payment-disclosure'))
     .toContainText('Checkout shows the methods actually available');
 });
+
+test('catalogue selection fills the request without opening the mobile keyboard', async ({ page }) => {
+  await page.goto('/index.html');
+  await page.locator('#splash').click();
+  await page.locator('#song-reveal summary').click();
+  const row = page.locator('#song-list .song-row').first();
+  await expect(row).toBeVisible();
+  const title = (await row.locator('.song-title').textContent()).trim();
+  const artist = (await row.locator('.song-artist').textContent()).trim();
+  await row.click();
+  await expect(page.locator('#request-song')).toHaveValue(title);
+  await expect(page.locator('#request-artist')).toHaveValue(
+    artist === 'Artist not listed' ? '' : artist
+  );
+  await expect(page.locator('#request-hint')).toBeVisible();
+  await expect(page.locator('#requester-name')).not.toBeFocused();
+});
+
+test('priority payment details appear only after explicit optional opt-in', async ({ page }) => {
+  await page.goto('/index.html');
+  await page.locator('#splash').click();
+  const priority = page.locator('#priority-request');
+  const paymentWrap = page.locator('#priority-payment-wrap');
+  const paymentMethod = page.locator('#priority-payment-method');
+  await expect(priority).not.toBeChecked();
+  await expect(priority).not.toHaveAttribute('required', '');
+  await expect(paymentWrap).toBeHidden();
+  await priority.check();
+  await expect(paymentWrap).toBeVisible();
+  await expect(paymentMethod).toHaveValue('');
+  await priority.uncheck();
+  await expect(paymentWrap).toBeHidden();
+  await expect(paymentMethod).toHaveValue('');
+});
