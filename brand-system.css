@@ -70,3 +70,7 @@ input:focus,select:focus,textarea:focus{border-color:#ff9e57;box-shadow:0 0 0 3p
 @media(max-width:600px){.next-show-section{padding:14px 12px 0}.next-show-card{align-items:stretch;flex-direction:column;padding:16px}.next-show-card .button{width:100%;text-align:center}}
 
 .payment-disclosure{max-width:64rem;margin:10px auto 0;padding:0 4px;color:var(--muted);font-size:.78rem;line-height:1.5}
+
+/* Network state is announced without hiding the cached catalogue. */
+.offline-status{max-width:var(--max);margin:12px auto;padding:12px 16px;border:1px solid #9a5a24;border-radius:5px;background:#24180f;color:#ffe0b4;font-size:.88rem;line-height:1.55}
+.offline-status[hidden]{display:none!important}
