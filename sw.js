@@ -1,5 +1,5 @@
 /* Public offline shell only. Requests, tips, live video and private admin pages need a connection. */
-const CACHE = 'grifflist-livekit-offline-v39';
+const CACHE = 'grifflist-livekit-offline-v40';
 const CORE = [
   './',
   './index.html',
