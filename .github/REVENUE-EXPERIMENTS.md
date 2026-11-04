@@ -57,3 +57,26 @@ Ratings are qualitative planning estimates, not measured unit economics. All dem
 | Bottle lamps | Brainstormed | Maker-market channels identified; no safety/cost check | Deferred |
 
 **No revenue idea is currently validated.** Website analytics, clicks, poll responses and stated interest must not be presented as purchases or demand until an actual paid order is completed and fulfilled.
+
+
+
+## Local live-music platform competition — 2026-11-04
+
+A fresh competitor scan changes how the musician-page experiment should be positioned:
+
+- **GigsUp** advertises free artist/venue onboarding at launch and says its early network includes 50+ artists and 20+ venues. Those counts are provider claims, not independently verified local PEI demand. It is a booking/matching marketplace, not the same product as a musician's own QR song-request and tip page. [GigsUp](https://gigsup.ca/)
+- **IndiMu** advertises free musician profiles, venue gig applications and no middleman fees. Its public page displayed no musicians and no open gigs when checked, so current marketplace liquidity could not be confirmed. [IndiMu](https://indimu.ca/)
+- **Gigpit** advertises a zero-fee ticketing product and says 1,526 artists have joined. The visible artist examples are outside PEI; this is a broader Canadian discovery/ticketing competitor, not evidence of Charlottetown conversion. [Gigpit](https://gigpit.ca/)
+- **Implication:** do not spend time building a generic artist/venue booking marketplace. If the musician-page idea is tested, differentiate it as a small, owned gig microsite: confirmed show details, repertoire, QR song requests, optional tips and an honest live-stream state. Validate with three PEI performers before building a reusable paid service.
+
+### Candidate — one-show local sponsor slot (brainstormed, unvalidated)
+
+- **Offer hypothesis:** one clearly labelled local-business sponsor mention on a single gig page or show graphic, with no audience-data sharing, no implied endorsement and no promise of reach or sales.
+- **Startup cost:** $0 if the venue permits the placement and existing site/graphic tools are used.
+- **Time to first dollar:** 1–4 weeks is a planning hypothesis, not observed demand.
+- **Gross-margin potential:** high before outreach/admin time and any payment fees; no defensible price or unit-economics estimate exists yet.
+- **Effort:** low–medium; requires a suitable business, a clear disclosure and a simple written scope.
+- **Risks:** venue approval, sponsor/venue category conflicts, advertising disclosure, brand fit, and overpromising audience size. Never sell attendee identities, contact details, request histories or analytics tied to individuals.
+- **Validation:** ask up to three relevant Charlottetown/PEI businesses whether they would consider a one-show, explicitly disclosed placement. Count positive replies only as interest; no offer, price, payment link or sponsor logo goes live without agreement and owner approval.
+- **Status:** brainstormed only; no outreach, agreement, booking or revenue.
+
