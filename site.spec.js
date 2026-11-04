@@ -92,4 +92,25 @@ test('successful request shows success instead of a post-insert JavaScript error
   await page.locator('#request-song').fill('Test Song');
   await page.locator('#request-form button[type="submit"]').click();
   await expect(page.locator('#form-status')).toHaveText('Request sent! Thanks for helping choose the music.');
+  expect(await page.evaluate(() => localStorage.getItem('grifflistRememberName.v1'))).toBeNull();
+  expect(await page.evaluate(() => localStorage.getItem('grifflistRememberedName.v2'))).toBeNull();
+});
+
+test('successful request retains the name only when the visitor opted in', async ({ page }) => {
+  await page.goto('/index.html');
+  await page.locator('#splash').click();
+  await page.evaluate(() => {
+    window.supabaseClient = { from: () => ({ insert: async () => ({ error: null }) }) };
+  });
+  const name = page.locator('#requester-name');
+  const remember = page.locator('#remember-requester-name');
+  await remember.check();
+  await name.fill('Opted-in Listener');
+  await page.locator('#request-song').fill('Test Song');
+  await page.locator('#request-form button[type="submit"]').click();
+  await expect(page.locator('#form-status')).toHaveText('Request sent! Thanks for helping choose the music.');
+  await expect(remember).toBeChecked();
+  await expect(name).toHaveValue('Opted-in Listener');
+  expect(await page.evaluate(() => localStorage.getItem('grifflistRememberName.v1'))).toBe('yes');
+  expect(await page.evaluate(() => localStorage.getItem('grifflistRememberedName.v2'))).toBe('Opted-in Listener');
 });
