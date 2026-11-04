@@ -1,0 +1,31 @@
+# November 6, 2026 — pre-gig website checklist
+
+**Status:** prepared on the draft development branch; not executed against the published site. PR #3 remains draft and nothing is deployed.
+
+## Before opening doors
+
+- [ ] Confirm the Hunter's Ale House show date is correct. Add a start time only after the owner confirms it.
+- [ ] Open the homepage on the actual phone and verify the show strip, navigation, song catalogue, request form and tip section render without horizontal scrolling.
+- [ ] Search the catalogue by song and artist; test decade and artist filters; reveal and close the list.
+- [ ] Select a song and confirm it fills the request fields correctly.
+- [ ] Submit a test request only against a designated test backend or with explicit owner approval. Confirm validation, success/error messaging and duplicate-submit behavior.
+- [ ] Verify the priority-request selector is optional and clearly states that it is a request for consideration, not a guaranteed performance.
+- [ ] Open the Ko-fi and PayPal destinations manually. Confirm the live checkout displays the payment methods actually available. Do not advertise Apple Pay or Google Pay unless the eligible Stripe-backed Ko-fi checkout actually offers them on the test device.
+- [ ] Confirm any e-transfer instructions and recipient details against the owner's current instructions; never infer or expose credentials from repository content.
+- [ ] Check Rock-O-Meter values against the actual admin data. Do not display invented tips, totals or goals.
+- [ ] Open Watch Live and confirm the page clearly distinguishes a live, configured stream from an offline/unavailable preview. Do not promise a stream until phone-to-viewer playback has been tested end-to-end.
+- [ ] Test the page on a second phone or a narrow mobile viewport, including keyboard focus, form labels, button tap targets and the back button.
+
+## Poor-network and recovery checks
+
+- [ ] Load the homepage once, then test navigation and catalogue access with a weak or interrupted connection.
+- [ ] Confirm a failed request or backend outage gives a clear retry message rather than a false success.
+- [ ] Confirm missing images or unavailable live-stream services do not block song requests or the tip links.
+- [ ] Verify the service worker serves only the intended cached assets and that a new deployment can update the cache without trapping visitors on stale code.
+
+## Release decision
+
+- [ ] Review the current-head static and Playwright CI results; do not substitute results from an older commit.
+- [ ] Complete actual mobile browser checks and owner-approved live request/payment/stream checks.
+- [ ] Review all external links and payment destinations one last time.
+- [ ] Obtain explicit owner approval before merging or deploying. This checklist does not authorize publication, payment activation, a new vendor/service, or spending.
