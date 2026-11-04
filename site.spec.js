@@ -59,3 +59,34 @@ test('priority payment details appear only after explicit optional opt-in', asyn
   await expect(paymentWrap).toBeHidden();
   await expect(paymentMethod).toHaveValue('');
 });
+
+test('requester name is stored only after explicit on-device opt-in', async ({ page }) => {
+  await page.goto('/index.html');
+  await page.locator('#splash').click();
+  const name = page.locator('#requester-name');
+  const remember = page.locator('#remember-requester-name');
+  await expect(remember).not.toBeChecked();
+  await name.fill('Test Listener');
+  await name.blur();
+  expect(await page.evaluate(() => localStorage.getItem('grifflistRememberedName.v2'))).toBeNull();
+  await remember.check();
+  await name.fill('Test Listener');
+  await name.blur();
+  expect(await page.evaluate(() => localStorage.getItem('grifflistRememberName.v1'))).toBe('yes');
+  expect(await page.evaluate(() => localStorage.getItem('grifflistRememberedName.v2'))).toBe('Test Listener');
+  await remember.uncheck();
+  expect(await page.evaluate(() => localStorage.getItem('grifflistRememberName.v1'))).toBeNull();
+  expect(await page.evaluate(() => localStorage.getItem('grifflistRememberedName.v2'))).toBeNull();
+});
+
+test('successful request shows success instead of a post-insert JavaScript error', async ({ page }) => {
+  await page.goto('/index.html');
+  await page.locator('#splash').click();
+  await page.evaluate(() => {
+    window.supabaseClient = { from: () => ({ insert: async () => ({ error: null }) }) };
+  });
+  await page.locator('#requester-name').fill('Test Listener');
+  await page.locator('#request-song').fill('Test Song');
+  await page.locator('#request-form button[type="submit"]').click();
+  await expect(page.locator('#form-status')).toHaveText('Request sent! Thanks for helping choose the music.');
+});
