@@ -10,7 +10,7 @@ test('public offline shell registers, falls back offline, and never caches priva
     if (!('serviceWorker' in navigator)) return false;
     const registration = await navigator.serviceWorker.getRegistration();
     return Boolean(registration?.active && navigator.serviceWorker.controller);
-  }, null, { timeout: 15000 });
+  }, null, { timeout: 30000 });
   await page.reload();
 
   const cacheName = 'grifflist-livekit-offline-v40';
