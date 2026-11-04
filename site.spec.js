@@ -172,8 +172,8 @@ test('retries an uncertain request with the same tracking token instead of creat
   expect(result.rowCount).toBe(1);
   expect(result.savedToken).toBe(pending.trackingToken);
   expect(result.attempt.state).toBe('sent');
-})
- 
+});
+
 test('uses a new idempotency token when the visitor changes the song after an uncertain request', async ({ page }) => {
   await page.goto('/index.html');
   await page.locator('#splash').click();
@@ -227,4 +227,4 @@ test('uses a new idempotency token when the visitor changes the song after an un
   expect(result.rows.map(([, row]) => row.song_title)).toEqual(['First Uncertain Song', 'Second Song']);
   expect(result.savedToken).toBe(result.tokens[1]);
   expect(result.attempt.state).toBe('sent');
-});;
+};
