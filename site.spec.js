@@ -3,3 +3,25 @@ test('homepage loads without horizontal overflow or page errors', async ({ page 
 test('title screen can be entered', async ({ page }) => { await page.goto('/index.html'); await page.locator('#splash').click(); await expect(page.locator('#catalog')).toBeVisible(); });
 test('What’s New can be reopened and dismissed', async ({ page }) => { await page.goto('/index.html'); await page.locator('#splash').click(); const reopen=page.locator('#whats-new-reopen'); await expect(reopen).toBeVisible(); await reopen.click(); const dialog=page.locator('#whats-new-dialog'); await expect(dialog).toBeVisible(); await page.locator('#whats-new-done').click(); await expect(dialog).not.toBeVisible(); });
 test('PWA manifest is available with app shortcuts', async ({ request }) => { const response=await request.get('/manifest.webmanifest'); expect(response.ok()).toBeTruthy(); const manifest=await response.json(); expect(manifest.display).toBe('standalone'); expect(manifest.shortcuts.length).toBeGreaterThanOrEqual(3); });
+
+test('request form exposes required, keyboard-reachable fields', async ({ page }) => {
+  await page.goto('/index.html');
+  await page.locator('#splash').click();
+  const name = page.locator('#requester-name');
+  const song = page.locator('#request-song');
+  await expect(name).toHaveAttribute('required', '');
+  await expect(name).toHaveAttribute('aria-label', 'Your name, required');
+  await name.focus();
+  await expect(name).toBeFocused();
+  await page.keyboard.press('Tab');
+  await expect(song).toBeFocused();
+});
+
+test('tip checkout disclosure does not promise unavailable wallets', async ({ page }) => {
+  await page.goto('/index.html');
+  await page.locator('#splash').click();
+  await expect(page.locator('#tip-options .payment-disclosure'))
+    .toContainText('eligible Stripe connection');
+  await expect(page.locator('#tip-options .payment-disclosure'))
+    .toContainText('Checkout shows the methods actually available');
+});
