@@ -93,9 +93,13 @@ else:
         'PUBLIC_NAVIGATION_PATHS',
         'cache.match(request)',
         "new URL('./offline.html', self.registration.scope)",
+        "'/rest/v1/'",
+        "'/auth/'",
+        "'/functions/v1/'",
         "'/storage/v1/'",
         "'/graphql/v1/'",
         "'/realtime/v1/'",
+        "'/api/'",
     ):
         if required not in sw:
             issues.append(f'sw.js: missing offline/privacy safeguard: {required}')
