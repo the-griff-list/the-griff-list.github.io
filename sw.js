@@ -99,7 +99,7 @@ function canonicalPathCandidates(pathname) {
   const candidates = new Set();
   let current = pathname;
   for (let depth = 0; depth < 4; depth += 1) {
-    candidates.add(current.replace(/\\/g, '/').replace(/\\/+/g, '/').toLowerCase());
+    candidates.add(current.replace(/\\/g, '/').replace(/\/{2,}/g, '/').toLowerCase());
     let decoded;
     try {
       decoded = decodeURIComponent(current);
@@ -110,7 +110,7 @@ function canonicalPathCandidates(pathname) {
     current = decoded;
   }
   if (current.includes('%')) return null;
-  candidates.add(current.replace(/\\/g, '/').replace(/\\/+/g, '/').toLowerCase());
+  candidates.add(current.replace(/\\/g, '/').replace(/\/{2,}/g, '/').toLowerCase());
   return candidates;
 }
 
