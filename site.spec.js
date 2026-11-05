@@ -87,6 +87,9 @@ globalThis.isApiPath = isApiPath;`,
     '/%61nalytics-dashboard.js',
     '/%72equest-archive.js',
     '/supabase-config%2ejs',
+    '/%00admin.html',
+    '/%0aadmin.js',
+    '/%7frequest-archive.html',
   ]) {
     expect(isPrivatePath(pathname), pathname).toBe(true);
   }
@@ -101,6 +104,9 @@ globalThis.isApiPath = isApiPath;`,
     '/%252e%252e/rest/v1/song_requests',
     '/public/%252e%252e/api/private',
     '/graphql/v1',
+    '/%00rest/v1/song_requests',
+    '/%0aauth/v1/token',
+    '/%7fapi/private',
   ]) {
     expect(isApiPath(pathname), pathname).toBe(true);
   }
