@@ -1,5 +1,5 @@
 /* Public offline shell only. Requests, tips, live video and private admin pages need a connection. */
-const CACHE = 'grifflist-livekit-offline-v46';
+const CACHE = 'grifflist-livekit-offline-v47';
 const CORE = [
   './',
   './index.html',
@@ -9,6 +9,7 @@ const CORE = [
   './roadmap.html',
   './offline.html',
   './styles.css?v=grifflist-v41',
+  './styles.css?v=grifflist-tour-roadmap-1',
   './brand-system.css?v=sitewide-v1',
   './script.js?v=payment-security-pause-1',
   './crowd-favourites.js?v=grifflist-v41',
