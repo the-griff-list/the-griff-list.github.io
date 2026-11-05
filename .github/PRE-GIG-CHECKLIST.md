@@ -25,6 +25,7 @@
 - [ ] On a designated test backend, simulate a request row being committed while the browser response is lost; retry the identical form and confirm the same tracking token resolves to one row, not a duplicate. Change the song/artist after a failed attempt and confirm a different payload does not inherit the previous request's token.
 - [ ] Confirm missing images or unavailable live-stream services do not block song requests or the tip links.
 - [ ] Verify the service worker serves only the intended cached assets and that a new deployment can update the cache without trapping visitors on stale code.
+- [ ] Confirm encoded, double-encoded and malformed private/admin/API paths bypass service-worker caching, while public assets with encoded spaces still cache normally.
 - [ ] Confirm the service-worker cache version is bumped when public shell assets or their versioned query strings change.
 - [ ] Verify admin, analytics, request-archive pages, Supabase config and API responses are never cached by the offline worker.
 - [ ] Confirm same-origin requests carrying an Authorization header bypass offline caching, and responses varying by Cookie or Authorization are never cached.

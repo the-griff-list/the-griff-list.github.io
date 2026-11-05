@@ -104,9 +104,12 @@ else:
         if local in private_paths:
             issues.append(f'sw.js: private asset must not be precached: {asset}')
     for required in (
-        "const CACHE = 'grifflist-livekit-offline-v43'",
+        "const CACHE = 'grifflist-livekit-offline-v44'",
+        'function canonicalPathCandidates(pathname)',
+        'decodeURIComponent(current)',
         'function isPrivatePath',
         'function isApiPath',
+        'path === prefix.slice(0, -1) || path.includes(prefix)',
         "request.headers.has('Authorization')",
         "!vary.includes('cookie')",
         "!vary.includes('authorization')",
@@ -130,6 +133,10 @@ else:
             issues.append(f'sw.js: missing offline/privacy safeguard: {required}')
     if 'ignoreSearch: true' in sw or 'ignoreSearch:true' in sw:
         issues.append('sw.js: cache matching must preserve versioned query strings')
+    if sw.count("const candidates = canonicalPathCandidates(pathname);") != 2:
+        issues.append('sw.js: both private and API path checks must use canonical decoded-path candidates')
+    if "if (candidates === null) return true;" not in sw:
+        issues.append('sw.js: malformed or excessively encoded paths must fail closed')
     if "isPrivatePath(url.pathname) || isApiPath(url.pathname)" not in sw:
         issues.append('sw.js: private/API requests must bypass cache handling')
 

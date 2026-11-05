@@ -1,5 +1,5 @@
 /* Public offline shell only. Requests, tips, live video and private admin pages need a connection. */
-const CACHE = 'grifflist-livekit-offline-v43';
+const CACHE = 'grifflist-livekit-offline-v44';
 const CORE = [
   './',
   './index.html',
@@ -91,16 +91,48 @@ const API_PREFIXES = [
   '/api/'
 ];
 
+// Compare raw and repeatedly decoded path forms before deciding what may
+// enter the public offline cache. Proxies/servers can normalize encoded paths
+// differently from URL.pathname; malformed or excessively encoded paths fail
+// closed rather than being treated as public assets.
+function canonicalPathCandidates(pathname) {
+  const candidates = new Set();
+  let current = pathname;
+  for (let depth = 0; depth < 4; depth += 1) {
+    candidates.add(current.replace(/\\/g, '/').replace(/\\/+/g, '/').toLowerCase());
+    let decoded;
+    try {
+      decoded = decodeURIComponent(current);
+    } catch (_) {
+      return null;
+    }
+    if (decoded === current) return candidates;
+    current = decoded;
+  }
+  if (current.includes('%')) return null;
+  candidates.add(current.replace(/\\/g, '/').replace(/\\/+/g, '/').toLowerCase());
+  return candidates;
+}
+
 function isPrivatePath(pathname) {
-  const path = pathname.toLowerCase();
-  return PRIVATE_PATHS.has(path) ||
+  const candidates = canonicalPathCandidates(pathname);
+  if (candidates === null) return true;
+  return [...candidates].some(path =>
+    PRIVATE_PATHS.has(path) ||
     path.startsWith('/admin') ||
     path.startsWith('/analytics') ||
-    path.startsWith('/request-archive');
+    path.startsWith('/request-archive')
+  );
 }
 
 function isApiPath(pathname) {
-  return API_PREFIXES.some(prefix => pathname.includes(prefix));
+  const candidates = canonicalPathCandidates(pathname);
+  if (candidates === null) return true;
+  return [...candidates].some(path =>
+    API_PREFIXES.some(prefix =>
+      path === prefix.slice(0, -1) || path.includes(prefix)
+    )
+  );
 }
 
 function isCacheableResponse(response) {

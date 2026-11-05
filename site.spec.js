@@ -53,6 +53,52 @@ test('service worker refuses responses that require HTTP revalidation before reu
   expect(isCacheable(response({ type: 'cors' }))).toBe(false);
 });
 
+test('service worker fails closed on encoded private and API paths', async () => {
+  const pathPolicyStart = serviceWorkerSource.indexOf('const PRIVATE_PATHS = new Set([');
+  const pathPolicyEnd = serviceWorkerSource.indexOf('function isCacheableResponse(', pathPolicyStart);
+  if (pathPolicyStart < 0 || pathPolicyEnd < 0) {
+    throw new Error('Could not extract the production service-worker path policy.');
+  }
+  const pathPolicyContext = {};
+  vm.runInNewContext(
+    `${serviceWorkerSource.slice(pathPolicyStart, pathPolicyEnd)}
+globalThis.isPrivatePath = isPrivatePath;
+globalThis.isApiPath = isApiPath;`,
+    pathPolicyContext,
+  );
+
+  const isPrivatePath = pathPolicyContext.isPrivatePath;
+  const isApiPath = pathPolicyContext.isApiPath;
+  for (const pathname of [
+    '/%61dmin.js',
+    '/%2561dmin.js',
+    '/%2fadmin.html',
+    '/%5cadmin.js',
+    '/%61nalytics-dashboard.js',
+    '/%72equest-archive.js',
+    '/supabase-config%2ejs',
+  ]) {
+    expect(isPrivatePath(pathname), pathname).toBe(true);
+  }
+  for (const pathname of [
+    '/%72est/v1/song_requests',
+    '/%61uth/v1/token',
+    '/%66unctions/v1/foo',
+    '/%73torage/v1/object',
+    '/%67raphql/v1',
+    '/%72ealtime/v1/websocket',
+    '/%61pi/private',
+    '/graphql/v1',
+  ]) {
+    expect(isApiPath(pathname), pathname).toBe(true);
+  }
+
+  // Public assets containing ordinary encoded spaces must remain cache-eligible.
+  expect(isPrivatePath('/Title%20screen.mp3')).toBe(false);
+  expect(isPrivatePath('/%zz')).toBe(true);
+  expect(isApiPath('/%zz')).toBe(true);
+});
+
 test('homepage loads without horizontal overflow or page errors', async ({ page }) => { const errors=[]; page.on('pageerror',e=>errors.push(e.message)); await page.goto('/index.html'); await expect(page.locator('#splash')).toBeVisible(); expect(await page.evaluate(()=>document.documentElement.scrollWidth>document.documentElement.clientWidth)).toBe(false); expect(errors).toEqual([]); });
 test('title screen can be entered', async ({ page }) => { await page.goto('/index.html'); await page.locator('#splash').click(); await expect(page.locator('#catalog')).toBeVisible(); });
 test('home Watch Live CTA checks status without promising an active stream', async ({ page }) => {
@@ -73,7 +119,7 @@ test('public offline shell registers, falls back offline, and never caches priva
   }, null, { timeout: 30000 });
   await page.reload();
 
-  const cacheName = 'grifflist-livekit-offline-v43';
+  const cacheName = 'grifflist-livekit-offline-v44';
   const initial = await page.evaluate(async (name) => {
     const cache = await caches.open(name);
     return (await cache.keys()).map(request => {
@@ -133,7 +179,7 @@ test('authenticated same-origin asset requests bypass the offline cache', async 
     if (!response.ok) throw new Error(`Probe request failed: ${response.status}`);
     const cache = await caches.open(name);
     return (await cache.keys()).some(request => request.url === url.href);
-  }, 'grifflist-livekit-offline-v43');
+  }, 'grifflist-livekit-offline-v44');
   expect(cached).toBe(false);
 });
 
