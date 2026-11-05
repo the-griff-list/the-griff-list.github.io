@@ -142,13 +142,16 @@ test('home Watch Live CTA checks status without promising an active stream', asy
 });
 test('What’s New can be reopened and dismissed', async ({ page }) => { await page.goto('/index.html'); await page.locator('#splash').click(); const reopen=page.locator('#whats-new-reopen'); await expect(reopen).toBeVisible(); await reopen.click(); const dialog=page.locator('#whats-new-dialog'); await expect(dialog).toBeVisible(); await page.locator('#whats-new-done').click(); await expect(dialog).not.toBeVisible(); });
 test('public offline pages use stylesheet variants present in the service-worker shell', () => {
-  const coreMatch = serviceWorkerSource.match(/const CORE = \\[([\\s\\S]*?)\\n\\];/);
-  expect(coreMatch).not.toBeNull();
-  const cachedPaths = new Set([...coreMatch[1].matchAll(/'([^']+)'/g)].map(match => match[1]));
+  const coreStart = serviceWorkerSource.indexOf('const CORE = [');
+  const coreEnd = serviceWorkerSource.indexOf('];', coreStart);
+  expect(coreStart).toBeGreaterThanOrEqual(0);
+  expect(coreEnd).toBeGreaterThan(coreStart);
+  const coreSource = serviceWorkerSource.slice(coreStart, coreEnd);
+  const cachedPaths = new Set([...coreSource.matchAll(/'([^']+)'/g)].map(match => match[1]));
 
   for (const page of ['index.html', 'explore.html', 'watch-live.html', 'taxi-services.html', 'roadmap.html']) {
     const html = fs.readFileSync(`${__dirname}/${page}`, 'utf8');
-    const stylesheets = [...html.matchAll(/<link\\b[^>]*href=["']([^"']*styles\\.css[^"']*)["'][^>]*>/gi)]
+    const stylesheets = [...html.matchAll(/href=["']([^"']*styles.css[^"']*)["']/gi)]
       .map(match => match[1]);
     expect(stylesheets.length, page).toBeGreaterThan(0);
     for (const href of stylesheets) {
