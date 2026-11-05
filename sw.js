@@ -113,7 +113,7 @@ function normalizePathCandidate(pathname) {
     segments.push(segment);
   }
 
-  const hasTrailingSlash = /\\/(?:\\.{1,2})?$/.test(withSeparators);
+  const hasTrailingSlash = withSeparators.endsWith('/') || withSeparators.endsWith('/.') || withSeparators.endsWith('/..');
   const normalized = `/${segments.join('/')}`;
   return (hasTrailingSlash && normalized !== '/' ? `${normalized}/` : normalized).toLowerCase();
 }
