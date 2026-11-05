@@ -90,6 +90,8 @@ globalThis.isApiPath = isApiPath;`,
     '/%00admin.html',
     '/%0aadmin.js',
     '/%7frequest-archive.html',
+    '/%2500admin.html',
+    '/%250aadmin.js',
   ]) {
     expect(isPrivatePath(pathname), pathname).toBe(true);
   }
@@ -107,6 +109,8 @@ globalThis.isApiPath = isApiPath;`,
     '/%00rest/v1/song_requests',
     '/%0aauth/v1/token',
     '/%7fapi/private',
+    '/%2500rest/v1/song_requests',
+    '/%250aauth/v1/token',
   ]) {
     expect(isApiPath(pathname), pathname).toBe(true);
   }
