@@ -141,6 +141,24 @@ test('home Watch Live CTA checks status without promising an active stream', asy
   await expect(cta).toHaveAttribute('href', 'watch-live.html');
 });
 test('What’s New can be reopened and dismissed', async ({ page }) => { await page.goto('/index.html'); await page.locator('#splash').click(); const reopen=page.locator('#whats-new-reopen'); await expect(reopen).toBeVisible(); await reopen.click(); const dialog=page.locator('#whats-new-dialog'); await expect(dialog).toBeVisible(); await page.locator('#whats-new-done').click(); await expect(dialog).not.toBeVisible(); });
+test('public offline pages use stylesheet variants present in the service-worker shell', () => {
+  const coreMatch = serviceWorkerSource.match(/const CORE = \\[([\\s\\S]*?)\\n\\];/);
+  expect(coreMatch).not.toBeNull();
+  const cachedPaths = new Set([...coreMatch[1].matchAll(/'([^']+)'/g)].map(match => match[1]));
+
+  for (const page of ['index.html', 'explore.html', 'watch-live.html', 'taxi-services.html', 'roadmap.html']) {
+    const html = fs.readFileSync(`${__dirname}/${page}`, 'utf8');
+    const stylesheets = [...html.matchAll(/<link\\b[^>]*href=["']([^"']*styles\\.css[^"']*)["'][^>]*>/gi)]
+      .map(match => match[1]);
+    expect(stylesheets.length, page).toBeGreaterThan(0);
+    for (const href of stylesheets) {
+      expect(cachedPaths.has(`./${href}`), `${page} stylesheet ${href}`).toBe(true);
+    }
+  }
+
+  expect(serviceWorkerCacheName).toBe('grifflist-livekit-offline-v48');
+});
+
 test('PWA manifest is available with app shortcuts', async ({ request }) => { const response=await request.get('/manifest.webmanifest'); expect(response.ok()).toBeTruthy(); const manifest=await response.json(); expect(manifest.display).toBe('standalone'); expect(manifest.shortcuts.length).toBeGreaterThanOrEqual(3); });
 
 test('public offline shell registers, falls back offline, and never caches private pages', async ({ page }) => {
