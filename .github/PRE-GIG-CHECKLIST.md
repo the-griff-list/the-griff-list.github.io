@@ -4,7 +4,7 @@
 
 ## Before opening doors
 
-- [ ] Confirm the Hunter's Ale House show date is correct. Add a start time only after the owner confirms it.
+- [x] Confirm the date and start time against Hunter’s official Upcoming Events listing: Friday, November 6, 2026 at 11:00 p.m. Atlantic (source: https://huntersalehouse.com/).
 - [ ] Open the homepage on the actual phone and verify the show strip, navigation, song catalogue, request form and tip section render without horizontal scrolling.
 - [ ] Search the catalogue by song and artist; test decade and artist filters; reveal and close the list.
 - [ ] Select a song and confirm it fills the request fields correctly.
