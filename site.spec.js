@@ -142,6 +142,7 @@ test('public offline shell registers, falls back offline, and never caches priva
   expect(initial).toContain('/index.html');
   expect(initial).toContain('/offline.html');
   expect(initial).toContain('/roadmap.html');
+  expect(initial).toContain('/styles.css?v=grifflist-tour-roadmap-1');
   expect(initial).toContain('/script.js?v=payment-security-pause-1');
   await page.context().setOffline(true);
   await page.reload();
