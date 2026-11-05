@@ -135,6 +135,8 @@ if not match:
     issues.append('sw.js: could not find CORE precache list')
 else:
     assets=re.findall(r"'([^']+)'",match.group(1))
+    if "'./roadmap.html'" not in match.group(1):
+        issues.append('sw.js: public Tour Roadmap must be included in the offline CORE precache')
     private_paths={
         'admin.html','admin.js','admin-features.js',
         'analytics.html','analytics-dashboard.js','analytics-tracker.js',
@@ -148,7 +150,8 @@ else:
         if local in private_paths:
             issues.append(f'sw.js: private asset must not be precached: {asset}')
     for required in (
-        "const CACHE = 'grifflist-livekit-offline-v45'",
+        "const CACHE = 'grifflist-livekit-offline-v46'",
+        "'/roadmap.html'",
         'function canonicalPathCandidates(pathname)',
         'function normalizePathCandidate(pathname)',
         "segment === '..'",
