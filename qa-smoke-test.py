@@ -83,6 +83,8 @@ else:
         function_sql = archive_function.group(1).lower()
         if 'security definer' not in function_sql or "set search_path = ''" not in function_sql:
             issues.append('request archive: SECURITY DEFINER trigger must use an empty search_path')
+        if 'revoke all on function public.archive_song_request() from public;' not in archive_sql.lower():
+            issues.append('request archive: SECURITY DEFINER trigger must revoke PUBLIC execute')
         if not re.search(r'insert\s+into\s+public\.request_archive', function_sql):
             issues.append('request archive: trigger must schema-qualify the archive table')
 if not archive_hardening.is_file():
@@ -91,6 +93,8 @@ else:
     hardening_sql = archive_hardening.read_text(encoding='utf-8').lower()
     if "alter function public.archive_song_request()\n  set search_path = '';" not in hardening_sql:
         issues.append('request archive: existing-installation search_path hardening is missing')
+    if 'revoke all on function public.archive_song_request() from public;' not in hardening_sql:
+        issues.append('request archive: existing-installation PUBLIC execute revocation is missing')
 
 js_files=sorted(ROOT.glob('*.js'))
 for file in js_files:

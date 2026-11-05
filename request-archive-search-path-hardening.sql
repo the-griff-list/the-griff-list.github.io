@@ -6,4 +6,6 @@ begin;
 alter function public.archive_song_request()
   set search_path = '';
 
+revoke all on function public.archive_song_request() from public;
+
 commit;
