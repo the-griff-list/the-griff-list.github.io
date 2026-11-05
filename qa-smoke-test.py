@@ -26,7 +26,7 @@ for file in html_files:
 # Assert the time-sensitive gig and payment disclosures remain explicit.
 home_html=(ROOT/'index.html').read_text(encoding='utf-8')
 watch_html=(ROOT/'watch-live.html').read_text(encoding='utf-8')
-for required in ('Hunter’s Ale House', 'datetime="2026-11-06"', 'datetime="2026-11-06T23:00:00-03:00"', '11:00 p.m. Atlantic', 'Send a tip', 'CHECK LIVE STATUS ↗', 'Ko-fi (Apple Pay / Google Pay if enabled)', 'eligible Stripe connection'):
+for required in ('Griff &amp; Guest', 'Hunter’s Ale House', 'datetime="2026-11-06"', 'datetime="2026-11-06T23:00:00-03:00"', '11:00 p.m. Atlantic', 'Send a tip', 'CHECK LIVE STATUS ↗', 'Ko-fi (Apple Pay / Google Pay if enabled)', 'eligible Stripe connection'):
     if required not in home_html:
         issues.append(f'index.html: missing gig/payment acceptance text: {required}')
 for required in ('Send a tip', 'eligible Stripe connection'):
