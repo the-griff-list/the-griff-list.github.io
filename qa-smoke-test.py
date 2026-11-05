@@ -65,6 +65,33 @@ else:
         if required not in migration_sql:
             issues.append(f'request idempotency: migration is missing required SQL contract: {required}')
 
+# SECURITY DEFINER archive trigger: pin an empty search_path and keep relation names qualified.
+archive_migration = ROOT/'request-archive-migration.sql'
+archive_hardening = ROOT/'request-archive-search-path-hardening.sql'
+if not archive_migration.is_file():
+    issues.append('request archive: migration is missing')
+else:
+    archive_sql = archive_migration.read_text(encoding='utf-8')
+    archive_function = re.search(
+        r'create or replace function public\\.archive_song_request\\(\\)(.*?)\\$\\$;',
+        archive_sql,
+        re.I | re.S,
+    )
+    if not archive_function:
+        issues.append('request archive: SECURITY DEFINER trigger function is missing')
+    else:
+        function_sql = archive_function.group(1).lower()
+        if 'security definer' not in function_sql or "set search_path = ''" not in function_sql:
+            issues.append('request archive: SECURITY DEFINER trigger must use an empty search_path')
+        if not re.search(r'insert\\s+into\\s+public\\.request_archive', function_sql):
+            issues.append('request archive: trigger must schema-qualify the archive table')
+if not archive_hardening.is_file():
+    issues.append('request archive: follow-up search_path hardening migration is missing')
+else:
+    hardening_sql = archive_hardening.read_text(encoding='utf-8').lower()
+    if "alter function public.archive_song_request()\\n  set search_path = '';" not in hardening_sql:
+        issues.append('request archive: existing-installation search_path hardening is missing')
+
 js_files=sorted(ROOT.glob('*.js'))
 for file in js_files:
     result=subprocess.run(['node','--check',str(file)],capture_output=True,text=True)

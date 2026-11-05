@@ -21,7 +21,8 @@ create or replace function public.archive_song_request()
 returns trigger
 language plpgsql
 security definer
-set search_path = public
+-- All relation references below are schema-qualified; do not trust public in a definer search path.
+set search_path = ''
 as $$
 begin
   insert into public.request_archive (request_id, requester_name, song_title, artist_name, note, requested_at)
