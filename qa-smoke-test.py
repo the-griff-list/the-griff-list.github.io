@@ -85,6 +85,12 @@ else:
             issues.append('request archive: SECURITY DEFINER trigger must use an empty search_path')
         if 'revoke execute on function public.archive_song_request() from public, anon, authenticated, service_role;' not in archive_sql.lower():
             issues.append('request archive: SECURITY DEFINER trigger must revoke EXECUTE from PUBLIC and Supabase API roles')
+        revoke_position = archive_sql.lower().find(
+            'revoke execute on function public.archive_song_request() from public, anon, authenticated, service_role;'
+        )
+        trigger_position = archive_sql.lower().find('create trigger song_requests_archive_insert')
+        if revoke_position <= archive_function.end() or trigger_position <= revoke_position:
+            issues.append('request archive: EXECUTE revocation must follow function creation and precede trigger creation')
         if not re.search(r'insert\s+into\s+public\.request_archive', function_sql):
             issues.append('request archive: trigger must schema-qualify the archive table')
 if not archive_hardening.is_file():
@@ -95,6 +101,13 @@ else:
         issues.append('request archive: existing-installation search_path hardening is missing')
     if 'revoke execute on function public.archive_song_request() from public, anon, authenticated, service_role;' not in hardening_sql:
         issues.append('request archive: existing-installation EXECUTE revocation for PUBLIC and Supabase API roles is missing')
+    alter_position = hardening_sql.find('alter function public.archive_song_request()')
+    revoke_position = hardening_sql.find(
+        'revoke execute on function public.archive_song_request() from public, anon, authenticated, service_role;'
+    )
+    commit_position = hardening_sql.find('commit;')
+    if not (0 <= alter_position < revoke_position < commit_position):
+        issues.append('request archive: existing-installation hardening statements are out of order')
 
 js_files=sorted(ROOT.glob('*.js'))
 for file in js_files:
