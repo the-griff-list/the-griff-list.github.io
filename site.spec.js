@@ -304,6 +304,18 @@ test('priority payment details appear only after explicit optional opt-in', asyn
   await expect(paymentMethod).toHaveValue('');
 });
 
+test('e-transfer remains visibly unavailable and exposes no recipient or action', async ({ page }) => {
+  for (const route of ['/index.html', '/watch-live.html']) {
+    await page.goto(route);
+    const card = page.locator('.payment-etransfer');
+    await expect(card).toBeVisible();
+    await expect(card).toContainText('Temporarily unavailable');
+    await expect(card.locator('a, button, input')).toHaveCount(0);
+    expect(await card.getAttribute('href')).toBeNull();
+    expect(await card.textContent()).not.toContain('@');
+  }
+});
+
 test('disabled e-transfer fails closed in the priority payment flow', async ({ page }) => {
   await page.goto('/index.html');
   await page.locator('#splash').click();
