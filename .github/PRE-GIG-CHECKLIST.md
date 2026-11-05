@@ -26,6 +26,7 @@
 - [ ] Confirm missing images or unavailable live-stream services do not block song requests or the tip links.
 - [ ] Verify the service worker serves only the intended cached assets and that a new deployment can update the cache without trapping visitors on stale code.
 - [ ] Confirm encoded, double-encoded and malformed private/admin/API paths bypass service-worker caching, while public assets with encoded spaces still cache normally.
+- [ ] Confirm decoded `.` / `..` path segments cannot traverse into admin, analytics, request-archive or API routes before the offline worker classifies a request.
 - [ ] Confirm the service-worker cache version is bumped when public shell assets or their versioned query strings change.
 - [ ] Verify admin, analytics, request-archive pages, Supabase config and API responses are never cached by the offline worker.
 - [ ] Confirm same-origin requests carrying an Authorization header bypass offline caching, and responses varying by Cookie or Authorization are never cached.
