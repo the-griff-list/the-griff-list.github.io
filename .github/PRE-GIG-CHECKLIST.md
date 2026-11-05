@@ -14,6 +14,7 @@
 - [ ] Keep e-transfer unavailable until the owner explicitly re-enables and verifies it; confirm stale script paths cannot select or instruct e-transfer.
 - [ ] Confirm any e-transfer instructions and recipient details against the owner's current instructions; never infer or expose credentials from repository content.
 - [ ] Check Rock-O-Meter values against the actual admin data. Do not display invented tips, totals or goals.
+- [ ] Confirm the homepage CTA reads “CHECK LIVE STATUS” and opens the Watch Live page; it must not imply that a stream is active before the backend marks it live.
 - [ ] Open Watch Live and confirm the page clearly distinguishes a live, configured stream from an offline/unavailable preview. Do not promise a stream until phone-to-viewer playback has been tested end-to-end.
 - [ ] Test the page on a second phone or a narrow mobile viewport, including keyboard focus, form labels, button tap targets and the back button.
 
