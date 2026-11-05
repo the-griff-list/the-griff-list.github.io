@@ -11,6 +11,7 @@
 - [ ] Submit a test request only against a designated test backend or with explicit owner approval. Confirm validation, success/error messaging and duplicate-submit behavior.
 - [ ] Verify the priority-request selector is optional and clearly states that it is a request for consideration, not a guaranteed performance.
 - [ ] Open the Ko-fi and PayPal destinations manually. Confirm the live checkout displays the payment methods actually available. Do not advertise Apple Pay or Google Pay unless the eligible Stripe-backed Ko-fi checkout actually offers them on the test device.
+- [ ] Keep e-transfer unavailable until the owner explicitly re-enables and verifies it; confirm stale script paths cannot select or instruct e-transfer.
 - [ ] Confirm any e-transfer instructions and recipient details against the owner's current instructions; never infer or expose credentials from repository content.
 - [ ] Check Rock-O-Meter values against the actual admin data. Do not display invented tips, totals or goals.
 - [ ] Open Watch Live and confirm the page clearly distinguishes a live, configured stream from an offline/unavailable preview. Do not promise a stream until phone-to-viewer playback has been tested end-to-end.

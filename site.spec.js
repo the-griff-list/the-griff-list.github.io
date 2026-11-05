@@ -188,6 +188,20 @@ test('priority payment details appear only after explicit optional opt-in', asyn
   await expect(paymentMethod).toHaveValue('');
 });
 
+test('disabled e-transfer fails closed in the priority payment flow', async ({ page }) => {
+  await page.goto('/index.html');
+  await page.locator('#splash').click();
+  const values = await page.locator('#priority-payment-method option')
+    .evaluateAll(options => options.map(option => option.value));
+  expect(values).toEqual(['', 'kofi', 'paypal']);
+
+  await page.evaluate(() => window.focusPaymentMethod('etransfer'));
+  await expect(page.locator('#payment-flow-status'))
+    .toHaveText('That payment method is unavailable. Choose Ko-fi or PayPal.');
+  await expect(page.locator('.payment-etransfer'))
+    .not.toHaveClass(/payment-highlight/);
+});
+
 test('requester name is stored only after explicit on-device opt-in', async ({ page }) => {
   await page.goto('/index.html');
   await page.locator('#splash').click();

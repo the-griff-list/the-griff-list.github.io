@@ -184,6 +184,7 @@ searchEl.addEventListener("input",()=>{const reveal=document.querySelector("#son
 // Public visitors can submit requests; the database only permits public INSERTs.
 const requestForm=$("#request-form");
 const priorityToggle=$("#priority-request"), priorityPaymentWrap=$("#priority-payment-wrap");
+const availablePriorityPaymentMethods = new Set(["kofi", "paypal"]);
 let priorityAlreadyTipped=false;
 function isPrioritySelected(){return Boolean(priorityToggle?.checked);}
 function setPrioritySelected(selected,{alreadyTipped=false}={}){
@@ -238,7 +239,7 @@ requestForm.addEventListener("submit",async e=>{
  const priority=isPrioritySelected();
  const shouldRememberName=Boolean(rememberNameCheckbox?.checked);
  const paymentMethod=$("#priority-payment-method").value;
- if(priority&&!paymentMethod){status.textContent="Choose how you’ll send your $5 CAD tip.";$("#priority-payment-method").focus();return;}
+ if(priority&&!availablePriorityPaymentMethods.has(paymentMethod)){status.textContent="Choose Ko-fi or PayPal for your optional $5 CAD tip.";$("#priority-payment-method").focus();return;}
  const priorityMarker=priority?(priorityAlreadyTipped?"[PRIORITY TIP REPORTED - VERIFY PAYMENT]":"[PRIORITY TIP PENDING - VERIFY PAYMENT]"):"";
  const savedNote=[priority?priorityMarker+" Method: "+paymentMethod:"",message].filter(Boolean).join("\n\n");
  const fingerprint=[name,song,artist,savedNote].map(v=>v.trim().toLowerCase()).join("|");
@@ -425,10 +426,13 @@ document.addEventListener("click",event=>{
 const requestFormForAchievement=$("#request-form");
 requestFormForAchievement.addEventListener("submit",()=>{ /* Success cue is triggered after Supabase confirms below. */ });
 function focusPaymentMethod(method){
- const targets={etransfer:document.querySelector(".payment-etransfer"),paypal:document.querySelector(".payment-paypal"),kofi:document.querySelector(".payment-kofi-wallet")};
+ const targets={paypal:document.querySelector(".payment-paypal"),kofi:document.querySelector(".payment-kofi-wallet")};
  const target=targets[method];const status=document.querySelector("#payment-flow-status");
- if(!target)return;
- if(status){status.hidden=false;status.textContent=method==="etransfer"?"Your request is saved. Copy the e-transfer email below, then send your $5 CAD tip in your banking app.":method==="paypal"?"Your request is saved. Complete your $5 CAD tip through PayPal below.":"Your request is saved. Complete your $5 CAD tip through Ko-fi below.";}
+ if(!availablePriorityPaymentMethods.has(method)||!target){
+  if(status){status.hidden=false;status.textContent="That payment method is unavailable. Choose Ko-fi or PayPal.";}
+  return;
+ }
+ if(status){status.hidden=false;status.textContent=method==="paypal"?"Your request is saved. Complete your $5 CAD tip through PayPal below.":"Your request is saved. Complete your $5 CAD tip through Ko-fi below.";}
  document.querySelectorAll(".payment-method-banner.payment-highlight").forEach(el=>el.classList.remove("payment-highlight"));
  target.classList.add("payment-highlight");target.scrollIntoView({behavior:"smooth",block:"center"});
  window.setTimeout(()=>target.classList.remove("payment-highlight"),1700);

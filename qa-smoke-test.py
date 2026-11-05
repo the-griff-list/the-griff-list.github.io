@@ -33,6 +33,23 @@ for required in ('Send a tip', 'eligible Stripe connection'):
     if required not in watch_html:
         issues.append(f'watch-live.html: missing payment disclosure: {required}')
 
+# Disabled payment methods must not remain reachable through stale JavaScript.
+script = (ROOT / 'script.js').read_text(encoding='utf-8')
+for required in (
+    'const availablePriorityPaymentMethods = new Set(["kofi", "paypal"]);',
+    'availablePriorityPaymentMethods.has(paymentMethod)',
+    'availablePriorityPaymentMethods.has(method)',
+    'That payment method is unavailable. Choose Ko-fi or PayPal.',
+):
+    if required not in script:
+        issues.append(f'script.js: missing fail-closed priority-payment guard: {required}')
+for forbidden in (
+    'etransfer:document.querySelector(".payment-etransfer")',
+    'Copy the e-transfer email below',
+):
+    if forbidden in script:
+        issues.append(f'script.js: stale disabled e-transfer route remains: {forbidden}')
+
 # Request retry idempotency depends on the reviewed unique-token index and
 # token-status RPC being present in the migration shipped with this source.
 request_migration = ROOT/'grifflist-combined-reviewed-migration.sql'
