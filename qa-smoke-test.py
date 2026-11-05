@@ -104,8 +104,10 @@ else:
         if local in private_paths:
             issues.append(f'sw.js: private asset must not be precached: {asset}')
     for required in (
-        "const CACHE = 'grifflist-livekit-offline-v44'",
+        "const CACHE = 'grifflist-livekit-offline-v45'",
         'function canonicalPathCandidates(pathname)',
+        'function normalizePathCandidate(pathname)',
+        "segment === '..'",
         'decodeURIComponent(current)',
         'function isPrivatePath',
         'function isApiPath',
