@@ -1,5 +1,5 @@
 /* Public offline shell only. Requests, tips, live video and private admin pages need a connection. */
-const CACHE = 'grifflist-livekit-offline-v44';
+const CACHE = 'grifflist-livekit-offline-v45';
 const CORE = [
   './',
   './index.html',
@@ -95,11 +95,36 @@ const API_PREFIXES = [
 // enter the public offline cache. Proxies/servers can normalize encoded paths
 // differently from URL.pathname; malformed or excessively encoded paths fail
 // closed rather than being treated as public assets.
+function normalizePathCandidate(pathname) {
+  const withSeparators = pathname.replace(/\\/g, '/');
+  if (!withSeparators.startsWith('/')) return null;
+
+  // Decoding can reveal dot segments that the URL parser did not see in the
+  // original encoded pathname. Collapse them before private/API classification
+  // so a proxy or origin that normalizes after decoding cannot expose a route
+  // that this worker mistakenly considers public.
+  const segments = [];
+  for (const segment of withSeparators.split('/')) {
+    if (segment === '' || segment === '.') continue;
+    if (segment === '..') {
+      if (segments.length > 0) segments.pop();
+      continue;
+    }
+    segments.push(segment);
+  }
+
+  const hasTrailingSlash = /\\/(?:\\.{1,2})?$/.test(withSeparators);
+  const normalized = `/${segments.join('/')}`;
+  return (hasTrailingSlash && normalized !== '/' ? `${normalized}/` : normalized).toLowerCase();
+}
+
 function canonicalPathCandidates(pathname) {
   const candidates = new Set();
   let current = pathname;
   for (let depth = 0; depth < 4; depth += 1) {
-    candidates.add(current.replace(/\\/g, '/').replace(/\/{2,}/g, '/').toLowerCase());
+    const normalized = normalizePathCandidate(current);
+    if (normalized === null) return null;
+    candidates.add(normalized);
     let decoded;
     try {
       decoded = decodeURIComponent(current);
@@ -110,10 +135,11 @@ function canonicalPathCandidates(pathname) {
     current = decoded;
   }
   if (current.includes('%')) return null;
-  candidates.add(current.replace(/\\/g, '/').replace(/\/{2,}/g, '/').toLowerCase());
+  const normalized = normalizePathCandidate(current);
+  if (normalized === null) return null;
+  candidates.add(normalized);
   return candidates;
 }
-
 function isPrivatePath(pathname) {
   const candidates = canonicalPathCandidates(pathname);
   if (candidates === null) return true;
