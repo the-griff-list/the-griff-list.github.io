@@ -141,6 +141,7 @@ test('public offline shell registers, falls back offline, and never caches priva
   }, cacheName);
   expect(initial).toContain('/index.html');
   expect(initial).toContain('/offline.html');
+  expect(initial).toContain('/roadmap.html');
   expect(initial).toContain('/script.js?v=payment-security-pause-1');
   await page.context().setOffline(true);
   await page.reload();
@@ -157,6 +158,14 @@ test('public offline shell registers, falls back offline, and never caches priva
   await page.context().setOffline(true);
   await page.goto('/watch-live.html');
   await expect(page.locator('h1')).toContainText("You're offline");
+  await page.context().setOffline(false);
+
+  // The public tour roadmap includes a device-local journal. Cache only its
+  // static shell; the journal data remains in localStorage, not Cache Storage.
+  await page.context().setOffline(true);
+  await page.goto('/roadmap.html');
+  await expect(page.locator('h1')).toContainText('THE ROAD');
+  await expect(page.locator('#gig-form')).toBeVisible();
   await page.context().setOffline(false);
 
   await page.goto('/admin.html');
