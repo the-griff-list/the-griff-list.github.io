@@ -73,7 +73,7 @@ if not archive_migration.is_file():
 else:
     archive_sql = archive_migration.read_text(encoding='utf-8')
     archive_function = re.search(
-        r'create or replace function public\\.archive_song_request\\(\\)(.*?)\\$\\$;',
+        r'create or replace function public\.archive_song_request\(\)(.*?)\$\$;',
         archive_sql,
         re.I | re.S,
     )
@@ -83,13 +83,13 @@ else:
         function_sql = archive_function.group(1).lower()
         if 'security definer' not in function_sql or "set search_path = ''" not in function_sql:
             issues.append('request archive: SECURITY DEFINER trigger must use an empty search_path')
-        if not re.search(r'insert\\s+into\\s+public\\.request_archive', function_sql):
+        if not re.search(r'insert\s+into\s+public\.request_archive', function_sql):
             issues.append('request archive: trigger must schema-qualify the archive table')
 if not archive_hardening.is_file():
     issues.append('request archive: follow-up search_path hardening migration is missing')
 else:
     hardening_sql = archive_hardening.read_text(encoding='utf-8').lower()
-    if "alter function public.archive_song_request()\\n  set search_path = '';" not in hardening_sql:
+    if "alter function public.archive_song_request()\n  set search_path = '';" not in hardening_sql:
         issues.append('request archive: existing-installation search_path hardening is missing')
 
 js_files=sorted(ROOT.glob('*.js'))
