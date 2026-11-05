@@ -3,6 +3,11 @@ const fs = require('node:fs');
 const vm = require('node:vm');
 
 const serviceWorkerSource = fs.readFileSync(`${__dirname}/sw.js`, 'utf8');
+const cacheNameMatches = [...serviceWorkerSource.matchAll(/^const CACHE = '([^']+)';$/gm)];
+if (cacheNameMatches.length !== 1) {
+  throw new Error('Could not identify exactly one production service-worker cache name.');
+}
+const serviceWorkerCacheName = cacheNameMatches[0][1];
 const cachePolicyMatch = serviceWorkerSource.match(
   /function isCacheableResponse\(response\) \{[\s\S]*?\n\}/,
 );
@@ -126,7 +131,7 @@ test('public offline shell registers, falls back offline, and never caches priva
   }, null, { timeout: 30000 });
   await page.reload();
 
-  const cacheName = 'grifflist-livekit-offline-v44';
+  const cacheName = serviceWorkerCacheName;
   const initial = await page.evaluate(async (name) => {
     const cache = await caches.open(name);
     return (await cache.keys()).map(request => {
@@ -186,7 +191,7 @@ test('authenticated same-origin asset requests bypass the offline cache', async 
     if (!response.ok) throw new Error(`Probe request failed: ${response.status}`);
     const cache = await caches.open(name);
     return (await cache.keys()).some(request => request.url === url.href);
-  }, 'grifflist-livekit-offline-v44');
+  }, serviceWorkerCacheName);
   expect(cached).toBe(false);
 });
 
