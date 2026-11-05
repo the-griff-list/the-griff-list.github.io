@@ -99,7 +99,8 @@ const API_PREFIXES = [
 // closed rather than being treated as public assets.
 function normalizePathCandidate(pathname) {
   const withSeparators = pathname.replace(/\\/g, '/');
-  if (!withSeparators.startsWith('/')) return null;
+  // Reject decoded C0/DEL controls because upstream path normalizers may disagree on them.
+  if (!withSeparators.startsWith('/') || /[\u0000-\u001f\u007f]/.test(withSeparators)) return null;
 
   // Decoding can reveal dot segments that the URL parser did not see in the
   // original encoded pathname. Collapse them before private/API classification
