@@ -4,7 +4,7 @@
 
 ## Before opening doors
 
-- [x] Confirm the event title, venue, date and start time against Hunter’s official Upcoming Events listing: Griff & Guest at Hunter’s Ale House, Friday, November 6, 2026 at 11:00 p.m. Atlantic (source: https://huntersalehouse.com/).
+- [x] Confirm the event title, venue, date and start time against Hunter’s official Upcoming Events listing: Griff & Guest at Hunter’s Ale House, Friday, November 6, 2026 at 11:00 p.m. Atlantic (source: https://huntersalehouse.com/). The semantic `datetime` uses America/Halifax AST (UTC−04:00); daylight time ended November 1, 2026.
 - [ ] Open the homepage on the actual phone and verify the show strip, navigation, song catalogue, request form and tip section render without horizontal scrolling.
 - [ ] Search the catalogue by song and artist; test decade and artist filters; reveal and close the list.
 - [ ] Select a song and confirm it fills the request fields correctly.
