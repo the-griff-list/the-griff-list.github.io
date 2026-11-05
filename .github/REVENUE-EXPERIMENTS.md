@@ -1,7 +1,7 @@
 # Revenue experiments — research backlog
 
 **Status:** research only; no offers activated, payments collected, inventory purchased, or vendor fees paid.  
-**Research date:** 2026-11-04  
+**Research date:** 2026-11-05  
 **Rule:** preserve the existing Ko-fi/PayPal flow. Do not add a paid service, new checkout, payment credential, or public sales claim without explicit owner approval.
 
 ## Market and platform evidence
@@ -23,7 +23,7 @@ Ratings are qualitative planning estimates, not measured unit economics. All dem
 |---:|---|---|---|---|---|---|---|
 | 1 | 20-minute beginner guitar tune-up (interest test first) | $0 if online or learner brings guitar; no new gear | 1–7 days after a booking (hypothesis) | High before time, tax and payment fees | Low–medium | Keep scope beginner-only; no credential claims; safe meeting format; cancellations | High |
 | 2 | Original Griff List gig merch by preorder | Low only after interest is measured and production costs are quoted; no stock upfront | Next gig or 1–3 weeks | Medium–high if batch size and blank cost work | Medium | Unsold sizes, refunds, production quality, copyrighted logos/art | High |
-| 3 | Musician-focused one-page gig/request/tip pages with QR cards | Near-zero software spend using existing stack | 1–4 weeks (hypothesis) | High after setup, before support time | Medium | Strong local web-design competition; ongoing edits/support | High |
+| 3 | One-off musician gig/request/tip page + digital QR kit (not a generic SaaS) | Near-zero software spend using existing stack | 1–4 weeks (hypothesis) | High after setup, before support time | Medium | Strong local web-design competition; ongoing edits/support | High |
 | 4 | Customer-funded cassette duplication for rights-cleared masters | Low–medium; blanks, shells, labels and test copies must be quoted | 2–4 weeks | Medium, highly quantity-dependent | Medium–high | Rights/permissions, defects, shipping, low batch economics | High |
 | 5 | Consignment vinyl/CD bundles or curated resale | Near-zero inventory spend if consignment is agreed | 2–4 weeks | Low–medium commission potential | Medium | Condition grading, authenticity, returns, slow turnover | Medium |
 | 6 | Bottle lamps / original home-goods at a maker market | Medium; materials and electrical-safety review | 4–8 weeks | Unknown until materials and safety costs are known | High | Electrical safety/liability, breakage, booth fees, seasonality | Medium |
@@ -80,3 +80,33 @@ A fresh competitor scan changes how the musician-page experiment should be posit
 - **Validation:** ask up to three relevant Charlottetown/PEI businesses whether they would consider a one-show, explicitly disclosed placement. Count positive replies only as interest; no offer, price, payment link or sponsor logo goes live without agreement and owner approval.
 - **Status:** brainstormed only; no outreach, agreement, booking or revenue.
 
+
+
+## Direct QR song-request/tip platform competition — 2026-11-05
+
+A broader scan found multiple products already selling the core QR song-request, live-queue and tipping proposition. This materially weakens the case for building a generic paid request/tip SaaS:
+
+- **MyWeeshy** advertises a free allowance of up to 8 events/month and an optional paid unlimited plan. Its public pages surfaced different plan/pricing versions, so exact current terms need confirmation before any comparison. [MyWeeshy](https://myweeshy.com/)
+- **Requesting Songs** advertises a $9.99/month plan with a setlist, QR request page and tip links. [Requesting Songs](https://requestingsongs.com/)
+- **DJQueueIt** advertises free entry, unlimited events and a 10% fee on paid song requests, while stating that tips have no platform cut. [DJQueueIt](https://djqueueit.com/)
+- **Nostalgic Requests** advertises a 5% transaction fee and says performers keep 95% before Stripe processing fees. [Nostalgic Requests](https://nostalgicrequests.com/)
+- **TIP2PLAY** advertises a free starter tier with an 85% revenue share and a €9/month Pro tier with a 95% share. [TIP2PLAY](https://tip2play.app/)
+- **BeatQ** advertises $4.99/month and a 10% platform fee on tips and boosts. [BeatQ](https://beatq.io/)
+- **YouRequestNow** advertises $19.99/month and claims a 0% platform fee. [YouRequestNow](https://www.yourequestnow.com/)
+- **NoSongRequests.com** advertises a broader all-in-one performer page and claims 21,000 artists and 4 million fans. Those are provider-reported figures, not independently audited adoption. [NoSongRequests](https://nosongrequests.com/)
+
+These are public competitor claims, not verified service quality, active-user counts, CAD payout eligibility, PEI adoption or fee quotes for a Canadian creator. Some prices are in EUR or USD. Do not compare headline prices without normalizing currency, processor fees, platform share, tax and feature limits.
+
+### Revised positioning and one-off QR-kit hypothesis
+
+Do **not** build another generic QR request/tipping platform or promise that a paid request will be played. The existing Griff List advantage is a musician-owned page with a distinctive rock identity, confirmed gig information, a curated song catalogue, requests, optional tips and the existing payment links. If another performer wants help, the lower-risk experiment is a one-time setup service rather than a recurring SaaS subscription:
+
+- **Offer hypothesis:** configure one simple performer page using the performer's existing request/tip links and deliver one original, branded QR poster as PNG/PDF. No payment processing, account custody, mailing-list capture, printed inventory or audience-data sharing is included.
+- **Test price hypothesis:** $25 CAD for the digital setup only. This is a test price, not a public offer or a proven market rate.
+- **Illustrative net:** at the PayPal Canada domestic commercial rate previously cited (2.90% + $0.30), a $25 payment would net about $23.98 before tax, refunds and labour. If the actual Ko-fi account applies a 5% commission fee plus an illustrative processor fee of 3% + $0.30, estimated net would be about $22.70. The user's actual account settings and processor rates remain uninspected; a service must not be classified as a tip to obtain a lower fee.
+- **Time/economics:** 30–60 minutes of setup would leave roughly $24–$48 gross per hour before tax, revisions, support and payment fees using the PayPal illustration. This is a planning calculation, not measured productivity or a guaranteed margin.
+- **Validation:** ask three PEI performers whether they would pay $25 for a one-time digital setup. Count explicit willingness to pay, not likes or generic compliments. If nobody commits to a follow-up after seeing a private prototype, stop rather than building a reusable product.
+- **Risks:** strong free/low-cost competitors, revision creep, rights to logos/artwork, stale payment links, accessibility and no guarantee of audience growth or earnings. The performer supplies and controls their own payment accounts and content.
+- **Status:** researched candidate; no outreach, prototype, customer interest, booking or revenue validated.
+
+No public offer, checkout, payment flow, QR kit or feature flag has been activated. This research does not authorize spending, printing, collecting payments or changing payment credentials.
