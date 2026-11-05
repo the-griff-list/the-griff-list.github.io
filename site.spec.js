@@ -116,6 +116,8 @@ test('title screen can be entered', async ({ page }) => { await page.goto('/inde
 test('next-show strip displays the venue-confirmed date and start time', async ({ page }) => {
   await page.goto('/index.html');
   const card = page.locator('.next-show-card');
+  await expect(card.locator('#next-show-title')).toHaveText('Griff & Guest');
+  await expect(card).toContainText('Hunter’s Ale House');
   await expect(card.locator('time').nth(0)).toHaveAttribute('datetime', '2026-11-06');
   await expect(card.locator('time').nth(1)).toHaveAttribute('datetime', '2026-11-06T23:00:00-03:00');
   await expect(card).toContainText('11:00 p.m. Atlantic');
