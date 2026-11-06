@@ -504,13 +504,13 @@ function findMissingHtmlFragmentLinks(pages, origin = 'https://site.invalid') {
 
   for (const [page, html] of Object.entries(pages)) {
     pageIds.set(page, new Set(
-      [...html.matchAll(/\\bid=["']([^"']+)["']/g)].map(match => match[1]),
+      [...html.matchAll(/\bid=["']([^"']+)["']/g)].map(match => match[1]),
     ));
   }
 
   const missing = [];
   for (const [page, html] of Object.entries(pages)) {
-    for (const match of html.matchAll(/\\bhref=["']([^"']+)["']/g)) {
+    for (const match of html.matchAll(/\bhref=["']([^"']+)["']/g)) {
       const href = match[1].trim();
       if (!href) continue;
 
@@ -529,7 +529,7 @@ function findMissingHtmlFragmentLinks(pages, origin = 'https://site.invalid') {
       let targetPath;
       let targetId;
       try {
-        targetPath = decodeURIComponent(url.pathname.replace(/^\\/+/, ''));
+        targetPath = decodeURIComponent(url.pathname.replace(/^\/+/, ''));
         targetId = decodeURIComponent(url.hash.slice(1));
       } catch (_) {
         missing.push(`${page}: malformed encoded fragment ${href}`);
