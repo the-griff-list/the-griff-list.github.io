@@ -497,3 +497,56 @@ test('uses a new idempotency token when the visitor changes the song after an un
   expect(result.rows.map(([, row]) => row.song_title)).toEqual(['First Uncertain Song', 'Second Song']);
   expect(result.savedToken).toBe(result.tokens[1]);
   expect(result.attempt.state).toBe('sent');});
+
+test('all same-origin HTML fragment links resolve to existing IDs', () => {
+  const htmlPages = fs.readdirSync(__dirname)
+    .filter(name => name.endsWith('.html'))
+    .sort();
+  const pageIds = new Map();
+
+  for (const page of htmlPages) {
+    const html = fs.readFileSync(`${__dirname}/${page}`, 'utf8');
+    pageIds.set(page, new Set(
+      [...html.matchAll(/\\bid=["']([^"']+)["']/g)].map(match => match[1]),
+    ));
+  }
+
+  const missing = [];
+  for (const page of htmlPages) {
+    const html = fs.readFileSync(`${__dirname}/${page}`, 'utf8');
+    for (const match of html.matchAll(/\\bhref=["']([^"']+)["']/g)) {
+      const href = match[1].trim();
+      if (!href || /^(?:[a-z][a-z0-9+.-]*:|\\/\\/)/i.test(href)) continue;
+
+      let url;
+      try {
+        url = new URL(href, `https://site.invalid/${page}`);
+      } catch (_) {
+        missing.push(`${page}: malformed local link ${href}`);
+        continue;
+      }
+      if (url.origin !== 'https://site.invalid' || !url.hash) continue;
+
+      let targetPath;
+      let targetId;
+      try {
+        targetPath = decodeURIComponent(url.pathname.replace(/^\\/+/, ''));
+        targetId = decodeURIComponent(url.hash.slice(1));
+      } catch (_) {
+        missing.push(`${page}: malformed encoded fragment ${href}`);
+        continue;
+      }
+      if (!targetPath) targetPath = 'index.html';
+      if (targetPath.endsWith('/')) targetPath += 'index.html';
+
+      const targetIds = pageIds.get(targetPath);
+      // The companion smoke test checks local file existence. This assertion
+      // specifically verifies fragments when the destination is an HTML page.
+      if (targetIds && targetId && !targetIds.has(targetId)) {
+        missing.push(`${page}: ${href} points to missing ${targetPath}#${targetId}`);
+      }
+    }
+  }
+
+  expect(missing).toEqual([]);
+});
