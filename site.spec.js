@@ -516,7 +516,7 @@ test('all same-origin HTML fragment links resolve to existing IDs', () => {
     const html = fs.readFileSync(`${__dirname}/${page}`, 'utf8');
     for (const match of html.matchAll(/\bhref=["']([^"']+)["']/g)) {
       const href = match[1].trim();
-      if (!href || /^(?:[a-z][a-z0-9+.-]*:|\/\/)/i.test(href)) continue;
+      if (!href || /^[a-z][a-z0-9+.-]*:/i.test(href)) continue;
 
       let url;
       try {
