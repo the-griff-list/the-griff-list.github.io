@@ -159,7 +159,7 @@ else:
         if local in private_paths:
             issues.append(f'sw.js: private asset must not be precached: {asset}')
     for required in (
-        "const CACHE = 'grifflist-livekit-offline-v51'",
+        "const CACHE = 'grifflist-livekit-offline-v52'",
         "'/roadmap.html'",
         "./styles.css?v=grifflist-tour-roadmap-1",
         'function canonicalPathCandidates(pathname)',
@@ -169,6 +169,8 @@ else:
         'decodeURIComponent(current)',
         'function isPrivatePath',
         'function isApiPath',
+        'function isSafePublicCacheResponse(response, requestUrl, origin)',
+        'isSafePublicCacheResponse(response, request.url, self.location.origin)',
         'path === prefix.slice(0, -1) || path.includes(prefix)',
         "request.headers.has('Authorization')",
         "!vary.includes('cookie')",
@@ -191,6 +193,10 @@ else:
     ):
         if required not in sw:
             issues.append(f'sw.js: missing offline/privacy safeguard: {required}')
+    if 'cache.addAll(' in sw:
+        issues.append('sw.js: offline shell install must apply the same cache policy as runtime fetches')
+    if sw.count('isSafePublicCacheResponse(response, request.url, self.location.origin)') != 2:
+        issues.append('sw.js: install and runtime must both reject redirected/private/API cache responses')
     if 'ignoreSearch: true' in sw or 'ignoreSearch:true' in sw:
         issues.append('sw.js: cache matching must preserve versioned query strings')
     if sw.count("const candidates = canonicalPathCandidates(pathname);") != 2:
