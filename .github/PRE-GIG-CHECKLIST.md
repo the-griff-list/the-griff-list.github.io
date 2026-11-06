@@ -6,8 +6,8 @@
 
 - [x] Confirm the venue's official homepage listing: Griff & Guest at Hunter’s Ale House, Friday, November 6, 2026 at 11:00 p.m. Atlantic (source: https://rihg.ca/). The semantic `datetime` uses America/Halifax AST (UTC−04:00); daylight time ended November 1, 2026.
 - [x] Record the user-confirmed performance set time as 10:00 p.m. Atlantic. Keep it distinct from the venue's 11:00 p.m. homepage event listing; do not replace the set time with the event time.
-- [x] Record the official-source discrepancy: the RIHG homepage lists Griff & Guest at 11:00 p.m., while the Hunter’s Ale House category calendar currently shows a different 10:00 p.m. “Headbangers Hallowe’en Bash” entry and omits Griff & Guest. Sources: https://rihg.ca/ and https://rihg.ca/events/category/hunters/2026-11/. Treat the listings as inconsistent; do not infer a replacement performance time.
-- [ ] Reconfirm the venue event listing directly before publication; keep the user-confirmed 10:00 p.m. performance set separate from the venue's event time.
+- [x] Record the listing distinction: the RIHG homepage lists Griff & Guest at 11:00 p.m.; the Hunter’s Ale House category calendar currently shows a separate 10:00 p.m. “Headbangers Hallowe’en Bash” entry and does not list Griff & Guest. Sources: https://rihg.ca/ and https://rihg.ca/events/category/hunters/2026-11/. Treat the category entry as a separate event, not evidence of Griff & Guest’s set time.
+- [ ] Reconfirm the venue event listing directly before publication if displaying venue event time; keep the user-confirmed 10:00 p.m. performance set separate.
 - [ ] Open the homepage on the actual phone and verify the show strip, navigation, song catalogue, request form and tip section render without horizontal scrolling.
 - [ ] Search the catalogue by song and artist; test decade and artist filters; reveal and close the list.
 - [ ] Select a song and confirm it fills the request fields correctly.
