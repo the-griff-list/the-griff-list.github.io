@@ -139,6 +139,22 @@ except Exception as e:
     issues.append(f'manifest.webmanifest: invalid JSON ({e})')
 
 sw=(ROOT/'sw.js').read_text(encoding='utf-8')
+# Keep the pre-gig deployment checklist synchronized with the actual cache
+# generation so stale-shell acceptance steps cannot silently survive a bump.
+checklist_path=ROOT/'.github/PRE-GIG-CHECKLIST.md'
+if not checklist_path.is_file():
+    issues.append('pre-gig checklist: cache-version acceptance document is missing')
+else:
+    checklist_text=checklist_path.read_text(encoding='utf-8')
+    cache_version=re.search(r"const CACHE\s*=\s*'([^']+)-v([0-9]+)'",sw)
+    if not cache_version:
+        issues.append('sw.js: could not determine the offline cache generation')
+    else:
+        cache_name=cache_version.group(1)+'-v'+cache_version.group(2)
+        prior_name=cache_version.group(1)+'-v'+str(int(cache_version.group(2))-1)
+        expected_cache_line=f'- [ ] Confirm the service-worker cache version is `{cache_name}` after deployment and that the prior v{int(cache_version.group(2))-1} shell is retired.'
+        if expected_cache_line not in checklist_text:
+            issues.append('pre-gig checklist: current and prior service-worker cache versions must match sw.js')
 match=re.search(r'const CORE\s*=\s*\[(.*?)\];',sw,re.S)
 if not match:
     issues.append('sw.js: could not find CORE precache list')

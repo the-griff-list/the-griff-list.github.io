@@ -28,7 +28,7 @@
 - [ ] Verify the service worker serves only the intended cached assets and that a new deployment can update the cache without trapping visitors on stale code.
 - [ ] Confirm encoded, double-encoded and malformed private/admin/API paths bypass service-worker caching, while public assets with encoded spaces still cache normally.
 - [ ] Confirm decoded `.` / `..` path segments cannot traverse into admin, analytics, request-archive or API routes before the offline worker classifies a request.
-- [ ] Confirm the service-worker cache version is `grifflist-livekit-offline-v52` after deployment and that the prior v50 shell is retired.
+- [ ] Confirm the service-worker cache version is `grifflist-livekit-offline-v52` after deployment and that the prior v51 shell is retired.
 - [ ] Verify admin, analytics, request-archive pages, Supabase config and API responses are never cached by the offline worker.
 - [ ] Confirm same-origin requests carrying an Authorization header bypass offline caching, and responses varying by Cookie or Authorization are never cached.
 - [ ] Confirm responses with no-cache, must-revalidate, proxy-revalidate, Pragma: no-cache, or zero max-age directives are not cached for offline reuse.
