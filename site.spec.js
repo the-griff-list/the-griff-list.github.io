@@ -498,39 +498,38 @@ test('uses a new idempotency token when the visitor changes the song after an un
   expect(result.savedToken).toBe(result.tokens[1]);
   expect(result.attempt.state).toBe('sent');});
 
-test('all same-origin HTML fragment links resolve to existing IDs', () => {
-  const htmlPages = fs.readdirSync(__dirname)
-    .filter(name => name.endsWith('.html'))
-    .sort();
+function findMissingHtmlFragmentLinks(pages, origin = 'https://site.invalid') {
+  const normalizedOrigin = new URL(origin).origin;
   const pageIds = new Map();
 
-  for (const page of htmlPages) {
-    const html = fs.readFileSync(`${__dirname}/${page}`, 'utf8');
+  for (const [page, html] of Object.entries(pages)) {
     pageIds.set(page, new Set(
-      [...html.matchAll(/\bid=["']([^"']+)["']/g)].map(match => match[1]),
+      [...html.matchAll(/\\bid=["']([^"']+)["']/g)].map(match => match[1]),
     ));
   }
 
   const missing = [];
-  for (const page of htmlPages) {
-    const html = fs.readFileSync(`${__dirname}/${page}`, 'utf8');
-    for (const match of html.matchAll(/\bhref=["']([^"']+)["']/g)) {
+  for (const [page, html] of Object.entries(pages)) {
+    for (const match of html.matchAll(/\\bhref=["']([^"']+)["']/g)) {
       const href = match[1].trim();
-      if (!href || /^[a-z][a-z0-9+.-]*:/i.test(href)) continue;
+      if (!href) continue;
 
       let url;
       try {
-        url = new URL(href, `https://site.invalid/${page}`);
+        url = new URL(href, `${normalizedOrigin}/${page}`);
       } catch (_) {
         missing.push(`${page}: malformed local link ${href}`);
         continue;
       }
-      if (url.origin !== 'https://site.invalid' || !url.hash) continue;
+      // Let URL parsing classify absolute, protocol-relative and relative
+      // destinations uniformly. Only same-origin HTTP(S) destinations are
+      // audited; mailto:, tel:, javascript: and external origins are ignored.
+      if (url.origin !== normalizedOrigin || !url.hash) continue;
 
       let targetPath;
       let targetId;
       try {
-        targetPath = decodeURIComponent(url.pathname.replace(/^\/+/, ''));
+        targetPath = decodeURIComponent(url.pathname.replace(/^\\/+/, ''));
         targetId = decodeURIComponent(url.hash.slice(1));
       } catch (_) {
         missing.push(`${page}: malformed encoded fragment ${href}`);
@@ -547,6 +546,34 @@ test('all same-origin HTML fragment links resolve to existing IDs', () => {
       }
     }
   }
+  return missing;
+}
 
-  expect(missing).toEqual([]);
+test('all same-origin HTML fragment links resolve to existing IDs', () => {
+  const htmlPages = fs.readdirSync(__dirname)
+    .filter(name => name.endsWith('.html'))
+    .sort();
+  const pages = Object.fromEntries(htmlPages.map(page => [
+    page,
+    fs.readFileSync(`${__dirname}/${page}`, 'utf8'),
+  ]));
+
+  expect(findMissingHtmlFragmentLinks(pages)).toEqual([]);
+});
+
+test('fragment audit checks absolute same-origin URLs and ignores external schemes', () => {
+  const pages = {
+    'index.html': [
+      '<a href="https://site.invalid/target.html#present">',
+      '<a href="https://site.invalid/target.html#missing">',
+      '<a href="https://external.invalid/target.html#ignored">',
+      '<a href="mailto:hello@example.invalid">',
+      '<a href="tel:+15555550100">',
+    ].join(''),
+    'target.html': '<div id="present"></div>',
+  };
+
+  expect(findMissingHtmlFragmentLinks(pages)).toEqual([
+    'index.html: https://site.invalid/target.html#missing points to missing target.html#missing',
+  ]);
 });
