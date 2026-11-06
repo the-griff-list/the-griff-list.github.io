@@ -507,16 +507,16 @@ test('all same-origin HTML fragment links resolve to existing IDs', () => {
   for (const page of htmlPages) {
     const html = fs.readFileSync(`${__dirname}/${page}`, 'utf8');
     pageIds.set(page, new Set(
-      [...html.matchAll(/\\bid=["']([^"']+)["']/g)].map(match => match[1]),
+      [...html.matchAll(/\bid=["']([^"']+)["']/g)].map(match => match[1]),
     ));
   }
 
   const missing = [];
   for (const page of htmlPages) {
     const html = fs.readFileSync(`${__dirname}/${page}`, 'utf8');
-    for (const match of html.matchAll(/\\bhref=["']([^"']+)["']/g)) {
+    for (const match of html.matchAll(/\bhref=["']([^"']+)["']/g)) {
       const href = match[1].trim();
-      if (!href || /^(?:[a-z][a-z0-9+.-]*:|\\/\\/)/i.test(href)) continue;
+      if (!href || /^(?:[a-z][a-z0-9+.-]*:|\/\/)/i.test(href)) continue;
 
       let url;
       try {
@@ -530,7 +530,7 @@ test('all same-origin HTML fragment links resolve to existing IDs', () => {
       let targetPath;
       let targetId;
       try {
-        targetPath = decodeURIComponent(url.pathname.replace(/^\\/+/, ''));
+        targetPath = decodeURIComponent(url.pathname.replace(/^\/+/, ''));
         targetId = decodeURIComponent(url.hash.slice(1));
       } catch (_) {
         missing.push(`${page}: malformed encoded fragment ${href}`);
