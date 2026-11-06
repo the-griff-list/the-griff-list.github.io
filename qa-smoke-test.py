@@ -159,7 +159,7 @@ else:
         if local in private_paths:
             issues.append(f'sw.js: private asset must not be precached: {asset}')
     for required in (
-        "const CACHE = 'grifflist-livekit-offline-v47'",
+        "const CACHE = 'grifflist-livekit-offline-v49'",
         "'/roadmap.html'",
         "./styles.css?v=grifflist-tour-roadmap-1",
         'function canonicalPathCandidates(pathname)',
