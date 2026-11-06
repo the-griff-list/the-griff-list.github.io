@@ -1,5 +1,5 @@
 /* Public offline shell only. Requests, tips, live video and private admin pages need a connection. */
-const CACHE = 'grifflist-livekit-offline-v51';
+const CACHE = 'grifflist-livekit-offline-v52';
 const CORE = [
   './',
   './index.html',
@@ -161,6 +161,23 @@ function isApiPath(pathname) {
   );
 }
 
+function isSafePublicCacheResponse(response, requestUrl, origin) {
+  if (!response || response.redirected) return false;
+  let request;
+  let finalResponse;
+  try {
+    request = new URL(requestUrl);
+    finalResponse = new URL(response.url);
+  } catch (_) {
+    return false;
+  }
+  if (request.origin !== origin || finalResponse.origin !== origin) return false;
+  return !isPrivatePath(request.pathname) &&
+    !isApiPath(request.pathname) &&
+    !isPrivatePath(finalResponse.pathname) &&
+    !isApiPath(finalResponse.pathname);
+}
+
 function isCacheableResponse(response) {
   const cacheControl = response.headers.get('Cache-Control') || '';
   const cacheDirectives = cacheControl.split(',').map(value => value.trim());
@@ -201,12 +218,20 @@ function isCacheableResponse(response) {
 self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE)
-      .then(cache => cache.addAll(
-        CORE.map(path => new Request(
-          new URL(path, self.registration.scope),
-          { cache: 'reload' }
-        ))
-      ))
+      .then(async cache => {
+        await Promise.all(CORE.map(async path => {
+          const request = new Request(
+            new URL(path, self.registration.scope),
+            { cache: 'reload' }
+          );
+          const response = await fetch(request);
+          if (!isCacheableResponse(response) ||
+              !isSafePublicCacheResponse(response, request.url, self.location.origin)) {
+            throw new Error(`Refusing to precache a non-public or non-cacheable response: ${request.url}`);
+          }
+          await cache.put(request, response);
+        }));
+      })
       .then(() => self.skipWaiting())
   );
 });
@@ -244,7 +269,8 @@ self.addEventListener('fetch', event => {
 
   const networkPromise = fetch(request)
     .then(async response => {
-      if (isCacheableResponse(response)) {
+      if (isCacheableResponse(response) &&
+          isSafePublicCacheResponse(response, request.url, self.location.origin)) {
         try {
           const cache = await caches.open(CACHE);
           await cache.put(request, response.clone());
