@@ -1,5 +1,5 @@
 /* Public offline shell only. Requests, tips, live video and private admin pages need a connection. */
-const CACHE = 'grifflist-livekit-offline-v52';
+const CACHE = 'grifflist-livekit-offline-v53';
 const CORE = [
   './',
   './index.html',
@@ -234,6 +234,14 @@ function isCacheableResponse(response) {
     !vary.includes('authorization');
 }
 
+// Only credentialless responses may be persisted. Same-origin requests can
+// carry session cookies even when they target otherwise-public shell paths.
+function isCacheableResponseForRequest(request, response) {
+  return request.credentials === 'omit' &&
+    !request.headers.has('Authorization') &&
+    isCacheableResponse(response);
+}
+
 self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE)
@@ -241,10 +249,10 @@ self.addEventListener('install', event => {
         await Promise.all(CORE.map(async path => {
           const request = new Request(
             new URL(path, self.registration.scope),
-            { cache: 'reload' }
+            { cache: 'reload', credentials: 'omit' }
           );
           const response = await fetch(request);
-          if (!isCacheableResponse(response) ||
+          if (!isCacheableResponseForRequest(request, response) ||
               !isSafePublicCacheResponse(response, request.url, self.location.origin)) {
             throw new Error(`Refusing to precache a non-public or non-cacheable response: ${request.url}`);
           }
@@ -282,7 +290,7 @@ self.addEventListener('fetch', event => {
 
   const networkPromise = fetch(request)
     .then(async response => {
-      if (isCacheableResponse(response) &&
+      if (isCacheableResponseForRequest(request, response) &&
           isSafePublicCacheResponse(response, request.url, self.location.origin)) {
         try {
           const cache = await caches.open(CACHE);

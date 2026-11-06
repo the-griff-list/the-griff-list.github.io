@@ -179,11 +179,14 @@ else:
         if local in private_paths:
             issues.append(f'sw.js: private asset must not be precached: {asset}')
     for required in (
-        "const CACHE = 'grifflist-livekit-offline-v52'",
+        "const CACHE = 'grifflist-livekit-offline-v53'",
         "'/roadmap.html'",
         "./styles.css?v=grifflist-tour-roadmap-1",
         'const CORE_URLS = new Set(',
         'function isCacheableRequest(request, url)',
+        'function isCacheableResponseForRequest(request, response)',
+        "request.credentials === 'omit'",
+        "credentials: 'omit'",
         'CORE_URLS.has(url.href)',
         "url.search === ''",
         'if (!isCacheableRequest(request, url)) return;',
@@ -227,6 +230,8 @@ else:
         issues.append('sw.js: offline shell install must apply the same cache policy as runtime fetches')
     if sw.count('isSafePublicCacheResponse(response, request.url, self.location.origin)') != 2:
         issues.append('sw.js: install and runtime must both reject redirected/private/API cache responses')
+    if sw.count('isCacheableResponseForRequest(request, response)') != 2:
+        issues.append('sw.js: install and runtime must both reject credentialed response caching')
     if 'ignoreSearch: true' in sw or 'ignoreSearch:true' in sw:
         issues.append('sw.js: cache matching must preserve versioned query strings')
     if sw.count("const candidates = canonicalPathCandidates(pathname);") != 2:

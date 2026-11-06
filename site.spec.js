@@ -11,10 +11,15 @@ const serviceWorkerCacheName = cacheNameMatches[0][1];
 const cachePolicyMatch = serviceWorkerSource.match(
   /function isCacheableResponse\(response\) \{[\s\S]*?\n\}/,
 );
-if (!cachePolicyMatch) throw new Error('Could not extract the production service-worker cache policy.');
+const cacheRequestPolicyMatch = serviceWorkerSource.match(
+  /function isCacheableResponseForRequest\(request, response\) \{[\s\S]*?\n\}/,
+);
+if (!cachePolicyMatch || !cacheRequestPolicyMatch) {
+  throw new Error('Could not extract the production service-worker cache policies.');
+}
 const cachePolicyContext = {};
 vm.runInNewContext(
-  `${cachePolicyMatch[0]}\nglobalThis.isCacheableResponse = isCacheableResponse;`,
+  `${cachePolicyMatch[0]}\n${cacheRequestPolicyMatch[0]}\nglobalThis.isCacheableResponse = isCacheableResponse;\nglobalThis.isCacheableResponseForRequest = isCacheableResponseForRequest;`,
   cachePolicyContext,
 );
 
@@ -58,12 +63,34 @@ test('service worker refuses responses that require HTTP revalidation before reu
   expect(isCacheable(response({ type: 'cors' }))).toBe(false);
 });
 
+
+test('service worker only stores responses fetched without credentials', () => {
+  const canStore = cachePolicyContext.isCacheableResponseForRequest;
+  const response = { ok: true, type: 'basic', headers: { get: () => null } };
+  const request = (credentials, authorization = false) => ({
+    credentials,
+    headers: { has: name => name === 'Authorization' && authorization },
+  });
+
+  expect(canStore(request('omit'), response)).toBe(true);
+  expect(canStore(request('same-origin'), response)).toBe(false);
+  expect(canStore(request('include'), response)).toBe(false);
+  expect(canStore(request('omit', true), response)).toBe(false);
+  expect(canStore(request('omit'), {
+    ...response,
+    headers: { get: name => name === 'Cache-Control' ? 'private' : null },
+  })).toBe(false);
+});
 test('offline shell precache and runtime share the fail-closed response policy', () => {
   expect(serviceWorkerSource).not.toContain('cache.addAll(');
   expect(
     serviceWorkerSource.match(/isSafePublicCacheResponse\(response, request\.url, self\.location\.origin\)/g),
   ).toHaveLength(2);
-  expect(serviceWorkerSource).toContain('if (!isCacheableResponse(response) ||');
+  expect(
+    serviceWorkerSource.match(/isCacheableResponseForRequest\(request, response\)/g),
+  ).toHaveLength(2);
+  expect(serviceWorkerSource).toContain("credentials: 'omit'");
+  expect(serviceWorkerSource).toContain('if (!isCacheableResponseForRequest(request, response) ||');
   expect(serviceWorkerSource).toContain('await cache.put(request, response)');
 });
 
@@ -198,7 +225,7 @@ test('public offline pages use stylesheet variants present in the service-worker
     }
   }
 
-  expect(serviceWorkerCacheName).toBe('grifflist-livekit-offline-v52');
+  expect(serviceWorkerCacheName).toBe('grifflist-livekit-offline-v53');
 });
 
 test('PWA manifest is available with app shortcuts', async ({ request }) => { const response=await request.get('/manifest.webmanifest'); expect(response.ok()).toBeTruthy(); const manifest=await response.json(); expect(manifest.display).toBe('standalone'); expect(manifest.shortcuts.length).toBeGreaterThanOrEqual(3); });
@@ -287,6 +314,30 @@ test('authenticated same-origin asset requests bypass the offline cache', async 
 });
 
 
+test('same-origin cookie-bearing public navigation is not persisted in Cache Storage', async ({ page }) => {
+  await page.goto('/index.html');
+  await page.waitForFunction(async () => {
+    const registration = await navigator.serviceWorker.getRegistration();
+    return Boolean(registration?.active && navigator.serviceWorker.controller);
+  }, null, { timeout: 30000 });
+  await page.reload();
+
+  const url = await page.evaluate(() => new URL('/explore.html', location.origin).href);
+  await page.evaluate(() => {
+    document.cookie = 'um-cache-privacy-probe=1; Path=/; SameSite=Lax';
+  });
+  await page.evaluate(async ({ name, target }) => {
+    const cache = await caches.open(name);
+    await cache.delete(target);
+  }, { name: serviceWorkerCacheName, target: url });
+
+  await page.goto('/explore.html');
+  const persisted = await page.evaluate(async ({ name, target }) => {
+    const cache = await caches.open(name);
+    return (await cache.keys()).some(request => request.url === target);
+  }, { name: serviceWorkerCacheName, target: url });
+  expect(persisted).toBe(false);
+});
 test('request form exposes required, keyboard-reachable fields', async ({ page }) => {
   await page.goto('/index.html');
   await page.locator('#splash').click();
