@@ -29,13 +29,13 @@ for file in html_files:
 home_html=(ROOT/'index.html').read_text(encoding='utf-8')
 watch_html=(ROOT/'watch-live.html').read_text(encoding='utf-8')
 # November 6, 2026 is after the America/Halifax daylight-saving transition.
-event_start = datetime(2026, 11, 6, 23, 0, tzinfo=ZoneInfo('America/Halifax'))
+event_start = datetime(2026, 11, 6, 22, 0, tzinfo=ZoneInfo('America/Halifax'))
 expected_event_datetime = event_start.isoformat()
 if f'datetime="{expected_event_datetime}"' not in home_html:
     issues.append(f'index.html: show time must match America/Halifax ({expected_event_datetime})')
-if 'datetime="2026-11-06T23:00:00-03:00"' in home_html:
+if 'datetime="2026-11-06T22:00:00-03:00"' in home_html:
     issues.append('index.html: show time incorrectly uses daylight time after the 2026 DST transition')
-for required in ('Griff &amp; Guest', 'Hunter’s Ale House', 'datetime="2026-11-06"', 'datetime="2026-11-06T23:00:00-04:00"', '11:00 p.m. Atlantic', 'Send a tip', 'CHECK LIVE STATUS ↗', 'Ko-fi (Apple Pay / Google Pay if enabled)', 'eligible Stripe connection'):
+for required in ('Griff &amp; Guest', 'Hunter’s Ale House', 'datetime="2026-11-06"', 'datetime="2026-11-06T22:00:00-04:00"', '10:00 p.m. Atlantic', 'Send a tip', 'CHECK LIVE STATUS ↗', 'Ko-fi (Apple Pay / Google Pay if enabled)', 'eligible Stripe connection'):
     if required not in home_html:
         issues.append(f'index.html: missing gig/payment acceptance text: {required}')
 for required in ('Send a tip', 'eligible Stripe connection'):

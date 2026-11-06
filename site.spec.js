@@ -123,16 +123,16 @@ globalThis.isApiPath = isApiPath;`,
 
 test('homepage loads without horizontal overflow or page errors', async ({ page }) => { const errors=[]; page.on('pageerror',e=>errors.push(e.message)); await page.goto('/index.html'); await expect(page.locator('#splash')).toBeVisible(); expect(await page.evaluate(()=>document.documentElement.scrollWidth>document.documentElement.clientWidth)).toBe(false); expect(errors).toEqual([]); });
 test('title screen can be entered', async ({ page }) => { await page.goto('/index.html'); await page.locator('#splash').click(); await expect(page.locator('#catalog')).toBeVisible(); });
-test('next-show strip displays the venue-confirmed date and start time', async ({ page }) => {
+test('next-show strip displays the user-confirmed performance set time', async ({ page }) => {
   await page.goto('/index.html');
   const card = page.locator('.next-show-card');
   await expect(card.locator('#next-show-title')).toHaveText('Griff & Guest');
   await expect(card).toContainText('Hunter’s Ale House');
   await expect(card.locator('time').nth(0)).toHaveAttribute('datetime', '2026-11-06');
-  await expect(card.locator('time').nth(1)).toHaveAttribute('datetime', '2026-11-06T23:00:00-04:00');
+  await expect(card.locator('time').nth(1)).toHaveAttribute('datetime', '2026-11-06T22:00:00-04:00');
   const eventDateTime = await card.locator('time').nth(1).getAttribute('datetime');
-  expect(new Date(eventDateTime).toISOString()).toBe('2026-11-07T03:00:00.000Z');
-  await expect(card).toContainText('11:00 p.m. Atlantic');
+  expect(new Date(eventDateTime).toISOString()).toBe('2026-11-07T02:00:00.000Z');
+  await expect(card).toContainText('10:00 p.m. Atlantic');
 });
 test('home Watch Live CTA checks status without promising an active stream', async ({ page }) => {
   await page.goto('/index.html');
