@@ -182,6 +182,14 @@ else:
         "const CACHE = 'grifflist-livekit-offline-v52'",
         "'/roadmap.html'",
         "./styles.css?v=grifflist-tour-roadmap-1",
+        'const CORE_URLS = new Set(',
+        'function isCacheableRequest(request, url)',
+        'CORE_URLS.has(url.href)',
+        "url.search === ''",
+        'if (!isCacheableRequest(request, url)) return;',
+        "'./script.js?v=grifflist-v28'",
+        "'./site-interactions.js?v=grifflist-v39'",
+        "'./live-show.js?v=grifflist-v29'",
         'function canonicalPathCandidates(pathname)',
         'function normalizePathCandidate(pathname)',
         "segment === '..'",
@@ -213,6 +221,8 @@ else:
     ):
         if required not in sw:
             issues.append(f'sw.js: missing offline/privacy safeguard: {required}')
+    if 'CORE_PATHS.has(url.pathname)' in sw:
+        issues.append('sw.js: query-bearing cache eligibility must use exact pinned URLs, not path-only matching')
     if 'cache.addAll(' in sw:
         issues.append('sw.js: offline shell install must apply the same cache policy as runtime fetches')
     if sw.count('isSafePublicCacheResponse(response, request.url, self.location.origin)') != 2:

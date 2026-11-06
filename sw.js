@@ -12,10 +12,13 @@ const CORE = [
   './styles.css?v=grifflist-tour-roadmap-1',
   './brand-system.css?v=sitewide-v1',
   './script.js?v=payment-security-pause-1',
+  './script.js?v=grifflist-v28',
   './crowd-favourites.js?v=grifflist-v41',
   './site-interactions.js?v=grifflist-v41',
+  './site-interactions.js?v=grifflist-v39',
   './whats-new.js?v=grifflist-v41',
   './live-show.js',
+  './live-show.js?v=grifflist-v29',
   './grifflist-logo.webp',
   './splash-screen.webp',
   './rock-meter-0.webp',
@@ -53,8 +56,8 @@ const CORE = [
   './ui_sound_10R.mp3'
 ];
 
-const CORE_PATHS = new Set(
-  CORE.map(path => new URL(path, self.registration.scope).pathname)
+const CORE_URLS = new Set(
+  CORE.map(path => new URL(path, self.registration.scope).href)
 );
 const PRIVATE_PATHS = new Set([
   '/admin.html',
@@ -161,6 +164,22 @@ function isApiPath(pathname) {
   );
 }
 
+function isCacheableRequest(request, url) {
+  if (request.method !== 'GET' || url.origin !== self.location.origin) return false;
+  if (request.headers.has('Authorization')) return false;
+  if (isPrivatePath(url.pathname) || isApiPath(url.pathname)) return false;
+
+  const isPublicNavigation =
+    request.mode === 'navigate' &&
+    PUBLIC_NAVIGATION_PATHS.has(url.pathname) &&
+    url.search === '';
+  const isPinnedCoreAsset = CORE_URLS.has(url.href);
+  const isUnversionedStaticAsset =
+    url.search === '' && STATIC_DESTINATIONS.has(request.destination);
+
+  return isPublicNavigation || isPinnedCoreAsset || isUnversionedStaticAsset;
+}
+
 function isSafePublicCacheResponse(response, requestUrl, origin) {
   if (!response || response.redirected) return false;
   let request;
@@ -254,18 +273,12 @@ self.addEventListener('activate', event => {
 self.addEventListener('fetch', event => {
   const request = event.request;
   const url = new URL(request.url);
-  if (request.method !== 'GET' || url.origin !== self.location.origin) return;
-  // Never persist a same-origin response fetched with an explicit bearer credential.
-  if (request.headers.has('Authorization')) return;
-  if (isPrivatePath(url.pathname) || isApiPath(url.pathname)) return;
+  if (!isCacheableRequest(request, url)) return;
 
   const isPublicNavigation =
     request.mode === 'navigate' &&
-    PUBLIC_NAVIGATION_PATHS.has(url.pathname);
-  const isStaticAsset =
-    STATIC_DESTINATIONS.has(request.destination) ||
-    CORE_PATHS.has(url.pathname);
-  if (!isPublicNavigation && !isStaticAsset) return;
+    PUBLIC_NAVIGATION_PATHS.has(url.pathname) &&
+    url.search === '';
 
   const networkPromise = fetch(request)
     .then(async response => {

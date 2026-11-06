@@ -68,12 +68,18 @@ test('offline shell precache and runtime share the fail-closed response policy',
 });
 
 test('service worker fails closed on encoded private and API paths', async () => {
-  const pathPolicyStart = serviceWorkerSource.indexOf('const PRIVATE_PATHS = new Set([');
+  const pathPolicyStart = serviceWorkerSource.indexOf('const CORE_URLS = new Set(');
   const pathPolicyEnd = serviceWorkerSource.indexOf('function isCacheableResponse(', pathPolicyStart);
   if (pathPolicyStart < 0 || pathPolicyEnd < 0) {
     throw new Error('Could not extract the production service-worker path policy.');
   }
-  const pathPolicyContext = {};
+  const pathPolicyContext = {
+    URL,
+    self: {
+      registration: { scope: 'https://site.invalid/' },
+      location: { origin: 'https://site.invalid' },
+    },
+  };
   vm.runInNewContext(
     `${serviceWorkerSource.slice(pathPolicyStart, pathPolicyEnd)}
 globalThis.isPrivatePath = isPrivatePath;
@@ -624,3 +630,70 @@ test('fragment audit checks absolute same-origin URLs and ignores external schem
     'index.html: https://site.invalid/target.html#missing points to missing target.html#missing',
   ]);
 });
+
+
+test('service worker caches only query-bearing URLs pinned in CORE', () => {
+  const policyStart = serviceWorkerSource.indexOf('const CORE_URLS = new Set(');
+  const policyEnd = serviceWorkerSource.indexOf('function isCacheableResponse(', policyStart);
+  if (policyStart < 0 || policyEnd < 0) {
+    throw new Error('Could not extract the production service-worker request policy.');
+  }
+  const origin = 'https://site.invalid';
+  const context = {
+    URL,
+    self: {
+      registration: { scope: `${origin}/` },
+      location: { origin },
+    },
+  };
+  vm.runInNewContext(
+    `${serviceWorkerSource.slice(policyStart, policyEnd)}\nglobalThis.isCacheableRequest = isCacheableRequest;`,
+    context,
+  );
+  const canCache = (path, options = {}) => {
+    const {
+      method = 'GET',
+      mode = 'no-cors',
+      destination = 'image',
+      authorization = false,
+    } = options;
+    const request = {
+      method,
+      mode,
+      destination,
+      headers: { has: name => name === 'Authorization' && authorization },
+    };
+    return context.isCacheableRequest(request, new URL(path, origin));
+  };
+
+  for (const path of [
+    '/styles.css?v=grifflist-v41',
+    '/styles.css?v=grifflist-tour-roadmap-1',
+    '/brand-system.css?v=sitewide-v1',
+    '/script.js?v=payment-security-pause-1',
+    '/script.js?v=grifflist-v28',
+    '/site-interactions.js?v=grifflist-v41',
+    '/site-interactions.js?v=grifflist-v39',
+    '/live-show.js?v=grifflist-v29',
+  ]) {
+    expect(canCache(path, { destination: 'style' }), path).toBe(true);
+  }
+  expect(canCache('/index.html', { mode: 'navigate', destination: '' })).toBe(true);
+  expect(canCache('/explore.html', { mode: 'navigate', destination: '' })).toBe(true);
+  expect(canCache('/logo.webp', { destination: 'image' })).toBe(true);
+
+  for (const [path, options] of [
+    ['/index.html?token=secret', { mode: 'navigate', destination: '' }],
+    ['/watch-live.html?session=secret', { mode: 'navigate', destination: '' }],
+    ['/styles.css?v=unknown', { destination: 'style' }],
+    ['/script.js?token=secret', { destination: 'script' }],
+    ['/logo.webp?token=secret', { destination: 'image' }],
+  ]) {
+    expect(canCache(path, options), path).toBe(false);
+  }
+  expect(canCache('/index.html', { mode: 'navigate', destination: '', method: 'POST' })).toBe(false);
+  expect(canCache('/index.html', { mode: 'navigate', destination: '', authorization: true })).toBe(false);
+  expect(canCache('https://external.invalid/logo.webp', { destination: 'image' })).toBe(false);
+  expect(canCache('/admin.html', { mode: 'navigate', destination: '' })).toBe(false);
+});
+
