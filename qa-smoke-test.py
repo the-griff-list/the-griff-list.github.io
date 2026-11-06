@@ -165,6 +165,7 @@ else:
         'function canonicalPathCandidates(pathname)',
         'function normalizePathCandidate(pathname)',
         "segment === '..'",
+        "if (segment === '..') return null;",
         'decodeURIComponent(current)',
         'function isPrivatePath',
         'function isApiPath',
