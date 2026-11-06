@@ -102,17 +102,14 @@ function normalizePathCandidate(pathname) {
   // Reject decoded C0/DEL controls because upstream path normalizers may disagree on them.
   if (!withSeparators.startsWith('/') || /[\u0000-\u001f\u007f]/.test(withSeparators)) return null;
 
-  // Decoding can reveal dot segments that the URL parser did not see in the
-  // original encoded pathname. Collapse them before private/API classification
-  // so a proxy or origin that normalizes after decoding cannot expose a route
-  // that this worker mistakenly considers public.
+  // Decoding can reveal traversal segments that the URL parser did not see
+  // in the original encoded pathname. Reject them rather than collapsing:
+  // a proxy/origin may normalize a path differently, so collapsing could hide
+  // a private/API prefix before the request reaches its final handler.
   const segments = [];
   for (const segment of withSeparators.split('/')) {
     if (segment === '' || segment === '.') continue;
-    if (segment === '..') {
-      if (segments.length > 0) segments.pop();
-      continue;
-    }
+    if (segment === '..') return null;
     segments.push(segment);
   }
 
