@@ -261,12 +261,26 @@ test('request form exposes required, keyboard-reachable fields', async ({ page }
   await expect(song).toBeFocused();
 });
 
-test('tip checkout disclosure does not promise unavailable wallets', async ({ page }) => {
+test('tip surfaces do not advertise unverified wallet methods before checkout', async ({ page }) => {
   await page.goto('/index.html');
   await page.locator('#splash').click();
-  await expect(page.locator('#tip-options .payment-disclosure'))
+  const homeTips = page.locator('#tip-options');
+  await expect(homeTips.locator('.payment-kofi')).toHaveAttribute('href', 'https://ko-fi.com/thegrifflist');
+  await expect(homeTips.locator('.payment-paypal')).toHaveAttribute('href', 'https://www.paypal.com/ncp/payment/NWLZL44VCLAYN');
+  await expect(homeTips.locator('.payment-wallet-logos')).toHaveCount(0);
+  await expect(homeTips.locator('.payment-disclosure'))
     .toContainText('eligible Stripe connection');
-  await expect(page.locator('#tip-options .payment-disclosure'))
+  await expect(homeTips.locator('.payment-disclosure'))
+    .toContainText('Checkout shows the methods actually available');
+
+  await page.goto('/watch-live.html');
+  const liveTips = page.locator('.live-tip-card');
+  await expect(liveTips.locator('.payment-kofi')).toHaveAttribute('href', 'https://ko-fi.com/thegrifflist');
+  await expect(liveTips.locator('.payment-paypal')).toHaveAttribute('href', 'https://www.paypal.com/ncp/payment/NWLZL44VCLAYN');
+  await expect(liveTips.locator('.payment-wallet-logos')).toHaveCount(0);
+  await expect(liveTips.locator('.payment-disclosure'))
+    .toContainText('eligible Stripe connection');
+  await expect(liveTips.locator('.payment-disclosure'))
     .toContainText('Checkout shows the methods actually available');
 });
 
