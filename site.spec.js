@@ -58,6 +58,15 @@ test('service worker refuses responses that require HTTP revalidation before reu
   expect(isCacheable(response({ type: 'cors' }))).toBe(false);
 });
 
+test('offline shell precache and runtime share the fail-closed response policy', () => {
+  expect(serviceWorkerSource).not.toContain('cache.addAll(');
+  expect(
+    serviceWorkerSource.match(/isSafePublicCacheResponse\(response, request\.url, self\.location\.origin\)/g),
+  ).toHaveLength(2);
+  expect(serviceWorkerSource).toContain('if (!isCacheableResponse(response) ||');
+  expect(serviceWorkerSource).toContain('await cache.put(request, response)');
+});
+
 test('service worker fails closed on encoded private and API paths', async () => {
   const pathPolicyStart = serviceWorkerSource.indexOf('const PRIVATE_PATHS = new Set([');
   const pathPolicyEnd = serviceWorkerSource.indexOf('function isCacheableResponse(', pathPolicyStart);
@@ -68,12 +77,30 @@ test('service worker fails closed on encoded private and API paths', async () =>
   vm.runInNewContext(
     `${serviceWorkerSource.slice(pathPolicyStart, pathPolicyEnd)}
 globalThis.isPrivatePath = isPrivatePath;
-globalThis.isApiPath = isApiPath;`,
+globalThis.isApiPath = isApiPath;
+globalThis.isSafePublicCacheResponse = isSafePublicCacheResponse;`,
     pathPolicyContext,
   );
 
   const isPrivatePath = pathPolicyContext.isPrivatePath;
   const isApiPath = pathPolicyContext.isApiPath;
+  const isSafePublicCacheResponse = pathPolicyContext.isSafePublicCacheResponse;
+  const publicOrigin = 'https://site.invalid';
+  const publicRequest = 'https://site.invalid/explore.html';
+  const safeResponse = (url, redirected = false) => ({ url, redirected });
+  expect(isSafePublicCacheResponse(safeResponse(publicRequest), publicRequest, publicOrigin)).toBe(true);
+  for (const [url, redirected, request] of [
+    ['https://site.invalid/admin.html', true, publicRequest],
+    ['https://site.invalid/admin.html', false, publicRequest],
+    ['https://site.invalid/rest/v1/song_requests', false, publicRequest],
+    ['https://external.invalid/explore.html', false, publicRequest],
+    ['not a URL', false, publicRequest],
+    ['https://site.invalid/explore.html', false, 'https://site.invalid/admin.html'],
+    ['https://site.invalid/explore.html', false, 'https://site.invalid/rest/v1/private'],
+  ]) {
+    expect(isSafePublicCacheResponse(safeResponse(url, redirected), request, publicOrigin)).toBe(false);
+  }
+
   for (const pathname of [
     '/%61dmin.js',
     '/%2561dmin.js',
@@ -165,7 +192,7 @@ test('public offline pages use stylesheet variants present in the service-worker
     }
   }
 
-  expect(serviceWorkerCacheName).toBe('grifflist-livekit-offline-v51');
+  expect(serviceWorkerCacheName).toBe('grifflist-livekit-offline-v52');
 });
 
 test('PWA manifest is available with app shortcuts', async ({ request }) => { const response=await request.get('/manifest.webmanifest'); expect(response.ok()).toBeTruthy(); const manifest=await response.json(); expect(manifest.display).toBe('standalone'); expect(manifest.shortcuts.length).toBeGreaterThanOrEqual(3); });
