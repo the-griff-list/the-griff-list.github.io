@@ -132,7 +132,7 @@ test('next-show strip displays the user-confirmed performance set time', async (
   await expect(card.locator('time').nth(1)).toHaveAttribute('datetime', '2026-11-06T22:00:00-04:00');
   const eventDateTime = await card.locator('time').nth(1).getAttribute('datetime');
   expect(new Date(eventDateTime).toISOString()).toBe('2026-11-07T02:00:00.000Z');
-  await expect(card).toContainText('10:00 p.m. Atlantic');
+  await expect(card).toContainText('Performance set: 10:00 p.m. Atlantic');
 });
 test('home Watch Live CTA checks status without promising an active stream', async ({ page }) => {
   await page.goto('/index.html');
