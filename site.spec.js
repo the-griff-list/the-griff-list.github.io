@@ -86,9 +86,8 @@ test('offline shell precache and runtime share the fail-closed response policy',
   expect(
     serviceWorkerSource.match(/isSafePublicCacheResponse\(response, request\.url, self\.location\.origin\)/g),
   ).toHaveLength(2);
-  expect(
-    serviceWorkerSource.match(/isCacheableResponseForRequest\(request, response\)/g),
-  ).toHaveLength(2);
+  expect(serviceWorkerSource).toContain('if (!isCacheableResponseForRequest(request, response) ||');
+  expect(serviceWorkerSource).toContain('if (isCacheableResponseForRequest(request, response) &&');
   expect(serviceWorkerSource).toContain("credentials: 'omit'");
   expect(serviceWorkerSource).toContain('if (!isCacheableResponseForRequest(request, response) ||');
   expect(serviceWorkerSource).toContain('await cache.put(request, response)');

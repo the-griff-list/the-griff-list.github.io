@@ -230,7 +230,8 @@ else:
         issues.append('sw.js: offline shell install must apply the same cache policy as runtime fetches')
     if sw.count('isSafePublicCacheResponse(response, request.url, self.location.origin)') != 2:
         issues.append('sw.js: install and runtime must both reject redirected/private/API cache responses')
-    if sw.count('isCacheableResponseForRequest(request, response)') != 2:
+    if ('if (!isCacheableResponseForRequest(request, response) ||' not in sw or
+            'if (isCacheableResponseForRequest(request, response) &&' not in sw):
         issues.append('sw.js: install and runtime must both reject credentialed response caching')
     if 'ignoreSearch: true' in sw or 'ignoreSearch:true' in sw:
         issues.append('sw.js: cache matching must preserve versioned query strings')
