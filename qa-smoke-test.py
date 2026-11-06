@@ -146,6 +146,10 @@ if not checklist_path.is_file():
     issues.append('pre-gig checklist: cache-version acceptance document is missing')
 else:
     checklist_text=checklist_path.read_text(encoding='utf-8')
+    if ('RIHG homepage lists Griff & Guest at 11:00 p.m.' not in checklist_text or
+            'Hunter’s Ale House category calendar currently shows a different 10:00 p.m.' not in checklist_text or
+            'do not infer a replacement performance time' not in checklist_text):
+        issues.append('pre-gig checklist: official venue time-source discrepancy must remain explicit')
     cache_version=re.search(r"const CACHE\s*=\s*'([^']+)-v([0-9]+)'",sw)
     if not cache_version:
         issues.append('sw.js: could not determine the offline cache generation')
