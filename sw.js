@@ -1,5 +1,5 @@
 /* Public offline shell only. Requests, tips, live video and private admin pages need a connection. */
-const CACHE = 'grifflist-livekit-offline-v53';
+const CACHE = 'grifflist-livekit-offline-v54';
 const CORE = [
   './',
   './index.html',
@@ -165,7 +165,7 @@ function isApiPath(pathname) {
 }
 
 function isCacheableRequest(request, url) {
-  if (request.method !== 'GET' || url.origin !== self.location.origin) return false;
+  if (request.method !== 'GET' || request.headers.has('Range') || url.origin !== self.location.origin) return false;
   if (request.headers.has('Authorization')) return false;
   if (isPrivatePath(url.pathname) || isApiPath(url.pathname)) return false;
 
@@ -224,7 +224,9 @@ function isCacheableResponse(response) {
   const vary = (response.headers.get('Vary') || '')
     .split(',')
     .map(value => value.trim().toLowerCase());
-  return response.ok &&
+  // Cache API does not safely model partial byte-range responses as complete assets.
+  return response.status === 200 &&
+    response.ok &&
     response.type === 'basic' &&
     !directiveNames.some(name => forbiddenDirectives.has(name)) &&
     !hasZeroFreshness &&

@@ -25,9 +25,10 @@ vm.runInNewContext(
 
 test('service worker refuses responses that require HTTP revalidation before reuse', async () => {
   const isCacheable = cachePolicyContext.isCacheableResponse;
-  const response = ({ cacheControl = '', pragma = '', vary = '', ok = true, type = 'basic' } = {}) => ({
+  const response = ({ cacheControl = '', pragma = '', vary = '', ok = true, type = 'basic', status = 200 } = {}) => ({
     ok,
     type,
+    status,
     headers: {
       get(name) {
         return ({
@@ -61,6 +62,8 @@ test('service worker refuses responses that require HTTP revalidation before reu
   expect(isCacheable(response({ vary: 'Accept-Language' }))).toBe(true);
   expect(isCacheable(response({ ok: false }))).toBe(false);
   expect(isCacheable(response({ type: 'cors' }))).toBe(false);
+  expect(isCacheable(response({ status: 204 }))).toBe(false);
+  expect(isCacheable(response({ status: 206 }))).toBe(false);
 });
 
 
@@ -89,6 +92,8 @@ test('offline shell precache and runtime share the fail-closed response policy',
   expect(serviceWorkerSource).toContain('if (!isCacheableResponseForRequest(request, response) ||');
   expect(serviceWorkerSource).toContain('if (isCacheableResponseForRequest(request, response) &&');
   expect(serviceWorkerSource).toContain("credentials: 'omit'");
+  expect(serviceWorkerSource).toContain("request.headers.has('Range')");
+  expect(serviceWorkerSource).toContain('response.status === 200');
   expect(serviceWorkerSource).toContain('if (!isCacheableResponseForRequest(request, response) ||');
   expect(serviceWorkerSource).toContain('await cache.put(request, response)');
 });
@@ -224,7 +229,7 @@ test('public offline pages use stylesheet variants present in the service-worker
     }
   }
 
-  expect(serviceWorkerCacheName).toBe('grifflist-livekit-offline-v53');
+  expect(serviceWorkerCacheName).toBe('grifflist-livekit-offline-v54');
 });
 
 test('PWA manifest is available with app shortcuts', async ({ request }) => { const response=await request.get('/manifest.webmanifest'); expect(response.ok()).toBeTruthy(); const manifest=await response.json(); expect(manifest.display).toBe('standalone'); expect(manifest.shortcuts.length).toBeGreaterThanOrEqual(3); });
@@ -706,12 +711,13 @@ test('service worker caches only query-bearing URLs pinned in CORE', () => {
       mode = 'no-cors',
       destination = 'image',
       authorization = false,
+      range = false,
     } = options;
     const request = {
       method,
       mode,
       destination,
-      headers: { has: name => name === 'Authorization' && authorization },
+      headers: { has: name => (name === 'Authorization' && authorization) || (name === 'Range' && range) },
     };
     return context.isCacheableRequest(request, new URL(path, origin));
   };
@@ -731,6 +737,7 @@ test('service worker caches only query-bearing URLs pinned in CORE', () => {
   expect(canCache('/index.html', { mode: 'navigate', destination: '' })).toBe(true);
   expect(canCache('/explore.html', { mode: 'navigate', destination: '' })).toBe(true);
   expect(canCache('/logo.webp', { destination: 'image' })).toBe(true);
+  expect(canCache('/logo.webp', { destination: 'image', range: true })).toBe(false);
 
   for (const [path, options] of [
     ['/index.html?token=secret', { mode: 'navigate', destination: '' }],
