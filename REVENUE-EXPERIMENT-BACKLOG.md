@@ -34,9 +34,9 @@
 
 ## Payment-fee illustration
 
-PayPal Canada currently lists a standard domestic commercial transaction fee of **2.90% + $0.30 CAD**. On a hypothetical $45 service payment, that is about **$1.61** in processor fees and **$43.40** remaining before labour, tax, refunds and overhead.
+PayPal Canada currently lists a standard domestic commercial transaction fee of **2.90% + $0.30 CAD**. The official merchant-fee page says it was last updated **13 October 2026** (rechecked 7 November 2026). On a hypothetical $45 service payment, that is about **$1.61** in processor fees and **$43.40** remaining before labour, tax, refunds and overhead.
 
-Ko-fi's official help page says its Free mode charges 0% platform fee on one-time tips but 5% on shop, membership and commission payments; Standard applies 5% to one-time tips too. Processor fees still apply. A hypothetical $45 Ko-fi commission with a 5% platform fee plus the same illustrative PayPal processing rate would leave about **$41.15** before labour, tax and overhead. This is a calculation example, not a promise of the user's actual account rate or checkout method.
+Ko-fi's official help page (rechecked 7 November 2026) says its Free mode charges 0% platform fee on one-time tips but 5% on shop, membership and commission payments; Standard applies 5% to one-time tips too. Processor fees still apply. A hypothetical $45 Ko-fi commission with a 5% platform fee plus the same illustrative PayPal processing rate would leave about **$41.15** before labour, tax and overhead. This is a calculation example, not a promise of the user's actual account rate or checkout method.
 
 - [Ko-fi fee breakdown](https://help.ko-fi.com/hc/en-us/articles/360002506494-Does-Ko-fi-take-a-fee)
 - [PayPal Canada merchant fees](https://www.paypal.com/ca/business/paypal-business-fees)
