@@ -159,6 +159,13 @@ globalThis.isSafePublicCacheResponse = isSafePublicCacheResponse;`,
     '/%7frequest-archive.html',
     '/%2500admin.html',
     '/%250aadmin.js',
+    // Exercise the four-pass decoding ceiling, encoded separators/backslashes,
+    // and case-folded private prefixes. Ambiguous paths must fail closed.
+    '/public/%252525252e%252525252e/admin.html',
+    '/public/%255c..%255cadmin.js',
+    '/AdMiN.html',
+    '/public/%25252525252e%25252525252e/request-archive.js',
+    '/public/%252525252f..%252525252fanalytics.html',
   ]) {
     expect(isPrivatePath(pathname), pathname).toBe(true);
   }
@@ -181,6 +188,9 @@ globalThis.isSafePublicCacheResponse = isSafePublicCacheResponse;`,
     '/%7fapi/private',
     '/%2500rest/v1/song_requests',
     '/%250aauth/v1/token',
+    '/public/%252525252e%252525252e/rest/v1/song_requests',
+    '/public/%255c..%255capi/private',
+    '/public/%25252525252e%25252525252e/auth/v1/token',
   ]) {
     expect(isApiPath(pathname), pathname).toBe(true);
   }
