@@ -1,6 +1,6 @@
-# November 6, 2026 — pre-gig website checklist
+# November 6, 2026 — historical pre-gig website checklist
 
-**Status:** prepared on the draft development branch; not executed against the published site. PR #3 remains draft and nothing is deployed.
+**Status:** historical checklist for the November 6, 2026 performance; not executed against the published site. That date has passed, and no later Hunter’s Ale House booking is confirmed in available conversation context. Refresh the venue listing, performance set time and owner confirmation before reusing this checklist. PR #3 remains draft and nothing is deployed.
 
 ## Before opening doors
 
