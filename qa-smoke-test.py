@@ -253,6 +253,46 @@ else:
     if "isPrivatePath(url.pathname) || isApiPath(url.pathname)" not in sw:
         issues.append('sw.js: private/API requests must bypass cache handling')
 
+    # Keep the complete private/admin asset denylist explicit. Prefix checks
+    # cover whole admin/analytics/archive sections, while exact paths such as
+    # supabase-config.js must never disappear from the cache boundary.
+    private_match = re.search(r"const PRIVATE_PATHS = new Set\\(\\[(.*?)\\]\\);", sw, re.S)
+    required_private_paths = {
+        '/admin.html', '/admin.js', '/admin-features.js',
+        '/analytics.html', '/analytics-dashboard.js', '/analytics-tracker.js',
+        '/request-archive.html', '/request-archive.js', '/supabase-config.js',
+    }
+    if not private_match:
+        issues.append('sw.js: explicit PRIVATE_PATHS denylist is missing')
+    else:
+        configured_private_paths = set(re.findall(r"'(/[^']+)'", private_match.group(1)))
+        for private_path in sorted(required_private_paths - configured_private_paths):
+            issues.append(f'sw.js: private cache denylist is missing {private_path}')
+    if 'PRIVATE_PATHS.has(path)' not in sw:
+        issues.append('sw.js: private-path checks must consult the explicit PRIVATE_PATHS denylist')
+
+    # Old offline generations can retain resources after a worker update.
+    # Require activation to delete prior Grifflist generations but preserve
+    # the current cache before claiming clients.
+    activation_match = re.search(
+        r"self\\.addEventListener\\('activate', event => \\{(.*?)\\n\\}\\);",
+        sw,
+        re.S,
+    )
+    if not activation_match:
+        issues.append('sw.js: activation cache-retirement handler is missing')
+    else:
+        activation = activation_match.group(1)
+        for required in (
+            'caches.keys()',
+            "key.startsWith('grifflist-livekit-offline-')",
+            'key !== CACHE',
+            'caches.delete(key)',
+            'self.clients.claim()',
+        ):
+            if required not in activation:
+                issues.append(f'sw.js: activation must retire old cache generations safely: {required}')
+
 registration=ROOT/'site-interactions.js'
 if not registration.is_file() or "navigator.serviceWorker.register('./sw.js')" not in registration.read_text(encoding='utf-8'):
     issues.append('PWA: public site no longer registers sw.js')
