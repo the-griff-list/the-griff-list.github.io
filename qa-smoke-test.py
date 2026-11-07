@@ -256,16 +256,18 @@ else:
     # Keep the complete private/admin asset denylist explicit. Prefix checks
     # cover whole admin/analytics/archive sections, while exact paths such as
     # supabase-config.js must never disappear from the cache boundary.
-    private_match = re.search(r"const PRIVATE_PATHS = new Set\\(\\[(.*?)\\]\\);", sw, re.S)
+    private_start = sw.find("const PRIVATE_PATHS = new Set([")
+    private_end = sw.find("]);", private_start) if private_start >= 0 else -1
     required_private_paths = {
         '/admin.html', '/admin.js', '/admin-features.js',
         '/analytics.html', '/analytics-dashboard.js', '/analytics-tracker.js',
         '/request-archive.html', '/request-archive.js', '/supabase-config.js',
     }
-    if not private_match:
+    if private_start < 0 or private_end < 0:
         issues.append('sw.js: explicit PRIVATE_PATHS denylist is missing')
     else:
-        configured_private_paths = set(re.findall(r"'(/[^']+)'", private_match.group(1)))
+        private_block = sw[private_start:private_end]
+        configured_private_paths = set(re.findall(r"'(/[^']+)'", private_block))
         for private_path in sorted(required_private_paths - configured_private_paths):
             issues.append(f'sw.js: private cache denylist is missing {private_path}')
     if 'PRIVATE_PATHS.has(path)' not in sw:
@@ -274,15 +276,12 @@ else:
     # Old offline generations can retain resources after a worker update.
     # Require activation to delete prior Grifflist generations but preserve
     # the current cache before claiming clients.
-    activation_match = re.search(
-        r"self\\.addEventListener\\('activate', event => \\{(.*?)\\n\\}\\);",
-        sw,
-        re.S,
-    )
-    if not activation_match:
+    activation_start = sw.find("self.addEventListener('activate', event => {")
+    activation_end = sw.find("self.addEventListener('fetch', event => {", activation_start)
+    if activation_start < 0 or activation_end < 0:
         issues.append('sw.js: activation cache-retirement handler is missing')
     else:
-        activation = activation_match.group(1)
+        activation = sw[activation_start:activation_end]
         for required in (
             'caches.keys()',
             "key.startsWith('grifflist-livekit-offline-')",
