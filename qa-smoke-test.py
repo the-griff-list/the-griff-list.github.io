@@ -35,6 +35,15 @@ if f'datetime="{expected_event_datetime}"' not in home_html:
     issues.append(f'index.html: show time must match America/Halifax ({expected_event_datetime})')
 if 'datetime="2026-11-06T22:00:00-03:00"' in home_html:
     issues.append('index.html: show time incorrectly uses daylight time after the 2026 DST transition')
+# The November 6 performance is historical now; never label it as an upcoming booking.
+for required in (
+    '<p class="eyebrow">LATEST SHOW</p>',
+    '<p class="show-status-note">No upcoming performance date is confirmed yet.</p>',
+):
+    if required not in home_html:
+        issues.append(f'index.html: historical show status is missing: {required}')
+if re.search(r'<p class="eyebrow">UP NEXT</p>', home_html):
+    issues.append('index.html: historical performance must not be labelled UP NEXT')
 for required in ('Griff &amp; Guest', 'Hunter’s Ale House', 'datetime="2026-11-06"', 'datetime="2026-11-06T22:00:00-04:00"', 'Performance set:' , '10:00 p.m. Atlantic', 'Send a tip', 'CHECK LIVE STATUS ↗', 'Ko-fi (Apple Pay / Google Pay if enabled)', 'eligible Stripe connection'):
     if required not in home_html:
         issues.append(f'index.html: missing gig/payment acceptance text: {required}')
