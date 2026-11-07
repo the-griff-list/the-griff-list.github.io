@@ -43,6 +43,15 @@ Ko-fi's official help page says its Free mode charges 0% platform fee on one-tim
 
 Do not pay for Ko-fi Gold or another subscription based on these examples. Re-check the live account mode and processor quote before any offer is activated.
 
+## Market evidence refresh — 7 November 2026
+
+This is a research update only. Published prices are advertised rates, not verified transactions or proof of demand.
+
+- **Charlottetown guitar instruction:** [Long & McQuade Charlottetown](https://www.long-mcquade.com/lessons/Prince-Edward-Island/Charlottetown/) currently lists individual guitar instructors at $27–$30 per half-hour and describes the local average as $25–$31 per half-hour. [Canada Music Academy PEI](https://canadamusicacademy.ca/music_lessons_in_PEI.html) advertises lessons starting at $50/hour. Independent [Superprof Charlottetown listings](https://www.superprof.ca/guitar-instructor-supporting-students-building-strong-basics-rhythm-skills-and-creative-playing-with-years-experience-and.html) show advertised rates such as $45/hour; marketplace listings are self-reported asking prices. **Implication:** the existing $20–$30 / 30-minute beginner-coaching hypothesis is within the published local range, not a proven bargain. Differentiate by a narrow, low-pressure beginner outcome rather than claiming credentials or undercutting established teachers. No lesson availability or teaching commitment is confirmed.
+- **Musician EPK / promo design:** Toronto-based [Pixel Punch](https://www.pixelpunch.ca/) advertises performer EPKs at $299. [Wildroses Design](https://wildrosesdesign.ca/advertisement-design-packages/) advertises single-promotion design at $195 and broader packages at $295–$425. These are scope/market benchmarks, not direct PEI competitors or equivalent deliverables. **Implication:** a small $35–$55 digital gig-promo kit or $39–$59 tech-pack/EPK pilot could be tested as a tightly scoped, musician-specific service, but the price hypothesis must include revision limits, asset permissions and delivery time.
+- **PEI live-music channel:** [Tourism PEI's live-music directory](https://www.tourismpei.com/live-music) lists recurring performances and venues across Charlottetown and other Island regions. This confirms an active public discovery channel, not the number of reachable performers, their budgets, or willingness to pay for a tech pack or promo kit.
+- **Demand remains unvalidated:** none of these listings proves a paid customer for The Griff List. No customer interviews, paid orders, conversion rates or repeat purchases have been recorded. Continue with private, non-binding interest checks only; do not activate a public offer or payment flow.
+
 ## Low-risk validation plan
 
 1. Pick **one** offer (start with the band tech pack) and prepare one clearly marked sample using fictional data, not a real band's details without permission.
