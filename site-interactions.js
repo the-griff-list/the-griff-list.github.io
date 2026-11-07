@@ -286,3 +286,20 @@
   catalogObserver.observe(catalog);
   meterObserver.observe(meter);
 })();
+
+
+// Keep the cached song catalogue honest when the device loses connectivity.
+(() => {
+  const notice = document.getElementById('offline-status');
+  if (!notice || !('onLine' in navigator)) return;
+  const sync = () => {
+    const offline = !navigator.onLine;
+    notice.hidden = !offline;
+    if (offline) {
+      notice.textContent = 'Your device reports no network connection. The saved catalogue may still be available, but song requests, live video, tips and payment checkouts need a connection. Nothing is queued while offline.';
+    }
+  };
+  window.addEventListener('online', sync);
+  window.addEventListener('offline', sync);
+  sync();
+})();

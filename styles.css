@@ -2425,3 +2425,8 @@ body.theme-day .rock-meter-card,body.theme-day .rock-meter-art-wrap{border-color
 /* V40: discreet administrator entry below the Secret Menu control. */
 .secret-admin-link{display:inline-block;margin:7px auto 0;padding:3px 8px;color:var(--muted);font-size:.68rem;font-weight:600;letter-spacing:.08em;text-decoration:none;opacity:.72;border:0;background:transparent}
 .secret-admin-link:hover,.secret-admin-link:focus-visible{color:var(--hot);opacity:1;text-decoration:underline}
+
+
+/* Explicit, optional on-device name retention for the song request form. */
+.remember-name-option{display:flex;align-items:center;gap:10px;margin:12px 0 0;padding:10px 12px;border:1px solid var(--line);border-radius:8px;color:var(--muted);cursor:pointer}
+.remember-name-option input{appearance:auto;accent-color:var(--hot);flex:0 0 20px;width:20px;height:20px;margin:0}

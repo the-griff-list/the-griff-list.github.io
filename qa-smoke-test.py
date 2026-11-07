@@ -3,6 +3,8 @@
 from pathlib import Path
 from html.parser import HTMLParser
 from collections import Counter
+from datetime import datetime
+from zoneinfo import ZoneInfo
 import json, re, subprocess, sys
 ROOT = Path(__file__).resolve().parent
 issues = []
@@ -23,25 +25,283 @@ for file in html_files:
         issues.append(f'{file.name}: duplicate id #{duplicate}')
     for ref in audit.refs:
         if ref and not (ROOT/ref).exists(): issues.append(f'{file.name}: missing local asset/page {ref}')
+# Assert the time-sensitive gig and payment disclosures remain explicit.
+home_html=(ROOT/'index.html').read_text(encoding='utf-8')
+watch_html=(ROOT/'watch-live.html').read_text(encoding='utf-8')
+# November 6, 2026 is after the America/Halifax daylight-saving transition.
+event_start = datetime(2026, 11, 6, 22, 0, tzinfo=ZoneInfo('America/Halifax'))
+expected_event_datetime = event_start.isoformat()
+if f'datetime="{expected_event_datetime}"' not in home_html:
+    issues.append(f'index.html: show time must match America/Halifax ({expected_event_datetime})')
+if 'datetime="2026-11-06T22:00:00-03:00"' in home_html:
+    issues.append('index.html: show time incorrectly uses daylight time after the 2026 DST transition')
+# The November 6 performance is historical now; never label it as an upcoming booking.
+for required in (
+    '<p class="eyebrow">LATEST SHOW</p>',
+    '<p class="show-status-note">No upcoming performance date is confirmed yet.</p>',
+):
+    if required not in home_html:
+        issues.append(f'index.html: historical show status is missing: {required}')
+if re.search(r'<p class="eyebrow">UP NEXT</p>', home_html):
+    issues.append('index.html: historical performance must not be labelled UP NEXT')
+for required in ('Griff &amp; Guest', 'Hunter’s Ale House', 'datetime="2026-11-06"', 'datetime="2026-11-06T22:00:00-04:00"', 'Performance set:' , '10:00 p.m. Atlantic', 'Send a tip', 'CHECK LIVE STATUS ↗', 'Ko-fi (Apple Pay / Google Pay if enabled)', 'eligible Stripe connection'):
+    if required not in home_html:
+        issues.append(f'index.html: missing gig/payment acceptance text: {required}')
+for required in ('Send a tip', 'eligible Stripe connection'):
+    if required not in watch_html:
+        issues.append(f'watch-live.html: missing payment disclosure: {required}')
+
+# Disabled payment methods must not remain reachable through stale JavaScript.
+script = (ROOT / 'script.js').read_text(encoding='utf-8')
+for required in (
+    'const availablePriorityPaymentMethods = new Set(["kofi", "paypal"]);',
+    'availablePriorityPaymentMethods.has(paymentMethod)',
+    'availablePriorityPaymentMethods.has(method)',
+    'That payment method is unavailable. Choose Ko-fi or PayPal.',
+):
+    if required not in script:
+        issues.append(f'script.js: missing fail-closed priority-payment guard: {required}')
+for forbidden in (
+    'etransfer:document.querySelector(".payment-etransfer")',
+    'Copy the e-transfer email below',
+):
+    if forbidden in script:
+        issues.append(f'script.js: stale disabled e-transfer route remains: {forbidden}')
+
+# Request retry idempotency depends on the reviewed unique-token index and
+# token-status RPC being present in the migration shipped with this source.
+request_migration = ROOT/'grifflist-combined-reviewed-migration.sql'
+if not request_migration.is_file():
+    issues.append('request idempotency: reviewed Supabase migration is missing')
+else:
+    migration_sql = request_migration.read_text(encoding='utf-8')
+    for required in (
+        'create unique index if not exists song_requests_tracking_token_unique',
+        'create or replace function public.get_my_request_status(p_tracking_token uuid)',
+        'grant execute on function public.get_my_request_status(uuid) to anon, authenticated',
+    ):
+        if required not in migration_sql:
+            issues.append(f'request idempotency: migration is missing required SQL contract: {required}')
+
+# SECURITY DEFINER archive trigger: pin an empty search_path and keep relation names qualified.
+archive_migration = ROOT/'request-archive-migration.sql'
+archive_hardening = ROOT/'request-archive-search-path-hardening.sql'
+if not archive_migration.is_file():
+    issues.append('request archive: migration is missing')
+else:
+    archive_sql = archive_migration.read_text(encoding='utf-8')
+    archive_function = re.search(
+        r'create or replace function public\.archive_song_request\(\)(.*?)\$\$;',
+        archive_sql,
+        re.I | re.S,
+    )
+    if not archive_function:
+        issues.append('request archive: SECURITY DEFINER trigger function is missing')
+    else:
+        function_sql = archive_function.group(1).lower()
+        if 'security definer' not in function_sql or "set search_path = ''" not in function_sql:
+            issues.append('request archive: SECURITY DEFINER trigger must use an empty search_path')
+        if 'revoke execute on function public.archive_song_request() from public, anon, authenticated, service_role;' not in archive_sql.lower():
+            issues.append('request archive: SECURITY DEFINER trigger must revoke EXECUTE from PUBLIC and Supabase API roles')
+        revoke_position = archive_sql.lower().find(
+            'revoke execute on function public.archive_song_request() from public, anon, authenticated, service_role;'
+        )
+        trigger_position = archive_sql.lower().find('create trigger song_requests_archive_insert')
+        if revoke_position <= archive_function.end() or trigger_position <= revoke_position:
+            issues.append('request archive: EXECUTE revocation must follow function creation and precede trigger creation')
+        if not re.search(r'insert\s+into\s+public\.request_archive', function_sql):
+            issues.append('request archive: trigger must schema-qualify the archive table')
+if not archive_hardening.is_file():
+    issues.append('request archive: follow-up search_path hardening migration is missing')
+else:
+    hardening_sql = archive_hardening.read_text(encoding='utf-8').lower()
+    if "alter function public.archive_song_request()\n  set search_path = '';" not in hardening_sql:
+        issues.append('request archive: existing-installation search_path hardening is missing')
+    if 'revoke execute on function public.archive_song_request() from public, anon, authenticated, service_role;' not in hardening_sql:
+        issues.append('request archive: existing-installation EXECUTE revocation for PUBLIC and Supabase API roles is missing')
+    alter_position = hardening_sql.find('alter function public.archive_song_request()')
+    revoke_position = hardening_sql.find(
+        'revoke execute on function public.archive_song_request() from public, anon, authenticated, service_role;'
+    )
+    commit_position = hardening_sql.find('commit;')
+    if not (0 <= alter_position < revoke_position < commit_position):
+        issues.append('request archive: existing-installation hardening statements are out of order')
+
 js_files=sorted(ROOT.glob('*.js'))
 for file in js_files:
     result=subprocess.run(['node','--check',str(file)],capture_output=True,text=True)
     if result.returncode: issues.append(f'{file.name}: JavaScript syntax error: {result.stderr.strip()}')
 manifest=ROOT/'manifest.webmanifest'
-try: json.loads(manifest.read_text(encoding='utf-8'))
-except Exception as e: issues.append(f'manifest.webmanifest: invalid JSON ({e})')
+manifest_data=None
+try:
+    manifest_data=json.loads(manifest.read_text(encoding='utf-8'))
+    if manifest_data.get('display')!='standalone':
+        issues.append('manifest.webmanifest: display must remain standalone')
+    if manifest_data.get('start_url')!='./index.html' or manifest_data.get('scope')!='./':
+        issues.append('manifest.webmanifest: start_url/scope changed unexpectedly')
+    for icon in manifest_data.get('icons',[]):
+        src=str(icon.get('src','')).split('#',1)[0].split('?',1)[0]
+        local=src.removeprefix('./')
+        if not local or not (ROOT/local).exists():
+            issues.append(f'manifest.webmanifest: missing local icon {src}')
+except Exception as e:
+    issues.append(f'manifest.webmanifest: invalid JSON ({e})')
+
 sw=(ROOT/'sw.js').read_text(encoding='utf-8')
-match=re.search(r'const CORE=\[(.*?)\];',sw,re.S)
-if not match: issues.append('sw.js: could not find CORE precache list')
+# Keep the pre-gig deployment checklist synchronized with the actual cache
+# generation so stale-shell acceptance steps cannot silently survive a bump.
+checklist_path=ROOT/'.github/PRE-GIG-CHECKLIST.md'
+if not checklist_path.is_file():
+    issues.append('pre-gig checklist: cache-version acceptance document is missing')
+else:
+    checklist_text=checklist_path.read_text(encoding='utf-8')
+    if ('RIHG homepage lists Griff & Guest at 11:00 p.m.' not in checklist_text or
+            'Hunter’s Ale House category calendar also lists Griff & Guest at 11:00 p.m.' not in checklist_text or
+            'user-confirmed 10:00 p.m. performance set' not in checklist_text):
+        issues.append('pre-gig checklist: official venue time-source discrepancy must remain explicit')
+    cache_version=re.search(r"const CACHE\s*=\s*'([^']+)-v([0-9]+)'",sw)
+    if not cache_version:
+        issues.append('sw.js: could not determine the offline cache generation')
+    else:
+        cache_name=cache_version.group(1)+'-v'+cache_version.group(2)
+        prior_version=int(cache_version.group(2))-1
+        expected_cache_line=f'- [ ] Confirm the service-worker cache version is `{cache_name}` after deployment and that the prior v{prior_version} shell is retired.'
+        if expected_cache_line not in checklist_text:
+            issues.append('pre-gig checklist: current and prior service-worker cache versions must match sw.js')
+match=re.search(r'const CORE\s*=\s*\[(.*?)\];',sw,re.S)
+if not match:
+    issues.append('sw.js: could not find CORE precache list')
 else:
     assets=re.findall(r"'([^']+)'",match.group(1))
+    if "'./roadmap.html'" not in match.group(1):
+        issues.append('sw.js: public Tour Roadmap must be included in the offline CORE precache')
+    private_paths={
+        'admin.html','admin.js','admin-features.js',
+        'analytics.html','analytics-dashboard.js','analytics-tracker.js',
+        'request-archive.html','request-archive.js','supabase-config.js'
+    }
     for asset in assets:
-        if not (ROOT/asset.removeprefix('./')).exists(): issues.append(f'sw.js: missing precache asset {asset}')
+        local=asset.split('#',1)[0].split('?',1)[0].removeprefix('./')
+        asset_path=ROOT/local if local else ROOT
+        if not asset_path.exists():
+            issues.append(f'sw.js: missing precache asset {asset}')
+        if local in private_paths:
+            issues.append(f'sw.js: private asset must not be precached: {asset}')
+    for required in (
+        "const CACHE = 'grifflist-livekit-offline-v54'",
+        "'/roadmap.html'",
+        "./styles.css?v=grifflist-tour-roadmap-1",
+        'const CORE_URLS = new Set(',
+        'function isCacheableRequest(request, url)',
+        "request.headers.has('Range')",
+        'response.status === 200',
+        'function isCacheableResponseForRequest(request, response)',
+        "request.credentials === 'omit'",
+        "credentials: 'omit'",
+        'CORE_URLS.has(url.href)',
+        "url.search === ''",
+        'if (!isCacheableRequest(request, url)) return;',
+        "'./script.js?v=grifflist-v28'",
+        "'./site-interactions.js?v=grifflist-v39'",
+        "'./live-show.js?v=grifflist-v29'",
+        'function canonicalPathCandidates(pathname)',
+        'function normalizePathCandidate(pathname)',
+        "segment === '..'",
+        "if (segment === '..') return null;",
+        'decodeURIComponent(current)',
+        'function isPrivatePath',
+        'function isApiPath',
+        'function isSafePublicCacheResponse(response, requestUrl, origin)',
+        'isSafePublicCacheResponse(response, request.url, self.location.origin)',
+        'path === prefix.slice(0, -1) || path.includes(prefix)',
+        "request.headers.has('Authorization')",
+        "!vary.includes('cookie')",
+        "!vary.includes('authorization')",
+        "!vary.includes('*')",
+        'const hasZeroFreshness',
+        'const hasLegacyNoCache',
+        "'must-revalidate'",
+        "'proxy-revalidate'",
+        'PUBLIC_NAVIGATION_PATHS',
+        'cache.match(request)',
+        "new URL('./offline.html', self.registration.scope)",
+        "'/rest/v1/'",
+        "'/auth/'",
+        "'/functions/v1/'",
+        "'/storage/v1/'",
+        "'/graphql/v1/'",
+        "'/realtime/v1/'",
+        "'/api/'",
+    ):
+        if required not in sw:
+            issues.append(f'sw.js: missing offline/privacy safeguard: {required}')
+    if 'CORE_PATHS.has(url.pathname)' in sw:
+        issues.append('sw.js: query-bearing cache eligibility must use exact pinned URLs, not path-only matching')
+    if 'cache.addAll(' in sw:
+        issues.append('sw.js: offline shell install must apply the same cache policy as runtime fetches')
+    if sw.count('isSafePublicCacheResponse(response, request.url, self.location.origin)') != 2:
+        issues.append('sw.js: install and runtime must both reject redirected/private/API cache responses')
+    if ('if (!isCacheableResponseForRequest(request, response) ||' not in sw or
+            'if (isCacheableResponseForRequest(request, response) &&' not in sw):
+        issues.append('sw.js: install and runtime must both reject credentialed response caching')
+    if 'ignoreSearch: true' in sw or 'ignoreSearch:true' in sw:
+        issues.append('sw.js: cache matching must preserve versioned query strings')
+    if sw.count("const candidates = canonicalPathCandidates(pathname);") != 2:
+        issues.append('sw.js: both private and API path checks must use canonical decoded-path candidates')
+    if "if (candidates === null) return true;" not in sw:
+        issues.append('sw.js: malformed or excessively encoded paths must fail closed')
+    if "isPrivatePath(url.pathname) || isApiPath(url.pathname)" not in sw:
+        issues.append('sw.js: private/API requests must bypass cache handling')
+
+    # Keep the complete private/admin asset denylist explicit. Prefix checks
+    # cover whole admin/analytics/archive sections, while exact paths such as
+    # supabase-config.js must never disappear from the cache boundary.
+    private_start = sw.find("const PRIVATE_PATHS = new Set([")
+    private_end = sw.find("]);", private_start) if private_start >= 0 else -1
+    required_private_paths = {
+        '/admin.html', '/admin.js', '/admin-features.js',
+        '/analytics.html', '/analytics-dashboard.js', '/analytics-tracker.js',
+        '/request-archive.html', '/request-archive.js', '/supabase-config.js',
+    }
+    if private_start < 0 or private_end < 0:
+        issues.append('sw.js: explicit PRIVATE_PATHS denylist is missing')
+    else:
+        private_block = sw[private_start:private_end]
+        configured_private_paths = set(re.findall(r"'(/[^']+)'", private_block))
+        for private_path in sorted(required_private_paths - configured_private_paths):
+            issues.append(f'sw.js: private cache denylist is missing {private_path}')
+    if 'PRIVATE_PATHS.has(path)' not in sw:
+        issues.append('sw.js: private-path checks must consult the explicit PRIVATE_PATHS denylist')
+
+    # Old offline generations can retain resources after a worker update.
+    # Require activation to delete prior Grifflist generations but preserve
+    # the current cache before claiming clients.
+    activation_start = sw.find("self.addEventListener('activate', event => {")
+    activation_end = sw.find("self.addEventListener('fetch', event => {", activation_start)
+    if activation_start < 0 or activation_end < 0:
+        issues.append('sw.js: activation cache-retirement handler is missing')
+    else:
+        activation = sw[activation_start:activation_end]
+        for required in (
+            'caches.keys()',
+            "key.startsWith('grifflist-livekit-offline-')",
+            'key !== CACHE',
+            'caches.delete(key)',
+            'self.clients.claim()',
+        ):
+            if required not in activation:
+                issues.append(f'sw.js: activation must retire old cache generations safely: {required}')
+
+registration=ROOT/'site-interactions.js'
+if not registration.is_file() or "navigator.serviceWorker.register('./sw.js')" not in registration.read_text(encoding='utf-8'):
+    issues.append('PWA: public site no longer registers sw.js')
+
 try:
     import tinycss2
-    parsed=tinycss2.parse_stylesheet((ROOT/'styles.css').read_text(encoding='utf-8'),skip_whitespace=True,skip_comments=True)
-    for token in parsed:
-        if token.type=='error': issues.append(f'styles.css: parse error {token}')
+    for css_file in sorted(ROOT.glob('*.css')):
+        parsed=tinycss2.parse_stylesheet(css_file.read_text(encoding='utf-8'),skip_whitespace=True,skip_comments=True)
+        for token in parsed:
+            if token.type=='error': issues.append(f'{css_file.name}: parse error {token}')
 except ImportError:
     print('NOTE: tinycss2 unavailable; stylesheet parser check skipped.')
 try:
@@ -59,4 +319,4 @@ if issues:
     print(f'FAIL: {len(issues)} issue(s)')
     for issue in issues: print(' -',issue)
     sys.exit(1)
-print('PASS: no duplicate IDs, missing local references, JS syntax errors, invalid manifest, missing precache assets, CSS parse errors, or image decode failures detected.')
+print('PASS: no duplicate IDs, missing local references, JS syntax errors, invalid PWA manifest, missing precache assets, private-cache leaks, CSS parse errors, or image decode failures detected.')
