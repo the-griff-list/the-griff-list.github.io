@@ -38,7 +38,7 @@
 
 ## Payment-fee illustration
 
-PayPal Canada currently lists a standard domestic commercial transaction fee of **2.90% + $0.30 CAD**. The official merchant-fee page says it was last updated **4 November 2026** (rechecked 7 November 2026). On a hypothetical $45 service payment, that is about **$1.61** in processor fees and **$43.39** remaining before labour, tax, refunds and overhead.
+PayPal Canada currently lists a standard domestic commercial transaction fee of **2.90% + $0.30 CAD**. The official merchant-fee page says it was last updated **13 October 2026** (rechecked 8 November 2026). On a hypothetical $45 service payment, that is about **$1.61** in processor fees and **$43.39** remaining before labour, tax, refunds and overhead. The same page separately lists QR-code rates of **1.90% + $0.10 CAD** for transactions of $10.01 and above and **2.40% + $0.05 CAD** for transactions of $10.00 and below; those rates are product-specific and must not be assumed for a standard PayPal payment link.
 
 Ko-fi's official help page (rechecked 7 November 2026) says its Free mode charges 0% platform fee on one-time tips but 5% on shop, membership and commission payments; Standard applies 5% to one-time tips too. Processor fees still apply. A hypothetical $45 Ko-fi commission with a 5% platform fee plus the same illustrative PayPal processing rate would leave about **$41.14** before labour, tax and overhead. This is a calculation example, not a promise of the user's actual account rate or checkout method.
 
@@ -59,7 +59,7 @@ This is a research update only. Published prices are advertised rates, not verif
 ## Used-gear listing pack — unit-economics and safety notes
 
 - At the $15 single-item pilot price, PayPal Canada's published domestic commercial rate (2.90% + CAD $0.30) implies about $0.74 processing and $14.26 remaining before labour, tax, refunds and overhead. At 20–30 minutes, that is approximately $28.52–$42.78 per hour before labour/tax/overhead. For a $35 three-item bundle, estimated processing is about $1.32 and $33.68 remains; at 45–60 minutes, about $33.68–$44.91 per hour before labour/tax/overhead. Actual account fees and payment eligibility must be checked before any offer.
-- Source: [PayPal Canada merchant fees](https://www.paypal.com/ca/business/paypal-business-fees) (page returned in research with last-updated date 4 November 2026). Calculations are illustrative and rounded to cents.
+- Source: [PayPal Canada merchant fees](https://www.paypal.com/ca/business/paypal-business-fees) (page returned in research with last-updated date 13 October 2026). Calculations are illustrative and rounded to cents.
 - Do not represent asking-price suggestions as appraisals. The seller confirms model/year/serial details, condition, included accessories and defects; use manufacturer documentation where possible. Do not publish serial numbers, home addresses, private contact data or location metadata in photos.
 - Client supplies and owns the item, approves all copy/photos, posts the listing, answers buyers and completes the transaction. No custody, consignment, shipping, payment collection for the item, repair advice, authenticity guarantee or sale-price guarantee.
 - Payment for the listing-preparation service itself must use only an owner-approved existing payment route; do not add checkout or change credentials. The experiment remains internal until explicitly approved.
