@@ -73,7 +73,7 @@ test('explicit private assets and private section prefixes are denied', () => {
 test('case and repeated percent decoding cannot bypass private-path checks', () => {
   for (const pathname of [
     '/ADMIN.HTML', '/%61dmin.html', '/%2561dmin.html',
-    '/%256125646d696e.html', '/x/%2e%2e/admin.html',
+    '/%252561dmin.html', '/x/%2e%2e/admin.html',
     '/public%5c..%5cadmin.html',
   ]) {
     assert.equal(context.isPrivatePath(pathname), true, pathname);
