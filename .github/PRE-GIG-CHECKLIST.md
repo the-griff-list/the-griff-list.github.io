@@ -31,7 +31,7 @@
 - [ ] Confirm encoded, double-encoded and malformed private/admin/API paths bypass service-worker caching, while public assets with encoded spaces still cache normally.
 - [ ] Confirm query-bearing navigation and static-asset URLs are cached only when the exact URL is pinned in `sw.js` `CORE`; arbitrary `?token=...` and unknown version parameters must bypass Cache Storage.
 - [ ] Confirm decoded `.` / `..` path segments cannot traverse into admin, analytics, request-archive or API routes before the offline worker classifies a request.
-- [ ] Confirm the service-worker cache version is `grifflist-livekit-offline-v54` after deployment and that the prior v53 shell is retired.
+- [ ] For a future owner-approved release, verify development cache generation `grifflist-livekit-offline-v55` and confirm v54 is retired only after successful activation. Published `main` remains v38 until an explicitly approved deployment.
 - [ ] Verify admin, analytics, request-archive pages, Supabase config and API responses are never cached by the offline worker.
 - [ ] Confirm same-origin requests carrying an Authorization header bypass offline caching, and responses varying by Cookie or Authorization are never cached.
 - [ ] Confirm responses with no-cache, must-revalidate, proxy-revalidate, Pragma: no-cache, or zero max-age directives are not cached for offline reuse.
