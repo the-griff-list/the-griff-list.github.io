@@ -151,6 +151,25 @@ else:
     except OSError as e:
         issues.append(f'sw.js: could not execute runtime cache-policy tests ({e})')
 
+# Exercise the real service-worker install/activate/fetch handlers with mocked
+# CacheStorage and network responses, not only the policy helper functions.
+service_worker_lifecycle_test = ROOT/'qa-service-worker-lifecycle-test.js'
+if not service_worker_lifecycle_test.is_file():
+    issues.append('sw.js: service-worker lifecycle regression suite is missing')
+else:
+    try:
+        result=subprocess.run(
+            ['node', str(service_worker_lifecycle_test)],
+            cwd=ROOT,
+            capture_output=True,
+            text=True,
+        )
+        if result.returncode:
+            details=' '.join(part.strip() for part in (result.stdout, result.stderr) if part.strip())
+            issues.append(f'sw.js: lifecycle regression tests failed: {details}')
+        elif result.stdout.strip():
+            print(result.stdout.strip())
+
 manifest=ROOT/'manifest.webmanifest'
 manifest_data=None
 try:
