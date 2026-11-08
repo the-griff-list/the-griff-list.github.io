@@ -71,14 +71,14 @@ for forbidden in (
 # Keep the public song catalogue free of duplicate title/artist pairs.
 # The catalogue is a static JavaScript object array; fail closed if its
 # reviewed title/artist shape changes so this guard cannot silently skip entries.
-catalog_match = re.search(r"const songs\\s*=\\s*\\[(.*?)\\n\\];", script, re.S)
+catalog_match = re.search(r"const songs\s*=\s*\[(.*?)\n\];", script, re.S)
 if not catalog_match:
     issues.append('script.js: could not locate the static songs catalogue')
 else:
     catalog_source = catalog_match.group(1)
-    declared_entries = len(re.findall(r"(?m)^\\s*\\{\\s*title\\s*:", catalog_source))
+    declared_entries = len(re.findall(r"(?m)^\s*\{\s*title\s*:", catalog_source))
     parsed_entries = re.findall(
-        r'\\{\\s*title:\\s*"((?:\\\\.|[^"\\\\])*)"\\s*,\\s*artist:\\s*"((?:\\\\.|[^"\\\\])*)"',
+        r'\{\s*title:\s*"((?:\\.|[^"\\])*)"\s*,\s*artist:\s*"((?:\\.|[^"\\])*)"',
         catalog_source,
     )
     if len(parsed_entries) != declared_entries:
