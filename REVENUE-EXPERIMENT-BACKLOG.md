@@ -86,3 +86,12 @@ This is a research update only. Published prices are advertised rates, not verif
 | Sponsor/featured listing | Brainstormed / not offerable | Reliable consent-based traffic and engagement data; clear sponsor disclosure |
 
 **No idea is validated yet. No payment flow or public offer was changed as part of this research.**
+
+
+## Local used-gear competition refresh — 2026-11-08
+
+- **Most Wanted Charlottetown** says its local store buys instruments for cash on the spot, alongside tools and phones. This is a direct local alternative for a seller who prioritizes speed over maximizing price. [Most Wanted — Charlottetown](https://mostwantedpawn.com/stores/charlottetown/)
+- **Long & McQuade Charlottetown** is an established local instrument retailer; its location page identifies the store and services, while current store inventory pages surface demo/used availability. It is a local alternative for buyers and sellers to investigate, not evidence that it offers the same listing-preparation service. [Long & McQuade Charlottetown](https://www.long-mcquade.com/location/Prince-Edward-Island/Charlottetown/) · [Example demo/used inventory listing](https://www.long-mcquade.com/?Sku=304280&page=instore_stock&usedFirst=1)
+- **Back Alley Music** is a local used/new records channel rather than a direct guitar/amp listing service. [Back Alley Music](https://www.backalleymusicpei.ca/)
+- **Implication:** the proposed $15 single-item / $35 three-item listing-preparation pack must not pretend to be a marketplace, consignment shop, appraisal or faster-sale guarantee. Its only defensible value proposition is saving an owner time on clear photos, accurate seller-approved specifications and listing copy while the owner retains the item, account, posting, buyer contact and transaction.
+- **Competition test:** compare against free self-listing and local cash-buy alternatives. Ask a few local musicians/sellers whether they would pay specifically to save preparation time; compliments or interest are not demand. Keep this researched and unvalidated; no outreach, public offer, payment flow or customer data collection is authorized by this research.
