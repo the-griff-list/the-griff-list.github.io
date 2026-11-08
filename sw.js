@@ -248,7 +248,10 @@ self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE)
       .then(async cache => {
-        await Promise.all(CORE.map(async path => {
+        // Wait for every precache task to settle before deleting this generation.
+        // Promise.all() rejects early while sibling writes can still be in flight,
+        // which could otherwise repopulate a partially deleted cache.
+        const results = await Promise.allSettled(CORE.map(async path => {
           const request = new Request(
             new URL(path, self.registration.scope),
             { cache: 'reload', credentials: 'omit' }
@@ -260,6 +263,17 @@ self.addEventListener('install', event => {
           }
           await cache.put(request, response);
         }));
+        const failure = results.find(result => result.status === 'rejected');
+        if (failure) {
+          // A failed install must not leave a partial public shell on disk.
+          // Preserve the original failure if CacheStorage cleanup is unavailable.
+          try {
+            await caches.delete(CACHE);
+          } catch (_) {
+            // Installation still fails; an owner/browser can clear orphaned storage.
+          }
+          throw failure.reason;
+        }
       })
       .then(() => self.skipWaiting())
   );
