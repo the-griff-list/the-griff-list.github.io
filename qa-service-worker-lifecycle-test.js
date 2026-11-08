@@ -191,6 +191,43 @@ async function test(name, callback) {
     assert.equal(skipWaitingCalls, 0);
   });
 
+  await test('install waits for sibling precache tasks and removes a partial cache after failure', async () => {
+    reset();
+    let releaseDelayed;
+    const delayed = new Promise(resolve => { releaseDelayed = resolve; });
+    let signalDelayedStarted;
+    const delayedStarted = new Promise(resolve => { signalDelayedStarted = resolve; });
+
+    fetchImpl = async request => {
+      fetchCalls += 1;
+      fetchedRequests.push(request);
+      if (request.url.endsWith('/offline.html')) {
+        throw new Error('simulated offline shell fetch failure');
+      }
+      if (request.url.endsWith('/roadmap.html')) {
+        signalDelayedStarted();
+        await delayed;
+      }
+      return response(request.url);
+    };
+
+    const installPromise = dispatch('install');
+    await delayedStarted;
+    let settled = false;
+    installPromise.then(
+      () => { settled = true; },
+      () => { settled = true; }
+    );
+    await Promise.resolve();
+    assert.equal(settled, false, 'install must wait for every concurrent precache task');
+
+    releaseDelayed();
+    await assert.rejects(installPromise, /simulated offline shell fetch failure/);
+    assert.equal(fetchedRequests.length, CORE.length);
+    assert.equal(cacheData.has(CACHE), false, 'failed installation must remove its partial cache');
+    assert.equal(skipWaitingCalls, 0);
+  });
+
   await test('activate deletes only obsolete Grifflist cache generations', async () => {
     reset();
     cacheData.set('grifflist-livekit-offline-v53', new Map());
