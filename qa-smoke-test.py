@@ -131,6 +131,26 @@ js_files=sorted(ROOT.glob('*.js'))
 for file in js_files:
     result=subprocess.run(['node','--check',str(file)],capture_output=True,text=True)
     if result.returncode: issues.append(f'{file.name}: JavaScript syntax error: {result.stderr.strip()}')
+# Execute the service-worker policy helpers against adversarial URL/header cases.
+service_worker_test = ROOT/'qa-service-worker-test.js'
+if not service_worker_test.is_file():
+    issues.append('sw.js: executable cache-policy regression suite is missing')
+else:
+    try:
+        result=subprocess.run(
+            ['node', str(service_worker_test)],
+            cwd=ROOT,
+            capture_output=True,
+            text=True,
+        )
+        if result.returncode:
+            details=' '.join(part.strip() for part in (result.stdout, result.stderr) if part.strip())
+            issues.append(f'sw.js: runtime cache-policy tests failed: {details}')
+        elif result.stdout.strip():
+            print(result.stdout.strip())
+    except OSError as e:
+        issues.append(f'sw.js: could not execute runtime cache-policy tests ({e})')
+
 manifest=ROOT/'manifest.webmanifest'
 manifest_data=None
 try:
