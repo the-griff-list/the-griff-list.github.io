@@ -5,7 +5,7 @@ from html.parser import HTMLParser
 from collections import Counter
 from datetime import datetime
 from zoneinfo import ZoneInfo
-import json, re, subprocess, sys
+import json, re, subprocess, sys, unicodedata
 ROOT = Path(__file__).resolve().parent
 issues = []
 class Audit(HTMLParser):
@@ -67,6 +67,48 @@ for forbidden in (
 ):
     if forbidden in script:
         issues.append(f'script.js: stale disabled e-transfer route remains: {forbidden}')
+
+# Keep the public song catalogue free of duplicate title/artist pairs.
+# The catalogue is a static JavaScript object array; fail closed if its
+# reviewed title/artist shape changes so this guard cannot silently skip entries.
+catalog_match = re.search(r"const songs\\s*=\\s*\\[(.*?)\\n\\];", script, re.S)
+if not catalog_match:
+    issues.append('script.js: could not locate the static songs catalogue')
+else:
+    catalog_source = catalog_match.group(1)
+    declared_entries = len(re.findall(r"(?m)^\\s*\\{\\s*title\\s*:", catalog_source))
+    parsed_entries = re.findall(
+        r'\\{\\s*title:\\s*"((?:\\\\.|[^"\\\\])*)"\\s*,\\s*artist:\\s*"((?:\\\\.|[^"\\\\])*)"',
+        catalog_source,
+    )
+    if len(parsed_entries) != declared_entries:
+        issues.append(
+            f'script.js: could not parse every song entry ({len(parsed_entries)}/{declared_entries})'
+        )
+    seen_songs = {}
+    for index, (title_literal, artist_literal) in enumerate(parsed_entries, start=1):
+        try:
+            title = json.loads('"' + title_literal + '"')
+            artist = json.loads('"' + artist_literal + '"')
+        except json.JSONDecodeError:
+            issues.append(f'script.js: song entry #{index} has a non-JSON-compatible title/artist escape')
+            continue
+        normalized = tuple(
+            unicodedata.normalize("NFKC", value).strip().casefold()
+            for value in (title, artist)
+        )
+        if not all(normalized):
+            issues.append(f'script.js: song entry #{index} has an empty title or artist')
+            continue
+        if normalized in seen_songs:
+            issues.append(
+                f"script.js: duplicate song '{title}' by '{artist}' "
+                f"(first matching entry #{seen_songs[normalized]})"
+            )
+        else:
+            seen_songs[normalized] = index
+    if declared_entries == 0:
+        issues.append('script.js: song catalogue contains no entries')
 
 # Request retry idempotency depends on the reviewed unique-token index and
 # token-status RPC being present in the migration shipped with this source.
@@ -358,4 +400,4 @@ if issues:
     print(f'FAIL: {len(issues)} issue(s)')
     for issue in issues: print(' -',issue)
     sys.exit(1)
-print('PASS: no duplicate IDs, missing local references, JS syntax errors, invalid PWA manifest, missing precache assets, private-cache leaks, CSS parse errors, or image decode failures detected.')
+print('PASS: no duplicate IDs or song entries, missing local references, JS syntax errors, invalid PWA manifest, missing precache assets, private-cache leaks, CSS parse errors, or image decode failures detected.')
