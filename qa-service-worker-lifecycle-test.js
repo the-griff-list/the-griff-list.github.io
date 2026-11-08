@@ -219,6 +219,27 @@ async function test(name, callback) {
     assert.equal(skipWaitingCalls, 1);
   });
 
+  await test('failed install preserves the previous active cache generation', async () => {
+    reset();
+    const previousCache = 'grifflist-livekit-offline-v54';
+    assert.notEqual(CACHE, previousCache);
+    cacheData.set(previousCache, new Map([['sentinel', response(ORIGIN + '/index.html')]]));
+
+    fetchImpl = async request => {
+      fetchCalls += 1;
+      fetchedRequests.push(request);
+      if (request.url.endsWith('/offline.html')) {
+        throw new Error('simulated offline shell fetch failure');
+      }
+      return response(request.url);
+    };
+
+    await assert.rejects(dispatch('install'), /simulated offline shell fetch failure/);
+    assert.equal(cacheData.has(CACHE), false, 'failed install removes only the new cache generation');
+    assert.equal(cacheData.get(previousCache).has('sentinel'), true);
+    assert.equal(skipWaitingCalls, 0);
+  });
+
   await test('install drains only in-flight precache tasks and removes partial cache after failure', async () => {
     reset();
     let releaseDelayed;
@@ -270,6 +291,7 @@ async function test(name, callback) {
   await test('activate deletes only obsolete Grifflist cache generations', async () => {
     reset();
     cacheData.set('grifflist-livekit-offline-v53', new Map());
+    cacheData.set('grifflist-livekit-offline-v54', new Map());
     cacheData.set('grifflist-sober-drive-search-fix-offline-v7', new Map());
     cacheData.set(CACHE, new Map());
     cacheData.set('unrelated-public-cache', new Map());
