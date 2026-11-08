@@ -11,6 +11,7 @@ const listeners = new Map();
 let cacheData = new Map();
 let fetchImpl;
 let fetchCalls = 0;
+let fetchedRequests = [];
 let skipWaitingCalls = 0;
 let claimCalls = 0;
 
@@ -98,10 +99,12 @@ let passed = 0;
 function reset() {
   cacheData = new Map();
   fetchCalls = 0;
+  fetchedRequests = [];
   skipWaitingCalls = 0;
   claimCalls = 0;
   fetchImpl = async request => {
     fetchCalls += 1;
+    fetchedRequests.push(request);
     return response(request.url);
   };
 }
@@ -158,6 +161,10 @@ async function test(name, callback) {
     const entries = cacheData.get(CACHE);
     assert.ok(entries);
     assert.equal(entries.size, CORE.length);
+    assert.equal(fetchedRequests.length, CORE.length);
+    assert.ok(fetchedRequests.every(request =>
+      request.credentials === 'omit' && request.cache === 'reload'
+    ));
     assert.equal(skipWaitingCalls, 1);
     for (const url of entries.keys()) {
       const pathname = new URL(url).pathname;
