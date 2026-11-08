@@ -12,6 +12,8 @@ let cacheData = new Map();
 let fetchImpl;
 let fetchCalls = 0;
 let fetchedRequests = [];
+let activeFetches = 0;
+let peakActiveFetches = 0;
 let skipWaitingCalls = 0;
 let claimCalls = 0;
 
@@ -94,12 +96,15 @@ vm.runInContext(
 
 const CACHE = vm.runInContext('CACHE', context);
 const CORE = vm.runInContext('CORE.slice()', context);
+const PRECACHE_CONCURRENCY = vm.runInContext('PRECACHE_CONCURRENCY', context);
 let passed = 0;
 
 function reset() {
   cacheData = new Map();
   fetchCalls = 0;
   fetchedRequests = [];
+  activeFetches = 0;
+  peakActiveFetches = 0;
   skipWaitingCalls = 0;
   claimCalls = 0;
   fetchImpl = async request => {
@@ -191,43 +196,77 @@ async function test(name, callback) {
     assert.equal(skipWaitingCalls, 0);
   });
 
-  await test('install waits for sibling precache tasks and removes a partial cache after failure', async () => {
+  await test('install bounds concurrent precache fetches', async () => {
+    reset();
+    fetchImpl = async request => {
+      fetchCalls += 1;
+      fetchedRequests.push(request);
+      activeFetches += 1;
+      peakActiveFetches = Math.max(peakActiveFetches, activeFetches);
+      try {
+        await Promise.resolve();
+        return response(request.url);
+      } finally {
+        activeFetches -= 1;
+      }
+    };
+
+    await dispatch('install');
+    assert.equal(fetchedRequests.length, CORE.length);
+    assert.ok(peakActiveFetches <= PRECACHE_CONCURRENCY);
+    assert.equal(peakActiveFetches, PRECACHE_CONCURRENCY);
+    assert.equal(cacheData.get(CACHE).size, CORE.length);
+    assert.equal(skipWaitingCalls, 1);
+  });
+
+  await test('install drains only in-flight precache tasks and removes partial cache after failure', async () => {
     reset();
     let releaseDelayed;
     const delayed = new Promise(resolve => { releaseDelayed = resolve; });
     let signalDelayedStarted;
     const delayedStarted = new Promise(resolve => { signalDelayedStarted = resolve; });
+    let signalFailure;
+    const failureSeen = new Promise(resolve => { signalFailure = resolve; });
 
     fetchImpl = async request => {
       fetchCalls += 1;
       fetchedRequests.push(request);
-      if (request.url.endsWith('/offline.html')) {
-        throw new Error('simulated offline shell fetch failure');
+      activeFetches += 1;
+      peakActiveFetches = Math.max(peakActiveFetches, activeFetches);
+      try {
+        if (request.url.endsWith('/offline.html')) {
+          signalFailure();
+          throw new Error('simulated offline shell fetch failure');
+        }
+        if (request.url.endsWith('/roadmap.html')) {
+          signalDelayedStarted();
+          await delayed;
+        } else {
+          await Promise.resolve();
+        }
+        return response(request.url);
+      } finally {
+        activeFetches -= 1;
       }
-      if (request.url.endsWith('/roadmap.html')) {
-        signalDelayedStarted();
-        await delayed;
-      }
-      return response(request.url);
     };
 
     const installPromise = dispatch('install');
-    await delayedStarted;
+    await Promise.all([delayedStarted, failureSeen]);
     let settled = false;
     installPromise.then(
       () => { settled = true; },
       () => { settled = true; }
     );
     await Promise.resolve();
-    assert.equal(settled, false, 'install must wait for every concurrent precache task');
+    assert.equal(settled, false, 'install must wait for every already-started precache task');
+    assert.ok(peakActiveFetches <= PRECACHE_CONCURRENCY);
 
     releaseDelayed();
     await assert.rejects(installPromise, /simulated offline shell fetch failure/);
-    assert.equal(fetchedRequests.length, CORE.length);
+    assert.ok(fetchedRequests.length < CORE.length, 'failed installation must stop scheduling new assets');
     assert.equal(cacheData.has(CACHE), false, 'failed installation must remove its partial cache');
     assert.equal(skipWaitingCalls, 0);
   });
-
   await test('activate deletes only obsolete Grifflist cache generations', async () => {
     reset();
     cacheData.set('grifflist-livekit-offline-v53', new Map());

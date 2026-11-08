@@ -1,5 +1,7 @@
 /* Public offline shell only. Requests, tips, live video and private admin pages need a connection. */
 const CACHE = 'grifflist-livekit-offline-v54';
+// Limit simultaneous media/asset fetches during installation on memory-constrained phones.
+const PRECACHE_CONCURRENCY = 4;
 const CORE = [
   './',
   './index.html',
@@ -244,41 +246,60 @@ function isCacheableResponseForRequest(request, response) {
     isCacheableResponse(response);
 }
 
+async function precachePublicShell(cache) {
+  let nextIndex = 0;
+  let failed = false;
+  let failure;
+
+  const worker = async () => {
+    while (!failed) {
+      const index = nextIndex++;
+      if (index >= CORE.length) return;
+      const path = CORE[index];
+      try {
+        const request = new Request(
+          new URL(path, self.registration.scope),
+          { cache: 'reload', credentials: 'omit' }
+        );
+        const response = await fetch(request);
+        if (!isCacheableResponseForRequest(request, response) ||
+            !isSafePublicCacheResponse(response, request.url, self.location.origin)) {
+          throw new Error(`Refusing to precache a non-public or non-cacheable response: ${request.url}`);
+        }
+        await cache.put(request, response);
+      } catch (error) {
+        if (!failed) {
+          failed = true;
+          failure = error;
+        }
+        return;
+      }
+    }
+  };
+
+  // Promise.all waits for every worker, including already-started writes. Once
+  // one task fails, workers stop claiming new assets; cleanup therefore cannot
+  // race with a late sibling cache.put().
+  const workerCount = Math.min(PRECACHE_CONCURRENCY, CORE.length);
+  await Promise.all(Array.from({ length: workerCount }, () => worker()));
+
+  if (failed) {
+    try {
+      await caches.delete(CACHE);
+    } catch (_) {
+      // Preserve the original install failure if CacheStorage cleanup is unavailable.
+    }
+    throw failure;
+  }
+}
+
 self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE)
-      .then(async cache => {
-        // Wait for every precache task to settle before deleting this generation.
-        // Promise.all() rejects early while sibling writes can still be in flight,
-        // which could otherwise repopulate a partially deleted cache.
-        const results = await Promise.allSettled(CORE.map(async path => {
-          const request = new Request(
-            new URL(path, self.registration.scope),
-            { cache: 'reload', credentials: 'omit' }
-          );
-          const response = await fetch(request);
-          if (!isCacheableResponseForRequest(request, response) ||
-              !isSafePublicCacheResponse(response, request.url, self.location.origin)) {
-            throw new Error(`Refusing to precache a non-public or non-cacheable response: ${request.url}`);
-          }
-          await cache.put(request, response);
-        }));
-        const failure = results.find(result => result.status === 'rejected');
-        if (failure) {
-          // A failed install must not leave a partial public shell on disk.
-          // Preserve the original failure if CacheStorage cleanup is unavailable.
-          try {
-            await caches.delete(CACHE);
-          } catch (_) {
-            // Installation still fails; an owner/browser can clear orphaned storage.
-          }
-          throw failure.reason;
-        }
-      })
+      .then(cache => precachePublicShell(cache))
       .then(() => self.skipWaiting())
   );
 });
-
 self.addEventListener('activate', event => {
   event.waitUntil(
     caches.keys()
