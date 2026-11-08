@@ -221,6 +221,26 @@ async function test(name, callback) {
     assert.equal(cacheData.has(CACHE), false);
   });
 
+  await test('runtime navigation does not cache a private final response URL', async () => {
+    reset();
+    const requestedUrl = ORIGIN + '/index.html';
+    const privateFinalUrl = ORIGIN + '/admin.html';
+    fetchImpl = async request => {
+      fetchCalls += 1;
+      fetchedRequests.push(request);
+      return response(privateFinalUrl);
+    };
+
+    const result = await dispatchFetch(navigation(requestedUrl));
+    const fresh = await result.responsePromise;
+    await result.waitPromise;
+
+    // The online response is still delivered, but a private final URL must
+    // never be persisted under an otherwise-public request URL.
+    assert.equal(fresh.url, privateFinalUrl);
+    assert.equal(cacheData.get(CACHE).has(requestedUrl), false);
+  });
+
   await test('public navigation caches credentialless network responses and falls back offline', async () => {
     reset();
     const url = ORIGIN + '/index.html';
