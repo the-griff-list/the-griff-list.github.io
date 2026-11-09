@@ -231,7 +231,7 @@ test('home Watch Live CTA checks status when no stream is active', async ({ page
     await route.fulfill({
       status: 200,
       headers: { ...cors, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ venue_name: '', show_enabled: true, is_live: false }),
+      body: JSON.stringify({ venue_name: 'Hunter’s Ale House', show_enabled: true, is_live: false }),
     });
   });
   await page.goto('/index.html');
