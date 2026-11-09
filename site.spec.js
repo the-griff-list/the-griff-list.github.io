@@ -203,18 +203,23 @@ globalThis.isSafePublicCacheResponse = isSafePublicCacheResponse;`,
 
 test('homepage loads without horizontal overflow or page errors', async ({ page }) => { const errors=[]; page.on('pageerror',e=>errors.push(e.message)); await page.goto('/index.html'); await expect(page.locator('#splash')).toBeVisible(); expect(await page.evaluate(()=>document.documentElement.scrollWidth>document.documentElement.clientWidth)).toBe(false); expect(errors).toEqual([]); });
 test('title screen can be entered', async ({ page }) => { await page.goto('/index.html'); await page.locator('#splash').click(); await expect(page.locator('#catalog')).toBeVisible(); });
-test('latest-show strip preserves historical timing without implying a future booking', async ({ page }) => {
+test('next-show strip displays the confirmed November 10 booking and later dates', async ({ page }) => {
   await page.goto('/index.html');
   const card = page.locator('.next-show-card');
-  await expect(card.locator('.eyebrow')).toHaveText('LATEST SHOW');
+  await expect(card.locator('.eyebrow')).toHaveText('NEXT SHOW');
   await expect(card.locator('#next-show-title')).toHaveText('Griff & Guest');
   await expect(card).toContainText('Hunter’s Ale House');
-  await expect(card.locator('time').nth(0)).toHaveAttribute('datetime', '2026-11-06');
-  await expect(card.locator('time').nth(1)).toHaveAttribute('datetime', '2026-11-06T22:00:00-04:00');
-  const eventDateTime = await card.locator('time').nth(1).getAttribute('datetime');
-  expect(new Date(eventDateTime).toISOString()).toBe('2026-11-07T02:00:00.000Z');
-  await expect(card).toContainText('Performance set: 10:00 p.m. Atlantic');
-  await expect(card.locator('.show-status-note')).toHaveText('No upcoming performance date is confirmed yet.');
+  await expect(card.locator('time').nth(0)).toHaveAttribute('datetime', '2026-11-10');
+  await expect(card.locator('time').nth(1)).toHaveAttribute('datetime', '2026-11-10T22:00:00-04:00');
+  await expect(card.locator('time').nth(2)).toHaveAttribute('datetime', '2026-11-11T01:30:00-04:00');
+  const start = await card.locator('time').nth(1).getAttribute('datetime');
+  const end = await card.locator('time').nth(2).getAttribute('datetime');
+  expect(new Date(start).toISOString()).toBe('2026-11-11T02:00:00.000Z');
+  expect(new Date(end).toISOString()).toBe('2026-11-11T05:30:00.000Z');
+  await expect(card).toContainText('Performance: 10:00 p.m.–1:30 a.m. Atlantic');
+  await expect(card.locator('.show-status-note')).toHaveText(
+    'Also confirmed at Hunter’s Ale House: Thursday, December 3 and Thursday, December 17, 2026.'
+  );
   await expect(card).not.toContainText('UP NEXT');
 });
 test('home Watch Live CTA checks status when no stream is active', async ({ page }) => {
