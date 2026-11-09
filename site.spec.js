@@ -217,11 +217,27 @@ test('latest-show strip preserves historical timing without implying a future bo
   await expect(card.locator('.show-status-note')).toHaveText('No upcoming performance date is confirmed yet.');
   await expect(card).not.toContainText('UP NEXT');
 });
-test('home Watch Live CTA checks status without promising an active stream', async ({ page }) => {
+test('home Watch Live CTA checks status when no stream is active', async ({ page }) => {
+  await page.route('**/rest/v1/live_show_settings*', route => route.fulfill({
+    status: 200,
+    contentType: 'application/json',
+    body: JSON.stringify({ venue_name: '', show_enabled: true, is_live: false }),
+  }));
   await page.goto('/index.html');
   const cta = page.locator('#home-watch-live-button');
   await expect(cta).toHaveText('CHECK LIVE STATUS ↗');
   await expect(cta).toHaveAttribute('href', 'watch-live.html');
+});
+
+test('home Watch Live CTA advertises a live stream only when confirmed', async ({ page }) => {
+  await page.route('**/rest/v1/live_show_settings*', route => route.fulfill({
+    status: 200,
+    contentType: 'application/json',
+    body: JSON.stringify({ venue_name: 'Hunter’s Ale House', show_enabled: true, is_live: true }),
+  }));
+  await page.goto('/index.html');
+  await expect(page.locator('#home-watch-live-button'))
+    .toHaveText('● WATCH LIVE AT HUNTER’S ALE HOUSE');
 });
 test('What’s New opens for a new release and records dismissal', async ({ page }) => {
   await page.addInitScript(() => {
