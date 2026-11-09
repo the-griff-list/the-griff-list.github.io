@@ -242,7 +242,7 @@ test('home Watch Live CTA advertises a live stream only when confirmed', async (
 test('What’s New opens for a new release and records dismissal', async ({ page }) => {
   await page.addInitScript(() => {
     Date.now = () => new Date('2026-11-01T12:00:00-04:00').getTime();
-    localStorage.removeItem('grifflistWhatsNewSeen.v1');
+    try { localStorage.removeItem('grifflistWhatsNewSeen.v1'); } catch (_) {}
   });
   await page.goto('/index.html');
   await page.locator('#splash').click();
