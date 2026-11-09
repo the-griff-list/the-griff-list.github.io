@@ -1,6 +1,6 @@
 # The Griff List — Revenue Experiment Backlog
 
-**Research snapshot:** 6 November 2026  
+**Research snapshot:** 9 November 2026 (incremental market refresh; earlier evidence retained)  
 **Status:** researched hypotheses only — no customer demand or paid conversion has been validated.  
 **Scope:** low/no-upfront-cost services that can be tested through the existing live-music network. This is an internal planning document on the development branch; it does not activate checkout, publish an offer, or authorize spending.
 
@@ -95,3 +95,15 @@ This is a research update only. Published prices are advertised rates, not verif
 - **Back Alley Music** is a local used/new records channel rather than a direct guitar/amp listing service. [Back Alley Music](https://www.backalleymusicpei.ca/)
 - **Implication:** the proposed $15 single-item / $35 three-item listing-preparation pack must not pretend to be a marketplace, consignment shop, appraisal or faster-sale guarantee. Its only defensible value proposition is saving an owner time on clear photos, accurate seller-approved specifications and listing copy while the owner retains the item, account, posting, buyer contact and transaction.
 - **Competition test:** compare against free self-listing and local cash-buy alternatives. Ask a few local musicians/sellers whether they would pay specifically to save preparation time; compliments or interest are not demand. Keep this researched and unvalidated; no outreach, public offer, payment flow or customer data collection is authorized by this research.
+
+
+## Charlottetown production and apparel competition refresh — 2026-11-09
+
+This is a limited competitor check, not a demand study. Advertised services establish that suppliers exist; they do not establish prices paid, capacity, quality or customer willingness to pay for a Griff List alternative.
+
+- **Recording / creative production:** The Arts Guild's Charlottetown arts-hub listing identifies a recording studio; [The Hill Sound Studio](https://thehillsoundstudio.com/index.html) describes itself as a PEI sound-creation studio. [House-Front Production Services](https://meetpei.com/member/house-front-production-services-inc/) advertises concert and event audio, lighting, video and staging support in Charlottetown. **Positioning:** do not claim to be a recording studio or full-service AV provider. The proposed short-form clip offer is limited to editing customer-supplied, rights-cleared footage.
+- **Apparel / print:** [Pressed 4 Time](https://www.pressed4time.ca/) lists screen printing, embroidery, signs and promotional products and gives a Charlottetown address. [Gemini Screen Print & Embroidery](https://meetpei.com/member/gemini-serigraphie-et-broderie/) describes custom apparel, screen printing and embroidery. [DALMAC](https://dalmac.ca/cresting/) offers cresting, embroidery and custom merchandise in Charlottetown. **Positioning:** do not buy equipment or hold shirt inventory; if apparel is tested later, keep it to original design/prepress and obtain customer-funded written production quotes.
+- **Music PEI business support:** the [Takin’ Care of Business page](https://www.musicpei.com/development-programs/taking-care-of-business-program/) still describes its **2025/2026** program and says delivery runs through February 2026. As of this 9 November 2026 refresh, that page is historical evidence of a prior free member program, **not proof that a current cohort is open**. Verify a new cohort and eligibility directly with Music PEI before treating it as an available resource.
+- **Experiment decision:** retain the ranked digital-only band tech pack and gig-promo kit as the first private validation hypotheses. Do not reposition The Griff List as a generic recording, event-production, screen-printing or marketplace business.
+
+**Evidence / validation status:** researched competitor listings only. No customer interviews, paid orders, repeat purchases, bookings, conversion data or willingness-to-pay results have been recorded. No public offer, checkout, payment destination, account setting or vendor commitment was changed.
