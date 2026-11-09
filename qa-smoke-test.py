@@ -118,6 +118,20 @@ else:
             )
         else:
             seen_songs[normalized] = index
+    # Preserve the recent main-branch repertoire additions used by the live request catalogue.
+    required_songs = (
+        ("Smells Like Teen Spirit", "Nirvana"),
+        ("Plush", "Stone Temple Pilots"),
+        ("I Just Died in Your Arms Tonight", "Cutting Crew"),
+    )
+    for title, artist in required_songs:
+        normalized = tuple(
+            unicodedata.normalize("NFKC", value).strip().casefold()
+            for value in (title, artist)
+        )
+        if normalized not in seen_songs:
+            issues.append(f"script.js: required catalogue song '{title}' by '{artist}' is missing")
+
     if declared_entries == 0:
         issues.append('script.js: song catalogue contains no entries')
 
