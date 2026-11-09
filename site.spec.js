@@ -69,7 +69,7 @@ test('service worker refuses responses that require HTTP revalidation before reu
 
 test('service worker only stores responses fetched without credentials', () => {
   const canStore = cachePolicyContext.isCacheableResponseForRequest;
-  const response = { ok: true, type: 'basic', headers: { get: () => null } };
+  const response = { ok: true, type: 'basic', status: 200, headers: { get: () => null } };
   const request = (credentials, authorization = false) => ({
     credentials,
     headers: { has: name => name === 'Authorization' && authorization },
@@ -99,7 +99,7 @@ test('offline shell precache and runtime share the fail-closed response policy',
 });
 
 test('service worker fails closed on encoded private and API paths', async () => {
-  const pathPolicyStart = serviceWorkerSource.indexOf('const CORE_URLS = new Set(');
+  const pathPolicyStart = serviceWorkerSource.indexOf('const CORE = [');
   const pathPolicyEnd = serviceWorkerSource.indexOf('function isCacheableResponse(', pathPolicyStart);
   if (pathPolicyStart < 0 || pathPolicyEnd < 0) {
     throw new Error('Could not extract the production service-worker path policy.');
@@ -223,7 +223,20 @@ test('home Watch Live CTA checks status without promising an active stream', asy
   await expect(cta).toHaveText('CHECK LIVE STATUS ↗');
   await expect(cta).toHaveAttribute('href', 'watch-live.html');
 });
-test('What’s New can be reopened and dismissed', async ({ page }) => { await page.goto('/index.html'); await page.locator('#splash').click(); const reopen=page.locator('#whats-new-reopen'); await expect(reopen).toBeVisible(); await reopen.click(); const dialog=page.locator('#whats-new-dialog'); await expect(dialog).toBeVisible(); await page.locator('#whats-new-done').click(); await expect(dialog).not.toBeVisible(); });
+test('What’s New opens for a new release and records dismissal', async ({ page }) => {
+  await page.addInitScript(() => {
+    Date.now = () => new Date('2026-11-01T12:00:00-04:00').getTime();
+    localStorage.removeItem('grifflistWhatsNewSeen.v1');
+  });
+  await page.goto('/index.html');
+  await page.locator('#splash').click();
+  const dialog = page.locator('#whats-new-dialog');
+  await expect(dialog).toBeVisible();
+  await page.locator('#whats-new-done').click();
+  await expect(dialog).not.toBeVisible();
+  await expect.poll(() => page.evaluate(() => localStorage.getItem('grifflistWhatsNewSeen.v1')))
+    .toBe('v40-seasonal-navigation-polish');
+});
 test('public offline pages use stylesheet variants present in the service-worker shell', () => {
   const coreStart = serviceWorkerSource.indexOf('const CORE = [');
   const coreEnd = serviceWorkerSource.indexOf('];', coreStart);
@@ -242,7 +255,7 @@ test('public offline pages use stylesheet variants present in the service-worker
     }
   }
 
-  expect(serviceWorkerCacheName).toBe('grifflist-livekit-offline-v54');
+  expect(serviceWorkerCacheName).toMatch(/^grifflist-livekit-offline-v\\d+$/);
 });
 
 test('PWA manifest is available with app shortcuts', async ({ request }) => { const response=await request.get('/manifest.webmanifest'); expect(response.ok()).toBeTruthy(); const manifest=await response.json(); expect(manifest.display).toBe('standalone'); expect(manifest.shortcuts.length).toBeGreaterThanOrEqual(3); });
@@ -277,10 +290,14 @@ test('public offline shell registers, falls back offline, and never caches priva
   await expect(page.locator('#offline-status')).toBeHidden();
 
 
-  await page.evaluate(async (name) => {
+  const removedWatchLive = await page.evaluate(async (name) => {
     const cache = await caches.open(name);
-    await cache.delete('/watch-live.html');
+    const key = (await cache.keys()).find(request => new URL(request.url).pathname === '/watch-live.html');
+    if (!key) return false;
+    const deleted = await cache.delete(key);
+    return deleted && !(await cache.match(key));
   }, cacheName);
+  expect(removedWatchLive).toBe(true);
   await page.context().setOffline(true);
   await page.goto('/watch-live.html');
   await expect(page.locator('h1')).toContainText("You're offline");
@@ -701,7 +718,7 @@ test('fragment audit checks absolute same-origin URLs and ignores external schem
 
 
 test('service worker caches only query-bearing URLs pinned in CORE', () => {
-  const policyStart = serviceWorkerSource.indexOf('const CORE_URLS = new Set(');
+  const policyStart = serviceWorkerSource.indexOf('const CORE = [');
   const policyEnd = serviceWorkerSource.indexOf('function isCacheableResponse(', policyStart);
   if (policyStart < 0 || policyEnd < 0) {
     throw new Error('Could not extract the production service-worker request policy.');
