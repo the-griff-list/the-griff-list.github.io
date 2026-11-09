@@ -248,7 +248,7 @@ else:
     else:
         cache_name=cache_version.group(1)+'-v'+cache_version.group(2)
         prior_version=int(cache_version.group(2))-1
-        expected_cache_line=f'- [ ] Confirm the service-worker cache version is `{cache_name}` after deployment and that the prior v{prior_version} shell is retired.'
+        expected_cache_line=f'- [ ] For a future owner-approved release, verify development cache generation `{cache_name}` and confirm v{prior_version} is retired only after successful activation.'
         if expected_cache_line not in checklist_text:
             issues.append('pre-gig checklist: current and prior service-worker cache versions must match sw.js')
 match=re.search(r'const CORE\s*=\s*\[(.*?)\];',sw,re.S)
