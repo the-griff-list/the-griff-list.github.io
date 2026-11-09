@@ -222,7 +222,7 @@ test('home Watch Live CTA checks status when no stream is active', async ({ page
     const cors = {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'GET, OPTIONS',
-      'Access-Control-Allow-Headers': 'apikey, authorization, content-type, prefer, accept, x-client-info',
+      'Access-Control-Allow-Headers': 'apikey, authorization, content-type, prefer, accept, x-client-info, range, range-unit, accept-profile, content-profile',
     };
     if (route.request().method() === 'OPTIONS') {
       await route.fulfill({ status: 204, headers: cors });
@@ -245,7 +245,7 @@ test('home Watch Live CTA advertises a live stream only when confirmed', async (
     const cors = {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'GET, OPTIONS',
-      'Access-Control-Allow-Headers': 'apikey, authorization, content-type, prefer, accept, x-client-info',
+      'Access-Control-Allow-Headers': 'apikey, authorization, content-type, prefer, accept, x-client-info, range, range-unit, accept-profile, content-profile',
     };
     if (route.request().method() === 'OPTIONS') {
       await route.fulfill({ status: 204, headers: cors });
