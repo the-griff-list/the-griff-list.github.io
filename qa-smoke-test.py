@@ -211,6 +211,8 @@ else:
             issues.append(f'sw.js: lifecycle regression tests failed: {details}')
         elif result.stdout.strip():
             print(result.stdout.strip())
+    except OSError as e:
+        issues.append(f'sw.js: could not execute lifecycle regression tests ({e})')
 
 manifest=ROOT/'manifest.webmanifest'
 manifest_data=None
