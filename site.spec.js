@@ -336,10 +336,18 @@ test('public offline shell registers, falls back offline, and never caches priva
     return deleted && !(await cache.match(key));
   }, cacheName);
   expect(removedWatchLive).toBe(true);
+  // The service worker precache may also populate Chromium's HTTP cache. Clear
+  // and disable that separate cache so this assertion exercises CacheStorage's
+  // offline fallback rather than a browser-cached copy of watch-live.html.
+  const cdp = await page.context().newCDPSession(page);
+  await cdp.send('Network.clearBrowserCache');
+  await cdp.send('Network.setCacheDisabled', { cacheDisabled: true });
   await page.context().setOffline(true);
   await page.goto('/watch-live.html');
   await expect(page.locator('h1')).toContainText("You're offline");
   await page.context().setOffline(false);
+  await cdp.send('Network.setCacheDisabled', { cacheDisabled: false });
+  await cdp.detach();
 
   // The public tour roadmap includes a device-local journal. Cache only its
   // static shell; the journal data remains in localStorage, not Cache Storage.
