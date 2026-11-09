@@ -28,25 +28,36 @@ for file in html_files:
 # Assert the time-sensitive gig and payment disclosures remain explicit.
 home_html=(ROOT/'index.html').read_text(encoding='utf-8')
 watch_html=(ROOT/'watch-live.html').read_text(encoding='utf-8')
-# November 6, 2026 is after the America/Halifax daylight-saving transition.
-event_start = datetime(2026, 11, 6, 22, 0, tzinfo=ZoneInfo('America/Halifax'))
+# November 10, 2026 is after the America/Halifax daylight-saving transition.
+event_start = datetime(2026, 11, 10, 22, 0, tzinfo=ZoneInfo('America/Halifax'))
 expected_event_datetime = event_start.isoformat()
 if f'datetime="{expected_event_datetime}"' not in home_html:
     issues.append(f'index.html: show time must match America/Halifax ({expected_event_datetime})')
-if 'datetime="2026-11-06T22:00:00-03:00"' in home_html:
+if 'datetime="2026-11-10T22:00:00-03:00"' in home_html:
     issues.append('index.html: show time incorrectly uses daylight time after the 2026 DST transition')
-# The November 6 performance is historical now; never label it as an upcoming booking.
+# The next confirmed booking must stay distinct from the later December dates.
 for required in (
-    '<p class="eyebrow">LATEST SHOW</p>',
-    '<p class="show-status-note">No upcoming performance date is confirmed yet.</p>',
+    '<p class="eyebrow">NEXT SHOW</p>',
+    'Griff &amp; Guest',
+    'Hunter’s Ale House',
+    'datetime="2026-11-10"',
+    'datetime="2026-11-10T22:00:00-04:00"',
+    'datetime="2026-11-11T01:30:00-04:00"',
+    'Tuesday, November 10, 2026',
+    'Thursday, December 3',
+    'Thursday, December 17',
+    '<strong>Performance:</strong>',
+    '>10:00 p.m.</time>',
+    '>1:30 a.m.</time> Atlantic',
+    'Send a tip',
+    'CHECK LIVE STATUS ↗',
+    'Ko-fi (Apple Pay / Google Pay if enabled)',
+    'eligible Stripe connection',
 ):
     if required not in home_html:
-        issues.append(f'index.html: historical show status is missing: {required}')
-if re.search(r'<p class="eyebrow">UP NEXT</p>', home_html):
-    issues.append('index.html: historical performance must not be labelled UP NEXT')
-for required in ('Griff &amp; Guest', 'Hunter’s Ale House', 'datetime="2026-11-06"', 'datetime="2026-11-06T22:00:00-04:00"', 'Performance set:' , '10:00 p.m. Atlantic', 'Send a tip', 'CHECK LIVE STATUS ↗', 'Ko-fi (Apple Pay / Google Pay if enabled)', 'eligible Stripe connection'):
-    if required not in home_html:
-        issues.append(f'index.html: missing gig/payment acceptance text: {required}')
+        issues.append(f'index.html: missing next-show/payment acceptance text: {required}')
+if re.search(r'<p class="eyebrow">(?:LATEST SHOW|UP NEXT)</p>', home_html):
+    issues.append('index.html: confirmed upcoming performance must use the NEXT SHOW label')
 for required in ('Send a tip', 'eligible Stripe connection'):
     if required not in watch_html:
         issues.append(f'watch-live.html: missing payment disclosure: {required}')
@@ -271,7 +282,7 @@ else:
         if local in private_paths:
             issues.append(f'sw.js: private asset must not be precached: {asset}')
     for required in (
-        "const CACHE = 'grifflist-livekit-offline-v55'",
+        "const CACHE = 'grifflist-livekit-offline-v56'",
         "'/roadmap.html'",
         "./styles.css?v=grifflist-tour-roadmap-1",
         'const CORE_URLS = new Set(',
