@@ -218,11 +218,22 @@ test('latest-show strip preserves historical timing without implying a future bo
   await expect(card).not.toContainText('UP NEXT');
 });
 test('home Watch Live CTA checks status when no stream is active', async ({ page }) => {
-  await page.route('**/rest/v1/live_show_settings*', route => route.fulfill({
-    status: 200,
-    contentType: 'application/json',
-    body: JSON.stringify({ venue_name: '', show_enabled: true, is_live: false }),
-  }));
+  await page.route('**/rest/v1/live_show_settings*', async route => {
+    const cors = {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, OPTIONS',
+      'Access-Control-Allow-Headers': 'apikey, authorization, content-type, prefer, accept, x-client-info',
+    };
+    if (route.request().method() === 'OPTIONS') {
+      await route.fulfill({ status: 204, headers: cors });
+      return;
+    }
+    await route.fulfill({
+      status: 200,
+      headers: { ...cors, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ venue_name: '', show_enabled: true, is_live: false }),
+    });
+  });
   await page.goto('/index.html');
   const cta = page.locator('#home-watch-live-button');
   await expect(cta).toHaveText('CHECK LIVE STATUS ↗');
@@ -230,11 +241,22 @@ test('home Watch Live CTA checks status when no stream is active', async ({ page
 });
 
 test('home Watch Live CTA advertises a live stream only when confirmed', async ({ page }) => {
-  await page.route('**/rest/v1/live_show_settings*', route => route.fulfill({
-    status: 200,
-    contentType: 'application/json',
-    body: JSON.stringify({ venue_name: 'Hunter’s Ale House', show_enabled: true, is_live: true }),
-  }));
+  await page.route('**/rest/v1/live_show_settings*', async route => {
+    const cors = {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, OPTIONS',
+      'Access-Control-Allow-Headers': 'apikey, authorization, content-type, prefer, accept, x-client-info',
+    };
+    if (route.request().method() === 'OPTIONS') {
+      await route.fulfill({ status: 204, headers: cors });
+      return;
+    }
+    await route.fulfill({
+      status: 200,
+      headers: { ...cors, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ venue_name: 'Hunter’s Ale House', show_enabled: true, is_live: true }),
+    });
+  });
   await page.goto('/index.html');
   await expect(page.locator('#home-watch-live-button'))
     .toHaveText('● WATCH LIVE AT HUNTER’S ALE HOUSE');
