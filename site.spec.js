@@ -271,7 +271,7 @@ test('public offline pages use stylesheet variants present in the service-worker
     }
   }
 
-  expect(serviceWorkerCacheName).toMatch(/^grifflist-livekit-offline-v\\d+$/);
+  expect(serviceWorkerCacheName).toMatch(/^grifflist-livekit-offline-v\d+$/);
 });
 
 test('PWA manifest is available with app shortcuts', async ({ request }) => { const response=await request.get('/manifest.webmanifest'); expect(response.ok()).toBeTruthy(); const manifest=await response.json(); expect(manifest.display).toBe('standalone'); expect(manifest.shortcuts.length).toBeGreaterThanOrEqual(3); });
