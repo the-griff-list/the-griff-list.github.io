@@ -295,6 +295,8 @@ async function test(name, callback) {
     cacheData.set('grifflist-livekit-offline-v55', new Map());
     cacheData.set('grifflist-livekit-offline-v56', new Map());
     cacheData.set('grifflist-livekit-offline-v57', new Map());
+    // v58 may contain config aliases cached before the private-path fix.
+    cacheData.set('grifflist-livekit-offline-v58', new Map());
     cacheData.set('grifflist-sober-drive-search-fix-offline-v7', new Map());
     cacheData.set(CACHE, new Map());
     cacheData.set('unrelated-public-cache', new Map());
