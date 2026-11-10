@@ -34,7 +34,7 @@ if recording_safety_src not in watch_html or live_show_src not in watch_html:
     issues.append('watch-live.html: bounded recording safety module and versioned viewer script must both be loaded')
 elif watch_html.index(recording_safety_src) > watch_html.index(live_show_src):
     issues.append('watch-live.html: recording safety module must load before live-show.js')
-if '32 MB' not in watch_html or 'permission' not in watch_html.lower():
+if '32 MiB' not in watch_html or 'permission' not in watch_html.lower():
     issues.append('watch-live.html: recording size and rights disclosure must remain visible')
 live_show_source=(ROOT/'live-show.js').read_text(encoding='utf-8')
 if 'recordingSafety.canAppendChunk(recordingBytes,e.data.size)' not in live_show_source:
