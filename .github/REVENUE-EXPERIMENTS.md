@@ -132,3 +132,33 @@ No public offer, checkout, payment flow, QR kit or feature flag has been activat
 - **Back Alley Music** is a local used/new records channel rather than a direct guitar/amp listing service. [Back Alley Music](https://www.backalleymusicpei.ca/)
 - **Implication:** the proposed $15 single-item / $35 three-item listing-preparation pack must not pretend to be a marketplace, consignment shop, appraisal or faster-sale guarantee. Its only defensible value proposition is saving an owner time on clear photos, accurate seller-approved specifications and listing copy while the owner retains the item, account, posting, buyer contact and transaction.
 - **Competition test:** compare against free self-listing and local cash-buy alternatives. Ask a few local musicians/sellers whether they would pay specifically to save preparation time; compliments or interest are not demand. Keep this researched and unvalidated; no outreach, public offer, payment flow or customer data collection is authorized by this research.
+
+
+## Fresh PEI market check and additional experiment — 2026-11-10
+
+### Additional public evidence
+
+- Gigheaven's Charlottetown guitar-vocalist marketplace page currently estimates local listings from **$160 to $1,450+**, with an indicated average near **$480**. Treat this as a marketplace estimate, not a verified local rate card, booked revenue or a recommended Griff List price. [Gigheaven — Charlottetown singing guitarists](https://www.gigheaven.com/search/singing-guitarists/canada/charlottetown.html)
+- Long & McQuade's Charlottetown lesson page lists individual guitar teachers around **$27–$27.50 per half-hour** and says its typical local range is **$25–$31 per half-hour**. Canada Music Academy advertises PEI lessons starting at **$50/hour**. This reinforces that a short consultation must be positioned as a distinct, tightly scoped service rather than claiming to replace formal lessons. [Long & McQuade](https://www.long-mcquade.com/lessons/Prince-Edward-Island/Charlottetown/) · [Canada Music Academy](https://canadamusicacademy.ca/music_lessons_in_PEI.html)
+- PEI-based **No Rewind** offers cassette digitization but requires a quote for cassette pricing; its general service page advertises a $25 starting price. A separate Canadian provider lists audio cassette transfers at **$27 each for 1–5**, **$23 for 6–29**, and **$21 for 30+**. This makes a one-tape low-price offer unattractive unless the owner already has suitable equipment and can batch capture efficiently. [No Rewind pricing](https://norewind.ca/pricing.html) · [Transfer To Digital](https://transfertodigital.ca/pricing/)
+- **YouRequestNow** advertises a $19.99/month QR song-request/tipping product. This is another reason not to build a generic request SaaS; a local musician-specific setup service would need to be one-time, narrow and clearly differentiated. [YouRequestNow](https://www.yourequestnow.com/)
+- Ko-fi's current official guidance distinguishes 0% platform fee on one-time tips in Free mode from a 5% service fee on Commissions, Shop and Memberships; processor fees still apply. PayPal Canada's published standard domestic commercial rate is 2.90% + $0.30 CAD. The actual account mode and transaction type must be checked before any price/net claim. [Ko-fi fees](https://help.ko-fi.com/hc/en-us/articles/360002506494-Does-Ko-fi-take-a-fee) · [PayPal Canada fees](https://www.paypal.com/ca/business/paypal-business-fees)
+
+### Additional candidate — setlist and show-flow consultation (researched, unvalidated)
+
+- **Offer hypothesis:** a 30-minute remote review for a newer solo/duo performer: set order, energy arc, break placement, audience-request handling and a practical changeover checklist. It is advice based on live-performance experience, not a booking agency, guaranteed crowd-growth service or formal music lesson.
+- **Test-price hypothesis:** $25 CAD for one 30-minute session, with no written deliverable beyond a short agreed action list. This is a test hypothesis, not a published price or proven willingness to pay. It sits near the local half-hour guitar-lesson price references but is a different service.
+- **Startup cost:** $0 if delivered remotely with existing tools.
+- **Time to first dollar:** 1–3 weeks is a planning hypothesis only; no customer interest has been measured.
+- **Illustrative unit economics:** at PayPal Canada's published domestic commercial rate of 2.90% + $0.30, a $25 commercial payment would net about $23.98 before tax, refunds and labour. If sold as a Ko-fi Commission under a 5% service-fee mode plus an illustrative processor rate of 3% + $0.30, estimated net would be about $22.70. Actual account/card rates vary; do not classify a service as a tip to obtain the one-time-tip fee treatment.
+- **Gross-margin outlook:** high before owner time, tax, cancellations and payment fees. If the 30-minute call requires another 15 minutes of preparation/follow-up, $22.70–$23.98 net is roughly $30.27–$31.97 per working hour before other costs.
+- **Effort:** low–medium; use a fixed intake template and a strict 30-minute scope.
+- **Risks:** no demonstrated demand, revision/scope creep, and the need to avoid promising better bookings, audience size or income. Do not use customer setlists, recordings or personal details publicly without permission.
+- **Validation:** ask up to three consenting PEI performers whether they would pay for this exact 30-minute review. Record only aggregate responses. Do not create a public booking form, accept payment or advertise the offer until the owner approves it.
+- **Status:** researched candidate; no outreach, customer interest, booking or revenue validated.
+
+### Current validation priority
+
+If the owner wants to test one additional service, compare this consultation against the existing beginner guitar tune-up hypothesis. The consultation has no requirement to claim teaching credentials and can be delivered remotely, but neither idea has customer validation. Do not add either to the public homepage until the owner confirms willingness, scope, availability, price and terms.
+
+No public offer, payment flow, new service, vendor account, paid advertising or inventory purchase was activated by this research.
