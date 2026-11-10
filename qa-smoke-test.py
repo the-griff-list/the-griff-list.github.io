@@ -40,6 +40,8 @@ else:
 admin_html=(ROOT/'admin.html').read_text(encoding='utf-8')
 if len(re.findall(r'<main\b', admin_html, re.I)) != 1:
     issues.append('admin.html: private dashboard must expose exactly one main landmark')
+if not re.search(r'\.request-card \.request-actions button\{[^}]*min-height:48px!important', admin_html, re.I):
+    issues.append('admin.html: request action buttons must retain accessible 48px minimum tap targets')
 watch_html=(ROOT/'watch-live.html').read_text(encoding='utf-8')
 recording_safety_src='recording-safety.js?v=rights-gate-1'
 live_show_src='live-show.js?v=grifflist-v31'
