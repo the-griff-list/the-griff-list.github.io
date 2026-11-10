@@ -1,5 +1,5 @@
 /* Public offline shell only. Requests, tips, live video and private admin pages need a connection. */
-const CACHE = 'grifflist-livekit-offline-v57';
+const CACHE = 'grifflist-livekit-offline-v58';
 // Limit simultaneous media/asset fetches during installation on memory-constrained phones.
 const PRECACHE_CONCURRENCY = 4;
 const CORE = [
@@ -172,11 +172,12 @@ function isCacheableRequest(request, url) {
   const requestCacheControl = (request.headers.get('Cache-Control') || '')
     .split(',')
     .map(value => value.trim().toLowerCase());
-  const hasRequestNoCache = requestCacheControl.some(value =>
-    value === 'no-store' ||
-    value === 'no-cache' ||
-    /^max-age\s*=\s*"?0"?$/i.test(value)
-  );
+  const hasRequestNoCache = requestCacheControl.some(value => {
+    const directive = value.split('=', 1)[0].trim();
+    return directive === 'no-store' ||
+      directive === 'no-cache' ||
+      /^max-age\s*=\s*"?0+"?$/i.test(value);
+  });
   const hasPragmaNoCache = (request.headers.get('Pragma') || '')
     .split(',')
     .some(value => value.trim().toLowerCase() === 'no-cache');

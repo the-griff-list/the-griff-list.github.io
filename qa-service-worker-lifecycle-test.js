@@ -294,6 +294,7 @@ async function test(name, callback) {
     cacheData.set('grifflist-livekit-offline-v54', new Map());
     cacheData.set('grifflist-livekit-offline-v55', new Map());
     cacheData.set('grifflist-livekit-offline-v56', new Map());
+    cacheData.set('grifflist-livekit-offline-v57', new Map());
     cacheData.set('grifflist-sober-drive-search-fix-offline-v7', new Map());
     cacheData.set(CACHE, new Map());
     cacheData.set('unrelated-public-cache', new Map());
@@ -331,6 +332,8 @@ async function test(name, callback) {
       { headerValues: { 'Cache-Control': 'no-store' } },
       { headerValues: { 'Cache-Control': 'no-cache' } },
       { headerValues: { 'Cache-Control': 'max-age=0' } },
+      { headerValues: { 'Cache-Control': 'max-age=00' } },
+      { headerValues: { 'Cache-Control': 'no-cache="set-cookie"' } },
       { headerValues: { Pragma: 'no-cache' } },
     ];
     for (const item of cases) {

@@ -130,7 +130,7 @@ test('explicit request cache-bypass modes and directives are never cacheable', (
   for (const cache of ['no-store', 'no-cache', 'reload']) {
     assert.equal(context.isCacheableRequest(request({ destination: 'style', cache }), publicUrl), false, cache);
   }
-  for (const cacheControl of ['no-store', 'no-cache', 'max-age=0', 'public, max-age="0"']) {
+  for (const cacheControl of ['no-store', 'no-cache', 'no-store=1', 'no-cache="set-cookie"', 'max-age=0', 'max-age=00', 'public, max-age="0"']) {
     assert.equal(
       context.isCacheableRequest(
         request({ destination: 'style', headerValues: { 'Cache-Control': cacheControl } }),
