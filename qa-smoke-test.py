@@ -27,14 +27,14 @@ for file in html_files:
         if ref and not (ROOT/ref).exists(): issues.append(f'{file.name}: missing local asset/page {ref}')
 # Assert the time-sensitive gig and payment disclosures remain explicit.
 home_html=(ROOT/'index.html').read_text(encoding='utf-8')
-home_h1 = re.findall(r'<h1\\b([^>]*)>(.*?)</h1>', home_html, re.I | re.S)
+home_h1 = re.findall(r'<h1([^>]*)>(.*?)</h1>', home_html, re.I | re.S)
 if len(home_h1) != 1:
     issues.append(f'index.html: expected exactly one primary h1, found {len(home_h1)}')
 else:
     h1_attrs, h1_content = home_h1[0]
-    if not re.search(r'\\bclass=["\\'][^"\\']*\\bvisually-hidden\\b[^"\\']*["\\']', h1_attrs):
+    if 'visually-hidden' not in h1_attrs:
         issues.append('index.html: primary h1 must use the existing visually-hidden utility to preserve the established hero design')
-    h1_text = re.sub(r'\\s+', ' ', re.sub(r'<[^>]+>', '', h1_content)).strip()
+    h1_text = " ".join(re.sub(r'<[^>]+>', '', h1_content).split())
     if h1_text != 'The Grifflist — Live Repertoire and Song Requests':
         issues.append('index.html: primary h1 must identify The Grifflist live repertoire and song requests')
 watch_html=(ROOT/'watch-live.html').read_text(encoding='utf-8')
