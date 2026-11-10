@@ -3,8 +3,9 @@
  const client=window.supabaseClient, video=document.querySelector('#live-video'), placeholder=document.querySelector('#live-placeholder');
  const heading=document.querySelector('#live-venue-heading'), desc=document.querySelector('#live-description'), status=document.querySelector('#live-player-status'), badge=document.querySelector('#live-badge'), audioButton=document.querySelector('#enable-live-audio');
  const TOKEN_ENDPOINT='https://odd-unit-91b9.grar0842.workers.dev/token';
+ const recordingSafety=window.GrifflistRecordingSafety;
  let room=null, lowData=false, activeKey='';
- const remoteTracks=new Set();let mediaRecorder=null,recordingChunks=[],recordingStream=null;
+ const remoteTracks=new Set();let mediaRecorder=null,recordingChunks=[],recordingStream=null,recordingBytes=0,recordingLimitReached=false;
  function offline(message){const h=document.querySelector('#viewer-health');if(h)h.textContent=message||'Stream offline';if(placeholder){placeholder.hidden=false;if(status)status.textContent='';}if(badge)badge.hidden=true;if(audioButton)audioButton.hidden=true;}
  function cleanup(){if(mediaRecorder&&mediaRecorder.state!=='inactive'){try{mediaRecorder.stop();}catch(e){}}remoteTracks.clear();if(room){room.disconnect();room=null;}document.querySelectorAll('[data-livekit-audio="true"]').forEach(el=>el.remove());if(video){video.pause();video.srcObject=null;video.removeAttribute('src');}activeKey='';if(audioButton)audioButton.hidden=true;}
  async function connect(){if(!client){offline('Live page needs its Supabase configuration.');return;}try{
@@ -37,6 +38,7 @@
  function setRecordingStatus(message){if(recordStatus)recordStatus.textContent=message;}
  function supportedMime(candidates){return candidates.find(type=>window.MediaRecorder&&MediaRecorder.isTypeSupported(type))||'';}
  function startRecording(){
+  if(!recordingSafety){setRecordingStatus('Recording is unavailable because the clip memory limit could not be loaded.');return;}
   if(!room||room.state!=='connected'){setRecordingStatus('Connect to a live show before recording.');return;}
   if(!window.MediaRecorder){setRecordingStatus('Recording is not supported by this browser. Try the latest Chrome.');return;}
   const mode=recordMode?.value||'video';const tracks=[...remoteTracks].filter(t=>t.mediaStreamTrack&&t.mediaStreamTrack.readyState==='live');
@@ -44,17 +46,47 @@
   const videoTracks=mode==='video'&&!lowData?tracks.filter(t=>t.kind==='video').map(t=>t.mediaStreamTrack):[];
   if(!audioTracks.length){setRecordingStatus('No live audio track is available yet. Wait for the stream audio, then try again.');return;}
   if(mode==='video'&&!videoTracks.length){setRecordingStatus(lowData?'Turn off Low-data mode to record video, or choose audio only.':'No live video track is available. Choose audio only or wait for video.');return;}
-  recordingStream=new MediaStream([...videoTracks,...audioTracks]);recordingChunks=[];
+  recordingStream=new MediaStream([...videoTracks,...audioTracks]);recordingChunks=[];recordingBytes=0;recordingLimitReached=false;
   const mime=mode==='audio'?supportedMime(['audio/webm;codecs=opus','audio/webm']):supportedMime(['video/webm;codecs=vp8,opus','video/webm;codecs=vp9,opus','video/webm']);
   try{mediaRecorder=new MediaRecorder(recordingStream,{...(mime?{mimeType:mime}:{}),...(mode==='audio'?{audioBitsPerSecond:64000}:{videoBitsPerSecond:1200000,audioBitsPerSecond:64000})});}
   catch(error){setRecordingStatus('Could not start recording in this browser. Try audio-only mode.');recordingStream=null;return;}
-  mediaRecorder.ondataavailable=e=>{if(e.data&&e.data.size)recordingChunks.push(e.data);};
+  mediaRecorder.ondataavailable=e=>{
+   if(!e.data||!e.data.size||recordingLimitReached)return;
+   if(!recordingSafety.canAppendChunk(recordingBytes,e.data.size)){
+    recordingLimitReached=true;
+    setRecordingStatus('Clip reached the 32 MB memory limit. Finalizing the captured portion…');
+    stopRecording();
+    return;
+   }
+   recordingChunks.push(e.data);
+   recordingBytes+=e.data.size;
+  };
   mediaRecorder.onerror=()=>setRecordingStatus('Recording encountered an error. Try again when the connection is stable.');
-  mediaRecorder.onstop=()=>{const type=mediaRecorder?.mimeType|| (mode==='audio'?'audio/webm':'video/webm');const blob=new Blob(recordingChunks,{type});if(!blob.size){setRecordingStatus('No recording data was captured. Please try again.');return;}const url=URL.createObjectURL(blob),a=document.createElement('a'),stamp=new Date().toISOString().replace(/[:.]/g,'-');a.href=url;a.download=`grifflist-${mode==='audio'?'audio':'video'}-${stamp}.webm`;document.body.appendChild(a);a.click();a.remove();window.setTimeout(()=>URL.revokeObjectURL(url),60000);setRecordingStatus(`Recording saved as ${a.download} (${(blob.size/1048576).toFixed(1)} MB).`);recordingChunks=[];recordingStream=null;if(recordStart)recordStart.disabled=!(room&&room.state==='connected');if(recordStop)recordStop.disabled=true;};
+  mediaRecorder.onstop=()=>{
+   const limitReached=recordingLimitReached;
+   const type=mediaRecorder?.mimeType|| (mode==='audio'?'audio/webm':'video/webm');
+   const blob=new Blob(recordingChunks,{type});
+   if(!blob.size){
+    setRecordingStatus('No recording data was captured. Please try again.');
+    recordingChunks=[];recordingStream=null;recordingBytes=0;recordingLimitReached=false;
+    if(recordStart)recordStart.disabled=!(recordingSafety&&room&&room.state==='connected');
+    if(recordStop)recordStop.disabled=true;
+    return;
+   }
+   const url=URL.createObjectURL(blob),a=document.createElement('a'),stamp=new Date().toISOString().replace(/[:.]/g,'-');
+   a.href=url;a.download=`grifflist-${mode==='audio'?'audio':'video'}-${stamp}.webm`;
+   document.body.appendChild(a);a.click();a.remove();
+   window.setTimeout(()=>URL.revokeObjectURL(url),60000);
+   const limitNote=limitReached?'Clip reached the 32 MB limit. ':'';
+   setRecordingStatus(`${limitNote}Download prepared: ${a.download} (${(blob.size/1048576).toFixed(1)} MB).`);
+   recordingChunks=[];recordingStream=null;recordingBytes=0;recordingLimitReached=false;
+   if(recordStart)recordStart.disabled=!(recordingSafety&&room&&room.state==='connected');
+   if(recordStop)recordStop.disabled=true;
+  };
   mediaRecorder.start(1000);if(recordStart)recordStart.disabled=true;if(recordStop)recordStop.disabled=false;setRecordingStatus(mode==='audio'?'Recording audio only. Tap Stop & Save to download the WebM file.':'Recording video and audio. Tap Stop & Save to download the WebM file.');
  }
- function stopRecording(){if(mediaRecorder&&mediaRecorder.state!=='inactive'){mediaRecorder.stop();setRecordingStatus('Finalizing recording and preparing download…');}if(recordStop)recordStop.disabled=true;}
+ function stopRecording(){if(mediaRecorder&&mediaRecorder.state!=='inactive'){mediaRecorder.stop();setRecordingStatus(recordingLimitReached?'Finalizing the 32 MB clip…':'Finalizing recording and preparing download…');}if(recordStop)recordStop.disabled=true;}
  recordStart?.addEventListener('click',startRecording);recordStop?.addEventListener('click',stopRecording);
- const updateRecordAvailability=()=>{if(recordStart&&!mediaRecorder?.state?.match(/recording|paused/))recordStart.disabled=!(room&&room.state==='connected');};
+ const updateRecordAvailability=()=>{if(recordStart&&!mediaRecorder?.state?.match(/recording|paused/))recordStart.disabled=!(recordingSafety&&room&&room.state==='connected');};
  connect();refreshMeter();window.setInterval(()=>{if(!document.hidden&&(!room||room.state!=='connected'))connect();updateRecordAvailability();},15000);window.setInterval(()=>{if(!document.hidden)refreshMeter();},20000);window.addEventListener('pagehide',cleanup);
 })();
