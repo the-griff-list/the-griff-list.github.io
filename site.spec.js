@@ -203,7 +203,7 @@ globalThis.isSafePublicCacheResponse = isSafePublicCacheResponse;`,
 
 test('homepage loads without horizontal overflow or page errors', async ({ page }) => { const errors=[]; page.on('pageerror',e=>errors.push(e.message)); await page.goto('/index.html'); await expect(page.locator('#splash')).toBeVisible(); expect(await page.evaluate(()=>document.documentElement.scrollWidth>document.documentElement.clientWidth)).toBe(false); expect(errors).toEqual([]); });
 test('title screen can be entered', async ({ page }) => { await page.goto('/index.html'); await page.locator('#splash').click(); await expect(page.locator('#catalog')).toBeVisible(); });
-test('next-show strip displays the confirmed November 10 booking and later dates', async ({ page }) => {
+test('next-show strip displays only the confirmed November 10 booking', async ({ page }) => {
   await page.goto('/index.html');
   const card = page.locator('.next-show-card');
   await expect(card.locator('.eyebrow')).toHaveText('NEXT SHOW');
@@ -217,9 +217,9 @@ test('next-show strip displays the confirmed November 10 booking and later dates
   expect(new Date(start).toISOString()).toBe('2026-11-11T02:00:00.000Z');
   expect(new Date(end).toISOString()).toBe('2026-11-11T05:30:00.000Z');
   await expect(card).toContainText('Performance: 10:00 p.m.–1:30 a.m. Atlantic');
-  await expect(card.locator('.show-status-note')).toHaveText(
-    'Also confirmed at Hunter’s Ale House: Thursday, December 3 and Thursday, December 17, 2026.'
-  );
+  await expect(card.locator('.show-status-note')).toHaveCount(0);
+  await expect(card).not.toContainText('December 3');
+  await expect(card).not.toContainText('December 17');
   await expect(card).not.toContainText('UP NEXT');
 });
 test('home Watch Live CTA checks status when no stream is active', async ({ page }) => {
