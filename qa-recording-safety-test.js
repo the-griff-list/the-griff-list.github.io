@@ -28,7 +28,7 @@ const html = fs.readFileSync('./watch-live.html', 'utf8');
 const safetyScript = html.indexOf('recording-safety.js?v=clip-limit-1');
 const liveScript = html.indexOf('live-show.js?v=grifflist-v30');
 assert.ok(safetyScript >= 0 && liveScript > safetyScript, 'recording safety must load before the viewer');
-assert.match(html, /32 MB[^<]*permission|permission[^<]*32 MB/i);
+assert.match(html, /32 MiB[^<]*permission|permission[^<]*32 MiB/i);
 
 const live = fs.readFileSync('./live-show.js', 'utf8');
 assert.ok(live.includes('recordingSafety.canAppendChunk(recordingBytes,e.data.size)'));
