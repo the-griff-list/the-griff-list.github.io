@@ -811,7 +811,8 @@ test('service worker caches only query-bearing URLs pinned in CORE', () => {
     '/script.js?v=grifflist-v28',
     '/site-interactions.js?v=grifflist-v41',
     '/site-interactions.js?v=grifflist-v39',
-    '/live-show.js?v=grifflist-v29',
+    '/live-show.js?v=grifflist-v30',
+    '/recording-safety.js?v=clip-limit-1',
   ]) {
     expect(canCache(path, { destination: 'style' }), path).toBe(true);
   }
