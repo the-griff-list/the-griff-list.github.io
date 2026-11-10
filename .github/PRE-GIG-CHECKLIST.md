@@ -19,7 +19,7 @@
 - [ ] Check Rock-O-Meter values against the actual admin data. Do not display invented tips, totals or goals.
 - [ ] Confirm the homepage CTA reads “CHECK LIVE STATUS” and opens the Watch Live page; it must not imply that a stream is active before the backend marks it live.
 - [ ] Open Watch Live and confirm the page clearly distinguishes a live, configured stream from an offline/unavailable preview. Do not promise a stream until phone-to-viewer playback has been tested end-to-end.
-- [ ] Confirm the Watch Live recording disclosure is visible and a short test clip downloads correctly. The browser recorder is capped at 32 MB; verify the cap on a controlled test stream before enabling recording for a real performance, and record/retain only content with the necessary permissions.
+- [ ] Confirm the Watch Live recording disclosure is visible and a short test clip downloads correctly. The browser recorder is capped at 32 MiB; verify the cap on a controlled test stream before enabling recording for a real performance, and record/retain only content with the necessary permissions.
 - [ ] Test the page on a second phone or a narrow mobile viewport, including keyboard focus, form labels, button tap targets and the back button.
 
 ## Poor-network and recovery checks
