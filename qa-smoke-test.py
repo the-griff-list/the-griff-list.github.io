@@ -28,6 +28,19 @@ for file in html_files:
 # Assert the time-sensitive gig and payment disclosures remain explicit.
 home_html=(ROOT/'index.html').read_text(encoding='utf-8')
 watch_html=(ROOT/'watch-live.html').read_text(encoding='utf-8')
+recording_safety_src='recording-safety.js?v=clip-limit-1'
+live_show_src='live-show.js?v=grifflist-v30'
+if recording_safety_src not in watch_html or live_show_src not in watch_html:
+    issues.append('watch-live.html: bounded recording safety module and versioned viewer script must both be loaded')
+elif watch_html.index(recording_safety_src) > watch_html.index(live_show_src):
+    issues.append('watch-live.html: recording safety module must load before live-show.js')
+if '32 MB' not in watch_html or 'permission' not in watch_html.lower():
+    issues.append('watch-live.html: recording size and rights disclosure must remain visible')
+live_show_source=(ROOT/'live-show.js').read_text(encoding='utf-8')
+if 'recordingSafety.canAppendChunk(recordingBytes,e.data.size)' not in live_show_source:
+    issues.append('live-show.js: recording chunks must pass the bounded memory guard')
+if 'if(e.data&&e.data.size)recordingChunks.push(e.data);' in live_show_source:
+    issues.append('live-show.js: unbounded recording chunk accumulation must not return')
 
 def next_show_schedule_errors(section_html, now=None):
     """Validate NEXT SHOW with an optional, explicitly unconfirmed performance time."""
@@ -377,7 +390,8 @@ else:
         'if (!isCacheableRequest(request, url)) return;',
         "'./script.js?v=grifflist-v28'",
         "'./site-interactions.js?v=grifflist-v39'",
-        "'./live-show.js?v=grifflist-v29'",
+        "'./live-show.js?v=grifflist-v30'",
+        "'./recording-safety.js?v=clip-limit-1'",
         'function canonicalPathCandidates(pathname)',
         'function normalizePathCandidate(pathname)',
         "segment === '..'",
