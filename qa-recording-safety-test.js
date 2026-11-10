@@ -29,10 +29,12 @@ const safetyScript = html.indexOf('recording-safety.js?v=clip-limit-1');
 const liveScript = html.indexOf('live-show.js?v=grifflist-v30');
 assert.ok(safetyScript >= 0 && liveScript > safetyScript, 'recording safety must load before the viewer');
 assert.match(html, /32 MiB[^<]*permission|permission[^<]*32 MiB/i);
+assert.match(html, /id="recording-start"[^>]*disabled/);
 
 const live = fs.readFileSync('./live-show.js', 'utf8');
 assert.ok(live.includes('recordingSafety.canAppendChunk(recordingBytes,e.data.size)'));
 assert.ok(live.includes('recordingLimitReached'));
+assert.ok(live.includes("recordStart.disabled=!(recordingSafety&&room&&room.state==='connected')"));
 assert.ok(live.includes('toFixed(1)} MiB).'));
 assert.ok(!live.includes('if(e.data&&e.data.size)recordingChunks.push(e.data);'));
 
@@ -40,4 +42,4 @@ const sw = fs.readFileSync('./sw.js', 'utf8');
 assert.ok(sw.includes("const CACHE = 'grifflist-livekit-offline-v60';"));
 assert.ok(sw.includes("'./recording-safety.js?v=clip-limit-1'"));
 assert.ok(sw.includes("'./live-show.js?v=grifflist-v30'"));
-console.log('Bounded live recording safety: 22 assertions passed.');
+console.log('Bounded live recording safety: 24 assertions passed.');
