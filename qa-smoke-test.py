@@ -38,7 +38,7 @@ else:
     if h1_text != 'The Grifflist — Live Repertoire and Song Requests':
         issues.append('index.html: primary h1 must identify The Grifflist live repertoire and song requests')
 admin_html=(ROOT/'admin.html').read_text(encoding='utf-8')
-if len(re.findall(r'<main\\b', admin_html, re.I)) != 1:
+if len(re.findall(r'<main\b', admin_html, re.I)) != 1:
     issues.append('admin.html: private dashboard must expose exactly one main landmark')
 watch_html=(ROOT/'watch-live.html').read_text(encoding='utf-8')
 recording_safety_src='recording-safety.js?v=rights-gate-1'
