@@ -49,6 +49,9 @@ jobs:
       - name: Install optional audit parsers
         run: python -m pip install --disable-pip-version-check tinycss2==1.4.0 Pillow==11.3.0
 
+      - name: Verify bounded live recording safety
+        run: node qa-recording-safety-test.js
+
       - name: Check HTML references, JavaScript syntax, PWA manifest, service worker, CSS and images
         run: python qa-smoke-test.py
 
