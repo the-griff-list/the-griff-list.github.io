@@ -202,6 +202,13 @@ globalThis.isSafePublicCacheResponse = isSafePublicCacheResponse;`,
 });
 
 test('homepage loads without horizontal overflow or page errors', async ({ page }) => { const errors=[]; page.on('pageerror',e=>errors.push(e.message)); await page.goto('/index.html'); await expect(page.locator('#splash')).toBeVisible(); expect(await page.evaluate(()=>document.documentElement.scrollWidth>document.documentElement.clientWidth)).toBe(false); expect(errors).toEqual([]); });
+test('homepage exposes one visually hidden primary heading', async ({ page }) => {
+  await page.goto('/index.html');
+  const heading = page.getByRole('heading', { level: 1 });
+  await expect(heading).toHaveCount(1);
+  await expect(heading).toHaveText('The Grifflist — Live Repertoire and Song Requests');
+  await expect(heading).toHaveClass(/visually-hidden/);
+});
 test('title screen can be entered', async ({ page }) => { await page.goto('/index.html'); await page.locator('#splash').click(); await expect(page.locator('#catalog')).toBeVisible(); });
 test('next-show strip displays only the confirmed November 10 booking', async ({ page }) => {
   await page.goto('/index.html');
