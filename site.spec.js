@@ -209,6 +209,11 @@ test('homepage exposes one visually hidden primary heading', async ({ page }) =>
   await expect(heading).toHaveText('The Grifflist — Live Repertoire and Song Requests');
   await expect(heading).toHaveClass(/visually-hidden/);
 });
+test('private dashboard exposes one main landmark and its page heading', async ({ page }) => {
+  await page.goto('/admin.html');
+  await expect(page.getByRole('main')).toHaveCount(1);
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Request Dashboard');
+});
 test('title screen can be entered', async ({ page }) => { await page.goto('/index.html'); await page.locator('#splash').click(); await expect(page.locator('#catalog')).toBeVisible(); });
 test('next-show strip displays only the confirmed November 10 booking', async ({ page }) => {
   await page.goto('/index.html');
