@@ -380,6 +380,8 @@ else:
             issues.append(f'sw.js: private cache denylist is missing {private_path}')
     if 'PRIVATE_PATHS.has(path)' not in sw:
         issues.append('sw.js: private-path checks must consult the explicit PRIVATE_PATHS denylist')
+    if "path.startsWith('/supabase-config.js')" not in sw:
+        issues.append('sw.js: Supabase config suffix and descendant aliases must remain private')
 
     # Old offline generations can retain resources after a worker update.
     # Require activation to delete prior Grifflist generations but preserve

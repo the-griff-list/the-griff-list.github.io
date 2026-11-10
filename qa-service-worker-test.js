@@ -64,6 +64,8 @@ test('explicit private assets and private section prefixes are denied', () => {
     '/admin.html', '/admin.js', '/admin-features.js',
     '/analytics.html', '/analytics-dashboard.js', '/analytics-tracker.js',
     '/request-archive.html', '/request-archive.js', '/supabase-config.js',
+    '/supabase-config.js.map', '/supabase-config.js/extra',
+    '/%73upabase-config.js.map', '/%2573upabase-config.js.map',
     '/admin/users', '/analytics/reports', '/request-archive/export',
   ]) {
     assert.equal(context.isPrivatePath(pathname), true, pathname);

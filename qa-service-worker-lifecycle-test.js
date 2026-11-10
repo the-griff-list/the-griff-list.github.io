@@ -322,6 +322,36 @@ async function test(name, callback) {
     assert.equal(cacheData.has(CACHE), false);
   });
 
+  await test('Supabase config suffix and descendant aliases bypass fetch handling and CacheStorage', async () => {
+    for (const pathname of [
+      '/supabase-config.js.map',
+      '/supabase-config.js/extra',
+      '/%73upabase-config.js.map',
+      '/%2573upabase-config.js.map',
+    ]) {
+      reset();
+      const before = fetchCalls;
+      let waitCount = 0;
+      let respondCount = 0;
+      listeners.get('fetch')({
+        request: {
+          url: ORIGIN + pathname,
+          method: 'GET',
+          headers: new Headers(),
+          mode: 'cors',
+          destination: 'script',
+          credentials: 'same-origin',
+        },
+        waitUntil() { waitCount += 1; },
+        respondWith() { respondCount += 1; },
+      });
+      assert.equal(fetchCalls, before, pathname);
+      assert.equal(waitCount, 0, pathname);
+      assert.equal(respondCount, 0, pathname);
+      assert.equal(cacheData.has(CACHE), false, pathname);
+    }
+  });
+
   await test('explicit cache-bypass requests skip the service-worker cache handler', async () => {
     reset();
     const url = ORIGIN + '/styles.css';

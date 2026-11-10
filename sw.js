@@ -152,7 +152,8 @@ function isPrivatePath(pathname) {
     PRIVATE_PATHS.has(path) ||
     path.startsWith('/admin') ||
     path.startsWith('/analytics') ||
-    path.startsWith('/request-archive')
+    path.startsWith('/request-archive') ||
+    path.startsWith('/supabase-config.js')
   );
 }
 
