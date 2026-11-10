@@ -54,7 +54,7 @@
    if(!e.data||!e.data.size||recordingLimitReached)return;
    if(!recordingSafety.canAppendChunk(recordingBytes,e.data.size)){
     recordingLimitReached=true;
-    setRecordingStatus('Clip reached the 32 MB memory limit. Finalizing the captured portion…');
+    setRecordingStatus('Clip reached the 32 MiB memory limit. Finalizing the captured portion…');
     stopRecording();
     return;
    }
@@ -77,7 +77,7 @@
    a.href=url;a.download=`grifflist-${mode==='audio'?'audio':'video'}-${stamp}.webm`;
    document.body.appendChild(a);a.click();a.remove();
    window.setTimeout(()=>URL.revokeObjectURL(url),60000);
-   const limitNote=limitReached?'Clip reached the 32 MB limit. ':'';
+   const limitNote=limitReached?'Clip reached the 32 MiB limit. ':'';
    setRecordingStatus(`${limitNote}Download prepared: ${a.download} (${(blob.size/1048576).toFixed(1)} MB).`);
    recordingChunks=[];recordingStream=null;recordingBytes=0;recordingLimitReached=false;
    if(recordStart)recordStart.disabled=!(recordingSafety&&room&&room.state==='connected');
@@ -85,7 +85,7 @@
   };
   mediaRecorder.start(1000);if(recordStart)recordStart.disabled=true;if(recordStop)recordStop.disabled=false;setRecordingStatus(mode==='audio'?'Recording audio only. Tap Stop & Save to download the WebM file.':'Recording video and audio. Tap Stop & Save to download the WebM file.');
  }
- function stopRecording(){if(mediaRecorder&&mediaRecorder.state!=='inactive'){mediaRecorder.stop();setRecordingStatus(recordingLimitReached?'Finalizing the 32 MB clip…':'Finalizing recording and preparing download…');}if(recordStop)recordStop.disabled=true;}
+ function stopRecording(){if(mediaRecorder&&mediaRecorder.state!=='inactive'){mediaRecorder.stop();setRecordingStatus(recordingLimitReached?'Finalizing the 32 MiB clip…':'Finalizing recording and preparing download…');}if(recordStop)recordStop.disabled=true;}
  recordStart?.addEventListener('click',startRecording);recordStop?.addEventListener('click',stopRecording);
  const updateRecordAvailability=()=>{if(recordStart&&!mediaRecorder?.state?.match(/recording|paused/))recordStart.disabled=!(recordingSafety&&room&&room.state==='connected');};
  connect();refreshMeter();window.setInterval(()=>{if(!document.hidden&&(!room||room.state!=='connected'))connect();updateRecordAvailability();},15000);window.setInterval(()=>{if(!document.hidden)refreshMeter();},20000);window.addEventListener('pagehide',cleanup);
