@@ -33,10 +33,11 @@ assert.match(html, /32 MiB[^<]*permission|permission[^<]*32 MiB/i);
 const live = fs.readFileSync('./live-show.js', 'utf8');
 assert.ok(live.includes('recordingSafety.canAppendChunk(recordingBytes,e.data.size)'));
 assert.ok(live.includes('recordingLimitReached'));
+assert.ok(live.includes('toFixed(1)} MiB).'));
 assert.ok(!live.includes('if(e.data&&e.data.size)recordingChunks.push(e.data);'));
 
 const sw = fs.readFileSync('./sw.js', 'utf8');
 assert.ok(sw.includes("const CACHE = 'grifflist-livekit-offline-v60';"));
 assert.ok(sw.includes("'./recording-safety.js?v=clip-limit-1'"));
 assert.ok(sw.includes("'./live-show.js?v=grifflist-v30'"));
-console.log('Bounded live recording safety: 21 assertions passed.');
+console.log('Bounded live recording safety: 22 assertions passed.');
