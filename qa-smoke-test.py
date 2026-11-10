@@ -32,14 +32,14 @@ watch_html=(ROOT/'watch-live.html').read_text(encoding='utf-8')
 def next_show_schedule_errors(section_html, now=None):
     """Validate NEXT SHOW with an optional, explicitly unconfirmed performance time."""
     times = re.findall(
-        r'<time\\b[^>]*\\bdatetime="([^"]+)"[^>]*>(.*?)</time>',
+        r'<time\b[^>]*\bdatetime="([^"]+)"[^>]*>(.*?)</time>',
         section_html,
         re.S,
     )
     if len(times) not in (1, 3):
         return [f'NEXT SHOW must contain a date and either no times or a complete start/end pair; found {len(times)} time elements']
 
-    if not re.fullmatch(r'\\d{4}-\\d{2}-\\d{2}', times[0][0]):
+    if not re.fullmatch(r'\d{4}-\d{2}-\d{2}', times[0][0]):
         return ['NEXT SHOW date must use a date-only ISO value (YYYY-MM-DD)']
 
     try:
