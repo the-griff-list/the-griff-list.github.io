@@ -78,7 +78,7 @@
    document.body.appendChild(a);a.click();a.remove();
    window.setTimeout(()=>URL.revokeObjectURL(url),60000);
    const limitNote=limitReached?'Clip reached the 32 MiB limit. ':'';
-   setRecordingStatus(`${limitNote}Download prepared: ${a.download} (${(blob.size/1048576).toFixed(1)} MB).`);
+   setRecordingStatus(`${limitNote}Download prepared: ${a.download} (${(blob.size/1048576).toFixed(1)} MiB).`);
    recordingChunks=[];recordingStream=null;recordingBytes=0;recordingLimitReached=false;
    if(recordStart)recordStart.disabled=!(recordingSafety&&room&&room.state==='connected');
    if(recordStop)recordStop.disabled=true;
