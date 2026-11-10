@@ -293,6 +293,7 @@ async function test(name, callback) {
     cacheData.set('grifflist-livekit-offline-v53', new Map());
     cacheData.set('grifflist-livekit-offline-v54', new Map());
     cacheData.set('grifflist-livekit-offline-v55', new Map());
+    cacheData.set('grifflist-livekit-offline-v56', new Map());
     cacheData.set('grifflist-sober-drive-search-fix-offline-v7', new Map());
     cacheData.set(CACHE, new Map());
     cacheData.set('unrelated-public-cache', new Map());
@@ -318,6 +319,37 @@ async function test(name, callback) {
     assert.equal(waitCount, 0);
     assert.equal(respondCount, 0);
     assert.equal(cacheData.has(CACHE), false);
+  });
+
+  await test('explicit cache-bypass requests skip the service-worker cache handler', async () => {
+    reset();
+    const url = ORIGIN + '/styles.css';
+    const cases = [
+      { cache: 'no-store' },
+      { cache: 'no-cache' },
+      { cache: 'reload' },
+      { headerValues: { 'Cache-Control': 'no-store' } },
+      { headerValues: { 'Cache-Control': 'no-cache' } },
+      { headerValues: { 'Cache-Control': 'max-age=0' } },
+      { headerValues: { Pragma: 'no-cache' } },
+    ];
+    for (const item of cases) {
+      const request = {
+        url,
+        method: 'GET',
+        headers: new Headers(item.headerValues || {}),
+        mode: 'cors',
+        destination: 'style',
+        credentials: 'omit',
+        cache: item.cache || 'default',
+      };
+      const beforeFetch = fetchCalls;
+      const result = await dispatchFetch(request);
+      assert.equal(result.responsePromise, undefined, JSON.stringify(item));
+      assert.equal(result.waitPromise, undefined, JSON.stringify(item));
+      assert.equal(fetchCalls, beforeFetch, JSON.stringify(item));
+      assert.equal(cacheData.has(CACHE), false, JSON.stringify(item));
+    }
   });
 
   await test('runtime navigation does not cache a private final response URL', async () => {

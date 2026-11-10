@@ -36,8 +36,9 @@ function request({
   mode = 'cors',
   destination = '',
   credentials = 'omit',
+  cache = 'default',
 } = {}) {
-  return { method, headers: headers(headerValues), mode, destination, credentials };
+  return { method, headers: headers(headerValues), mode, destination, credentials, cache };
 }
 
 function response({
@@ -122,6 +123,31 @@ test('request eligibility permits only public navigation and approved static ass
     context.isCacheableRequest(request({ destination: 'style' }), new URL('/styles.css?v=unreviewed', ORIGIN)),
     false
   );
+});
+
+test('explicit request cache-bypass modes and directives are never cacheable', () => {
+  const publicUrl = new URL('/styles.css', ORIGIN);
+  for (const cache of ['no-store', 'no-cache', 'reload']) {
+    assert.equal(context.isCacheableRequest(request({ destination: 'style', cache }), publicUrl), false, cache);
+  }
+  for (const cacheControl of ['no-store', 'no-cache', 'max-age=0', 'public, max-age="0"']) {
+    assert.equal(
+      context.isCacheableRequest(
+        request({ destination: 'style', headerValues: { 'Cache-Control': cacheControl } }),
+        publicUrl
+      ),
+      false,
+      cacheControl
+    );
+  }
+  assert.equal(
+    context.isCacheableRequest(
+      request({ destination: 'style', headerValues: { Pragma: 'no-cache' } }),
+      publicUrl
+    ),
+    false
+  );
+  assert.equal(context.isCacheableRequest(request({ destination: 'style' }), publicUrl), true);
 });
 
 test('request eligibility rejects methods, ranges, credentials, private paths, APIs and other origins', () => {

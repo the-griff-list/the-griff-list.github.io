@@ -1,5 +1,5 @@
 /* Public offline shell only. Requests, tips, live video and private admin pages need a connection. */
-const CACHE = 'grifflist-livekit-offline-v56';
+const CACHE = 'grifflist-livekit-offline-v57';
 // Limit simultaneous media/asset fetches during installation on memory-constrained phones.
 const PRECACHE_CONCURRENCY = 4;
 const CORE = [
@@ -167,6 +167,22 @@ function isApiPath(pathname) {
 }
 
 function isCacheableRequest(request, url) {
+  // Cache API does not automatically honor Fetch cache modes or request directives.
+  // Explicit cache-bypass requests must not be served from or persisted to this cache.
+  const requestCacheControl = (request.headers.get('Cache-Control') || '')
+    .split(',')
+    .map(value => value.trim().toLowerCase());
+  const hasRequestNoCache = requestCacheControl.some(value =>
+    value === 'no-store' ||
+    value === 'no-cache' ||
+    /^max-age\s*=\s*"?0"?$/i.test(value)
+  );
+  const hasPragmaNoCache = (request.headers.get('Pragma') || '')
+    .split(',')
+    .some(value => value.trim().toLowerCase() === 'no-cache');
+  if (['no-store', 'no-cache', 'reload'].includes(request.cache) ||
+      hasRequestNoCache || hasPragmaNoCache) return false;
+
   if (request.method !== 'GET' || request.headers.has('Range') || url.origin !== self.location.origin) return false;
   if (request.headers.has('Authorization')) return false;
   if (isPrivatePath(url.pathname) || isApiPath(url.pathname)) return false;
