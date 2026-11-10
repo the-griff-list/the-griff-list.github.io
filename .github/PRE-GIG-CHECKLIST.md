@@ -1,13 +1,13 @@
 # November 10, 2026 — pre-gig website checklist
 
 **Confirmed booking:** Hunter’s Ale House · Tuesday, November 10, 2026 · 10:00 p.m.–1:30 a.m. Atlantic (user-confirmed).  
-**Additional confirmed dates:** December 3 and December 17, 2026 at Hunter’s Ale House. No times for those later dates are displayed in this checklist.  
+**Later dates:** December 3 and December 17 appeared in an earlier draft, but are not confirmed in the available user-provided context. Do not advertise either as booked or assign a performance time without explicit confirmation.  
 **Status:** not executed against the published site. PR #3 remains draft; nothing is deployed. The November 10 set time is distinct from any venue/doors listing, which must not be inferred.
 
 ## Before opening doors
 
 - [x] Record the user-confirmed November 10 booking at Hunter’s Ale House, 10:00 p.m.–1:30 a.m. Atlantic. The dates are in Atlantic Standard Time (UTC−04:00); daylight time ended November 1, 2026.
-- [x] Update the development homepage to show the November 10 booking and the additional confirmed December 3 and December 17 dates.
+- [x] Update the development homepage to show the user-confirmed November 10 booking; omit later dates pending explicit confirmation.
 - [ ] Open the homepage on the actual phone and verify the show strip, navigation, song catalogue, request form and tip section render without horizontal scrolling.
 - [ ] Search the catalogue by song and artist; test decade and artist filters; reveal and close the list.
 - [ ] Select a song and confirm it fills the request fields correctly.
