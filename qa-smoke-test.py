@@ -10,14 +10,26 @@ ROOT = Path(__file__).resolve().parent
 issues = []
 class Audit(HTMLParser):
     def __init__(self):
-        super().__init__(); self.ids=[]; self.refs=[]
+        super().__init__()
+        self.ids = []
+        self.refs = []
+        self.skip_links = []
+        self.main_targets = []
+        self.has_main_navigation = False
     def handle_starttag(self, tag, attrs):
-        a=dict(attrs)
-        if 'id' in a: self.ids.append(a['id'])
-        for key in ('src','href'):
-            v=a.get(key,'')
-            if v and not v.startswith(('http:','https:','mailto:','tel:','data:','#','javascript:')):
-                self.refs.append(v.split('#',1)[0].split('?',1)[0])
+        a = dict(attrs)
+        if 'id' in a:
+            self.ids.append(a['id'])
+        if tag == 'a' and 'skip-link' in a.get('class', '').split():
+            self.skip_links.append(a.get('href', ''))
+        if tag == 'main':
+            self.main_targets.append((a.get('id'), a.get('tabindex')))
+        if tag == 'nav' and a.get('aria-label', '').strip().lower() == 'main navigation':
+            self.has_main_navigation = True
+        for key in ('src', 'href'):
+            v = a.get(key, '')
+            if v and not v.startswith(('http:', 'https:', 'mailto:', 'tel:', 'data:', '#', 'javascript:')):
+                self.refs.append(v.split('#', 1)[0].split('?', 1)[0])
 html_files=sorted(ROOT.glob('*.html'))
 for file in html_files:
     audit=Audit(); audit.feed(file.read_text(encoding='utf-8'))
@@ -25,6 +37,17 @@ for file in html_files:
         issues.append(f'{file.name}: duplicate id #{duplicate}')
     for ref in audit.refs:
         if ref and not (ROOT/ref).exists(): issues.append(f'{file.name}: missing local asset/page {ref}')
+    if audit.has_main_navigation:
+        if len(audit.skip_links) != 1:
+            issues.append(f'{file.name}: pages with main navigation must expose exactly one skip link')
+        elif len(audit.main_targets) != 1:
+            issues.append(f'{file.name}: skip link requires exactly one main landmark')
+        else:
+            main_id, main_tabindex = audit.main_targets[0]
+            if audit.skip_links[0] != f'#{main_id}':
+                issues.append(f'{file.name}: skip link must target the main landmark')
+            if main_tabindex != '-1':
+                issues.append(f'{file.name}: main landmark must accept programmatic focus from the skip link')
 # Assert the time-sensitive gig and payment disclosures remain explicit.
 home_html=(ROOT/'index.html').read_text(encoding='utf-8')
 home_h1 = re.findall(r'<h1([^>]*)>(.*?)</h1>', home_html, re.I | re.S)
@@ -60,7 +83,7 @@ if 'const RECORDING_RIGHTS_APPROVED = false;' not in recording_safety_source:
     issues.append('recording-safety.js: rights approval must default to false')
 live_show_source=(ROOT/'live-show.js').read_text(encoding='utf-8')
 sw_source=(ROOT/'sw.js').read_text(encoding='utf-8')
-if "const CACHE = 'grifflist-livekit-offline-v61';" not in sw_source:
+if "const CACHE = 'grifflist-livekit-offline-v62';" not in sw_source:
     issues.append('sw.js: recording rights update must use a new cache generation')
 if 'recordingSafety.canAppendChunk(recordingBytes,e.data.size)' not in live_show_source:
     issues.append('live-show.js: recording chunks must pass the bounded memory guard')

@@ -1,5 +1,5 @@
 /* Public offline shell only. Requests, tips, live video and private admin pages need a connection. */
-const CACHE = 'grifflist-livekit-offline-v61';
+const CACHE = 'grifflist-livekit-offline-v62';
 // Limit simultaneous media/asset fetches during installation on memory-constrained phones.
 const PRECACHE_CONCURRENCY = 4;
 const CORE = [
@@ -12,7 +12,7 @@ const CORE = [
   './offline.html',
   './styles.css?v=grifflist-v41',
   './styles.css?v=grifflist-tour-roadmap-1',
-  './brand-system.css?v=sitewide-v1',
+  './brand-system.css?v=sitewide-v2',
   './script.js?v=payment-security-pause-1',
   './script.js?v=grifflist-v28',
   './crowd-favourites.js?v=grifflist-v41',

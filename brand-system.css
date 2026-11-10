@@ -74,3 +74,28 @@ input:focus,select:focus,textarea:focus{border-color:#ff9e57;box-shadow:0 0 0 3p
 /* Network state is announced without hiding the cached catalogue. */
 .offline-status{max-width:var(--max);margin:12px auto;padding:12px 16px;border:1px solid #9a5a24;border-radius:5px;background:#24180f;color:#ffe0b4;font-size:.88rem;line-height:1.55}
 .offline-status[hidden]{display:none!important}
+
+
+/* Keyboard users can bypass repeated navigation and land on the page's main landmark. */
+.skip-link{
+ position:fixed;
+ top:.5rem;
+ left:.5rem;
+ z-index:100000;
+ max-width:calc(100vw - 1rem);
+ transform:translateY(calc(-100% - 1rem));
+ padding:.75rem 1rem;
+ border:2px solid var(--gold);
+ border-radius:4px;
+ background:var(--text);
+ color:var(--bg);
+ font-weight:800;
+ line-height:1.2;
+ text-decoration:none;
+ box-shadow:0 4px 18px #0009;
+}
+.skip-link:focus,.skip-link:hover{
+ transform:translateY(0);
+ background:var(--gold);
+ color:var(--bg);
+}

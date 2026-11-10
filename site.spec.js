@@ -831,7 +831,7 @@ test('service worker caches only query-bearing URLs pinned in CORE', () => {
   for (const path of [
     '/styles.css?v=grifflist-v41',
     '/styles.css?v=grifflist-tour-roadmap-1',
-    '/brand-system.css?v=sitewide-v1',
+    '/brand-system.css?v=sitewide-v2',
     '/script.js?v=payment-security-pause-1',
     '/script.js?v=grifflist-v28',
     '/site-interactions.js?v=grifflist-v41',
@@ -861,3 +861,27 @@ test('service worker caches only query-bearing URLs pinned in CORE', () => {
   expect(canCache('/admin.html', { mode: 'navigate', destination: '' })).toBe(false);
 });
 
+
+
+test('keyboard users can skip site navigation to the main content', async ({ page }) => {
+  const pages = [
+    ['/index.html', 'top'],
+    ['/explore.html', 'top'],
+    ['/roadmap.html', 'main-content'],
+    ['/watch-live.html', 'main-content'],
+    ['/taxi-services.html', 'main-content'],
+    ['/admin.html', 'admin-main'],
+  ];
+
+  for (const [path, targetId] of pages) {
+    await page.goto(path);
+    const skipLink = page.locator('a.skip-link');
+    await expect(skipLink).toHaveAttribute('href', `#${targetId}`);
+    await page.keyboard.press('Tab');
+    await expect(skipLink).toBeFocused();
+    const focusedTop = await skipLink.evaluate(element => element.getBoundingClientRect().top);
+    expect(focusedTop, `${path} skip link must become visible on keyboard focus`).toBeGreaterThanOrEqual(0);
+    await page.keyboard.press('Enter');
+    await expect(page.locator(`#${targetId}`)).toBeFocused();
+  }
+});
