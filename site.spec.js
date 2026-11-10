@@ -266,6 +266,14 @@ test('home Watch Live CTA advertises a live stream only when confirmed', async (
   await expect(page.locator('#home-watch-live-button'))
     .toHaveText('● WATCH LIVE AT HUNTER’S ALE HOUSE');
 });
+test('Watch Live recording disclosure states memory and rights limits', async ({ page }) => {
+  await page.goto('/watch-live.html');
+  const disclosure = page.locator('.recording-disclosure');
+  await expect(disclosure).toContainText('32 MiB');
+  await expect(disclosure).toContainText('permission to capture');
+  await expect(disclosure).toContainText('do not redistribute copyrighted material');
+});
+
 test('What’s New opens for a new release and records dismissal', async ({ page }) => {
   await page.addInitScript(() => {
     Date.now = () => new Date('2026-11-01T12:00:00-04:00').getTime();
