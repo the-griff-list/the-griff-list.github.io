@@ -30,39 +30,61 @@ home_html=(ROOT/'index.html').read_text(encoding='utf-8')
 watch_html=(ROOT/'watch-live.html').read_text(encoding='utf-8')
 
 def next_show_schedule_errors(section_html, now=None):
-    """Validate the displayed NEXT SHOW schedule without pinning a specific booking."""
+    """Validate NEXT SHOW with an optional, explicitly unconfirmed performance time."""
     times = re.findall(
-        r'<time\b[^>]*\bdatetime="([^"]+)"[^>]*>(.*?)</time>',
+        r'<time\\b[^>]*\\bdatetime="([^"]+)"[^>]*>(.*?)</time>',
         section_html,
         re.S,
     )
-    if len(times) != 3:
-        return [f'NEXT SHOW must contain one date, start and end time; found {len(times)} time elements']
+    if len(times) not in (1, 3):
+        return [f'NEXT SHOW must contain a date and either no times or a complete start/end pair; found {len(times)} time elements']
+
+    if not re.fullmatch(r'\\d{4}-\\d{2}-\\d{2}', times[0][0]):
+        return ['NEXT SHOW date must use a date-only ISO value (YYYY-MM-DD)']
 
     try:
         show_date = datetime.fromisoformat(times[0][0]).date()
+    except ValueError as error:
+        return [f'NEXT SHOW contains an invalid date: {error}']
+
+    zone = ZoneInfo('America/Halifax')
+    current = now or datetime.now(timezone.utc)
+    if current.tzinfo is None:
+        current = current.replace(tzinfo=timezone.utc)
+    local_today = current.astimezone(zone).date()
+    date_label = re.sub(r'<[^>]+>', '', times[0][1]).strip()
+    expected_date_label = f'{show_date:%A, %B} {show_date.day}, {show_date.year}'
+    errors = []
+    if date_label != expected_date_label:
+        errors.append(f'NEXT SHOW date label must match its Halifax-local date ({expected_date_label})')
+
+    if len(times) == 1:
+        if show_date < local_today:
+            errors.append('NEXT SHOW date has expired; update the homepage to the next confirmed booking')
+        visible_text = re.sub(r'<[^>]+>', ' ', section_html).lower()
+        if 'time to be confirmed' not in visible_text and 'time tba' not in visible_text:
+            errors.append('NEXT SHOW without start/end times must explicitly say the performance time is to be confirmed')
+        return errors
+
+    try:
         start = datetime.fromisoformat(times[1][0])
         end = datetime.fromisoformat(times[2][0])
     except ValueError as error:
-        return [f'NEXT SHOW contains an invalid machine-readable date/time: {error}']
+        return errors + [f'NEXT SHOW contains an invalid machine-readable time: {error}']
 
-    errors = []
-    zone = ZoneInfo('America/Halifax')
     if start.tzinfo is None or end.tzinfo is None:
-        return ['NEXT SHOW start and end times must include an explicit UTC offset']
+        return errors + ['NEXT SHOW start and end times must include explicit UTC offsets']
 
     local_start = start.astimezone(zone)
     local_end = end.astimezone(zone)
-    date_label = re.sub(r'<[^>]+>', '', times[0][1]).strip()
-    expected_date_label = f'{local_start:%A, %B} {local_start.day}, {local_start.year}'
     if local_start.date() != show_date:
         errors.append('NEXT SHOW date-only value must match the Halifax-local start date')
-    if date_label != expected_date_label:
-        errors.append(f'NEXT SHOW date label must match its Halifax-local date ({expected_date_label})')
     if start.utcoffset() != local_start.utcoffset() or end.utcoffset() != local_end.utcoffset():
         errors.append('NEXT SHOW timestamps must use the correct America/Halifax UTC offset for each date')
     if end <= start:
         errors.append('NEXT SHOW end time must be later than its start time')
+    if 'atlantic' not in section_html.lower():
+        errors.append('NEXT SHOW performance times must be labelled Atlantic')
 
     def display_time(value):
         hour = value.hour % 12 or 12
@@ -75,10 +97,6 @@ def next_show_schedule_errors(section_html, now=None):
         errors.append(f'NEXT SHOW displayed start time must match {display_time(local_start)}')
     if end_label != display_time(local_end):
         errors.append(f'NEXT SHOW displayed end time must match {display_time(local_end)}')
-
-    current = now or datetime.now(timezone.utc)
-    if current.tzinfo is None:
-        current = current.replace(tzinfo=timezone.utc)
     if end.astimezone(timezone.utc) <= current.astimezone(timezone.utc):
         errors.append('NEXT SHOW schedule has expired; update the homepage to the next confirmed booking')
     return errors
@@ -98,7 +116,6 @@ for required in (
     '<p class="eyebrow">NEXT SHOW</p>',
     'Hunter’s Ale House',
     '<strong>Performance:</strong>',
-    'Atlantic',
     'Send a tip',
     'CHECK LIVE STATUS ↗',
     'Ko-fi (Apple Pay / Google Pay if enabled)',
