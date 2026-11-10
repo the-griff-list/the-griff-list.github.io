@@ -19,7 +19,7 @@
 - [ ] Check Rock-O-Meter values against the actual admin data. Do not display invented tips, totals or goals.
 - [ ] Confirm the homepage CTA reads “CHECK LIVE STATUS” and opens the Watch Live page; it must not imply that a stream is active before the backend marks it live.
 - [ ] Open Watch Live and confirm the page clearly distinguishes a live, configured stream from an offline/unavailable preview. Do not promise a stream until phone-to-viewer playback has been tested end-to-end.
-- [ ] Confirm the Watch Live recording disclosure is visible and a short test clip downloads correctly. The browser recorder is capped at 32 MiB; verify the cap on a controlled test stream before enabling recording for a real performance, and record/retain only content with the necessary permissions.
+- [x] Keep Watch Live recording disabled by default. The owner-controlled rights flag remains false until venue, performer and applicable rights-holder permissions are confirmed; the disclosure is not permission. Do not record a real performance while the flag is false.
 - [ ] Test the page on a second phone or a narrow mobile viewport, including keyboard focus, form labels, button tap targets and the back button.
 
 ## Poor-network and recovery checks
@@ -32,7 +32,7 @@
 - [ ] Confirm encoded, double-encoded and malformed private/admin/API paths bypass service-worker caching, while public assets with encoded spaces still cache normally.
 - [ ] Confirm query-bearing navigation and static-asset URLs are cached only when the exact URL is pinned in `sw.js` `CORE`; arbitrary token/query parameters and unknown version parameters must bypass Cache Storage.
 - [ ] Confirm decoded `.` / `..` path segments cannot traverse into admin, analytics, request-archive or API routes before the offline worker classifies a request.
-- [ ] For a future owner-approved release, verify development cache generation `grifflist-livekit-offline-v60` and confirm v59 is retired only after successful activation. Published `main` remains v38 until an explicitly approved deployment.
+- [ ] For a future owner-approved release, verify development cache generation `grifflist-livekit-offline-v61` and confirm v60 is retired only after successful activation. Published `main` remains v38 until an explicitly approved deployment.
 - [ ] Verify admin, analytics, request-archive pages, Supabase config and API responses are never cached by the offline worker.
 - [ ] Confirm same-origin requests carrying an Authorization header bypass offline caching, and responses varying by Cookie or Authorization are never cached.
 - [ ] Confirm responses with no-cache, must-revalidate, proxy-revalidate, Pragma: no-cache, or zero max-age directives are not cached for offline reuse.

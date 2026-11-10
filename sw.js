@@ -1,5 +1,5 @@
 /* Public offline shell only. Requests, tips, live video and private admin pages need a connection. */
-const CACHE = 'grifflist-livekit-offline-v60';
+const CACHE = 'grifflist-livekit-offline-v61';
 // Limit simultaneous media/asset fetches during installation on memory-constrained phones.
 const PRECACHE_CONCURRENCY = 4;
 const CORE = [
@@ -19,9 +19,9 @@ const CORE = [
   './site-interactions.js?v=grifflist-v41',
   './site-interactions.js?v=grifflist-v39',
   './whats-new.js?v=grifflist-v41',
-  './recording-safety.js?v=clip-limit-1',
+  './recording-safety.js?v=rights-gate-1',
   './live-show.js',
-  './live-show.js?v=grifflist-v30',
+  './live-show.js?v=grifflist-v31',
   './grifflist-logo.webp',
   './splash-screen.webp',
   './rock-meter-0.webp',

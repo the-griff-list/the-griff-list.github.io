@@ -4,10 +4,11 @@
  const heading=document.querySelector('#live-venue-heading'), desc=document.querySelector('#live-description'), status=document.querySelector('#live-player-status'), badge=document.querySelector('#live-badge'), audioButton=document.querySelector('#enable-live-audio');
  const TOKEN_ENDPOINT='https://odd-unit-91b9.grar0842.workers.dev/token';
  const recordingSafety=window.GrifflistRecordingSafety;
+ const recordingRightsApproved=recordingSafety?.RECORDING_RIGHTS_APPROVED===true;
  let room=null, lowData=false, activeKey='';
  const remoteTracks=new Set();let mediaRecorder=null,recordingChunks=[],recordingStream=null,recordingBytes=0,recordingLimitReached=false;
  function offline(message){const h=document.querySelector('#viewer-health');if(h)h.textContent=message||'Stream offline';if(placeholder){placeholder.hidden=false;if(status)status.textContent='';}if(badge)badge.hidden=true;if(audioButton)audioButton.hidden=true;}
- function cleanup(){if(mediaRecorder&&mediaRecorder.state!=='inactive'){try{mediaRecorder.stop();}catch(e){}}remoteTracks.clear();if(room){room.disconnect();room=null;}document.querySelectorAll('[data-livekit-audio="true"]').forEach(el=>el.remove());if(video){video.pause();video.srcObject=null;video.removeAttribute('src');}activeKey='';if(audioButton)audioButton.hidden=true;}
+ function cleanup(){if(mediaRecorder&&mediaRecorder.state!=='inactive'){try{mediaRecorder.stop();}catch(e){}}remoteTracks.clear();if(room){room.disconnect();room=null;}document.querySelectorAll('[data-livekit-audio="true"]').forEach(el=>el.remove());if(video){video.pause();video.srcObject=null;video.removeAttribute('src');}activeKey='';if(audioButton)audioButton.hidden=true;updateRecordAvailability();}
  async function connect(){if(!client){offline('Live page needs its Supabase configuration.');return;}try{
   const {data,error}=await client.from('live_show_settings').select('venue_name,show_enabled,is_live').eq('id',1).maybeSingle();if(error)throw error;
   const venue=data?.venue_name?.trim()||'Live';heading.textContent=venue;  if(!data||!data.show_enabled||!data.is_live){cleanup();offline(data?.show_enabled?'The show is not marked live right now.':'The next live show will appear here.');return;}
@@ -17,8 +18,8 @@
   cleanup();room=new LK.Room({adaptiveStream:true,dynacast:true});activeKey='live';
   room.on(LK.RoomEvent.TrackSubscribed,(track,publication)=>{remoteTracks.add(track);if(track.kind==='video'){if(lowData){track.detach();publication?.setSubscribed(false);return;}track.attach(video);video.style.display='';video.play().catch(()=>{});}else if(track.kind==='audio'){const el=track.attach();el.autoplay=true;el.dataset.livekitAudio='true';document.body.appendChild(el);el.play().then(()=>{if(audioButton)audioButton.hidden=true;}).catch(()=>{if(audioButton)audioButton.hidden=false;});}});
   room.on(LK.RoomEvent.TrackUnsubscribed,(track)=>{remoteTracks.delete(track);track.detach();});
-  room.on(LK.RoomEvent.Disconnected,()=>{offline('The stream disconnected. Reconnecting shortly…');});
-  await room.connect(payload.serverUrl,payload.token);try{await room.startAudio();if(audioButton)audioButton.hidden=true;}catch(e){if(audioButton)audioButton.hidden=false;}placeholder.hidden=true;badge.hidden=false;const h=document.querySelector('#viewer-health');if(h)h.textContent=lowData?'Connected · audio-first mode':'Connected · live video and audio';
+  room.on(LK.RoomEvent.Disconnected,()=>{updateRecordAvailability();offline('The stream disconnected. Reconnecting shortly…');});
+  await room.connect(payload.serverUrl,payload.token);updateRecordAvailability();try{await room.startAudio();if(audioButton)audioButton.hidden=true;}catch(e){if(audioButton)audioButton.hidden=false;}placeholder.hidden=true;badge.hidden=false;const h=document.querySelector('#viewer-health');if(h)h.textContent=lowData?'Connected · audio-first mode':'Connected · live video and audio';
  }catch(e){console.error('LiveKit playback failed',e);cleanup();offline(e.message||'Could not connect to the live show.');}}
  audioButton?.addEventListener('click',async()=>{if(!room)return;audioButton.disabled=true;try{await room.startAudio();for(const el of document.querySelectorAll('[data-livekit-audio="true"]'))await el.play();audioButton.hidden=true;const h=document.querySelector('#viewer-health');if(h)h.textContent=lowData?'Connected · audio enabled · audio-first mode':'Connected · live video and audio';}catch(e){const h=document.querySelector('#viewer-health');if(h)h.textContent='Tap again to enable audio, or check your device volume.';}finally{audioButton.disabled=false;}});
  async function refreshMeter(){if(!client)return;try{const {data,error}=await client.from('rock_meter_settings').select('goal_amount,raised_amount').eq('id',1).maybeSingle();if(error||!data)return;const goal=Math.max(1,Number(data.goal_amount)||200),raised=Math.max(0,Number(data.raised_amount)||0),pct=Math.min(100,Math.round(raised/goal*100));const overlay=document.querySelector('#live-rockometer');const dial=document.querySelector('#live-rockometer-dial');if(!overlay)return;overlay.hidden=false;if(dial){const step=Math.min(100,Math.max(0,Math.round(pct/20)*20));dial.src=`rock-meter-${step}.webp`;dial.alt=`Rockometer at ${pct}% of goal`;}document.querySelector('#live-rockometer-raised').textContent=`$${raised.toFixed(0)} / $${goal.toFixed(0)}`;}catch(e){}}
@@ -38,7 +39,8 @@
  function setRecordingStatus(message){if(recordStatus)recordStatus.textContent=message;}
  function supportedMime(candidates){return candidates.find(type=>window.MediaRecorder&&MediaRecorder.isTypeSupported(type))||'';}
  function startRecording(){
-  if(!recordingSafety){setRecordingStatus('Recording is unavailable because the clip memory limit could not be loaded.');return;}
+  if(!recordingSafety){setRecordingStatus('Recording is unavailable because the clip safety module could not be loaded.');return;}
+  if(!recordingRightsApproved){setRecordingStatus('Recording is disabled until the owner confirms the required venue, performer and rights-holder permissions.');return;}
   if(!room||room.state!=='connected'){setRecordingStatus('Connect to a live show before recording.');return;}
   if(!window.MediaRecorder){setRecordingStatus('Recording is not supported by this browser. Try the latest Chrome.');return;}
   const mode=recordMode?.value||'video';const tracks=[...remoteTracks].filter(t=>t.mediaStreamTrack&&t.mediaStreamTrack.readyState==='live');
@@ -69,7 +71,7 @@
    if(!blob.size){
     setRecordingStatus('No recording data was captured. Please try again.');
     recordingChunks=[];recordingStream=null;recordingBytes=0;recordingLimitReached=false;
-    if(recordStart)recordStart.disabled=!(recordingSafety&&room&&room.state==='connected');
+    updateRecordAvailability();
     if(recordStop)recordStop.disabled=true;
     return;
    }
@@ -80,13 +82,13 @@
    const limitNote=limitReached?'Clip reached the 32 MiB limit. ':'';
    setRecordingStatus(`${limitNote}Download prepared: ${a.download} (${(blob.size/1048576).toFixed(1)} MiB).`);
    recordingChunks=[];recordingStream=null;recordingBytes=0;recordingLimitReached=false;
-   if(recordStart)recordStart.disabled=!(recordingSafety&&room&&room.state==='connected');
+   updateRecordAvailability();
    if(recordStop)recordStop.disabled=true;
   };
-  mediaRecorder.start(1000);if(recordStart)recordStart.disabled=true;if(recordStop)recordStop.disabled=false;setRecordingStatus(mode==='audio'?'Recording audio only. Tap Stop & Save to download the WebM file.':'Recording video and audio. Tap Stop & Save to download the WebM file.');
+  mediaRecorder.start(1000);updateRecordAvailability();if(recordStop)recordStop.disabled=false;setRecordingStatus(mode==='audio'?'Recording audio only. Tap Stop & Save to download the WebM file.':'Recording video and audio. Tap Stop & Save to download the WebM file.');
  }
  function stopRecording(){if(mediaRecorder&&mediaRecorder.state!=='inactive'){mediaRecorder.stop();setRecordingStatus(recordingLimitReached?'Finalizing the 32 MiB clip…':'Finalizing recording and preparing download…');}if(recordStop)recordStop.disabled=true;}
  recordStart?.addEventListener('click',startRecording);recordStop?.addEventListener('click',stopRecording);
- const updateRecordAvailability=()=>{if(recordStart&&!mediaRecorder?.state?.match(/recording|paused/))recordStart.disabled=!(recordingSafety&&room&&room.state==='connected');};
- connect();refreshMeter();window.setInterval(()=>{if(!document.hidden&&(!room||room.state!=='connected'))connect();updateRecordAvailability();},15000);window.setInterval(()=>{if(!document.hidden)refreshMeter();},20000);window.addEventListener('pagehide',cleanup);
+ const updateRecordAvailability=()=>{const recording=mediaRecorder?.state==='recording'||mediaRecorder?.state==='paused';const canRecord=recordingRightsApproved&&Boolean(window.MediaRecorder)&&Boolean(room&&room.state==='connected')&&!recording;if(recordMode)recordMode.disabled=!canRecord;if(recordStart)recordStart.disabled=!canRecord;};
+ updateRecordAvailability();connect();refreshMeter();window.setInterval(()=>{if(!document.hidden&&(!room||room.state!=='connected'))connect();updateRecordAvailability();},15000);window.setInterval(()=>{if(!document.hidden)refreshMeter();},20000);window.addEventListener('pagehide',cleanup);
 })();

@@ -28,19 +28,35 @@ for file in html_files:
 # Assert the time-sensitive gig and payment disclosures remain explicit.
 home_html=(ROOT/'index.html').read_text(encoding='utf-8')
 watch_html=(ROOT/'watch-live.html').read_text(encoding='utf-8')
-recording_safety_src='recording-safety.js?v=clip-limit-1'
-live_show_src='live-show.js?v=grifflist-v30'
+recording_safety_src='recording-safety.js?v=rights-gate-1'
+live_show_src='live-show.js?v=grifflist-v31'
 if recording_safety_src not in watch_html or live_show_src not in watch_html:
     issues.append('watch-live.html: bounded recording safety module and versioned viewer script must both be loaded')
 elif watch_html.index(recording_safety_src) > watch_html.index(live_show_src):
     issues.append('watch-live.html: recording safety module must load before live-show.js')
 if '32 MiB' not in watch_html or 'permission' not in watch_html.lower():
     issues.append('watch-live.html: recording size and rights disclosure must remain visible')
+if 'Recording is disabled until the owner confirms' not in watch_html:
+    issues.append('watch-live.html: recording must remain visibly disabled pending owner rights approval')
+if not re.search(r'<select id="recording-mode"[^>]*\bdisabled\b', watch_html):
+    issues.append('watch-live.html: recording mode must be disabled before permission approval')
+recording_safety_source=(ROOT/'recording-safety.js').read_text(encoding='utf-8')
+if 'const RECORDING_RIGHTS_APPROVED = false;' not in recording_safety_source:
+    issues.append('recording-safety.js: rights approval must default to false')
 live_show_source=(ROOT/'live-show.js').read_text(encoding='utf-8')
+sw_source=(ROOT/'sw.js').read_text(encoding='utf-8')
+if "const CACHE = 'grifflist-livekit-offline-v61';" not in sw_source:
+    issues.append('sw.js: recording rights update must use a new cache generation')
 if 'recordingSafety.canAppendChunk(recordingBytes,e.data.size)' not in live_show_source:
     issues.append('live-show.js: recording chunks must pass the bounded memory guard')
 if 'if(e.data&&e.data.size)recordingChunks.push(e.data);' in live_show_source:
     issues.append('live-show.js: unbounded recording chunk accumulation must not return')
+if 'recordingRightsApproved=recordingSafety?.RECORDING_RIGHTS_APPROVED===true' not in live_show_source:
+    issues.append('live-show.js: recording rights gate must come from the explicit owner-approved flag')
+if 'if(!recordingRightsApproved)' not in live_show_source:
+    issues.append('live-show.js: recording start handler must fail closed without rights approval')
+if 'recordingRightsApproved&&Boolean(window.MediaRecorder)' not in live_show_source:
+    issues.append('live-show.js: recording controls must remain disabled without rights approval')
 
 def next_show_schedule_errors(section_html, now=None):
     """Validate NEXT SHOW with an optional, explicitly unconfirmed performance time."""
@@ -390,8 +406,8 @@ else:
         'if (!isCacheableRequest(request, url)) return;',
         "'./script.js?v=grifflist-v28'",
         "'./site-interactions.js?v=grifflist-v39'",
-        "'./live-show.js?v=grifflist-v30'",
-        "'./recording-safety.js?v=clip-limit-1'",
+        "'./live-show.js?v=grifflist-v31'",
+        "'./recording-safety.js?v=rights-gate-1'",
         'function canonicalPathCandidates(pathname)',
         'function normalizePathCandidate(pathname)',
         "segment === '..'",

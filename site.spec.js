@@ -266,12 +266,17 @@ test('home Watch Live CTA advertises a live stream only when confirmed', async (
   await expect(page.locator('#home-watch-live-button'))
     .toHaveText('● WATCH LIVE AT HUNTER’S ALE HOUSE');
 });
-test('Watch Live recording disclosure states memory and rights limits', async ({ page }) => {
+test('Watch Live recording disclosure and controls fail closed pending rights approval', async ({ page }) => {
   await page.goto('/watch-live.html');
   const disclosure = page.locator('.recording-disclosure');
   await expect(disclosure).toContainText('32 MiB');
   await expect(disclosure).toContainText('permission to capture');
+  await expect(disclosure).toContainText('Recording is disabled until the owner confirms');
   await expect(disclosure).toContainText('do not redistribute copyrighted material');
+  await expect(page.locator('#recording-mode')).toBeDisabled();
+  await expect(page.locator('#recording-start')).toBeDisabled();
+  await expect.poll(() => page.evaluate(() => window.GrifflistRecordingSafety?.RECORDING_RIGHTS_APPROVED)).toBe(false);
+  await expect.poll(() => page.evaluate(() => Object.isFrozen(window.GrifflistRecordingSafety))).toBe(true);
 });
 
 test('What’s New opens for a new release and records dismissal', async ({ page }) => {
@@ -819,8 +824,8 @@ test('service worker caches only query-bearing URLs pinned in CORE', () => {
     '/script.js?v=grifflist-v28',
     '/site-interactions.js?v=grifflist-v41',
     '/site-interactions.js?v=grifflist-v39',
-    '/live-show.js?v=grifflist-v30',
-    '/recording-safety.js?v=clip-limit-1',
+    '/live-show.js?v=grifflist-v31',
+    '/recording-safety.js?v=rights-gate-1',
   ]) {
     expect(canCache(path, { destination: 'style' }), path).toBe(true);
   }
