@@ -3,7 +3,7 @@
 from pathlib import Path
 from html.parser import HTMLParser
 from collections import Counter
-from datetime import datetime
+from datetime import datetime, timezone
 from zoneinfo import ZoneInfo
 import json, re, subprocess, sys, unicodedata
 ROOT = Path(__file__).resolve().parent
@@ -28,27 +28,77 @@ for file in html_files:
 # Assert the time-sensitive gig and payment disclosures remain explicit.
 home_html=(ROOT/'index.html').read_text(encoding='utf-8')
 watch_html=(ROOT/'watch-live.html').read_text(encoding='utf-8')
-# November 10, 2026 is after the America/Halifax daylight-saving transition.
-event_start = datetime(2026, 11, 10, 22, 0, tzinfo=ZoneInfo('America/Halifax'))
-expected_event_datetime = event_start.isoformat()
-if f'datetime="{expected_event_datetime}"' not in home_html:
-    issues.append(f'index.html: show time must match America/Halifax ({expected_event_datetime})')
-if 'datetime="2026-11-10T22:00:00-03:00"' in home_html:
-    issues.append('index.html: show time incorrectly uses daylight time after the 2026 DST transition')
-# The next confirmed booking must stay distinct from the later December dates.
+
+def next_show_schedule_errors(section_html, now=None):
+    """Validate the displayed NEXT SHOW schedule without pinning a specific booking."""
+    times = re.findall(
+        r'<time\\b[^>]*\\bdatetime="([^"]+)"[^>]*>(.*?)</time>',
+        section_html,
+        re.S,
+    )
+    if len(times) != 3:
+        return [f'NEXT SHOW must contain one date, start and end time; found {len(times)} time elements']
+
+    try:
+        show_date = datetime.fromisoformat(times[0][0]).date()
+        start = datetime.fromisoformat(times[1][0])
+        end = datetime.fromisoformat(times[2][0])
+    except ValueError as error:
+        return [f'NEXT SHOW contains an invalid machine-readable date/time: {error}']
+
+    errors = []
+    zone = ZoneInfo('America/Halifax')
+    if start.tzinfo is None or end.tzinfo is None:
+        return ['NEXT SHOW start and end times must include an explicit UTC offset']
+
+    local_start = start.astimezone(zone)
+    local_end = end.astimezone(zone)
+    date_label = re.sub(r'<[^>]+>', '', times[0][1]).strip()
+    expected_date_label = f'{local_start:%A, %B} {local_start.day}, {local_start.year}'
+    if local_start.date() != show_date:
+        errors.append('NEXT SHOW date-only value must match the Halifax-local start date')
+    if date_label != expected_date_label:
+        errors.append(f'NEXT SHOW date label must match its Halifax-local date ({expected_date_label})')
+    if start.utcoffset() != local_start.utcoffset() or end.utcoffset() != local_end.utcoffset():
+        errors.append('NEXT SHOW timestamps must use the correct America/Halifax UTC offset for each date')
+    if end <= start:
+        errors.append('NEXT SHOW end time must be later than its start time')
+
+    def display_time(value):
+        hour = value.hour % 12 or 12
+        suffix = 'a.m.' if value.hour < 12 else 'p.m.'
+        return f'{hour}:{value.minute:02d} {suffix}'
+
+    start_label = re.sub(r'<[^>]+>', '', times[1][1]).strip()
+    end_label = re.sub(r'<[^>]+>', '', times[2][1]).strip()
+    if start_label != display_time(local_start):
+        errors.append(f'NEXT SHOW displayed start time must match {display_time(local_start)}')
+    if end_label != display_time(local_end):
+        errors.append(f'NEXT SHOW displayed end time must match {display_time(local_end)}')
+
+    current = now or datetime.now(timezone.utc)
+    if current.tzinfo is None:
+        current = current.replace(tzinfo=timezone.utc)
+    if end.astimezone(timezone.utc) <= current.astimezone(timezone.utc):
+        errors.append('NEXT SHOW schedule has expired; update the homepage to the next confirmed booking')
+    return errors
+
+next_show = re.search(
+    r'<section class="next-show-section"[^>]*>(.*?)</section>',
+    home_html,
+    re.S,
+)
+if not next_show:
+    issues.append('index.html: NEXT SHOW section is missing')
+else:
+    for error in next_show_schedule_errors(next_show.group(1)):
+        issues.append(f'index.html: {error}')
+
 for required in (
     '<p class="eyebrow">NEXT SHOW</p>',
-    'Griff &amp; Guest',
     'Hunter’s Ale House',
-    'datetime="2026-11-10"',
-    'datetime="2026-11-10T22:00:00-04:00"',
-    'datetime="2026-11-11T01:30:00-04:00"',
-    'Tuesday, November 10, 2026',
-    'Thursday, December 3',
-    'Thursday, December 17',
     '<strong>Performance:</strong>',
-    '>10:00 p.m.</time>',
-    '>1:30 a.m.</time> Atlantic',
+    'Atlantic',
     'Send a tip',
     'CHECK LIVE STATUS ↗',
     'Ko-fi (Apple Pay / Google Pay if enabled)',
