@@ -32,7 +32,7 @@ watch_html=(ROOT/'watch-live.html').read_text(encoding='utf-8')
 def next_show_schedule_errors(section_html, now=None):
     """Validate the displayed NEXT SHOW schedule without pinning a specific booking."""
     times = re.findall(
-        r'<time\\b[^>]*\\bdatetime="([^"]+)"[^>]*>(.*?)</time>',
+        r'<time\b[^>]*\bdatetime="([^"]+)"[^>]*>(.*?)</time>',
         section_html,
         re.S,
     )
