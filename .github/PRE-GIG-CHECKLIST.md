@@ -20,6 +20,7 @@
 - [ ] Confirm the homepage CTA reads “CHECK LIVE STATUS” and opens the Watch Live page; it must not imply that a stream is active before the backend marks it live.
 - [ ] Open Watch Live and confirm the page clearly distinguishes a live, configured stream from an offline/unavailable preview. Do not promise a stream until phone-to-viewer playback has been tested end-to-end.
 - [x] Keep Watch Live recording disabled by default. The owner-controlled rights flag remains false until venue, performer and applicable rights-holder permissions are confirmed; the disclosure is not permission. Do not record a real performance while the flag is false.
+- [ ] Verify the Watch Live recording disclosure is visible and accurately states the 32 MiB limit and permission requirement. Do not attempt a recording/download test while the rights flag is false; only use an approved test source after the required permissions are confirmed.
 - [ ] Test the page on a second phone or a narrow mobile viewport, including keyboard focus, form labels, button tap targets and the back button.
 
 ## Poor-network and recovery checks
