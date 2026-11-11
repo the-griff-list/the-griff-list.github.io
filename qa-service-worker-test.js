@@ -172,6 +172,35 @@ test('response URL checks reject redirects, cross-origin targets, private and AP
   assert.equal(context.isSafePublicCacheResponse(response(), 'https://other.test/styles.css', ORIGIN), false);
 });
 
+test('response URL checks reject repeatedly encoded private and API paths', () => {
+  const publicRequest = ORIGIN + '/index.html';
+  const publicResponse = response({ url: ORIGIN + '/explore.html' });
+  const blockedPaths = [
+    '/%2561dmin.html',
+    '/public/%252e%252e/admin.html',
+    '/%2572est/v1/users',
+    '/public/%252e%252e/api/private',
+    '/%252fadmin.html',
+  ];
+
+  for (const pathname of blockedPaths) {
+    assert.equal(
+      context.isSafePublicCacheResponse(
+        response({ url: ORIGIN + pathname }),
+        publicRequest,
+        ORIGIN
+      ),
+      false,
+      'private/API final response URL: ' + pathname
+    );
+    assert.equal(
+      context.isSafePublicCacheResponse(publicResponse, ORIGIN + pathname, ORIGIN),
+      false,
+      'private/API requested URL: ' + pathname
+    );
+  }
+});
+
 test('response cache policy rejects freshness, privacy, range and vary hazards', () => {
   assert.equal(context.isCacheableResponse(response({ headerValues: { 'Cache-Control': 'public, max-age=3600' } })), true);
   for (const value of [
