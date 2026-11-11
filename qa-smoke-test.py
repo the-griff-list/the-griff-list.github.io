@@ -97,7 +97,7 @@ if 'recordingRightsApproved&&Boolean(window.MediaRecorder)' not in live_show_sou
     issues.append('live-show.js: recording controls must remain disabled without rights approval')
 
 def next_show_schedule_errors(section_html, now=None):
-    """Validate NEXT SHOW with an optional, explicitly unconfirmed performance time."""
+    """Validate a confirmed NEXT SHOW or an explicit no-booking state."""
     times = re.findall(
         r'<time\b[^>]*\bdatetime="([^"]+)"[^>]*>(.*?)</time>',
         section_html,
@@ -112,10 +112,12 @@ def next_show_schedule_errors(section_html, now=None):
             errors.append('UPCOMING SHOWS without a confirmed booking must retain the song-catalogue CTA')
         if 'browse songs' not in visible_text:
             errors.append('UPCOMING SHOWS without a confirmed booking must retain the visible catalogue action')
+        if re.search(r"Hunter[’']s Ale House|November 10|December 3|December 17", visible_text, re.I):
+            errors.append('UPCOMING SHOWS without a confirmed booking must not retain an expired or unconfirmed event')
         return errors
 
     if len(times) not in (1, 3):
-        return [f'NEXT SHOW must contain a date and either no times or a complete start/end pair; found {len(times)} time elements']
+        return [f'NEXT SHOW must contain zero times without a booking, one date with time TBA, or a date plus a complete start/end pair; found {len(times)} time elements']
 
     if not re.fullmatch(r'\d{4}-\d{2}-\d{2}', times[0][0]):
         return ['NEXT SHOW date must use a date-only ISO value (YYYY-MM-DD)']
