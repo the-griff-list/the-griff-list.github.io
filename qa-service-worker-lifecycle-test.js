@@ -341,7 +341,7 @@ async function test(name, callback) {
     cacheData.set(CACHE, new Map());
     failCacheDeleteFor.add(obsoleteCache);
 
-    await assert.rejects(dispatch('activate'), /simulated CacheStorage\\.delete failure/);
+    await assert.rejects(dispatch('activate'), /simulated CacheStorage\.delete failure/);
     assert.equal(cacheData.has(obsoleteCache), true);
     assert.equal(cacheData.has(CACHE), true);
     assert.equal(claimCalls, 0);
