@@ -215,25 +215,20 @@ test('private dashboard exposes one main landmark and its page heading', async (
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Request Dashboard');
 });
 test('title screen can be entered', async ({ page }) => { await page.goto('/index.html'); await page.locator('#splash').click(); await expect(page.locator('#catalog')).toBeVisible(); });
-test('next-show strip displays only the confirmed November 10 booking', async ({ page }) => {
+test('next-show strip does not invent an unconfirmed booking', async ({ page }) => {
   await page.goto('/index.html');
   const card = page.locator('.next-show-card');
-  await expect(card.locator('.eyebrow')).toHaveText('NEXT SHOW');
-  await expect(card.locator('#next-show-title')).toHaveText('Griff & Guest');
-  await expect(card).toContainText('Hunter’s Ale House');
-  await expect(card.locator('time').nth(0)).toHaveAttribute('datetime', '2026-11-10');
-  await expect(card.locator('time').nth(1)).toHaveAttribute('datetime', '2026-11-10T22:00:00-04:00');
-  await expect(card.locator('time').nth(2)).toHaveAttribute('datetime', '2026-11-11T01:30:00-04:00');
-  const start = await card.locator('time').nth(1).getAttribute('datetime');
-  const end = await card.locator('time').nth(2).getAttribute('datetime');
-  expect(new Date(start).toISOString()).toBe('2026-11-11T02:00:00.000Z');
-  expect(new Date(end).toISOString()).toBe('2026-11-11T05:30:00.000Z');
-  await expect(card).toContainText('Performance: 10:00 p.m.–1:30 a.m. Atlantic');
-  await expect(card.locator('.show-status-note')).toHaveCount(0);
+  await expect(card.locator('.eyebrow')).toHaveText('UPCOMING SHOWS');
+  await expect(card.locator('#next-show-title')).toHaveText('Next date to be announced');
+  await expect(card).toContainText('No upcoming performance date is currently confirmed.');
+  await expect(card.locator('time')).toHaveCount(0);
+  await expect(card.locator('a[href="#catalog"]')).toHaveText('BROWSE SONGS ↗');
+  await expect(card).not.toContainText('Hunter’s Ale House');
+  await expect(card).not.toContainText('November 10');
   await expect(card).not.toContainText('December 3');
   await expect(card).not.toContainText('December 17');
-  await expect(card).not.toContainText('UP NEXT');
 });
+
 test('home Watch Live CTA checks status when no stream is active', async ({ page }) => {
   await page.route('**/rest/v1/live_show_settings*', async route => {
     const cors = {
