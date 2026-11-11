@@ -12,6 +12,7 @@ let cacheData = new Map();
 let failCacheMatch = false;
 let failCacheOpen = false;
 let failCachePut = false;
+let failCacheDeleteFor = new Set();
 let fetchImpl;
 let fetchCalls = 0;
 let fetchedRequests = [];
@@ -59,6 +60,7 @@ const caches = {
     return [...cacheData.keys()];
   },
   async delete(name) {
+    if (failCacheDeleteFor.has(name)) throw new Error('simulated CacheStorage.delete failure');
     return cacheData.delete(name);
   },
 };
@@ -110,6 +112,7 @@ function reset() {
   failCacheMatch = false;
   failCacheOpen = false;
   failCachePut = false;
+  failCacheDeleteFor = new Set();
   fetchCalls = 0;
   fetchedRequests = [];
   activeFetches = 0;
@@ -329,6 +332,19 @@ async function test(name, callback) {
       [CACHE, 'unrelated-public-cache'].sort()
     );
     assert.equal(claimCalls, 1);
+  });
+
+  await test('activate does not claim clients when obsolete cache deletion fails', async () => {
+    reset();
+    const obsoleteCache = 'grifflist-livekit-offline-v62';
+    cacheData.set(obsoleteCache, new Map());
+    cacheData.set(CACHE, new Map());
+    failCacheDeleteFor.add(obsoleteCache);
+
+    await assert.rejects(dispatch('activate'), /simulated CacheStorage\\.delete failure/);
+    assert.equal(cacheData.has(obsoleteCache), true);
+    assert.equal(cacheData.has(CACHE), true);
+    assert.equal(claimCalls, 0);
   });
 
   await test('private admin requests bypass fetch handling and CacheStorage entirely', async () => {
