@@ -534,24 +534,33 @@ else:
     # Old offline generations can retain resources after a worker update.
     # Require activation to delete prior Grifflist generations but preserve
     # the current cache before claiming clients.
+    retirement_start = sw.find('async function retireObsoleteCaches(keys)')
     activation_start = sw.find("self.addEventListener('activate', event => {")
     activation_end = sw.find("self.addEventListener('fetch', event => {", activation_start)
-    if activation_start < 0 or activation_end < 0:
-        issues.append('sw.js: activation cache-retirement handler is missing')
+    if retirement_start < 0 or activation_start < 0 or activation_end < 0 or retirement_start > activation_start:
+        issues.append('sw.js: sequential cache-retirement helper or activation handler is missing')
     else:
+        retirement = sw[retirement_start:activation_start]
+        for required in (
+            "key.startsWith('grifflist-livekit-offline-')",
+            'key !== CACHE',
+            'currentGeneration',
+            'previousLivekit',
+            'for (const key of olderCaches)',
+            'await caches.delete(key)',
+            'await caches.delete(previousCache)',
+        ):
+            if required not in retirement:
+                issues.append(f'sw.js: cache retirement must preserve the previous generation until older cleanup succeeds: {required}')
+
         activation = sw[activation_start:activation_end]
         for required in (
             'caches.keys()',
-            "key.startsWith('grifflist-livekit-offline-')",
-            'key !== CACHE',
-            'caches.delete(key)',
-            'async function retireObsoleteCaches(keys)',
-            'for (const key of olderCaches)',
-            'await caches.delete(previousCache)',
+            '.then(retireObsoleteCaches)',
             'self.clients.claim()',
         ):
             if required not in activation:
-                issues.append(f'sw.js: activation must retire old cache generations safely: {required}')
+                issues.append(f'sw.js: activation must complete cache retirement before claiming clients: {required}')
 
 registration=ROOT/'site-interactions.js'
 if not registration.is_file() or "navigator.serviceWorker.register('./sw.js')" not in registration.read_text(encoding='utf-8'):

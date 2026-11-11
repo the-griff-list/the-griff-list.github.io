@@ -343,7 +343,7 @@ async function test(name, callback) {
     cacheData.set(CACHE, new Map());
     failCacheDeleteFor.add(olderCache);
 
-    await assert.rejects(dispatch('activate'), /simulated CacheStorage\\.delete failure/);
+    await assert.rejects(dispatch('activate'), /simulated CacheStorage\.delete failure/);
     assert.equal(cacheData.has(olderCache), true);
     assert.equal(cacheData.has(previousCache), true);
     assert.equal(cacheData.has(CACHE), true);
