@@ -368,14 +368,25 @@ self.addEventListener('fetch', event => {
       return (await networkPromise) || Response.error();
     }
 
-    const cached = await cache.match(request);
+    let cached = null;
+    try {
+      cached = await cache.match(request);
+    } catch (_) {
+      // CacheStorage read failures must not prevent an otherwise-available network response.
+    }
     if (isPublicNavigation) {
       const fresh = await networkPromise;
       if (fresh) return fresh;
       if (cached) return cached;
-      return (await cache.match(
-        new URL('./offline.html', self.registration.scope)
-      )) || Response.error();
+      let offline = null;
+      try {
+        offline = await cache.match(
+          new URL('./offline.html', self.registration.scope)
+        );
+      } catch (_) {
+        // If CacheStorage itself is unavailable, fail only the offline fallback.
+      }
+      return offline || Response.error();
     }
 
     if (cached) return cached;
