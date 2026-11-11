@@ -2,7 +2,15 @@
 
 **Confirmed booking:** Hunter’s Ale House · Tuesday, November 10, 2026 · 10:00 p.m.–1:30 a.m. Atlantic (user-confirmed).  
 **Later dates:** December 3 and December 17 appeared in an earlier draft, but are not confirmed in the available user-provided context. Do not advertise either as booked or assign a performance time without explicit confirmation.  
-**Status:** not executed against the published site. PR #3 remains draft; nothing is deployed. The November 10 set time is distinct from any venue/doors listing, which must not be inferred.
+**Status:** archived after the November 10 performance. The pre-gig acceptance checklist was not executed against the published site. PR #3 remains draft; nothing is deployed. The November 10 set time is distinct from any venue/doors listing, which must not be inferred.
+
+## Post-event status — November 11, 2026
+
+- The November 10 Hunter’s Ale House booking has passed.
+- A fresh review of available prior conversations found no later confirmed performance booking. December 3 and December 17 remain unconfirmed; do not advertise either date or assign a performance time.
+- The development homepage now states that no upcoming performance date is currently confirmed and retains the song-catalogue CTA.
+- This checklist remains a historical record of the November 10 release-readiness tasks. Its unchecked mobile, request, payment, stream and published-site acceptance items were not completed or represented as passed.
+- Next website milestone: wait for a later user-confirmed booking before adding a date or performance time.
 
 ## Before opening doors
 
