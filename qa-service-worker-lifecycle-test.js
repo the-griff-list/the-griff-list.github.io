@@ -334,6 +334,22 @@ async function test(name, callback) {
     assert.equal(claimCalls, 1);
   });
 
+  await test('activate preserves the previous cache when an older cache deletion fails', async () => {
+    reset();
+    const olderCache = 'grifflist-livekit-offline-v61';
+    const previousCache = 'grifflist-livekit-offline-v62';
+    cacheData.set(olderCache, new Map());
+    cacheData.set(previousCache, new Map());
+    cacheData.set(CACHE, new Map());
+    failCacheDeleteFor.add(olderCache);
+
+    await assert.rejects(dispatch('activate'), /simulated CacheStorage\\.delete failure/);
+    assert.equal(cacheData.has(olderCache), true);
+    assert.equal(cacheData.has(previousCache), true);
+    assert.equal(cacheData.has(CACHE), true);
+    assert.equal(claimCalls, 0);
+  });
+
   await test('activate does not claim clients when obsolete cache deletion fails', async () => {
     reset();
     const obsoleteCache = 'grifflist-livekit-offline-v62';

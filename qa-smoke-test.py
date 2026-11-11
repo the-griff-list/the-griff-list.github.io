@@ -545,6 +545,9 @@ else:
             "key.startsWith('grifflist-livekit-offline-')",
             'key !== CACHE',
             'caches.delete(key)',
+            'async function retireObsoleteCaches(keys)',
+            'for (const key of olderCaches)',
+            'await caches.delete(previousCache)',
             'self.clients.claim()',
         ):
             if required not in activation:

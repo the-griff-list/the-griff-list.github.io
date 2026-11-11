@@ -319,17 +319,62 @@ self.addEventListener('install', event => {
       .then(() => self.skipWaiting())
   );
 });
+function cacheGeneration(key) {
+  const match = /-v([0-9]+)$/.exec(key);
+  return match ? Number(match[1]) : -1;
+}
+
+// Retire older caches before the immediately previous livekit generation.
+// If any old-cache deletion fails, the previous active worker's cache remains
+// available for rollback and clients are not claimed by this worker.
+async function retireObsoleteCaches(keys) {
+  const obsolete = keys.filter(key =>
+    (key.startsWith('grifflist-livekit-offline-') ||
+     key.startsWith('grifflist-sober-drive-search-fix-offline-')) &&
+    key !== CACHE
+  );
+  const currentMatch = /^grifflist-livekit-offline-v([0-9]+)$/.exec(CACHE);
+  const currentGeneration = currentMatch
+    ? Number(currentMatch[1])
+    : Number.POSITIVE_INFINITY;
+  const previousLivekit = obsolete
+    .filter(key => {
+      const match = /^grifflist-livekit-offline-v([0-9]+)$/.exec(key);
+      return match !== null && Number(match[1]) < currentGeneration;
+    })
+    .sort((left, right) =>
+      cacheGeneration(right) - cacheGeneration(left) ||
+      left.localeCompare(right)
+    )[0];
+  const previousCache = previousLivekit ??
+    obsolete
+      .filter(key => key.startsWith('grifflist-sober-drive-search-fix-offline-'))
+      .sort((left, right) =>
+        cacheGeneration(right) - cacheGeneration(left) ||
+        left.localeCompare(right)
+      )[0] ??
+    obsolete
+      .slice()
+      .sort((left, right) =>
+        cacheGeneration(right) - cacheGeneration(left) ||
+        left.localeCompare(right)
+      )[0];
+
+  const olderCaches = obsolete
+    .filter(key => key !== previousCache)
+    .sort();
+  for (const key of olderCaches) {
+    await caches.delete(key);
+  }
+  if (previousCache !== undefined) {
+    await caches.delete(previousCache);
+  }
+}
+
 self.addEventListener('activate', event => {
   event.waitUntil(
     caches.keys()
-      .then(keys => Promise.all(keys
-        .filter(key =>
-          (key.startsWith('grifflist-livekit-offline-') ||
-           key.startsWith('grifflist-sober-drive-search-fix-offline-')) &&
-          key !== CACHE
-        )
-        .map(key => caches.delete(key))
-      ))
+      .then(retireObsoleteCaches)
       .then(() => self.clients.claim())
   );
 });
