@@ -11,6 +11,7 @@ const listeners = new Map();
 let cacheData = new Map();
 let failCacheMatch = false;
 let failCacheOpen = false;
+let failCachePut = false;
 let fetchImpl;
 let fetchCalls = 0;
 let fetchedRequests = [];
@@ -45,6 +46,7 @@ const caches = {
     const entries = cacheData.get(name);
     return {
       async put(request, value) {
+        if (failCachePut) throw new Error('simulated CacheStorage.put failure');
         entries.set(cacheKey(request), value);
       },
       async match(request) {
@@ -107,6 +109,7 @@ function reset() {
   cacheData = new Map();
   failCacheMatch = false;
   failCacheOpen = false;
+  failCachePut = false;
   fetchCalls = 0;
   fetchedRequests = [];
   activeFetches = 0;
@@ -462,6 +465,18 @@ async function test(name, callback) {
     assert.equal(fresh.url, url);
     assert.equal(fetchCalls, 1);
     assert.equal(cacheData.has(CACHE), false);
+  });
+
+  await test('CacheStorage put failures do not block online public navigation', async () => {
+    reset();
+    failCachePut = true;
+    const url = ORIGIN + '/index.html';
+    const result = await dispatchFetch(navigation(url));
+    const fresh = await result.responsePromise;
+    await result.waitPromise;
+    assert.equal(fresh.url, url);
+    assert.equal(fetchCalls, 1);
+    assert.equal(cacheData.get(CACHE).has(url), false);
   });
 
   await test('CacheStorage open and network failures return an error response without throwing', async () => {
