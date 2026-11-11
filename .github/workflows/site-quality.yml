@@ -52,6 +52,12 @@ jobs:
       - name: Verify bounded live recording safety
         run: node qa-recording-safety-test.js
 
+      - name: Verify service-worker cache policy
+        run: node qa-service-worker-test.js
+
+      - name: Verify service-worker install, activation and offline lifecycle
+        run: node qa-service-worker-lifecycle-test.js
+
       - name: Check HTML references, JavaScript syntax, PWA manifest, service worker, CSS and images
         run: python qa-smoke-test.py
 
