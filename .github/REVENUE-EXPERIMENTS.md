@@ -162,3 +162,21 @@ No public offer, checkout, payment flow, QR kit or feature flag has been activat
 If the owner wants to test one additional service, compare this consultation against the existing beginner guitar tune-up hypothesis. The consultation has no requirement to claim teaching credentials and can be delivered remotely, but neither idea has customer validation. Do not add either to the public homepage until the owner confirms willingness, scope, availability, price and terms.
 
 No public offer, payment flow, new service, vendor account, paid advertising or inventory purchase was activated by this research.
+
+
+## Private acoustic mini-set candidate — market refresh 2026-11-11
+
+**Status: researched hypothesis only. No offer is public, no date is available for booking, and no price has been approved.**
+
+- Cueup's Charlottetown musician marketplace currently reports an estimated average near **CAD $140/hour**, a range of **$110–$280/hour**, and a typical event estimate of **$170–$420**. The same page showed 19 reviews and one visible DJ profile. These are marketplace estimates, not verified local transactions or a rate recommendation. [Cueup — Charlottetown musicians](https://cueup.io/es/charlottetown/book-musician)
+- IndiMu advertises free musician/venue profiles, gig applications and Stripe payments across Canada. This is an alternative discovery/booking channel; no PEI-specific liquidity or paid booking result was verified. [IndiMu](https://indimu.ca/)
+- **Offer hypothesis:** 30–45 minute solo acoustic set for a small birthday, anniversary or community gathering, using existing gear only. Scope must specify date, location, travel, PA, setup, repertoire and cancellation terms.
+- **Price:** quote-only until the owner confirms availability, equipment, travel radius and minimum acceptable compensation. Do not copy a marketplace average into the public site.
+- **Startup cost:** $0 only if existing guitar, PA and transport are sufficient; no equipment purchase is authorized.
+- **Time to first dollar:** 1–4 weeks is a planning hypothesis through warm contacts, not measured demand.
+- **Gross-margin outlook:** potentially high before labour/travel if current equipment is sufficient; actual net is unknown until travel, setup, payment fees, tax and cancellation risk are priced.
+- **Effort:** medium (lead qualification, set preparation, travel and setup).
+- **Risks:** availability, travel, equipment, venue permission/noise limits, cancellations and unclear expectations. No booking or PA capability should be implied until confirmed.
+- **Validation:** privately ask up to three existing contacts whether a real small-event need exists. Count interest separately from a paid booking. Validation requires an approved quote, completed performance and received payment.
+- **Decision:** retain as a researched candidate; do not add a public offer, booking form, checkout or price until the owner approves scope and availability.
+
