@@ -9,6 +9,7 @@ const vm = require('node:vm');
 const ORIGIN = 'https://griff-list.test';
 const listeners = new Map();
 let cacheData = new Map();
+let failCacheMatch = false;
 let fetchImpl;
 let fetchCalls = 0;
 let fetchedRequests = [];
@@ -45,6 +46,7 @@ const caches = {
         entries.set(cacheKey(request), value);
       },
       async match(request) {
+        if (failCacheMatch) throw new Error('simulated CacheStorage.match failure');
         return entries.get(cacheKey(request)) || null;
       },
     };
@@ -101,6 +103,7 @@ let passed = 0;
 
 function reset() {
   cacheData = new Map();
+  failCacheMatch = false;
   fetchCalls = 0;
   fetchedRequests = [];
   activeFetches = 0;
@@ -405,6 +408,31 @@ async function test(name, callback) {
     // never be persisted under an otherwise-public request URL.
     assert.equal(fresh.url, privateFinalUrl);
     assert.equal(cacheData.get(CACHE).has(requestedUrl), false);
+  });
+
+  await test('CacheStorage read failures do not block online public navigation', async () => {
+    reset();
+    failCacheMatch = true;
+    const url = ORIGIN + '/index.html';
+    const result = await dispatchFetch(navigation(url));
+    const fresh = await result.responsePromise;
+    await result.waitPromise;
+    assert.equal(fresh.url, url);
+    assert.equal(fetchCalls, 1);
+  });
+
+  await test('CacheStorage read failures fail closed only when the network is also unavailable', async () => {
+    reset();
+    failCacheMatch = true;
+    fetchImpl = async () => {
+      fetchCalls += 1;
+      throw new Error('simulated offline network');
+    };
+    const result = await dispatchFetch(navigation(ORIGIN + '/index.html'));
+    const failed = await result.responsePromise;
+    await result.waitPromise;
+    assert.equal(failed.type, 'error');
+    assert.equal(fetchCalls, 1);
   });
 
   await test('public navigation caches credentialless network responses and falls back offline', async () => {
