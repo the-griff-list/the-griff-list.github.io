@@ -48,7 +48,11 @@ assert.ok(live.includes('toFixed(1)} MiB).'));
 assert.ok(!live.includes('if(e.data&&e.data.size)recordingChunks.push(e.data);'));
 
 const sw = fs.readFileSync('./sw.js', 'utf8');
-assert.ok(sw.includes("const CACHE = 'grifflist-livekit-offline-v61';"));
-assert.ok(sw.includes("'./recording-safety.js?v=rights-gate-1'"));
-assert.ok(sw.includes("'./live-show.js?v=grifflist-v31'"));
+const cacheMatch = sw.match(/^const CACHE = '([^']+)';$/m);
+assert.ok(cacheMatch, 'service worker must declare exactly one cache generation');
+assert.match(cacheMatch[1], /^grifflist-livekit-offline-v\\d+$/);
+const coreMatch = sw.match(/^const CORE = \\[([\\s\\S]*?)^\\];/m);
+assert.ok(coreMatch, 'service worker must declare its public precache shell');
+assert.ok(coreMatch[1].includes("'./recording-safety.js?v=rights-gate-1'"));
+assert.ok(coreMatch[1].includes("'./live-show.js?v=grifflist-v31'"));
 console.log('Bounded live recording safety and rights gate: 33 assertions passed.');
