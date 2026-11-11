@@ -10,6 +10,7 @@ const ORIGIN = 'https://griff-list.test';
 const listeners = new Map();
 let cacheData = new Map();
 let failCacheMatch = false;
+let failCacheOpen = false;
 let fetchImpl;
 let fetchCalls = 0;
 let fetchedRequests = [];
@@ -39,6 +40,7 @@ function cacheKey(value) {
 
 const caches = {
   async open(name) {
+    if (failCacheOpen) throw new Error('simulated CacheStorage.open failure');
     if (!cacheData.has(name)) cacheData.set(name, new Map());
     const entries = cacheData.get(name);
     return {
@@ -104,6 +106,7 @@ let passed = 0;
 function reset() {
   cacheData = new Map();
   failCacheMatch = false;
+  failCacheOpen = false;
   fetchCalls = 0;
   fetchedRequests = [];
   activeFetches = 0;
@@ -425,6 +428,32 @@ async function test(name, callback) {
   await test('CacheStorage read failures fail closed only when the network is also unavailable', async () => {
     reset();
     failCacheMatch = true;
+    fetchImpl = async () => {
+      fetchCalls += 1;
+      throw new Error('simulated offline network');
+    };
+    const result = await dispatchFetch(navigation(ORIGIN + '/index.html'));
+    const failed = await result.responsePromise;
+    await result.waitPromise;
+    assert.equal(failed.type, 'error');
+    assert.equal(fetchCalls, 1);
+  });
+
+  await test('CacheStorage open failures do not block online public navigation', async () => {
+    reset();
+    failCacheOpen = true;
+    const url = ORIGIN + '/index.html';
+    const result = await dispatchFetch(navigation(url));
+    const fresh = await result.responsePromise;
+    await result.waitPromise;
+    assert.equal(fresh.url, url);
+    assert.equal(fetchCalls, 1);
+    assert.equal(cacheData.has(CACHE), false);
+  });
+
+  await test('CacheStorage open and network failures return an error response without throwing', async () => {
+    reset();
+    failCacheOpen = true;
     fetchImpl = async () => {
       fetchCalls += 1;
       throw new Error('simulated offline network');
