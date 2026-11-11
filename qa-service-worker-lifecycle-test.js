@@ -224,7 +224,7 @@ async function test(name, callback) {
 
   await test('failed install preserves the previous active cache generation', async () => {
     reset();
-    const previousCache = 'grifflist-livekit-offline-v55';
+    const previousCache = 'grifflist-livekit-offline-v62';
     assert.notEqual(CACHE, previousCache);
     cacheData.set(previousCache, new Map([['sentinel', response(ORIGIN + '/index.html')]]));
 
@@ -300,6 +300,7 @@ async function test(name, callback) {
     cacheData.set('grifflist-livekit-offline-v57', new Map());
     // v58 may contain config aliases cached before the private-path fix.
     cacheData.set('grifflist-livekit-offline-v58', new Map());
+    cacheData.set('grifflist-livekit-offline-v62', new Map());
     cacheData.set('grifflist-sober-drive-search-fix-offline-v7', new Map());
     cacheData.set(CACHE, new Map());
     cacheData.set('unrelated-public-cache', new Map());
