@@ -103,6 +103,17 @@ def next_show_schedule_errors(section_html, now=None):
         section_html,
         re.S,
     )
+    if not times:
+        visible_text = re.sub(r'<[^>]+>', ' ', section_html).lower()
+        errors = []
+        if 'no upcoming performance date is currently confirmed' not in visible_text:
+            errors.append('UPCOMING SHOWS without a confirmed booking must say no performance date is currently confirmed')
+        if not re.search(r'href=["']#catalog["']', section_html):
+            errors.append('UPCOMING SHOWS without a confirmed booking must retain the song-catalogue CTA')
+        if 'browse songs' not in visible_text:
+            errors.append('UPCOMING SHOWS without a confirmed booking must retain the visible catalogue action')
+        return errors
+
     if len(times) not in (1, 3):
         return [f'NEXT SHOW must contain a date and either no times or a complete start/end pair; found {len(times)} time elements']
 
@@ -180,9 +191,10 @@ else:
         issues.append(f'index.html: {error}')
 
 for required in (
-    '<p class="eyebrow">NEXT SHOW</p>',
-    'Hunter’s Ale House',
-    '<strong>Performance:</strong>',
+    '<p class="eyebrow">UPCOMING SHOWS</p>',
+    'Next date to be announced',
+    'No upcoming performance date is currently confirmed.',
+    'BROWSE SONGS ↗',
     'Send a tip',
     'CHECK LIVE STATUS ↗',
     'Ko-fi (Apple Pay / Google Pay if enabled)',
