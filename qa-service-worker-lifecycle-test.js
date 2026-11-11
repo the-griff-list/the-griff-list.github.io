@@ -246,6 +246,19 @@ async function test(name, callback) {
     assert.equal(skipWaitingCalls, 0);
   });
 
+  await test('CacheStorage open failure during install preserves the previous active cache generation', async () => {
+    reset();
+    const previousCache = 'grifflist-livekit-offline-v62';
+    assert.notEqual(CACHE, previousCache);
+    cacheData.set(previousCache, new Map([['sentinel', response(ORIGIN + '/index.html')]]));
+    failCacheOpen = true;
+
+    await assert.rejects(dispatch('install'), /simulated CacheStorage\.open failure/);
+    assert.equal(cacheData.has(CACHE), false);
+    assert.equal(cacheData.get(previousCache).has('sentinel'), true);
+    assert.equal(skipWaitingCalls, 0);
+  });
+
   await test('install drains only in-flight precache tasks and removes partial cache after failure', async () => {
     reset();
     let releaseDelayed;
