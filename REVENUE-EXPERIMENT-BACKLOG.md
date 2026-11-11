@@ -120,3 +120,21 @@ This is a limited competitor and platform recheck. Advertised prices are asking 
 - **PayPal Canada fee recheck:** the official domestic commercial transaction rate remains **2.90% + CAD $0.30** (page last updated 13 October 2026). Illustrative processor-only net before tax, labour, refunds and overhead: a $20 service payment leaves about **$19.12**; a $30 payment leaves about **$28.83**. QR-code rates are a different product and must not be assumed for an ordinary PayPal link. Actual account statements and transaction eligibility govern. [PayPal Canada merchant fees](https://www.paypal.com/ca/business/paypal-business-fees)
 
 **Decision:** retain the current digital-first ranking (band tech pack, tightly scoped gig promo kit, and customer-supplied clip editing) as private validation hypotheses. Keep beginner coaching as a time-for-money alternative only if the owner wants to teach and can confirm availability. Do not add a generic recording, apparel-production, marketplace or booking-platform offer. No customer interviews, paid orders, conversion data or repeat purchases have been recorded; all demand remains unvalidated. No public offer, payment flow, provider setting, inventory purchase or vendor commitment was changed.
+
+
+## Additional local booking candidate — 2026-11-11 (researched, unvalidated)
+
+A private acoustic mini-set is a new candidate for the existing booking-contact funnel; it is not a public offer and no price or availability has been approved.
+
+- **Local marketplace benchmark:** Cueup's Charlottetown musician page currently reports an estimated average of about **CAD $140/hour**, with an advertised range of **$110–$280/hour** and a typical event estimate of **$170–$420**. The page showed 19 reviews and one visible DJ profile. Treat this as a directional marketplace estimate, not a verified local rate card, booked revenue or a recommended Griff List quote. [Cueup — Charlottetown musicians](https://cueup.io/es/charlottetown/book-musician)
+- **Platform competition:** IndiMu describes a free-to-join Canadian musician/venue marketplace with gig applications and Stripe payments. This is a substitute discovery/booking channel, not evidence that a Charlottetown profile will produce leads. [IndiMu](https://indimu.ca/)
+- **Offer hypothesis:** a 30–45 minute solo acoustic set for a small birthday, anniversary, community or private gathering, with the exact repertoire, sound equipment, travel area and setup agreed in writing. Use only the existing booking contact; do not promise a date until availability is confirmed.
+- **Price:** **quote-only for now**. Do not publish a starting price until the owner confirms set length, PA/equipment, travel radius, setup/break requirements, cancellation terms and minimum acceptable compensation. Cueup's estimate is only a benchmark.
+- **Startup cost:** potentially $0 if current guitar/PA/transport are sufficient; no equipment purchase is justified by this research.
+- **Time to first dollar:** 1–4 weeks is a planning hypothesis through existing warm contacts, not measured demand.
+- **Gross-margin outlook:** potentially high before owner labour and travel when existing equipment is sufficient, but no defensible net estimate exists until travel, setup, gear, payment fees and tax treatment are known.
+- **Effort:** medium; lead qualification, repertoire preparation, travel, setup and performance.
+- **Risks / fit:** strong performance fit; schedule conflicts, transport, equipment, venue noise/permission, cancellation and event expectations must be controlled. Do not imply a booking, insurance coverage, PA capability or setlist until confirmed.
+- **Validation:** privately ask up to three existing contacts whether they know of a real event need and what format they expect. A positive reply is interest only. Count validation only after an approved quote is accepted, the event is performed and payment is received.
+- **Status:** researched candidate; no outreach, booking, payment or revenue validated.
+
