@@ -1,7 +1,7 @@
 # November 10, 2026 — pre-gig website checklist
 
 **Confirmed booking:** Hunter’s Ale House · Tuesday, November 10, 2026 · 10:00 p.m.–1:30 a.m. Atlantic (user-confirmed).  
-**Later dates at archive time:** December 3 and December 17 were omitted while confirmation was unresolved in the November 10/11 checklist. The later user-confirmed schedule is recorded in the November 12 correction below.  
+**Later dates at archive time:** No later performance booking was confirmed in the available booking history. Do not advertise a future date or performance time until the user confirms it.  
 **Status:** archived after the November 10 performance. The pre-gig acceptance checklist was not executed against the published site. PR #3 remains draft; nothing is deployed. The November 10 set time is distinct from any venue/doors listing, which must not be inferred.
 
 ## Post-event status — November 11, 2026
@@ -58,18 +58,12 @@
 - [ ] Obtain explicit owner approval before merging or deploying. This checklist does not authorize publication, payment activation, a new vendor/service, or spending.
 
 
-## Confirmed upcoming schedule correction — November 12, 2026
+## Booking verification correction — November 12, 2026
 
-A refreshed review of the user's prior booking confirmations established these upcoming performance dates and set times:
+A fresh review of the available user-confirmed booking context found no confirmed performance after Hunter’s Ale House on Tuesday, November 10, 2026. The December 3, December 17 and January 1 dates previously entered in the development homepage and this checklist are not supported by a confirmed booking in the available conversation record.
 
-- **Hunter’s Ale House:** Thursday, December 3, 2026 · 10:00 p.m.–1:30 a.m. Atlantic.
-- **Hunter’s Ale House:** Thursday, December 17, 2026 · 10:00 p.m.–1:30 a.m. Atlantic.
-- **The Levee with Travis:** Friday, January 1, 2027 · 12:00 p.m.–3:00 p.m. Atlantic.
-
-These are performance/set times, not venue opening or door times. Do not infer cover-charge terms, doors, payment arrangements or stream availability from this schedule.
-
-The November 11 post-event note saying no later booking was confirmed is historical and superseded by this correction. The development homepage now presents December 3 as the next show and lists the later confirmed dates. PR #3 remains draft and unpublished; no deployment occurred.
-
-- [ ] Verify the updated December 3 date and overnight end time on a real mobile browser.
-- [ ] Verify December 17 and January 1 supporting dates are legible at narrow viewport widths.
-- [ ] Complete the existing request, payment-link, stream, accessibility and offline acceptance checks before any owner-approved release.
+- The December 3, December 17 and January 1 entries have been removed from the development homepage.
+- The homepage now states: “Next date to be announced” and “No upcoming performance date is currently confirmed.”
+- Do not reinstate a venue, date, performance time, doors time, payment arrangement or stream availability until the user confirms the booking.
+- The November 10 checklist remains an archived record; its mobile, request, payment, stream and published-site acceptance items are still incomplete.
+- PR #3 remains draft and unpublished. No deployment occurred.
