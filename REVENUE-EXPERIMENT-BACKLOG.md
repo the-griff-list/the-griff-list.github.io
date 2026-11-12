@@ -1,6 +1,6 @@
 # The Griff List — Revenue Experiment Backlog
 
-**Research snapshot:** 10 November 2026 (incremental market refresh; earlier evidence retained)  
+**Research snapshot:** 12 November 2026 (incremental market refresh; earlier evidence retained)  
 **Status:** researched hypotheses only — no customer demand or paid conversion has been validated.  
 **Scope:** low/no-upfront-cost services that can be tested through the existing live-music network. This is an internal planning document on the development branch; it does not activate checkout, publish an offer, or authorize spending.
 
@@ -137,4 +137,26 @@ A private acoustic mini-set is a new candidate for the existing booking-contact 
 - **Risks / fit:** strong performance fit; schedule conflicts, transport, equipment, venue noise/permission, cancellation and event expectations must be controlled. Do not imply a booking, insurance coverage, PA capability or setlist until confirmed.
 - **Validation:** privately ask up to three existing contacts whether they know of a real event need and what format they expect. A positive reply is interest only. Count validation only after an approved quote is accepted, the event is performed and payment is received.
 - **Status:** researched candidate; no outreach, booking, payment or revenue validated.
+
+## Original acoustic greeting micro-song — 2026-11-12 (researched, unvalidated)
+
+A small, human-performed original song greeting is a possible add-on to the existing booking/contact audience. This is distinct from a full-length custom-song production service and from a live acoustic booking. It is an internal pilot hypothesis only; it is not a public offer.
+
+- **Competitor evidence:** Canadian custom-song providers advertise materially different scopes and prices. [Ink & Impact](https://www.inkandimpact.ca/custom-song) lists songs from **$40 CAD**, 5–7 business-day delivery and one small adjustment; its page says AI assists the creative/production process with human guidance. [Maple Custom Song Studio](https://www.maplecustomsongstudio.ca/shop/p/product-2-5c6mb-j8mng-wnz8a) lists **$99.99** for a 2:30–3-minute produced song and advertises a 72-hour option. [Crissi Cochrane](https://crissi-cochrane.squarespace.com/shop/customsongs) lists original custom songs from **CA$325** and describes artist-written/recorded work. These are advertised offers, not verified transactions or PEI-specific demand.
+- **Narrow offer hypothesis:** one original 30–45-second acoustic guitar/vocal greeting, based on a short customer-approved brief, delivered as an MP3; one small factual/pronunciation correction; personal-use licence only. No full studio-production claim, public/commercial-use licence, rush promise, or artist/celebrity voice imitation.
+- **Pilot price hypothesis:** **$45 CAD**. This is a test price for the smaller scope, not a proven local rate. At the published PayPal Canada domestic commercial rate of 2.90% + $0.30, a hypothetical $45 payment leaves about **$43.40** before labour, tax, refunds and overhead. A Ko-fi commission is not a tip; its platform and processor fees must be checked against the actual account mode before any owner-approved offer.
+- **Startup cost:** $0 only if the existing guitar, recording setup and delivery tools are sufficient; do not buy a microphone, software or subscription for an unvalidated idea.
+- **Time to first dollar:** 1–14 days through warm, permission-based contacts is a planning hypothesis, not a measured result.
+- **Effort / margin:** approximately 45–90 minutes per order is an initial planning estimate including brief review, writing, recording, export and one small correction. Digital delivery has little material cost, but gross margin before labour is not the same as profit. Track actual time before keeping the price.
+- **Risks / fit:** strong fit with original guitar/vocal performance and low inventory risk. Use only original melody, lyrics and performance; do not reproduce copyrighted lyrics, backing tracks or melodies, and do not imitate a named artist's voice. Keep the customer's story and contact details private; do not publish the song or a sample without separate written permission. Restrict the initial licence to personal gifting/use and quote separately for any commercial or public use.
+- **Validation plan:** create one fictional sample; privately ask up to five existing contacts whether this short format is useful and what they would pay. Do not mass-message or scrape contacts. Count validation only after three unrelated paid orders, recorded delivery time, revision rate, processor fees and repeat/referral interest. A compliment, like or stated interest is not a sale.
+- **Status:** **researched hypothesis, not validated**. No outreach, public page, checkout, payment route, customer data collection or booking commitment was created or changed.
+
+### Research sources
+
+- [Ink & Impact — custom songs and pricing](https://www.inkandimpact.ca/custom-song)
+- [Maple Custom Song Studio — full-length custom song](https://www.maplecustomsongstudio.ca/shop/p/product-2-5c6mb-j8mng-wnz8a)
+- [Crissi Cochrane — custom songs](https://crissi-cochrane.squarespace.com/shop/customsongs)
+- [PayPal Canada — merchant fees](https://www.paypal.com/ca/business/paypal-business-fees)
+- [Ko-fi — fee breakdown](https://help.ko-fi.com/hc/en-us/articles/360002506494-Does-Ko-fi-take-a-fee)
 
