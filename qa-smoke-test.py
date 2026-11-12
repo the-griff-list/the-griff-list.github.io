@@ -97,9 +97,9 @@ if 'recordingRightsApproved&&Boolean(window.MediaRecorder)' not in live_show_sou
     issues.append('live-show.js: recording controls must remain disabled without rights approval')
 
 def next_show_schedule_errors(section_html, now=None):
-    """Validate a confirmed NEXT SHOW or an explicit no-booking state."""
+    """Validate a no-booking state, one TBA date, or complete dated show schedules."""
     times = re.findall(
-        r'<time\b[^>]*\bdatetime="([^"]+)"[^>]*>(.*?)</time>',
+        r'<time\\b[^>]*\\bdatetime="([^"]+)"[^>]*>(.*?)</time>',
         section_html,
         re.S,
     )
@@ -116,69 +116,91 @@ def next_show_schedule_errors(section_html, now=None):
             errors.append('UPCOMING SHOWS without a confirmed booking must not retain an expired or unconfirmed event')
         return errors
 
-    if len(times) not in (1, 3):
-        return [f'NEXT SHOW must contain zero times without a booking, one date with time TBA, or a date plus a complete start/end pair; found {len(times)} time elements']
-
-    if not re.fullmatch(r'\d{4}-\d{2}-\d{2}', times[0][0]):
-        return ['NEXT SHOW date must use a date-only ISO value (YYYY-MM-DD)']
-
-    try:
-        show_date = datetime.fromisoformat(times[0][0]).date()
-    except ValueError as error:
-        return [f'NEXT SHOW contains an invalid date: {error}']
-
     zone = ZoneInfo('America/Halifax')
     current = now or datetime.now(timezone.utc)
     if current.tzinfo is None:
         current = current.replace(tzinfo=timezone.utc)
-    local_today = current.astimezone(zone).date()
-    date_label = re.sub(r'<[^>]+>', '', times[0][1]).strip()
-    expected_date_label = f'{show_date:%A, %B} {show_date.day}, {show_date.year}'
-    errors = []
-    if date_label != expected_date_label:
-        errors.append(f'NEXT SHOW date label must match its Halifax-local date ({expected_date_label})')
 
     if len(times) == 1:
-        if show_date < local_today:
+        if not re.fullmatch(r'\\d{4}-\\d{2}-\\d{2}', times[0][0]):
+            return ['NEXT SHOW date must use a date-only ISO value (YYYY-MM-DD)']
+        try:
+            show_date = datetime.fromisoformat(times[0][0]).date()
+        except ValueError as error:
+            return [f'NEXT SHOW contains an invalid date: {error}']
+        date_label = re.sub(r'<[^>]+>', '', times[0][1]).strip()
+        expected_date_label = f'{show_date:%A, %B} {show_date.day}, {show_date.year}'
+        errors = []
+        if date_label != expected_date_label:
+            errors.append(f'NEXT SHOW date label must match its Halifax-local date ({expected_date_label})')
+        if show_date < current.astimezone(zone).date():
             errors.append('NEXT SHOW date has expired; update the homepage to the next confirmed booking')
         visible_text = re.sub(r'<[^>]+>', ' ', section_html).lower()
         if 'time to be confirmed' not in visible_text and 'time tba' not in visible_text:
             errors.append('NEXT SHOW without start/end times must explicitly say the performance time is to be confirmed')
         return errors
 
-    try:
-        start = datetime.fromisoformat(times[1][0])
-        end = datetime.fromisoformat(times[2][0])
-    except ValueError as error:
-        return errors + [f'NEXT SHOW contains an invalid machine-readable time: {error}']
+    if len(times) % 3 != 0:
+        return [f'NEXT SHOW must contain complete date/start/end groups; found {len(times)} time elements']
 
-    if start.tzinfo is None or end.tzinfo is None:
-        return errors + ['NEXT SHOW start and end times must include explicit UTC offsets']
-
-    local_start = start.astimezone(zone)
-    local_end = end.astimezone(zone)
-    if local_start.date() != show_date:
-        errors.append('NEXT SHOW date-only value must match the Halifax-local start date')
-    if start.utcoffset() != local_start.utcoffset() or end.utcoffset() != local_end.utcoffset():
-        errors.append('NEXT SHOW timestamps must use the correct America/Halifax UTC offset for each date')
-    if end <= start:
-        errors.append('NEXT SHOW end time must be later than its start time')
-    if 'atlantic' not in section_html.lower():
-        errors.append('NEXT SHOW performance times must be labelled Atlantic')
+    errors = []
+    previous_start = None
+    seen_dates = set()
 
     def display_time(value):
         hour = value.hour % 12 or 12
         suffix = 'a.m.' if value.hour < 12 else 'p.m.'
         return f'{hour}:{value.minute:02d} {suffix}'
 
-    start_label = re.sub(r'<[^>]+>', '', times[1][1]).strip()
-    end_label = re.sub(r'<[^>]+>', '', times[2][1]).strip()
-    if start_label != display_time(local_start):
-        errors.append(f'NEXT SHOW displayed start time must match {display_time(local_start)}')
-    if end_label != display_time(local_end):
-        errors.append(f'NEXT SHOW displayed end time must match {display_time(local_end)}')
-    if end.astimezone(timezone.utc) <= current.astimezone(timezone.utc):
-        errors.append('NEXT SHOW schedule has expired; update the homepage to the next confirmed booking')
+    for group_index in range(0, len(times), 3):
+        date_value, start_value, end_value = times[group_index:group_index + 3]
+        group_number = group_index // 3 + 1
+        if not re.fullmatch(r'\\d{4}-\\d{2}-\\d{2}', date_value[0]):
+            errors.append(f'NEXT SHOW group {group_number}: date must use YYYY-MM-DD')
+            continue
+        try:
+            show_date = datetime.fromisoformat(date_value[0]).date()
+            start = datetime.fromisoformat(start_value[0])
+            end = datetime.fromisoformat(end_value[0])
+        except ValueError as error:
+            errors.append(f'NEXT SHOW group {group_number}: invalid ISO date/time: {error}')
+            continue
+
+        date_label = re.sub(r'<[^>]+>', '', date_value[1]).strip()
+        expected_date_label = f'{show_date:%A, %B} {show_date.day}, {show_date.year}'
+        if date_label != expected_date_label:
+            errors.append(f'NEXT SHOW group {group_number}: date label must match {expected_date_label}')
+        if show_date in seen_dates:
+            errors.append(f'NEXT SHOW group {group_number}: duplicate show date {show_date}')
+        seen_dates.add(show_date)
+
+        if start.tzinfo is None or end.tzinfo is None:
+            errors.append(f'NEXT SHOW group {group_number}: start/end timestamps require explicit UTC offsets')
+            continue
+
+        local_start = start.astimezone(zone)
+        local_end = end.astimezone(zone)
+        if local_start.date() != show_date:
+            errors.append(f'NEXT SHOW group {group_number}: date must match the Halifax-local start date')
+        if start.utcoffset() != local_start.utcoffset() or end.utcoffset() != local_end.utcoffset():
+            errors.append(f'NEXT SHOW group {group_number}: timestamp uses the wrong America/Halifax UTC offset')
+        if end <= start:
+            errors.append(f'NEXT SHOW group {group_number}: end time must be later than start time')
+        if previous_start is not None and start <= previous_start:
+            errors.append(f'NEXT SHOW group {group_number}: confirmed shows must be listed chronologically')
+        previous_start = start
+
+        start_label = re.sub(r'<[^>]+>', '', start_value[1]).strip()
+        end_label = re.sub(r'<[^>]+>', '', end_value[1]).strip()
+        if start_label != display_time(local_start):
+            errors.append(f'NEXT SHOW group {group_number}: displayed start must match {display_time(local_start)}')
+        if end_label != display_time(local_end):
+            errors.append(f'NEXT SHOW group {group_number}: displayed end must match {display_time(local_end)}')
+        if end.astimezone(timezone.utc) <= current.astimezone(timezone.utc):
+            errors.append(f'NEXT SHOW group {group_number}: schedule has expired')
+
+    if 'atlantic' not in section_html.lower():
+        errors.append('NEXT SHOW performance times must be labelled Atlantic')
     return errors
 
 next_show = re.search(
@@ -207,15 +229,27 @@ if next_show:
     next_show_html = next_show.group(1)
     has_machine_readable_show = bool(re.search(r'<time\b[^>]*\bdatetime="', next_show_html))
     if has_machine_readable_show:
+        visible_schedule_text = " ".join(re.sub(r'<[^>]+>', ' ', next_show_html).split())
         for required in (
             'Hunter’s Ale House — Thursday, December 3, 2026',
-            'datetime="2026-12-03T22:00:00-04:00"',
-            'datetime="2026-12-04T01:30:00-04:00"',
             'Hunter’s Ale House — Thursday, December 17, 2026',
             'The Levee with Travis — Friday, January 1, 2027',
         ):
-            if required not in next_show_html:
+            if required not in visible_schedule_text:
                 issues.append(f'index.html: confirmed upcoming-show schedule is missing: {required}')
+        for required_datetime in (
+            'datetime="2026-12-03"',
+            'datetime="2026-12-03T22:00:00-04:00"',
+            'datetime="2026-12-04T01:30:00-04:00"',
+            'datetime="2026-12-17"',
+            'datetime="2026-12-17T22:00:00-04:00"',
+            'datetime="2026-12-18T01:30:00-04:00"',
+            'datetime="2027-01-01"',
+            'datetime="2027-01-01T12:00:00-04:00"',
+            'datetime="2027-01-01T15:00:00-04:00"',
+        ):
+            if required_datetime not in next_show_html:
+                issues.append(f'index.html: confirmed upcoming-show schedule is missing machine-readable value: {required_datetime}')
         for forbidden in (
             'Next date to be announced',
             'No upcoming performance date is currently confirmed.',
