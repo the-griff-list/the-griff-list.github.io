@@ -233,7 +233,7 @@ async function test(name, callback) {
 
   await test('failed install preserves the previous active cache generation', async () => {
     reset();
-    const previousCache = 'grifflist-livekit-offline-v62';
+    const previousCache = 'grifflist-livekit-offline-v63';
     assert.notEqual(CACHE, previousCache);
     cacheData.set(previousCache, new Map([['sentinel', response(ORIGIN + '/index.html')]]));
 
@@ -254,7 +254,7 @@ async function test(name, callback) {
 
   await test('CacheStorage open failure during install preserves the previous active cache generation', async () => {
     reset();
-    const previousCache = 'grifflist-livekit-offline-v62';
+    const previousCache = 'grifflist-livekit-offline-v63';
     assert.notEqual(CACHE, previousCache);
     cacheData.set(previousCache, new Map([['sentinel', response(ORIGIN + '/index.html')]]));
     failCacheOpen = true;
@@ -322,7 +322,7 @@ async function test(name, callback) {
     cacheData.set('grifflist-livekit-offline-v57', new Map());
     // v58 may contain config aliases cached before the private-path fix.
     cacheData.set('grifflist-livekit-offline-v58', new Map());
-    cacheData.set('grifflist-livekit-offline-v62', new Map());
+    cacheData.set('grifflist-livekit-offline-v63', new Map());
     cacheData.set('grifflist-sober-drive-search-fix-offline-v7', new Map());
     cacheData.set(CACHE, new Map());
     cacheData.set('unrelated-public-cache', new Map());
@@ -336,8 +336,8 @@ async function test(name, callback) {
 
   await test('activate preserves the previous cache when an older cache deletion fails', async () => {
     reset();
-    const olderCache = 'grifflist-livekit-offline-v61';
-    const previousCache = 'grifflist-livekit-offline-v62';
+    const olderCache = 'grifflist-livekit-offline-v62';
+    const previousCache = 'grifflist-livekit-offline-v63';
     cacheData.set(olderCache, new Map());
     cacheData.set(previousCache, new Map());
     cacheData.set(CACHE, new Map());
@@ -352,7 +352,7 @@ async function test(name, callback) {
 
   await test('activate does not claim clients when obsolete cache deletion fails', async () => {
     reset();
-    const obsoleteCache = 'grifflist-livekit-offline-v62';
+    const obsoleteCache = 'grifflist-livekit-offline-v63';
     cacheData.set(obsoleteCache, new Map());
     cacheData.set(CACHE, new Map());
     failCacheDeleteFor.add(obsoleteCache);
