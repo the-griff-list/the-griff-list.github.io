@@ -1,7 +1,7 @@
 # November 10, 2026 — pre-gig website checklist
 
 **Confirmed booking:** Hunter’s Ale House · Tuesday, November 10, 2026 · 10:00 p.m.–1:30 a.m. Atlantic (user-confirmed).  
-**Later dates:** December 3 and December 17 appeared in an earlier draft, but are not confirmed in the available user-provided context. Do not advertise either as booked or assign a performance time without explicit confirmation.  
+**Later dates at archive time:** December 3 and December 17 were omitted while confirmation was unresolved in the November 10/11 checklist. The later user-confirmed schedule is recorded in the November 12 correction below.  
 **Status:** archived after the November 10 performance. The pre-gig acceptance checklist was not executed against the published site. PR #3 remains draft; nothing is deployed. The November 10 set time is distinct from any venue/doors listing, which must not be inferred.
 
 ## Post-event status — November 11, 2026
@@ -56,3 +56,20 @@
 - [ ] Complete actual mobile browser checks and owner-approved live request/payment/stream checks.
 - [ ] Review all external links and payment destinations one last time.
 - [ ] Obtain explicit owner approval before merging or deploying. This checklist does not authorize publication, payment activation, a new vendor/service, or spending.
+
+
+## Confirmed upcoming schedule correction — November 12, 2026
+
+A refreshed review of the user's prior booking confirmations established these upcoming performance dates and set times:
+
+- **Hunter’s Ale House:** Thursday, December 3, 2026 · 10:00 p.m.–1:30 a.m. Atlantic.
+- **Hunter’s Ale House:** Thursday, December 17, 2026 · 10:00 p.m.–1:30 a.m. Atlantic.
+- **The Levee with Travis:** Friday, January 1, 2027 · 12:00 p.m.–3:00 p.m. Atlantic.
+
+These are performance/set times, not venue opening or door times. Do not infer cover-charge terms, doors, payment arrangements or stream availability from this schedule.
+
+The November 11 post-event note saying no later booking was confirmed is historical and superseded by this correction. The development homepage now presents December 3 as the next show and lists the later confirmed dates. PR #3 remains draft and unpublished; no deployment occurred.
+
+- [ ] Verify the updated December 3 date and overnight end time on a real mobile browser.
+- [ ] Verify December 17 and January 1 supporting dates are legible at narrow viewport widths.
+- [ ] Complete the existing request, payment-link, stream, accessibility and offline acceptance checks before any owner-approved release.
