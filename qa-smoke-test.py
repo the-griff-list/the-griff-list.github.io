@@ -98,11 +98,12 @@ if 'recordingRightsApproved&&Boolean(window.MediaRecorder)' not in live_show_sou
 
 def next_show_schedule_errors(section_html, now=None):
     """Validate a no-booking state, one TBA date, or complete dated show schedules."""
-    times = re.findall(
+    time_matches = list(re.finditer(
         r'<time\b[^>]*\bdatetime="([^"]+)"[^>]*>(.*?)</time>',
         section_html,
         re.S,
-    )
+    ))
+    times = [(match.group(1), match.group(2)) for match in time_matches]
     if not times:
         visible_text = re.sub(r'<[^>]+>', ' ', section_html).lower()
         errors = []
@@ -201,11 +202,45 @@ def next_show_schedule_errors(section_html, now=None):
 
     atlantic_labels = len(re.findall(r'</time>\s*Atlantic\b', section_html, re.I))
     expected_labels = len(times) // 3
+    for group_number, end_index in enumerate(range(2, len(time_matches), 3), start=1):
+        end_match = time_matches[end_index]
+        if not re.match(r'\s*Atlantic\b', section_html[end_match.end():], re.I):
+            errors.append(
+                f'NEXT SHOW group {group_number}: end time must be followed by the Atlantic timezone label'
+            )
     if atlantic_labels != expected_labels:
         errors.append(
             f'Each complete NEXT SHOW range must be labelled Atlantic; found {atlantic_labels}/{expected_labels}'
         )
     return errors
+
+# Regression fixtures: the Atlantic label must follow each show's end time,
+# not merely any earlier <time> element in the same schedule group.
+_schedule_fixture_now = datetime(2026, 11, 12, tzinfo=timezone.utc)
+_schedule_valid_fixture = (
+    '<time datetime="2026-12-03">Thursday, December 3, 2026</time> '
+    '<time datetime="2026-12-03T22:00:00-04:00">10:00 p.m.</time>–'
+    '<time datetime="2026-12-04T01:30:00-04:00">1:30 a.m.</time> Atlantic '
+    '<time datetime="2026-12-17">Thursday, December 17, 2026</time> '
+    '<time datetime="2026-12-17T22:00:00-04:00">10:00 p.m.</time>–'
+    '<time datetime="2026-12-18T01:30:00-04:00">1:30 a.m.</time> Atlantic'
+)
+if next_show_schedule_errors(_schedule_valid_fixture, _schedule_fixture_now):
+    issues.append('qa-smoke-test.py: valid two-show Atlantic schedule fixture was rejected')
+_schedule_misplaced_label_fixture = (
+    '<time datetime="2026-12-03">Thursday, December 3, 2026</time> Atlantic '
+    '<time datetime="2026-12-03T22:00:00-04:00">10:00 p.m.</time>–'
+    '<time datetime="2026-12-04T01:30:00-04:00">1:30 a.m.</time> '
+    '<time datetime="2026-12-17">Thursday, December 17, 2026</time> '
+    '<time datetime="2026-12-17T22:00:00-04:00">10:00 p.m.</time>–'
+    '<time datetime="2026-12-18T01:30:00-04:00">1:30 a.m.</time> Atlantic'
+)
+_misplaced_label_errors = next_show_schedule_errors(
+    _schedule_misplaced_label_fixture, _schedule_fixture_now
+)
+if not any('group 1: end time must be followed by the Atlantic timezone label' in error
+           for error in _misplaced_label_errors):
+    issues.append('qa-smoke-test.py: Atlantic label after a date must not satisfy the end-of-range timezone disclosure')
 
 next_show = re.search(
     r'<section class="next-show-section"[^>]*>(.*?)</section>',
