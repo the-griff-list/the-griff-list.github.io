@@ -99,7 +99,7 @@ if 'recordingRightsApproved&&Boolean(window.MediaRecorder)' not in live_show_sou
 def next_show_schedule_errors(section_html, now=None):
     """Validate a no-booking state, one TBA date, or complete dated show schedules."""
     times = re.findall(
-        r'<time\\b[^>]*\\bdatetime="([^"]+)"[^>]*>(.*?)</time>',
+        r'<time\b[^>]*\bdatetime="([^"]+)"[^>]*>(.*?)</time>',
         section_html,
         re.S,
     )
@@ -122,7 +122,7 @@ def next_show_schedule_errors(section_html, now=None):
         current = current.replace(tzinfo=timezone.utc)
 
     if len(times) == 1:
-        if not re.fullmatch(r'\\d{4}-\\d{2}-\\d{2}', times[0][0]):
+        if not re.fullmatch(r'\d{4}-\d{2}-\d{2}', times[0][0]):
             return ['NEXT SHOW date must use a date-only ISO value (YYYY-MM-DD)']
         try:
             show_date = datetime.fromisoformat(times[0][0]).date()
@@ -155,7 +155,7 @@ def next_show_schedule_errors(section_html, now=None):
     for group_index in range(0, len(times), 3):
         date_value, start_value, end_value = times[group_index:group_index + 3]
         group_number = group_index // 3 + 1
-        if not re.fullmatch(r'\\d{4}-\\d{2}-\\d{2}', date_value[0]):
+        if not re.fullmatch(r'\d{4}-\d{2}-\d{2}', date_value[0]):
             errors.append(f'NEXT SHOW group {group_number}: date must use YYYY-MM-DD')
             continue
         try:
