@@ -87,7 +87,7 @@ assert.match(files.index, /id="next-show"/);
 assert.match(files.index, /NEXT DATE TO BE ANNOUNCED/);
 assert.match(files.index, /No upcoming performance date is currently confirmed/);
 assert.match(files.index, /BROWSE SONGS ↗/);
-assert.doesNotMatch(files.index, /Friday, November 6, 2026|11:00 p\\.m\\.|rihg\\.ca\\/events\\/category\\/hunters\\/2026-11/);
+assert.doesNotMatch(files.index, /Friday, November 6, 2026|11:00 p\.m\.|rihg\\.ca\\/events\\/category\\/hunters\\/2026-11/);
 assert.match(files.legal, /not operated by, sponsored by, endorsed by, or officially affiliated with Hunter’s Ale House/);
 assert.match(files.styles, /prefers-reduced-motion:reduce/);
 assert.match(files.publicJs, /request-success-flash/);
