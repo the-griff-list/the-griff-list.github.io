@@ -108,7 +108,7 @@ def next_show_schedule_errors(section_html, now=None):
         errors = []
         if 'no upcoming performance date is currently confirmed' not in visible_text:
             errors.append('UPCOMING SHOWS without a confirmed booking must say no performance date is currently confirmed')
-        if not re.search(r'href=["']#catalog["']', section_html):
+        if not re.search(r"""href=["']#catalog["']""", section_html):
             errors.append('UPCOMING SHOWS without a confirmed booking must retain the song-catalogue CTA')
         if 'browse songs' not in visible_text:
             errors.append('UPCOMING SHOWS without a confirmed booking must retain the visible catalogue action')
