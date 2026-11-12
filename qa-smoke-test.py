@@ -199,8 +199,12 @@ def next_show_schedule_errors(section_html, now=None):
         if end.astimezone(timezone.utc) <= current.astimezone(timezone.utc):
             errors.append(f'NEXT SHOW group {group_number}: schedule has expired')
 
-    if 'atlantic' not in section_html.lower():
-        errors.append('NEXT SHOW performance times must be labelled Atlantic')
+    atlantic_labels = len(re.findall(r'</time>\s*Atlantic\b', section_html, re.I))
+    expected_labels = len(times) // 3
+    if atlantic_labels != expected_labels:
+        errors.append(
+            f'Each complete NEXT SHOW range must be labelled Atlantic; found {atlantic_labels}/{expected_labels}'
+        )
     return errors
 
 next_show = re.search(
