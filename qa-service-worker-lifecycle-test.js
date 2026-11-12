@@ -553,6 +553,8 @@ async function test(name, callback) {
     // Install-time CORE requests are explicitly credentialless. A normal
     // browser navigation, however, uses same-origin credentials by default.
     await dispatch('install');
+    // Exclude the install-time CORE fetches from the two runtime requests below.
+    fetchCalls = 0;
     const precached = cacheData.get(CACHE).get(url);
     assert.ok(precached, 'the public homepage must exist in the credentialless offline shell');
 
