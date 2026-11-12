@@ -194,8 +194,6 @@ else:
 
 for required in (
     '<p class="eyebrow">UPCOMING SHOWS</p>',
-    'Next date to be announced',
-    'No upcoming performance date is currently confirmed.',
     'BROWSE SONGS ↗',
     'Send a tip',
     'CHECK LIVE STATUS ↗',
@@ -204,6 +202,34 @@ for required in (
 ):
     if required not in home_html:
         issues.append(f'index.html: missing next-show/payment acceptance text: {required}')
+
+if next_show:
+    next_show_html = next_show.group(1)
+    has_machine_readable_show = bool(re.search(r'<time\\b[^>]*\\bdatetime="', next_show_html))
+    if has_machine_readable_show:
+        for required in (
+            'Hunter’s Ale House — Thursday, December 3, 2026',
+            'datetime="2026-12-03T22:00:00-04:00"',
+            'datetime="2026-12-04T01:30:00-04:00"',
+            'Hunter’s Ale House — Thursday, December 17, 2026',
+            'The Levee with Travis — Friday, January 1, 2027',
+        ):
+            if required not in next_show_html:
+                issues.append(f'index.html: confirmed upcoming-show schedule is missing: {required}')
+        for forbidden in (
+            'Next date to be announced',
+            'No upcoming performance date is currently confirmed.',
+        ):
+            if forbidden in next_show_html:
+                issues.append(f'index.html: confirmed upcoming-show schedule still contains stale no-booking text: {forbidden}')
+    else:
+        for required in (
+            'Next date to be announced',
+            'No upcoming performance date is currently confirmed.',
+        ):
+            if required not in next_show_html:
+                issues.append(f'index.html: no-booking state is missing: {required}')
+
 if re.search(r'<p class="eyebrow">(?:LATEST SHOW|UP NEXT)</p>', home_html):
     issues.append('index.html: confirmed upcoming performance must use the NEXT SHOW label')
 for required in ('Send a tip', 'eligible Stripe connection'):
