@@ -205,7 +205,7 @@ for required in (
 
 if next_show:
     next_show_html = next_show.group(1)
-    has_machine_readable_show = bool(re.search(r'<time\\b[^>]*\\bdatetime="', next_show_html))
+    has_machine_readable_show = bool(re.search(r'<time\b[^>]*\bdatetime="', next_show_html))
     if has_machine_readable_show:
         for required in (
             'Hunter’s Ale House — Thursday, December 3, 2026',
