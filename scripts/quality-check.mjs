@@ -1,8 +1,45 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import vm from "node:vm";
+import {
+  PAYPAL_LIVE_BASE,
+  PAYPAL_SANDBOX_BASE,
+  SUPABASE_PROJECT_ORIGIN,
+  resolvePayPalApiBase,
+  resolveSupabaseUrl
+} from "../supabase/functions/_shared/paypal-api-base.mjs";
 
 const read = (path) => readFileSync(new URL("../" + path, import.meta.url), "utf8");
+
+assert.equal(resolvePayPalApiBase(undefined, undefined), PAYPAL_SANDBOX_BASE);
+assert.equal(resolvePayPalApiBase("", undefined), PAYPAL_SANDBOX_BASE);
+assert.equal(resolvePayPalApiBase(PAYPAL_SANDBOX_BASE, undefined), PAYPAL_SANDBOX_BASE);
+assert.equal(resolvePayPalApiBase(PAYPAL_LIVE_BASE, "true"), PAYPAL_LIVE_BASE);
+for (const value of [
+  PAYPAL_LIVE_BASE,
+  "http://api-m.sandbox.paypal.com",
+  "https://api-m.sandbox.paypal.com.evil.example",
+  "https://evil@api-m.sandbox.paypal.com",
+  "https://api-m.sandbox.paypal.com:444",
+  "https://api-m.sandbox.paypal.com/path",
+  "https://api-m.sandbox.paypal.com/?x=1",
+  "https://api-m.sandbox.paypal.com/#fragment",
+  "https://api-m.sandbox.paypal.com.evil.example@evil.example"
+]) assert.throws(() => resolvePayPalApiBase(value, undefined));
+assert.throws(() => resolvePayPalApiBase(PAYPAL_LIVE_BASE, "TRUE"));
+assert.throws(() => resolvePayPalApiBase(PAYPAL_LIVE_BASE, "1"));
+assert.equal(resolveSupabaseUrl(SUPABASE_PROJECT_ORIGIN), SUPABASE_PROJECT_ORIGIN);
+assert.equal(resolveSupabaseUrl(SUPABASE_PROJECT_ORIGIN + "/"), SUPABASE_PROJECT_ORIGIN);
+for (const value of [
+  "http://wgoepotvblksgjogougo.supabase.co",
+  "https://wgoepotvblksgjogougo.supabase.co.evil.example",
+  "https://evil@wgoepotvblksgjogougo.supabase.co",
+  "https://wgoepotvblksgjogougo.supabase.co:444",
+  "https://wgoepotvblksgjogougo.supabase.co/path",
+  "https://attacker.supabase.co"
+]) assert.throws(() => resolveSupabaseUrl(value));
+console.log("PASS PayPal/Supabase endpoint allowlists and explicit Live opt-in");
+
 const files = {
   index: read("index.html"),
   styles: read("styles.css"),
@@ -86,6 +123,12 @@ assert.match(files.paymentSql, /record_verified_paypal_capture/);
 assert.match(files.paymentSql, /create table if not exists public\.paypal_payments/);
 assert.match(files.paymentSql, /verified_paypal_payment_updates_rockometer/);
 assert.match(files.paypalCreate, /amount: \{ currency_code: "CAD", value: "5\.00" \}/);
+assert.match(files.paypalCreate, /resolvePayPalApiBase\(Deno\.env\.get\("PAYPAL_API_BASE"\), Deno\.env\.get\("PAYPAL_ENABLE_LIVE"\)\)/);
+assert.match(files.paypalWebhook, /resolvePayPalApiBase\(Deno\.env\.get\("PAYPAL_API_BASE"\), Deno\.env\.get\("PAYPAL_ENABLE_LIVE"\)\)/);
+assert.match(files.paypalCreate, /resolveSupabaseUrl\(required\("SUPABASE_URL"\)\)/);
+assert.match(files.paypalWebhook, /resolveSupabaseUrl\(required\("SUPABASE_URL"\)\)/);
+assert.ok((files.paypalCreate.match(/redirect: "error"/g) || []).length >= 4);
+assert.ok((files.paypalWebhook.match(/redirect: "error"/g) || []).length >= 3);
 assert.match(files.mfaSql, /as restrictive for all to authenticated/);
 assert.match(files.mfaSql, /aal2/);
 assert.match(files.donationWallSql, /confirmed = true/);

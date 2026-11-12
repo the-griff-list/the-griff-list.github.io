@@ -51,6 +51,7 @@ Create a REST API app in PayPal Developer Dashboard. Start in Sandbox. Add these
 - `PAYPAL_CLIENT_SECRET`
 - `PAYPAL_WEBHOOK_ID`
 - `PAYPAL_API_BASE=https://api-m.sandbox.paypal.com`
+- `PAYPAL_ENABLE_LIVE=true` — do not set this until all Sandbox acceptance tests pass and the owner explicitly approves a Live deployment. The code rejects the Live host unless this value is exactly `true`.
 
 Supabase provides `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` to Edge Functions. If they are not present in the project environment, set them through Supabase Secrets. Never place the service-role key in the website.
 
@@ -64,6 +65,14 @@ Subscribe to:
 - `PAYMENT.CAPTURE.COMPLETED`
 
 The webhook ID shown by PayPal must be stored as `PAYPAL_WEBHOOK_ID`.
+
+## Endpoint safety
+
+- Both Edge Functions default to the PayPal Sandbox API host.
+- `PAYPAL_API_BASE` accepts only the exact official HTTPS Sandbox or Live origin. The Live origin additionally requires `PAYPAL_ENABLE_LIVE=true`.
+- `SUPABASE_URL` is restricted to `https://wgoepotvblksgjogougo.supabase.co` (an optional single trailing slash is accepted) so the service-role key cannot be sent to an arbitrary configured host.
+- PayPal and Supabase API requests reject HTTP redirects instead of following them with privileged headers.
+- These are code-level guardrails only; no credentials have been configured and no function has been deployed.
 
 ## Sandbox acceptance tests
 

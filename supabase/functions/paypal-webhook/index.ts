@@ -7,6 +7,7 @@ function required(name) {
 async function paypalAccessToken(base, clientId, clientSecret) {
   const response = await fetch(base + "/v1/oauth2/token", {
     method: "POST",
+    redirect: "error",
     headers: {
       "Authorization": "Basic " + btoa(clientId + ":" + clientSecret),
       "Content-Type": "application/x-www-form-urlencoded"
@@ -21,6 +22,7 @@ async function paypalAccessToken(base, clientId, clientSecret) {
 async function paypalRequest(base, token, path, options = {}) {
   const response = await fetch(base + path, {
     ...options,
+    redirect: "error",
     headers: {
       "Authorization": "Bearer " + token,
       "Content-Type": "application/json",
@@ -35,6 +37,7 @@ async function paypalRequest(base, token, path, options = {}) {
 async function supabaseRequest(url, serviceKey, path, options = {}) {
   const response = await fetch(url + path, {
     ...options,
+    redirect: "error",
     headers: {
       "apikey": serviceKey,
       "Authorization": "Bearer " + serviceKey,
@@ -51,12 +54,13 @@ Deno.serve(async (request) => {
   if (request.method !== "POST") return new Response("Method not allowed", { status: 405 });
 
   try {
-    const supabaseUrl = required("SUPABASE_URL").replace(/\/$/, "");
+    const { resolvePayPalApiBase, resolveSupabaseUrl } = await import("../_shared/paypal-api-base.mjs");
+    const supabaseUrl = resolveSupabaseUrl(required("SUPABASE_URL"));
     const serviceKey = required("SUPABASE_SERVICE_ROLE_KEY");
     const clientId = required("PAYPAL_CLIENT_ID");
     const clientSecret = required("PAYPAL_CLIENT_SECRET");
     const webhookId = required("PAYPAL_WEBHOOK_ID");
-    const base = (Deno.env.get("PAYPAL_API_BASE") || "https://api-m.paypal.com").replace(/\/$/, "");
+    const base = resolvePayPalApiBase(Deno.env.get("PAYPAL_API_BASE"), Deno.env.get("PAYPAL_ENABLE_LIVE"));
 
     const rawBody = await request.text();
     let event;

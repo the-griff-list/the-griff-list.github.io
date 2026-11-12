@@ -19,6 +19,7 @@ async function paypalAccessToken(base, clientId, clientSecret) {
   const credentials = btoa(clientId + ":" + clientSecret);
   const response = await fetch(base + "/v1/oauth2/token", {
     method: "POST",
+    redirect: "error",
     headers: {
       "Authorization": "Basic " + credentials,
       "Content-Type": "application/x-www-form-urlencoded"
@@ -33,6 +34,7 @@ async function paypalAccessToken(base, clientId, clientSecret) {
 async function paypalRequest(base, token, path, options = {}) {
   const response = await fetch(base + path, {
     ...options,
+    redirect: "error",
     headers: {
       "Authorization": "Bearer " + token,
       "Content-Type": "application/json",
@@ -49,11 +51,12 @@ Deno.serve(async (request) => {
   if (request.method !== "POST") return json(405, { error: "Method not allowed" });
 
   try {
-    const supabaseUrl = required("SUPABASE_URL").replace(/\/$/, "");
+    const { resolvePayPalApiBase, resolveSupabaseUrl } = await import("../_shared/paypal-api-base.mjs");
+    const supabaseUrl = resolveSupabaseUrl(required("SUPABASE_URL"));
     const serviceKey = required("SUPABASE_SERVICE_ROLE_KEY");
     const clientId = required("PAYPAL_CLIENT_ID");
     const clientSecret = required("PAYPAL_CLIENT_SECRET");
-    const base = (Deno.env.get("PAYPAL_API_BASE") || "https://api-m.paypal.com").replace(/\/$/, "");
+    const base = resolvePayPalApiBase(Deno.env.get("PAYPAL_API_BASE"), Deno.env.get("PAYPAL_ENABLE_LIVE"));
 
     const body = await request.json().catch(() => ({}));
     const trackingToken = String(body.tracking_token || "");
@@ -65,7 +68,7 @@ Deno.serve(async (request) => {
     const lookup = await fetch(
       supabaseUrl + "/rest/v1/song_requests?tracking_token=eq." + encodeURIComponent(trackingToken) +
       "&select=tracking_token,payment_reference,payment_method,payment_status,payment_checkout_reference&limit=1",
-      { headers }
+      { headers, redirect: "error" }
     );
     if (!lookup.ok) throw new Error("Could not load the priority request");
     const rows = await lookup.json();
@@ -121,6 +124,7 @@ Deno.serve(async (request) => {
       "&payment_status=eq.pending&payment_method=eq.paypal",
       {
         method: "PATCH",
+        redirect: "error",
         headers: { ...headers, "Content-Type": "application/json", "Prefer": "return=minimal" },
         body: JSON.stringify({ payment_checkout_reference: order.id })
       }
