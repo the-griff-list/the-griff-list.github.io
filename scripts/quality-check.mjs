@@ -45,6 +45,7 @@ const files = {
   styles: read("styles.css"),
   admin: read("admin.html"),
   legal: read("legal.html"),
+  qualityWorkflow: read(".github/workflows/quality.yml"),
   watch: read("watch-live.html"),
   explore: read("explore.html"),
   taxi: read("taxi-services.html"),
@@ -122,6 +123,8 @@ assert.match(files.paypalWebhook, /record_verified_paypal_capture/);
 assert.match(files.paymentSql, /record_verified_paypal_capture/);
 assert.match(files.paymentSql, /create table if not exists public\.paypal_payments/);
 assert.match(files.paymentSql, /verified_paypal_payment_updates_rockometer/);
+assert.match(files.qualityWorkflow, /permissions:\s+contents:\s+read/);
+assert.match(files.qualityWorkflow, /persist-credentials:\s+false/);
 assert.match(files.paypalCreate, /amount: \{ currency_code: "CAD", value: "5\.00" \}/);
 assert.match(files.paypalCreate, /resolvePayPalApiBase\(Deno\.env\.get\("PAYPAL_API_BASE"\), Deno\.env\.get\("PAYPAL_ENABLE_LIVE"\)\)/);
 assert.match(files.paypalWebhook, /resolvePayPalApiBase\(Deno\.env\.get\("PAYPAL_API_BASE"\), Deno\.env\.get\("PAYPAL_ENABLE_LIVE"\)\)/);
