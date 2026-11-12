@@ -546,6 +546,50 @@ async function test(name, callback) {
     assert.equal(fetchCalls, 2);
   });
 
+  await test('same-origin navigation uses the precached public shell offline without persisting credentialed network responses', async () => {
+    reset();
+    const url = ORIGIN + '/index.html';
+
+    // Install-time CORE requests are explicitly credentialless. A normal
+    // browser navigation, however, uses same-origin credentials by default.
+    await dispatch('install');
+    const precached = cacheData.get(CACHE).get(url);
+    assert.ok(precached, 'the public homepage must exist in the credentialless offline shell');
+
+    fetchImpl = async request => {
+      fetchCalls += 1;
+      return response(request.url);
+    };
+    const online = await dispatchFetch({
+      ...navigation(url),
+      credentials: 'same-origin',
+    });
+    const fresh = await online.responsePromise;
+    await online.waitPromise;
+
+    assert.equal(fresh.url, url);
+    assert.notEqual(fresh, precached, 'online navigation should prefer the fresh network response');
+    assert.equal(
+      cacheData.get(CACHE).get(url),
+      precached,
+      'a credentialed same-origin response must not overwrite the credentialless precache entry',
+    );
+
+    fetchImpl = async () => {
+      fetchCalls += 1;
+      throw new Error('simulated offline network');
+    };
+    const offline = await dispatchFetch({
+      ...navigation(url),
+      credentials: 'same-origin',
+    });
+    const cached = await offline.responsePromise;
+    await offline.waitPromise;
+
+    assert.equal(cached, precached, 'the credentialless public shell remains available offline');
+    assert.equal(fetchCalls, 2);
+  });
+
   process.stdout.write('PASS ' + passed + ' service-worker lifecycle groups\n');
 })().catch(error => {
   process.stderr.write(String(error && error.stack || error) + '\n');
