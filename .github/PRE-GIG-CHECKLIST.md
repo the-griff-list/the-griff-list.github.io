@@ -1,6 +1,7 @@
 # November 10, 2026 — pre-gig website checklist
 
-**Confirmed booking:** Hunter’s Ale House · Tuesday, November 10, 2026 · 10:00 p.m.–1:30 a.m. Atlantic (user-confirmed).  
+**Confirmed booking / planned set:** Hunter’s Ale House · Tuesday, November 10, 2026 · 10:00 p.m.–1:30 a.m. Atlantic (user-confirmed).  
+**Actual performance:** the user later reported that the performance ran from 10:00 p.m. until approximately 1:50 a.m. Atlantic; preserve this as the approximate actual finish, not a change to the planned set window.  
 **Later dates at archive time:** No later performance booking was confirmed in the available booking history. Do not advertise a future date or performance time until the user confirms it.  
 **Status:** archived after the November 10 performance. The pre-gig acceptance checklist was not executed against the published site. PR #3 remains draft; nothing is deployed. The November 10 set time is distinct from any venue/doors listing, which must not be inferred.
 
@@ -10,7 +11,7 @@ At the booking review, the published sources did not agree on the performance st
 
 - RIHG homepage lists Griff & Guest at 11:00 p.m.
 - Hunter’s Ale House category calendar also lists Griff & Guest at 11:00 p.m.
-- The user-confirmed 10:00 p.m. performance set was 10:00 p.m.–1:30 a.m. Atlantic.
+- The user-confirmed planned set window was 10:00 p.m.–1:30 a.m. Atlantic; the user later reported the actual performance continued until approximately 1:50 a.m. Atlantic.
 
 Keep the distinction explicit in historical records. The venue listings are not proof that the user-confirmed set began at 11:00 p.m.; do not silently replace the user-confirmed set time with the venue listing, or infer doors/set times from either source. This is an archived discrepancy, not a claim that either source is still current.
 
