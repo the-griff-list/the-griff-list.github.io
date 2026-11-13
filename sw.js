@@ -177,7 +177,7 @@ function hasExplicitNoStoreOrNoCache(request) {
   const hasRequestNoCache = requestCacheControl.some(value => {
     const directive = value.split('=', 1)[0].trim();
     return directive === 'no-cache' ||
-      /^max-age\\s*=\\s*"?0+"?$/i.test(value);
+      /^max-age\s*=\\s*"?0+"?$/i.test(value);
   });
   const hasPragmaNoCache = (request.headers.get('Pragma') || '')
     .split(',')
