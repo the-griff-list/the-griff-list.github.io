@@ -1,6 +1,6 @@
 # The Grifflist Watch Live — Direct phone-to-website streaming
 
-This package is configured for a phone browser to publish camera + microphone to **MediaMTX over WHIP**, while visitors watch through **WebRTC/WHEP** on `watch-live.html`. The public page reads the venue name and live state from Supabase, overlays the Rock-O-Meter, and links to the existing Ko-fi, PayPal and e-transfer options.
+This package is configured for a phone browser to publish camera + microphone to **MediaMTX over WHIP**, while visitors watch through **WebRTC/WHEP** on `watch-live.html`. The public page reads the venue name and live state from Supabase, overlays the Rock-O-Meter, and links to the existing Ko-fi and PayPal donation options; e-transfer is currently disabled.
 
 ## What is already in the website package
 
@@ -8,8 +8,8 @@ This package is configured for a phone browser to publish camera + microphone to
 - START BROADCAST requests the phone's camera and microphone and publishes to MediaMTX.
 - END BROADCAST closes the local stream and marks the show offline.
 - `watch-live.html` receives the stream and displays the admin-controlled venue name.
-- The Rock-O-Meter overlay reads `rock_meter_settings` from Supabase. Update its goal and confirmed raised amount in the admin panel. **Tips do not automatically change the meter**; automatic totals require verified payment-provider webhooks and should not be faked client-side.
-- The existing tipping buttons link to Ko-fi, PayPal and the homepage e-transfer instructions. The site does not collect or verify card details itself.
+- The Rock-O-Meter overlay reads `rock_meter_settings` from Supabase. Update its goal and confirmed raised amount in the admin panel. Verified CAD Ko-fi donations and verified PayPal priority-request captures update the meter through server-side reconciliation. General PayPal donations are not automatically matched yet.
+- The donation buttons link to Ko-fi and PayPal. E-transfer is disabled while payment security is reviewed. The site does not collect or verify card details itself.
 
 ## Architecture
 
@@ -38,7 +38,7 @@ GitHub Pages serves the static website only. It does not host the media relay. M
 - **Domain/DNS:** a domain commonly costs an additional annual fee; free dynamic DNS may be adequate for testing. A public hostname and valid HTTPS certificate are required for camera access.
 - **Bandwidth is the main variable.** At an illustrative 2.5 Mbps video stream, one viewer uses about 1.1 GB per hour. Ten simultaneous viewers for a one-hour set could use around 11 GB of outbound media, before overhead. Check the provider's included outbound traffic and overage rates. Lowering the broadcast resolution/bitrate can reduce cost but also reduces quality.
 - **TURN relay:** not necessarily required, but may be needed when UDP connectivity fails. A relay can materially increase bandwidth costs.
-- **No automatic payment-to-meter integration is included.** For accurate automatic tipping totals, integrate verified provider webhooks on a secure backend; do not trust browser-only payment success callbacks.
+- Verified CAD Ko-fi donations and PayPal priority-request captures update the Rock-O-Meter through server-side webhooks and an idempotent database ledger. General PayPal donations still require manual reconciliation; never trust browser-only payment success callbacks.
 
 A reference point for pricing: Hetzner's official June 2026 price adjustment lists some entry-level EU cloud plans starting around US$6.49/month before VAT, but region, availability, bandwidth and suitability vary. That is not a Canada-specific quote. See official pricing notes: https://docs.hetzner.com/general/infrastructure-and-availability/price-adjustment/ and traffic rules: https://docs.hetzner.com/robot/general/traffic/.
 
