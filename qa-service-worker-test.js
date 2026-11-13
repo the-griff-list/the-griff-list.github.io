@@ -133,11 +133,14 @@ test('explicit cache-bypass requests stay unpersisted while public navigations r
     assert.equal(context.isCacheableRequest(request({ destination: 'style', cache }), publicUrl), false, cache);
   }
   const homepage = new URL('/index.html', ORIGIN);
-  for (const cache of ['no-store', 'no-cache', 'reload']) {
+  for (const cache of ['no-store', 'no-cache']) {
     const navigation = request({ mode: 'navigate', destination: 'document', cache });
     assert.equal(context.isCacheableRequest(navigation, homepage), true, cache);
     assert.equal(context.isCacheableResponseForRequest(navigation, response()), false, cache);
   }
+  const reloadNavigation = request({ mode: 'navigate', destination: 'document', cache: 'reload' });
+  assert.equal(context.isCacheableRequest(reloadNavigation, homepage), true, 'reload navigation remains interceptable');
+  assert.equal(context.isCacheableResponseForRequest(reloadNavigation, response()), true, 'credentialless reload may refresh the public cache');
   for (const headerValues of [
     { 'Cache-Control': 'no-store' },
     { 'Cache-Control': 'no-cache' },
