@@ -35,3 +35,14 @@ export function resolvePayPalApiBase(rawBase, enableLive) {
 export function resolveSupabaseUrl(rawUrl) {
   return requireCanonicalOrigin(rawUrl, [SUPABASE_PROJECT_ORIGIN], "Supabase project");
 }
+
+
+/**
+ * The PayPal priority checkout created by this integration is fixed at CAD 5.00.
+ * PayPal returns amount.value as a decimal string. Accept only canonical decimal
+ * forms for exactly five dollars; reject under/overpayments, exponent notation,
+ * non-finite values, whitespace, numbers and excess precision.
+ */
+export function isExactPriorityAmount(value) {
+  return typeof value === "string" && /^5(?:\\.0{1,2})?$/.test(value);
+}

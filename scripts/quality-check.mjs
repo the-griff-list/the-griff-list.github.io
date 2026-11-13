@@ -6,7 +6,8 @@ import {
   PAYPAL_SANDBOX_BASE,
   SUPABASE_PROJECT_ORIGIN,
   resolvePayPalApiBase,
-  resolveSupabaseUrl
+  resolveSupabaseUrl,
+  isExactPriorityAmount
 } from "../supabase/functions/_shared/paypal-api-base.mjs";
 
 const read = (path) => readFileSync(new URL("../" + path, import.meta.url), "utf8");
@@ -40,6 +41,17 @@ for (const value of [
 ]) assert.throws(() => resolveSupabaseUrl(value));
 console.log("PASS PayPal/Supabase endpoint allowlists and explicit Live opt-in");
 
+for (const value of ["5", "5.0", "5.00"]) {
+  assert.equal(isExactPriorityAmount(value), true, value);
+}
+for (const value of [
+  "4.99", "5.01", "05.00", "5.000", "5e0", "NaN", "Infinity",
+  " 5.00", "5.00 ", "", 5, null, undefined
+]) {
+  assert.equal(isExactPriorityAmount(value), false, String(value));
+}
+console.log("PASS exact CAD $5.00 PayPal priority amount policy");
+
 const files = {
   index: read("index.html"),
   styles: read("styles.css"),
@@ -56,6 +68,7 @@ const files = {
   paypalCreate: read("supabase/functions/paypal-create-order/index.ts"),
   paypalWebhook: read("supabase/functions/paypal-webhook/index.ts"),
   paymentSql: read("priority-payment-matching.sql"),
+  paymentSqlTests: read("priority-payment-matching-tests.sql"),
   mfaSql: read("admin-mfa-enforcement.sql"),
   donationWallSql: read("confirmed-donation-wall.sql")
 };
@@ -123,6 +136,11 @@ assert.match(files.paypalWebhook, /verify-webhook-signature/);
 assert.match(files.paypalWebhook, /PAYMENT\.CAPTURE\.COMPLETED/);
 assert.match(files.paypalWebhook, /record_verified_paypal_capture/);
 assert.match(files.paymentSql, /record_verified_paypal_capture/);
+assert.match(files.paymentSql, /coalesce\\(p_amount,0\\) <> 5\\.00/);
+assert.match(files.paymentSqlTests, /TEST-LOW-CAPTURE-/);
+assert.match(files.paymentSqlTests, /TEST-HIGH-CAPTURE-/);
+assert.match(files.paypalWebhook, /isExactPriorityAmount\\(amount\\)/);
+assert.match(files.paypalWebhook, /isExactPriorityAmount\\(capture\\.amount\\?\\.value\\)/);
 assert.match(files.paymentSql, /create table if not exists public\.paypal_payments/);
 assert.match(files.paymentSql, /verified_paypal_payment_updates_rockometer/);
 assert.match(files.qualityWorkflow, /permissions:\s+contents:\s+read/);

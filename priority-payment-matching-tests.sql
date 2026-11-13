@@ -133,6 +133,39 @@ begin
        set payment_checkout_reference = 'TEST-ORDER-' || v_paypal_token::text
      where tracking_token = v_paypal_token;
 
+    -- PayPal checkout is fixed at CAD $5.00: reject both under- and overpayment.
+    v_result := public.record_verified_paypal_capture(
+      'TEST-LOW-CAPTURE-' || v_paypal_token::text,
+      'TEST-ORDER-' || v_paypal_token::text,
+      v_paypal_ref,
+      4.99,
+      'CAD'
+    );
+    if v_result is distinct from false then
+      raise exception 'FAIL: PayPal underpayment must be rejected';
+    end if;
+
+    v_result := public.record_verified_paypal_capture(
+      'TEST-HIGH-CAPTURE-' || v_paypal_token::text,
+      'TEST-ORDER-' || v_paypal_token::text,
+      v_paypal_ref,
+      5.01,
+      'CAD'
+    );
+    if v_result is distinct from false then
+      raise exception 'FAIL: PayPal overpayment must be rejected for the fixed-price order';
+    end if;
+
+    select payment_status into v_paypal_status
+      from public.song_requests where tracking_token = v_paypal_token;
+    if v_paypal_status <> 'pending' then
+      raise exception 'FAIL: rejected PayPal amounts must leave the request pending';
+    end if;
+    select raised_amount into v_after from public.rock_meter_settings where id = 1;
+    if v_after is distinct from coalesce(v_before,0) then
+      raise exception 'FAIL: rejected PayPal amounts must not change the Rock-O-Meter';
+    end if;
+
     v_result := public.record_verified_paypal_capture(
       'TEST-CAPTURE-' || v_paypal_token::text,
       'TEST-ORDER-' || v_paypal_token::text,

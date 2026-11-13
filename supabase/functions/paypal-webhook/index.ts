@@ -54,7 +54,7 @@ Deno.serve(async (request) => {
   if (request.method !== "POST") return new Response("Method not allowed", { status: 405 });
 
   try {
-    const { resolvePayPalApiBase, resolveSupabaseUrl } = await import("../_shared/paypal-api-base.mjs");
+    const { isExactPriorityAmount, resolvePayPalApiBase, resolveSupabaseUrl } = await import("../_shared/paypal-api-base.mjs");
     const supabaseUrl = resolveSupabaseUrl(required("SUPABASE_URL"));
     const serviceKey = required("SUPABASE_SERVICE_ROLE_KEY");
     const clientId = required("PAYPAL_CLIENT_ID");
@@ -100,13 +100,17 @@ Deno.serve(async (request) => {
     if (!orderId) return new Response("Order reference missing", { status: 202 });
 
     const order = await paypalRequest(base, accessToken, "/v2/checkout/orders/" + encodeURIComponent(orderId));
-    const purchaseUnit = (order.purchase_units || [])[0];
+    const purchaseUnits = Array.isArray(order.purchase_units) ? order.purchase_units : [];
+    if (purchaseUnits.length !== 1) {
+      return new Response("Order must contain exactly one purchase unit", { status: 200 });
+    }
+    const purchaseUnit = purchaseUnits[0];
     const customId = String(purchaseUnit?.custom_id || "");
     const orderAmount = purchaseUnit?.amount || {};
-    const amount = Number(orderAmount.value || 0);
+    const amount = orderAmount.value;
     const currency = String(orderAmount.currency_code || "");
 
-    if (!/^GRF-[A-F0-9]{12}$/i.test(customId) || currency.toUpperCase() !== "CAD" || amount < 5) {
+    if (!/^GRF-[A-F0-9]{12}$/i.test(customId) || currency.toUpperCase() !== "CAD" || !isExactPriorityAmount(amount)) {
       console.warn("PayPal order did not meet priority payment rules", { event_id: event.id, currency, amount });
       return new Response("Order does not qualify for priority payment", { status: 200 });
     }
@@ -135,7 +139,7 @@ Deno.serve(async (request) => {
     const capture = purchaseUnit?.payments?.captures?.find((item) => item.id === captureId);
     if (!captureId || !capture || capture.status !== "COMPLETED" ||
         String(capture.amount?.currency_code || "").toUpperCase() !== "CAD" ||
-        Number(capture.amount?.value || 0) < 5) {
+        !isExactPriorityAmount(capture.amount?.value)) {
       return new Response("Completed capture details did not qualify", { status: 200 });
     }
 
@@ -147,7 +151,7 @@ Deno.serve(async (request) => {
         p_capture_id: captureId,
         p_order_id: orderId,
         p_payment_reference: customId.toUpperCase(),
-        p_amount: Number(capture.amount.value),
+        p_amount: 5.00,
         p_currency: "CAD"
       })
     });
