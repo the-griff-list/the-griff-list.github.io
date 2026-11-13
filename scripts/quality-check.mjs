@@ -9,6 +9,7 @@ import {
   resolveSupabaseUrl,
   isExactPriorityAmount,
   PAYPAL_WEBHOOK_MAX_BODY_BYTES,
+  PAYPAL_CREATE_ORDER_MAX_BODY_BYTES,
   readBoundedRequestText
 } from "../supabase/functions/_shared/paypal-api-base.mjs";
 
@@ -82,7 +83,37 @@ await assert.rejects(
   })),
   TypeError
 );
-console.log("PASS bounded PayPal webhook body and UTF-8 validation");
+const checkoutBodyLimit = PAYPAL_CREATE_ORDER_MAX_BODY_BYTES;
+assert.equal(checkoutBodyLimit, 8 * 1024);
+const checkoutBoundary = JSON.stringify({ tracking_token: "123e4567-e89b-42d3-a456-426614174000" });
+assert.equal((await readBoundedRequestText(new Request("https://example.test/create-order", {
+  method: "POST",
+  body: checkoutBoundary
+}), checkoutBodyLimit)).length, checkoutBoundary.length);
+await assert.rejects(
+  readBoundedRequestText(new Request("https://example.test/create-order", {
+    method: "POST",
+    body: "x".repeat(checkoutBodyLimit + 1)
+  }), checkoutBodyLimit),
+  RangeError
+);
+let declaredBodyCancelled = false;
+const declaredOversizedBody = new ReadableStream({
+  start(controller) { controller.enqueue(new Uint8Array([1])); },
+  cancel() { declaredBodyCancelled = true; }
+});
+const declaredOversizedRequest = new Request("https://example.test/create-order", {
+  method: "POST",
+  headers: { "content-length": String(checkoutBodyLimit + 1) },
+  body: declaredOversizedBody,
+  duplex: "half"
+});
+await assert.rejects(
+  readBoundedRequestText(declaredOversizedRequest, checkoutBodyLimit),
+  RangeError
+);
+assert.equal(declaredBodyCancelled, true);
+console.log("PASS bounded PayPal webhook and checkout bodies, UTF-8 validation, and early cancellation");
 
 const files = {
   index: read("index.html"),
@@ -176,6 +207,9 @@ assert.match(files.paypalWebhook, /isExactPriorityAmount\(amount\)/);
 assert.match(files.paypalWebhook, /isExactPriorityAmount\(capture\.amount\?\.value\)/);
 assert.match(files.paypalWebhook, /readBoundedRequestText\(request\)/);
 assert.match(files.paypalWebhook, /status: 413/);
+assert.match(files.paypalCreate, /readBoundedRequestText\(request, PAYPAL_CREATE_ORDER_MAX_BODY_BYTES\)/);
+assert.match(files.paypalCreate, /status: 413/);
+assert.match(files.paypalCreate, /A JSON object is required/);
 assert.match(files.paymentSql, /create table if not exists public\.paypal_payments/);
 assert.match(files.paymentSql, /verified_paypal_payment_updates_rockometer/);
 assert.match(files.qualityWorkflow, /permissions:\s+contents:\s+read/);

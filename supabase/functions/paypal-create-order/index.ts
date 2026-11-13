@@ -51,14 +51,29 @@ Deno.serve(async (request) => {
   if (request.method !== "POST") return json(405, { error: "Method not allowed" });
 
   try {
-    const { resolvePayPalApiBase, resolveSupabaseUrl } = await import("../_shared/paypal-api-base.mjs");
+    const { readBoundedRequestText, PAYPAL_CREATE_ORDER_MAX_BODY_BYTES, resolvePayPalApiBase, resolveSupabaseUrl } = await import("../_shared/paypal-api-base.mjs");
     const supabaseUrl = resolveSupabaseUrl(required("SUPABASE_URL"));
     const serviceKey = required("SUPABASE_SERVICE_ROLE_KEY");
     const clientId = required("PAYPAL_CLIENT_ID");
     const clientSecret = required("PAYPAL_CLIENT_SECRET");
     const base = resolvePayPalApiBase(Deno.env.get("PAYPAL_API_BASE"), Deno.env.get("PAYPAL_ENABLE_LIVE"));
 
-    const body = await request.json().catch(() => ({}));
+    let rawBody;
+    try {
+      rawBody = await readBoundedRequestText(request, PAYPAL_CREATE_ORDER_MAX_BODY_BYTES);
+    } catch (error) {
+      if (error instanceof RangeError) return json(413, { error: "Request body too large." });
+      return json(400, { error: "Invalid request body." });
+    }
+    let body;
+    try {
+      body = JSON.parse(rawBody);
+    } catch {
+      return json(400, { error: "Invalid JSON request body." });
+    }
+    if (!body || typeof body !== "object" || Array.isArray(body)) {
+      return json(400, { error: "A JSON object is required." });
+    }
     const trackingToken = String(body.tracking_token || "");
     if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(trackingToken)) {
       return json(400, { error: "A valid request tracking token is required." });

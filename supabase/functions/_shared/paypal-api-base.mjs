@@ -49,22 +49,27 @@ export function isExactPriorityAmount(value) {
 
 
 export const PAYPAL_WEBHOOK_MAX_BODY_BYTES = 256 * 1024;
+export const PAYPAL_CREATE_ORDER_MAX_BODY_BYTES = 8 * 1024;
 
 /**
- * Read a webhook body with a strict byte ceiling before JSON parsing.
+ * Read a request body with a strict byte ceiling before JSON parsing.
  * Content-Length is an early rejection hint; the streamed byte count remains
  * authoritative when the header is absent, incorrect, or uses chunked transfer.
  */
-export async function readBoundedRequestText(request) {
-  const maxBytes = PAYPAL_WEBHOOK_MAX_BODY_BYTES;
+export async function readBoundedRequestText(request, maxBytes = PAYPAL_WEBHOOK_MAX_BODY_BYTES) {
+  if (!Number.isSafeInteger(maxBytes) || maxBytes < 1) {
+    throw new RangeError("Request body limit must be a positive safe integer.");
+  }
   const declaredLength = request.headers.get("content-length");
   if (declaredLength !== null) {
     if (!/^\d+$/.test(declaredLength)) {
-      throw new TypeError("Invalid webhook Content-Length.");
+      try { await request.body?.cancel(); } catch {}
+      throw new TypeError("Invalid request Content-Length.");
     }
     const declaredBytes = Number(declaredLength);
     if (!Number.isSafeInteger(declaredBytes) || declaredBytes > maxBytes) {
-      throw new RangeError("Webhook payload exceeds the configured size limit.");
+      try { await request.body?.cancel(); } catch {}
+      throw new RangeError("Request payload exceeds the configured size limit.");
     }
   }
 
@@ -77,11 +82,11 @@ export async function readBoundedRequestText(request) {
       const { done, value } = await reader.read();
       if (done) break;
       if (!(value instanceof Uint8Array)) {
-        throw new TypeError("Webhook body stream must contain byte chunks.");
+        throw new TypeError("Request body stream must contain byte chunks.");
       }
       if (value.byteLength > maxBytes - totalBytes) {
         try { await reader.cancel(); } catch {}
-        throw new RangeError("Webhook payload exceeds the configured size limit.");
+        throw new RangeError("Request payload exceeds the configured size limit.");
       }
       buffer.set(value, totalBytes);
       totalBytes += value.byteLength;
