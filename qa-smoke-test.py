@@ -519,8 +519,9 @@ else:
     checklist_text=checklist_path.read_text(encoding='utf-8')
     if ('RIHG homepage lists Griff & Guest at 11:00 p.m.' not in checklist_text or
             'Hunter’s Ale House category calendar also lists Griff & Guest at 11:00 p.m.' not in checklist_text or
-            'user-confirmed 10:00 p.m. performance set' not in checklist_text):
-        issues.append('pre-gig checklist: official venue time-source discrepancy must remain explicit')
+            'planned set window was 10:00 p.m.–1:30 a.m. Atlantic' not in checklist_text or
+            'actual performance continued until approximately 1:50 a.m. Atlantic' not in checklist_text):
+        issues.append('pre-gig checklist: venue listing, planned set and actual finish must remain distinct')
     cache_version=re.search(r"const CACHE\s*=\s*'([^']+)-v([0-9]+)'",sw)
     if not cache_version:
         issues.append('sw.js: could not determine the offline cache generation')
