@@ -28,7 +28,9 @@ jobs:
       github.actor == 'the-griff-list' &&
       github.triggering_actor == 'the-griff-list' &&
       (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
-    runs-on: [self-hosted, linux, x64]
+    # This is a public repository: standard ubuntu-latest runners are free.
+    # Keep the owner-only and same-repository PR guards above; never use a larger runner.
+    runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
       - name: Check out source
