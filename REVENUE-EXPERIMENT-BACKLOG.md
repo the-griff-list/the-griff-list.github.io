@@ -236,3 +236,22 @@ This is a small service experiment that could validate the StagePilot Inventory 
 - [Fretfolio — open beta](https://www.fretfolio.app/)
 - [PayPal Canada — merchant fees](https://www.paypal.com/ca/business/paypal-business-fees)
 - [Ko-fi — fee breakdown](https://help.ko-fi.com/hc/en-us/articles/360002506494-Does-Ko-fi-take-a-fee)
+
+
+## Large-print gig setlist and show-flow sheet — 2026-11-13 (researched, unvalidated)
+
+- **Offer hypothesis:** a client-specific, print-ready one- or two-page setlist/show-flow PDF for solo acoustic performers and small bands. The client supplies and verifies song titles, artists, order, keys/capo/tuning notes, set lengths, break timing, transitions and backup songs. Optional large-type, high-contrast layout is designed for ordinary letter-size printing and a binder/duotang. This is a one-off document service, not a setlist app or booking guarantee.
+- **Rights boundary:** include only client-supplied song titles, artist names and operational notes. Do not reproduce lyrics, chord charts, sheet music, backing tracks, recordings or third-party artwork. Client confirms every entry and owns the final file.
+- **Pilot price hypotheses:** $15 CAD for one simple set; $25 CAD for a multi-set show-flow sheet with break cues and a large-print variant. These are internal test prices, not public offers or established local rates.
+- **Startup / time / effort:** $0 if current document tools are sufficient; 1–14 days to a first paid pilot is only a warm-contact planning hypothesis; estimate 20–40 minutes for a simple sheet and 30–60 minutes for a multi-set version, including one correction. Digital delivery has little material cost, but labour, revisions, tax and overhead matter.
+- **Illustrative payment economics:** using the PayPal Canada standard domestic commercial rate already documented in this backlog (2.90% + CAD $0.30), a $15 payment would net about $14.27 and a $25 payment about $23.98 before tax, refunds, labour and overhead. At 20–40 minutes, the $15 example is roughly $21.40–$42.80 per hour before those exclusions; at 30–60 minutes, the $25 example is roughly $23.98–$47.95 per hour. Actual account-specific fees must be checked before quoting. A service must not be classified as a tip to obtain tip fee treatment.
+- **Competitor benchmark:** BandHelper already offers repertoire and setlists, with its official page listing solo Basic at $16/year and 2–5-member Basic at $40/year (USD); higher tiers include stage plots and checklists. SongbookPro Solo offers unlimited sets and offline support after a 12-song trial for a one-time purchase (approximately $7 USD), while Groups starts at $4 per user per year. These low-cost tools make a generic setlist-management product a weak proposition. The only plausible distinction here is done-for-you, binder-ready formatting and a large-print stage copy for performers who prefer paper or do not want to configure another app. [BandHelper official pricing](https://www.bandhelper.com/main/pricing_upcoming.html) · [SongbookPro official pricing](https://songbook-pro.com/pricing/).
+- **Fit / risks:** strong fit with live acoustic performance experience and the existing Griff List song catalogue, but the user must confirm availability and willingness to provide the service. Main risks are underpricing revisions, inaccurate client-supplied timing/keys, and confusing a planning sheet with a rights-cleared songbook. Do not promise a set will fit an exact duration without rehearsal data.
+- **No-cost validation gate:** privately ask up to five existing musician contacts whether they would pay $15–$25 for a custom large-print setlist/show-flow PDF. Do not mass-message or collect song lists until a person requests a pilot. Count paid orders separately from compliments or non-binding interest. Record actual preparation time, revision count, and repeat/referral interest. No public sales page, payment flow, printed inventory, or paid promotion until owner approval.
+- **Status:** researched candidate; not prototyped, offered or validated. No outreach, payment, data collection, or spending occurred.
+
+### Research sources
+
+- [BandHelper — official pricing](https://www.bandhelper.com/main/pricing_upcoming.html)
+- [SongbookPro — official pricing](https://songbook-pro.com/pricing/)
+- [PayPal Canada — merchant fees](https://www.paypal.com/ca/business/paypal-business-fees)
