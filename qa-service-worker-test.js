@@ -258,7 +258,7 @@ test('public offline shell stays within its mobile precache budget', () => {
   const sizes = core.map(assetPath => {
     // The root URL resolves to the same public document as index.html, but it
     // is a distinct CacheStorage key and therefore counts as a second entry.
-    const relativePath = assetPath.replace(/^\\.\\//, '').split('?', 1)[0] || 'index.html';
+    const relativePath = assetPath.replace(/^\.\//, '').split('?', 1)[0] || 'index.html';
     const absolutePath = path.resolve(__dirname, relativePath);
     assert.ok(
       absolutePath.startsWith(__dirname + path.sep),
@@ -274,7 +274,7 @@ test('public offline shell stays within its mobile precache budget', () => {
     totalBytes <= maxTotalBytes,
     'public precache is ' + totalBytes + ' bytes; maximum is ' + maxTotalBytes
   );
-  process.stdout.write('Public precache payload: ' + totalBytes + ' bytes\\n');
+  process.stdout.write('Public precache payload: ' + totalBytes + ' bytes\n');
 });
 
 process.stdout.write('PASS ' + passed + ' service-worker policy groups\n');
