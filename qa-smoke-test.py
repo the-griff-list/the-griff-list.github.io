@@ -667,7 +667,7 @@ workflow_path = ROOT / '.github/workflows/site-quality.yml'
 if workflow_path.is_file():
     workflow = workflow_path.read_text(encoding='utf-8')
     required_workflow_controls = {
-        'standard public runner': 'runs-on: ubuntu-latest',
+        'pinned standard public runner': 'runs-on: ubuntu-24.04',
         'new public-runner concurrency namespace': 'group: grifflist-site-quality-public-${{ github.ref }}',
         'pending runs are not force-cancelled': 'cancel-in-progress: false',
         'owner actor restriction': "github.actor == 'the-griff-list'",
@@ -679,7 +679,7 @@ if workflow_path.is_file():
     for control, text in required_workflow_controls.items():
         if text not in workflow:
             issues.append(f'site-quality workflow: missing {control}')
-    if 'runs-on: [self-hosted' in workflow or 'runs-on: ubuntu-latest-16core' in workflow:
+    if ('runs-on: [self-hosted' in workflow or 'runs-on: ubuntu-24.04-16core' in workflow or 'runs-on: ubuntu-latest' in workflow):
         issues.append('site-quality workflow: do not use a self-hosted or larger billed runner for this public static/browser suite')
 
 registration=ROOT/'site-interactions.js'

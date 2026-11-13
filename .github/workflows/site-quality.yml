@@ -28,9 +28,10 @@ jobs:
       github.actor == 'the-griff-list' &&
       github.triggering_actor == 'the-griff-list' &&
       (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
-    # This is a public repository: standard ubuntu-latest runners are free.
+    # Standard ubuntu-24.04 runners are free for this public repository.
+    # Pin 24.04: the pinned Playwright 1.55 browser installer rejects ubuntu26.04.
     # Keep the owner-only and same-repository PR guards above; never use a larger runner.
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     steps:
       - name: Check out source
