@@ -420,7 +420,6 @@ async function test(name, callback) {
     const cases = [
       { cache: 'no-store' },
       { cache: 'no-cache' },
-      { cache: 'reload' },
       { headerValues: { 'Cache-Control': 'no-store' } },
       { headerValues: { 'Cache-Control': 'no-cache' } },
       { headerValues: { 'Cache-Control': 'max-age=0' } },
@@ -445,6 +444,25 @@ async function test(name, callback) {
       assert.equal(fetchCalls, beforeFetch, JSON.stringify(item));
       assert.equal(cacheData.has(CACHE), false, JSON.stringify(item));
     }
+  });
+
+  await test('public reload requests remain intercepted and refresh credentialless assets', async () => {
+    reset();
+    const url = ORIGIN + '/styles.css';
+    const result = await dispatchFetch({
+      url,
+      method: 'GET',
+      headers: new Headers(),
+      mode: 'cors',
+      destination: 'style',
+      credentials: 'omit',
+      cache: 'reload',
+    });
+    assert.ok(result.responsePromise, 'reload must still reach the service-worker handler');
+    const fresh = await result.responsePromise;
+    await result.waitPromise;
+    assert.equal(fresh.url, url);
+    assert.equal(cacheData.get(CACHE).has(url), true);
   });
 
   await test('runtime navigation does not cache a private final response URL', async () => {
