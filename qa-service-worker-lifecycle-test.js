@@ -446,23 +446,30 @@ async function test(name, callback) {
     }
   });
 
-  await test('public reload requests remain intercepted and refresh credentialless assets', async () => {
+  await test('public reload navigation is intercepted but max-age=0 responses are not persisted', async () => {
     reset();
-    const url = ORIGIN + '/styles.css';
-    const result = await dispatchFetch({
-      url,
-      method: 'GET',
-      headers: new Headers(),
-      mode: 'cors',
-      destination: 'style',
-      credentials: 'omit',
+    await dispatch('install');
+    const url = ORIGIN + '/index.html';
+    const cached = cacheData.get(CACHE).get(url);
+    fetchImpl = async request => {
+      fetchCalls += 1;
+      fetchedRequests.push(request);
+      return response(request.url, { cacheControl: 'public, max-age=7200' });
+    };
+    const result = await dispatchFetch(navigation(url, {
       cache: 'reload',
-    });
-    assert.ok(result.responsePromise, 'reload must still reach the service-worker handler');
+      credentials: 'same-origin',
+      headers: new Headers({ 'Cache-Control': 'max-age=0' }),
+    }));
+    assert.ok(result.responsePromise, 'public reload navigation must reach the service-worker handler');
     const fresh = await result.responsePromise;
     await result.waitPromise;
-    assert.equal(fresh.url, url);
-    assert.equal(cacheData.get(CACHE).has(url), true);
+    assert.equal(fresh.headers.get('Cache-Control'), 'public, max-age=7200');
+    assert.equal(
+      cacheData.get(CACHE).get(url).headers.get('Cache-Control'),
+      cached.headers.get('Cache-Control'),
+      'a revalidation response must not replace the precached public shell',
+    );
   });
 
   await test('runtime navigation does not cache a private final response URL', async () => {
