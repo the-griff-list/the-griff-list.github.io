@@ -502,6 +502,13 @@ try:
 except Exception as e:
     issues.append(f'manifest.webmanifest: invalid JSON ({e})')
 
+interactions=(ROOT/'site-interactions.js').read_text(encoding='utf-8')
+if "a.skip-link" not in interactions or "target.focus()" not in interactions:
+    issues.append('site-interactions.js: keyboard skip links must focus the main landmark')
+roadmap_text=(ROOT/'roadmap.html').read_text(encoding='utf-8')
+if "a.skip-link" not in roadmap_text or "target.focus()" not in roadmap_text:
+    issues.append('roadmap.html: keyboard skip link must focus the main landmark')
+
 sw=(ROOT/'sw.js').read_text(encoding='utf-8')
 # Keep the pre-gig deployment checklist synchronized with the actual cache
 # generation so stale-shell acceptance steps cannot silently survive a bump.
@@ -556,7 +563,7 @@ else:
         "url.search === ''",
         'if (!isCacheableRequest(request, url)) return;',
         "'./script.js?v=grifflist-v28'",
-        "'./site-interactions.js?v=grifflist-v39'",
+        "'./site-interactions.js?v=grifflist-v42'",
         "'./live-show.js?v=grifflist-v31'",
         "'./recording-safety.js?v=rights-gate-1'",
         'function canonicalPathCandidates(pathname)',

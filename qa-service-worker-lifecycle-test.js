@@ -139,14 +139,19 @@ async function dispatch(name, event = {}) {
   await Promise.all(waits);
 }
 
-function navigation(url) {
+function navigation(url, {
+  cache = 'default',
+  credentials = 'omit',
+  headers = new Headers(),
+} = {}) {
   return {
     url,
     method: 'GET',
-    headers: new Headers(),
+    headers,
     mode: 'navigate',
     destination: 'document',
-    credentials: 'omit',
+    credentials,
+    cache,
   };
 }
 
@@ -546,7 +551,7 @@ async function test(name, callback) {
     assert.equal(fetchCalls, 2);
   });
 
-  await test('same-origin navigation uses the precached public shell offline without persisting credentialed network responses', async () => {
+  await test('same-origin reload navigation uses the precached public shell offline without persisting credentialed network responses', async () => {
     reset();
     const url = ORIGIN + '/index.html';
 
@@ -581,10 +586,11 @@ async function test(name, callback) {
       fetchCalls += 1;
       throw new Error('simulated offline network');
     };
-    const offline = await dispatchFetch({
-      ...navigation(url),
+    const offline = await dispatchFetch(navigation(url, {
+      cache: 'reload',
       credentials: 'same-origin',
-    });
+      headers: new Headers({ 'Cache-Control': 'max-age=0' }),
+    }));
     const cached = await offline.responsePromise;
     await offline.waitPromise;
 

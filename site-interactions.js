@@ -1,3 +1,23 @@
+/* Make skip navigation move keyboard focus, not only the URL fragment. */
+document.addEventListener('click', event => {
+  const origin = event.target instanceof Element ? event.target : event.target?.parentElement;
+  const link = origin?.closest('a.skip-link');
+  if (!link) return;
+  const href = link.getAttribute('href') || '';
+  if (!href.startsWith('#')) return;
+  let targetId;
+  try {
+    targetId = decodeURIComponent(href.slice(1));
+  } catch (_) {
+    return;
+  }
+  const target = document.getElementById(targetId);
+  if (!target) return;
+  event.preventDefault();
+  history.replaceState(null, '', href);
+  target.focus();
+}, true);
+
 /* Reuses the homepage's original sound effects on the added pages. */
 (()=>{const map={nav:'ui-sound-01r.mp3',action:'select.mp3',success:'you_rockR.mp3',tip:'cash.mp3',open:'notes_ripple_up_01.mp3',close:'ui_sound_09R.mp3'};let last=0;function play(file){const now=Date.now();if(now-last<90)return;last=now;try{const a=new Audio(file);a.preload='none';a.volume=.42;a.play().catch(()=>{});}catch(e){}}document.addEventListener('click',e=>{const el=e.target.closest('button,a,summary,[role=button]');if(!el||el.disabled||el.closest('.secret-stage-overlay')||el.matches('.secret-stage-trigger'))return;if(el.matches('.top-nav a, .header-logo-link'))play(map.nav);else if(el.id==='broadcast-start'||el.id==='broadcast-stop'||el.id==='quick-go-live'||el.id==='quick-end-live')play(map.action);else if(el.closest('.live-tip-card')||el.id==='copy-email')play(map.tip);else if(el.matches('button'))play(map.action);else if(el.matches('a'))play(map.open);},true);document.addEventListener('submit',e=>{if(e.target.matches('form'))play(map.success);},true);})();
 

@@ -148,4 +148,20 @@ document.getElementById('export-gigs').addEventListener('click',()=>{const blob=
 render();
 })();
 </script>
+<script>
+document.querySelector('a.skip-link')?.addEventListener('click', event => {
+  const href = event.currentTarget.getAttribute('href') || '';
+  if (!href.startsWith('#')) return;
+  let target;
+  try {
+    target = document.getElementById(decodeURIComponent(href.slice(1)));
+  } catch (_) {
+    return;
+  }
+  if (!target) return;
+  event.preventDefault();
+  history.replaceState(null, '', href);
+  target.focus();
+});
+</script>
 </body></html>

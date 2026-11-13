@@ -17,7 +17,7 @@
  map.addEventListener('click',e=>{e.preventDefault();if(!navigator.geolocation){window.open('https://www.google.com/maps/search/taxi/','_blank','noopener');return;}status.textContent='Requesting your current location…';navigator.geolocation.getCurrentPosition(pos=>{const {latitude:lat,longitude:lon}=pos.coords;window.open('https://www.google.com/maps/search/taxi/@'+lat+','+lon+',13z','_blank','noopener');status.textContent='Opened Google Maps near your current location.';},()=>{window.open('https://www.google.com/maps/search/taxi/','_blank','noopener');status.textContent='Location was not shared. Opened a general taxi search instead.';},{enableHighAccuracy:true,timeout:12000,maximumAge:0});});
  locate();
 })();
-</script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="supabase-config.js"></script><script src="site-interactions.js?v=grifflist-v41"></script>
+</script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="supabase-config.js"></script><script src="site-interactions.js?v=grifflist-v42"></script>
 <script>
 (()=>{
   const first=document.getElementById('cars-drive-loop');

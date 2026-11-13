@@ -818,7 +818,10 @@ test('service worker caches only query-bearing URLs pinned in CORE', () => {
       method,
       mode,
       destination,
-      headers: { has: name => (name === 'Authorization' && authorization) || (name === 'Range' && range) },
+      headers: {
+        get: () => null,
+        has: name => (name === 'Authorization' && authorization) || (name === 'Range' && range),
+      },
     };
     return context.isCacheableRequest(request, new URL(path, origin));
   };
@@ -829,8 +832,7 @@ test('service worker caches only query-bearing URLs pinned in CORE', () => {
     '/brand-system.css?v=sitewide-v2',
     '/script.js?v=payment-security-pause-1',
     '/script.js?v=grifflist-v28',
-    '/site-interactions.js?v=grifflist-v41',
-    '/site-interactions.js?v=grifflist-v39',
+    '/site-interactions.js?v=grifflist-v42',
     '/live-show.js?v=grifflist-v31',
     '/recording-safety.js?v=rights-gate-1',
   ]) {

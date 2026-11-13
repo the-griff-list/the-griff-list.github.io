@@ -1,5 +1,5 @@
 /* Public offline shell only. Requests, tips, live video and private admin pages need a connection. */
-const CACHE = 'grifflist-livekit-offline-v64';
+const CACHE = 'grifflist-livekit-offline-v65';
 // Limit simultaneous media/asset fetches during installation on memory-constrained phones.
 const PRECACHE_CONCURRENCY = 4;
 const CORE = [
@@ -16,8 +16,7 @@ const CORE = [
   './script.js?v=payment-security-pause-1',
   './script.js?v=grifflist-v28',
   './crowd-favourites.js?v=grifflist-v41',
-  './site-interactions.js?v=grifflist-v41',
-  './site-interactions.js?v=grifflist-v39',
+  './site-interactions.js?v=grifflist-v42',
   './whats-new.js?v=grifflist-v41',
   './recording-safety.js?v=rights-gate-1',
   './live-show.js',
@@ -170,21 +169,29 @@ function isApiPath(pathname) {
 
 function isCacheableRequest(request, url) {
   // Cache API does not automatically honor Fetch cache modes or request directives.
-  // Explicit cache-bypass requests must not be served from or persisted to this cache.
+  // A browser reload uses cache:'reload' (and may add max-age=0); keep public
+  // navigation intercepted so the offline shell can answer when the network fails.
   const requestCacheControl = (request.headers.get('Cache-Control') || '')
     .split(',')
     .map(value => value.trim().toLowerCase());
+  const hasRequestNoStore = requestCacheControl.some(value =>
+    value.split('=', 1)[0].trim() === 'no-store'
+  );
   const hasRequestNoCache = requestCacheControl.some(value => {
     const directive = value.split('=', 1)[0].trim();
-    return directive === 'no-store' ||
-      directive === 'no-cache' ||
+    return directive === 'no-cache' ||
       /^max-age\s*=\s*"?0+"?$/i.test(value);
   });
   const hasPragmaNoCache = (request.headers.get('Pragma') || '')
     .split(',')
     .some(value => value.trim().toLowerCase() === 'no-cache');
-  if (['no-store', 'no-cache', 'reload'].includes(request.cache) ||
-      hasRequestNoCache || hasPragmaNoCache) return false;
+  const isPublicReloadNavigation =
+    request.cache === 'reload' &&
+    request.mode === 'navigate' &&
+    PUBLIC_NAVIGATION_PATHS.has(url.pathname) &&
+    url.search === '';
+  if (['no-store', 'no-cache'].includes(request.cache) || hasRequestNoStore ||
+      ((hasRequestNoCache || hasPragmaNoCache) && !isPublicReloadNavigation)) return false;
 
   if (request.method !== 'GET' || request.headers.has('Range') || url.origin !== self.location.origin) return false;
   if (request.headers.has('Authorization')) return false;
