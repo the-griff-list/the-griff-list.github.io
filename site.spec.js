@@ -326,23 +326,35 @@ test('public offline pages use stylesheet variants present in the service-worker
 
 test('PWA manifest is available with app shortcuts', async ({ request }) => { const response=await request.get('/manifest.webmanifest'); expect(response.ok()).toBeTruthy(); const manifest=await response.json(); expect(manifest.display).toBe('standalone'); expect(manifest.shortcuts.length).toBeGreaterThanOrEqual(3); });
 
-test('public offline shell registers, falls back offline, and never caches private pages', async ({ page }) => {
-  await page.goto('/index.html');
-  await page.waitForFunction(async () => {
+async function waitForActiveCacheController(page, expectedCache) {
+  await page.waitForFunction(async (cacheName) => {
     if (!('serviceWorker' in navigator)) return false;
     const registration = await navigator.serviceWorker.getRegistration();
-    return Boolean(registration?.active && navigator.serviceWorker.controller);
-  }, null, { timeout: 30000 });
-  await page.reload();
-
-  const cacheName = serviceWorkerCacheName;
-  await page.waitForFunction(async (expectedCache) => {
+    const active = registration?.active;
+    // A newly installed worker can create its cache before it takes control.
+    // Do not mutate that cache or run offline assertions through the previous
+    // controller while activation is still in flight.
+    if (!active ||
+        active.state !== 'activated' ||
+        navigator.serviceWorker.controller !== active ||
+        registration.installing ||
+        registration.waiting) {
+      return false;
+    }
     const names = await caches.keys();
-    return names.includes(expectedCache) &&
+    return names.includes(cacheName) &&
       !names.some(name =>
-        name.startsWith('grifflist-livekit-offline-') && name !== expectedCache
+        name.startsWith('grifflist-livekit-offline-') && name !== cacheName
       );
-  }, cacheName, { timeout: 30000 });
+  }, expectedCache, { timeout: 30000 });
+}
+
+test('public offline shell registers, falls back offline, and never caches private pages', async ({ page }) => {
+  await page.goto('/index.html');
+  const cacheName = serviceWorkerCacheName;
+  await waitForActiveCacheController(page, cacheName);
+  await page.reload();
+  await waitForActiveCacheController(page, cacheName);
   const initial = await page.evaluate(async (name) => {
     const cache = await caches.open(name);
     return (await cache.keys()).map(request => {
