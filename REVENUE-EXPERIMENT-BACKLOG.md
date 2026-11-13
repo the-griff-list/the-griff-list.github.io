@@ -205,3 +205,30 @@ This refresh tests the existing one-time performer QR setup/signage hypothesis a
 - **Differentiation:** a small one-time setup and tested sign for a performer who already has a request/tip destination; avoid competing as another subscription platform or promising a dollar amount per gig.
 - **Validation gate:** privately ask up to five existing musician contacts whether this solves a real setup/signage problem; proceed to at most three pilots only after owner approval of the exact scope, price and payment route. Record inquiries, paid orders, delivery minutes, revisions and client-volunteered aggregate QR scans/requests. Do not collect audience identities or scrape contacts.
 - **Status:** **researched hypothesis; not prototyped, offered or validated.** No public website section, checkout, payment destination, account change, outreach or spending was created by this research.
+
+
+## Done-for-you band gear inventory and load-out pack — 2026-11-13 (researched, unvalidated)
+
+This is a small service experiment that could validate the StagePilot Inventory problem before building more inventory software. It is **not** a new app, insurance product, appraisal service, consignment offer or public checkout.
+
+- **Offer hypothesis:** turn a musician's or small band's own item list and client-selected photos into a tidy client-owned spreadsheet/CSV with item, owner, make/model, optional serial number, condition, storage location and a simple gig load-out checklist. Keep the first pilot to 15 items; an optional 30-item tier can be tested only if the first delivery time is acceptable.
+- **Pilot price hypotheses:** **$25 CAD for up to 15 items** or **$40 CAD for up to 30 items**, digital delivery only. These are test prices, not market rates or approved public offers.
+- **Startup cost:** $0 if existing spreadsheet and phone tools are sufficient. No inventory, labels, printer, hosting, subscription or equipment purchase is needed.
+- **Time to first dollar:** 1–14 days through existing warm musician contacts is a planning hypothesis, not a forecast.
+- **Effort / margin:** estimate 30–90 minutes per order including intake, normalization, load-out grouping and one correction. Digital delivery has little material cost, but labour and privacy handling dominate. Do not call the gross margin profit.
+- **Payment illustration:** PayPal Canada's published standard domestic commercial rate is 2.90% + CAD $0.30. At $25, the illustrative fee is about $1.03 and net is about $23.98; at $40, fee is about $1.46 and net about $38.54, before labour, tax, refunds and overhead. If sold as a Ko-fi commission, Free mode still charges Ko-fi's 5% commission fee plus processor fees; do not classify a service as a tip. Actual account and processor rates remain uninspected.
+- **Free competition / substitutes:** [Bandmate's free band equipment XLSX template](https://bandmate.io/academy/resources/equipment-inventory/) already tracks serials, values and insurance documentation; [MusicNomad GuitarTracker](https://www.theguitartracker.com/) advertises a free instrument tracker; [StashTracker Pro](https://apps.apple.com/us/app/stashtracker-pro/id6760924416) advertises free band gear inventory and load-outs; [GearDex](https://www.geardex.app/tools/camera-gear-inventory-template) offers a no-account, browser-side inventory template; [Fretfolio](https://www.fretfolio.app/) is in open beta with a free tier. These free alternatives make a generic template or software subscription a weak paid proposition. The only plausible differentiation to test is **done-for-you initial setup plus a gig-specific load-out checklist**, not exclusive data or better insurance coverage.
+- **Local demand evidence:** this limited search did not identify a Charlottetown provider publicly selling a comparable musician-specific done-for-you setup. That is not proof none exists, and no PEI willingness-to-pay evidence was found. The user's musician network and StagePilot Inventory concept are a plausible test channel, not proof of demand.
+- **Privacy / safety:** gear serial numbers, receipts, purchase prices, owner names and storage locations can be sensitive. The client must own the output file and choose which fields to include. Prefer a client-owned sheet or local file; do not upload inventories to The Griff List, retain copies, publish serials, create a public stolen-gear registry, estimate values, appraise instruments, advise on insurance, or promise that a list establishes coverage. The client verifies every entry and keeps the source photos/receipts.
+- **Validation gate:** privately ask up to five existing musician contacts whether they have a real inventory/load-out problem and whether a done-for-you file would be worth $25. Do not mass-message, scrape contacts or collect gear data. Consider at most three owner-approved pilots only after the scope, privacy handoff and price are approved. Record actual minutes, corrections, paid orders and repeat/referral interest. A free-template download, compliment or stated interest is not a sale.
+- **Status:** **researched candidate; not prototyped, offered or validated.** No outreach, public page, payment flow, data collection, vendor commitment or spending occurred.
+
+### Research sources
+
+- [Bandmate — free equipment inventory template](https://bandmate.io/academy/resources/equipment-inventory/)
+- [MusicNomad — GuitarTracker](https://www.theguitartracker.com/)
+- [StashTracker Pro — App Store listing](https://apps.apple.com/us/app/stashtracker-pro/id6760924416)
+- [GearDex — browser-side inventory template](https://www.geardex.app/tools/camera-gear-inventory-template)
+- [Fretfolio — open beta](https://www.fretfolio.app/)
+- [PayPal Canada — merchant fees](https://www.paypal.com/ca/business/paypal-business-fees)
+- [Ko-fi — fee breakdown](https://help.ko-fi.com/hc/en-us/articles/360002506494-Does-Ko-fi-take-a-fee)
