@@ -127,37 +127,27 @@ test('request eligibility permits only public navigation and approved static ass
   );
 });
 
-test('explicit no-store/no-cache requests bypass while reload navigation remains interceptable', () => {
+test('explicit cache-bypass requests stay unpersisted while public navigations remain interceptable', () => {
   const publicUrl = new URL('/styles.css', ORIGIN);
-  for (const cache of ['no-store', 'no-cache']) {
+  for (const cache of ['no-store', 'no-cache', 'reload']) {
     assert.equal(context.isCacheableRequest(request({ destination: 'style', cache }), publicUrl), false, cache);
   }
-  assert.equal(
-    context.isCacheableRequest(
-      request({
-        mode: 'navigate',
-        destination: 'document',
-        cache: 'reload',
-        headerValues: { 'Cache-Control': 'max-age=0' },
-      }),
-      new URL('/index.html', ORIGIN),
-    ),
-    true,
-    'browser reload navigation must remain interceptable for offline fallback',
-  );
-  assert.equal(
-    context.isCacheableRequest(
-      request({
-        mode: 'navigate',
-        destination: 'document',
-        cache: 'reload',
-        headerValues: { 'Cache-Control': 'no-store' },
-      }),
-      new URL('/index.html', ORIGIN),
-    ),
-    false,
-    'explicit no-store must still bypass the service-worker cache',
-  );
+  const homepage = new URL('/index.html', ORIGIN);
+  for (const cache of ['no-store', 'no-cache', 'reload']) {
+    const navigation = request({ mode: 'navigate', destination: 'document', cache });
+    assert.equal(context.isCacheableRequest(navigation, homepage), true, cache);
+    assert.equal(context.isCacheableResponseForRequest(navigation, response()), false, cache);
+  }
+  for (const headerValues of [
+    { 'Cache-Control': 'no-store' },
+    { 'Cache-Control': 'no-cache' },
+    { 'Cache-Control': 'max-age=0' },
+    { Pragma: 'no-cache' },
+  ]) {
+    const navigation = request({ mode: 'navigate', destination: 'document', headerValues });
+    assert.equal(context.isCacheableRequest(navigation, homepage), true, JSON.stringify(headerValues));
+    assert.equal(context.isCacheableResponseForRequest(navigation, response()), false, JSON.stringify(headerValues));
+  }
   for (const cacheControl of ['no-store', 'no-cache', 'no-store=1', 'no-cache="set-cookie"', 'max-age=0', 'max-age=00', 'public, max-age="0"']) {
     assert.equal(
       context.isCacheableRequest(

@@ -1,5 +1,5 @@
 /* Public offline shell only. Requests, tips, live video and private admin pages need a connection. */
-const CACHE = 'grifflist-livekit-offline-v65';
+const CACHE = 'grifflist-livekit-offline-v66';
 // Limit simultaneous media/asset fetches during installation on memory-constrained phones.
 const PRECACHE_CONCURRENCY = 4;
 const CORE = [
@@ -167,10 +167,7 @@ function isApiPath(pathname) {
   );
 }
 
-function isCacheableRequest(request, url) {
-  // Cache API does not automatically honor Fetch cache modes or request directives.
-  // A browser reload uses cache:'reload' (and may add max-age=0); keep public
-  // navigation intercepted so the offline shell can answer when the network fails.
+function hasExplicitNoStoreOrNoCache(request) {
   const requestCacheControl = (request.headers.get('Cache-Control') || '')
     .split(',')
     .map(value => value.trim().toLowerCase());
@@ -180,27 +177,30 @@ function isCacheableRequest(request, url) {
   const hasRequestNoCache = requestCacheControl.some(value => {
     const directive = value.split('=', 1)[0].trim();
     return directive === 'no-cache' ||
-      /^max-age\s*=\s*"?0+"?$/i.test(value);
+      /^max-age\\s*=\\s*"?0+"?$/i.test(value);
   });
   const hasPragmaNoCache = (request.headers.get('Pragma') || '')
     .split(',')
     .some(value => value.trim().toLowerCase() === 'no-cache');
-  const isPublicReloadNavigation =
-    request.cache === 'reload' &&
+  return ['no-store', 'no-cache'].includes(request.cache) ||
+    hasRequestNoStore || hasRequestNoCache || hasPragmaNoCache;
+}
+
+function isCacheableRequest(request, url) {
+  // Public navigations must reach the worker even when a browser reload adds
+  // cache-bypass modes/headers; the worker may serve the public offline shell.
+  // Such responses are never persisted when an explicit no-store/no-cache is set.
+  const isPublicNavigation =
     request.mode === 'navigate' &&
     PUBLIC_NAVIGATION_PATHS.has(url.pathname) &&
     url.search === '';
-  if (['no-store', 'no-cache'].includes(request.cache) || hasRequestNoStore ||
-      ((hasRequestNoCache || hasPragmaNoCache) && !isPublicReloadNavigation)) return false;
+  const hasCacheBypass = hasExplicitNoStoreOrNoCache(request) || request.cache === 'reload';
+  if (hasCacheBypass && !isPublicNavigation) return false;
 
   if (request.method !== 'GET' || request.headers.has('Range') || url.origin !== self.location.origin) return false;
   if (request.headers.has('Authorization')) return false;
   if (isPrivatePath(url.pathname) || isApiPath(url.pathname)) return false;
 
-  const isPublicNavigation =
-    request.mode === 'navigate' &&
-    PUBLIC_NAVIGATION_PATHS.has(url.pathname) &&
-    url.search === '';
   const isPinnedCoreAsset = CORE_URLS.has(url.href);
   const isUnversionedStaticAsset =
     url.search === '' && STATIC_DESTINATIONS.has(request.destination);
@@ -269,6 +269,7 @@ function isCacheableResponse(response) {
 function isCacheableResponseForRequest(request, response) {
   return request.credentials === 'omit' &&
     !request.headers.has('Authorization') &&
+    !hasExplicitNoStoreOrNoCache(request) &&
     isCacheableResponse(response);
 }
 
