@@ -24,6 +24,7 @@
 | 5 | **Beginner guitar coaching:** a focused 30-minute lesson on one song, chord change or practice goal | $20–$30 / 30 min | $0 if existing instrument and space are used | 1–7 days through existing contacts | 30 minutes plus preparation | High before labour | Set beginner-level scope, scheduling and cancellation terms. Do not imply formal credentials. Strong skill fit, but time-for-money. |
 | 6 | **Used-gear listing pack:** seller-approved photos, a fact-checked spec checklist and a clear Marketplace/Reverb-ready description; seller publishes and handles the sale | $15 one item; $35 for three (pilot hypotheses) | $0 if the client supplies the gear and existing phone/design tools are sufficient | 1–14 days via warm musician contacts (hypothesis) | 20–30 min/item; 45–60 min for three | High before labour; no inventory or fulfilment | Local used/demo gear channels exist, but no willingness-to-pay evidence. Differentiate through accurate condition disclosure and time saved, not price appraisal. Client retains the item and completes the sale; no custody, consignment, delivery or buyer-money handling. **Researched, not validated.** |
 | 7 | **Clearly labelled local sponsor/featured listing** on The Griff List | Test only after traffic is measured; no price set | $0 to test interest | Unknown | Low after setup | Potentially high | Do not sell reach before reliable analytics establish audience size, location and engagement. Disclose sponsorship clearly and never imply editorial endorsement. **Not ready to offer.** |
+| 8 | **Performer QR request/tip setup kit:** one tested client-owned destination, original QR stage/table sign and social crop; no payment processing or account handling | $25–$35 digital-only pilot hypothesis | $0 if existing design/QR tools are sufficient | 1–7 days through warm local contacts (unvalidated) | 30–45 minutes | Moderate–high before labour and processor fees | Competitors already offer request QR software; differentiate as a one-time setup/signage service, not another SaaS subscription. Client owns accounts and payment links. No printed inventory, personal-data collection or earnings claims. **Researched, not validated.** |
 
 ### Competitor and market observations
 
@@ -175,3 +176,32 @@ This is a limited local competitor and payment-platform refresh. Listings are ch
 Keep the existing ranked digital tech-pack, gig-promo kit and one-time musician QR-page setup as private hypotheses. A poster + QR request-card bundle may be tested only as a digital scope variant, with client-supplied/rights-cleared assets, one defined revision and no printed inventory. At a hypothetical $35 PayPal domestic commercial price, the published 2.90% + $0.30 rate implies about $1.32 processing and $33.68 remaining before labour, tax, refunds and overhead; at 45–60 minutes, about $33.68–$44.91 per hour before those costs. This is a planning calculation, not a price recommendation or proven margin.
 
 No customer interview, paid order, conversion, repeat purchase or validated demand was added in this refresh. No public offer, checkout, payment destination, account setting, supplier order, inventory purchase or outreach was created or changed.
+
+
+## Competitive benchmark — live song-request and tip platforms (13 November 2026)
+
+This refresh tests the existing one-time performer QR setup/signage hypothesis against current public competitor positioning. Published pricing is self-reported marketing information, not verified transaction data or evidence of PEI demand.
+
+| Product | Publicly advertised pricing / model | Relevance and caveat |
+|---|---|---|
+| [Request Deck](https://requestdeck.com/) | Free to join; no monthly subscription; advertises a $1 platform fee per paid request | Closest direct category match. Its "extra income" examples and testimonials are marketing claims, not independent earnings evidence. |
+| [Requesting Songs](https://requestingsongs.com/) | $9.99/month; advertises a 30-day free trial | A subscription product with QR setlists, branded print templates and tip links. |
+| [YouRequestNow](https://www.yourequestnow.com/) | $19.99/month after a 14-day trial; advertises 0% platform fee, with processor fees applying | Broader performer/fan-management product. Do not compare its feature scope directly with a small one-time setup service. |
+| [Encore](https://encorelivemusic.app/for) | Advertises a free tier with a 10% platform fee and Pro at $8/month with a 5% fee | Offers one QR for tips, requests, follows and feedback. Published fees are its own pricing, not a market average. |
+| [Song-Q](https://song-q.com/) | Advertises a free plan with an 18% + A$0.30 per-tip service fee | Australian-dollar pricing; not directly comparable with CAD or a Canadian account. Verify current region/processor eligibility before using as a benchmark. |
+
+**Payment-platform constraints (official sources):**
+- [Ko-fi's fee guidance](https://help.ko-fi.com/hc/en-us/articles/360002506494-Does-Ko-fi-take-a-fee) says Free mode charges 0% platform fee on one-time tips and 5% on shop, memberships and commissions; Standard applies 5% to one-time tips too. Payment-processor fees remain additional. The user's actual account mode has not been inspected.
+- [PayPal Canada QR-code pricing](https://www.paypal.com/ca/business/accept-payments/qr-code) advertises 2.40% + CAD $0.05 for QR transactions of CAD $10.00 and below, and 1.90% + CAD $0.10 for QR transactions above CAD $10.00. These are product-specific QR rates; do not assume they apply to ordinary payment links, Ko-fi, or another checkout path.
+- The proposed service should only create/test links that the performer supplies and owns. Payments go directly to that performer's existing provider; The Griff List must not receive, route, hold or reconcile the performer's tips or paid requests.
+
+### Experiment economics and decision
+
+- **Proposed scope:** check one performer-owned request/tip landing URL, generate a QR code that resolves to that exact URL, create one original print-ready stage/table sign and one social crop, test the QR on a phone, and include one small revision. Digital delivery only; printing, account setup, payment processing and custom app development are excluded.
+- **Pilot price hypothesis:** CAD $25–$35. At a $29 example price and an assumed 30–45 minutes of labour valued at $25/hour, labour is about $12.50–$18.75. Using PayPal's published standard domestic commercial illustration of 2.90% + CAD $0.30 (not its separate QR rate), processing would be about $0.84; estimated contribution after that labour and illustrative fee is about $9.41–$15.66 before tax, refunds, software, overhead and any additional revisions. This is a scenario, not a quote or validated margin.
+- **Startup cost:** $0 only if existing tools are sufficient and the deliverable remains digital. No printer, paid QR subscription, inventory or new payment provider is required.
+- **Time to first dollar:** 1–7 days is a hypothesis for warm local introductions, not a forecast.
+- **Customer signal:** several specialist products compete in this category, confirming a product category exists. Their marketing pages do not establish local Charlottetown/PEI demand, conversion or willingness to pay. No local interviews or paid orders have been recorded.
+- **Differentiation:** a small one-time setup and tested sign for a performer who already has a request/tip destination; avoid competing as another subscription platform or promising a dollar amount per gig.
+- **Validation gate:** privately ask up to five existing musician contacts whether this solves a real setup/signage problem; proceed to at most three pilots only after owner approval of the exact scope, price and payment route. Record inquiries, paid orders, delivery minutes, revisions and client-volunteered aggregate QR scans/requests. Do not collect audience identities or scrape contacts.
+- **Status:** **researched hypothesis; not prototyped, offered or validated.** No public website section, checkout, payment destination, account change, outreach or spending was created by this research.
