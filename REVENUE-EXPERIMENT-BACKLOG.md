@@ -1,6 +1,6 @@
 # The Griff List — Revenue Experiment Backlog
 
-**Research snapshot:** 12 November 2026 (incremental market refresh; earlier evidence retained)  
+**Research snapshot:** 13 November 2026 (incremental market refresh; earlier evidence retained)  
 **Status:** researched hypotheses only — no customer demand or paid conversion has been validated.  
 **Scope:** low/no-upfront-cost services that can be tested through the existing live-music network. This is an internal planning document on the development branch; it does not activate checkout, publish an offer, or authorize spending.
 
@@ -160,3 +160,18 @@ A small, human-performed original song greeting is a possible add-on to the exis
 - [PayPal Canada — merchant fees](https://www.paypal.com/ca/business/paypal-business-fees)
 - [Ko-fi — fee breakdown](https://help.ko-fi.com/hc/en-us/articles/360002506494-Does-Ko-fi-take-a-fee)
 
+## Market evidence refresh — 13 November 2026
+
+This is a limited local competitor and payment-platform refresh. Listings are channel/competition evidence, not proof of Griff List demand or completed sales.
+
+- **Live music:** Tourism PEI's current [live-music directory](https://www.tourismpei.com/live-music) lists recurring Island performances, including Charlottetown venues such as Hunter's Ale House, Baba's Lounge, Olde Dublin Pub and The Old Triangle. This supports the existing gig-promotion/request-page channel, but does not establish audience size or willingness to pay.
+- **Print/apparel competition:** Charlottetown/PEI has established providers including [DALMAC](https://dalmac.ca/cresting/), [Instant Imprints](https://locations.instantimprints.com/pe/charlottetown/charlottetown), [Allstar Cresting](https://allstarcresting.ca/), [Pressed 4 Time](https://www.pressed4time.ca/), [Gemini](https://www.geminipei.com/), [Stay Golden Custom](https://staygoldencustom.com/) and [COWS Contract Screen Printing](https://cows.ca/). A Charlottetown-targeted listing advertises tees from $19.99, but local production/pickup claims were not independently verified. No comparable written quotes were obtained. **Decision:** do not buy printing equipment or inventory; keep merch customer-funded/preorder-only and differentiate with original design/prepress rather than generic production.
+- **Used media:** [Back Alley Music](https://www.backalleymusicpei.ca/) is an established downtown record store with new/used vinyl and music-related media/gear. No comparable resale prices or sales velocity were captured. **Decision:** no speculative inventory; consider consignment only with written custody, condition, split and return terms.
+- **Digital promo pricing:** non-local public design listings advertise approximately $65 for a flyer and $85 for a small social-design package. These are asking prices, not PEI transaction data. A digital poster + QR request-card variant can remain inside the existing gig-promo/QR-kit hypothesis; do not create a new public SKU or claim a validated price.
+- **Payment constraints:** Ko-fi's [official fee guidance](https://help.ko-fi.com/hc/en-us/articles/360002506494-Does-Ko-fi-take-a-fee) states Free mode has 0% platform fee on one-time tips but 5% on commissions/shop/memberships/monthly tips; Standard applies 5% to one-time tips too. Processor fees remain additional. The user's actual account mode is uninspected. PayPal Canada's [official merchant-fee page](https://www.paypal.com/ca/business/paypal-business-fees) lists 2.90% + CAD $0.30 for standard domestic commercial transactions; [Stripe Canada](https://stripe.com/en-ca/pricing) lists 2.9% + CAD $0.30 for domestic online cards. These are standard published rates, not confirmation of the user's account-specific pricing or Ko-fi checkout method.
+
+### Decision / validation gate
+
+Keep the existing ranked digital tech-pack, gig-promo kit and one-time musician QR-page setup as private hypotheses. A poster + QR request-card bundle may be tested only as a digital scope variant, with client-supplied/rights-cleared assets, one defined revision and no printed inventory. At a hypothetical $35 PayPal domestic commercial price, the published 2.90% + $0.30 rate implies about $1.32 processing and $33.68 remaining before labour, tax, refunds and overhead; at 45–60 minutes, about $33.68–$44.91 per hour before those costs. This is a planning calculation, not a price recommendation or proven margin.
+
+No customer interview, paid order, conversion, repeat purchase or validated demand was added in this refresh. No public offer, checkout, payment destination, account setting, supplier order, inventory purchase or outreach was created or changed.
