@@ -661,6 +661,25 @@ else:
             if required not in activation:
                 issues.append(f'sw.js: activation must complete cache retirement before claiming clients: {required}')
 
+# Keep the public quality workflow on a standard, no-compute-charge runner.
+# The owner-only actor checks and same-repository PR guard remain mandatory.
+workflow_path = ROOT / '.github/workflows/site-quality.yml'
+if workflow_path.is_file():
+    workflow = workflow_path.read_text(encoding='utf-8')
+    required_workflow_controls = {
+        'standard public runner': 'runs-on: ubuntu-latest',
+        'owner actor restriction': "github.actor == 'the-griff-list'",
+        'triggering actor restriction': "github.triggering_actor == 'the-griff-list'",
+        'same-repository PR restriction': 'github.event.pull_request.head.repo.full_name == github.repository',
+        'read-only repository token': 'permissions:\\n  contents: read',
+        'checkout credential persistence disabled': 'persist-credentials: false',
+    }
+    for control, text in required_workflow_controls.items():
+        if text not in workflow:
+            issues.append(f'site-quality workflow: missing {control}')
+    if 'runs-on: [self-hosted' in workflow or 'runs-on: ubuntu-latest-16core' in workflow:
+        issues.append('site-quality workflow: do not use a self-hosted or larger billed runner for this public static/browser suite')
+
 registration=ROOT/'site-interactions.js'
 if not registration.is_file() or "navigator.serviceWorker.register('./sw.js')" not in registration.read_text(encoding='utf-8'):
     issues.append('PWA: public site no longer registers sw.js')
