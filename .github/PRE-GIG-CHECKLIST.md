@@ -78,3 +78,15 @@ A fresh review of the available user-confirmed booking context found no confirme
 - Do not reinstate a venue, date, performance time, doors time, payment arrangement or stream availability until the user confirms the booking.
 - The November 10 checklist remains an archived record; its mobile, request, payment, stream and published-site acceptance items are still incomplete.
 - PR #3 remains draft and unpublished. No deployment occurred.
+
+## Development-only verification — 2026-11-13
+
+This evidence was collected after the November 10 performance and does not retroactively complete the historical pre-gig checklist or prove the published site was tested.
+
+- Development head: [bf81cc862e10f830d7496e34eb41f1bd28bcd096](https://github.com/the-griff-list/the-griff-list.github.io/commit/bf81cc862e10f830d7496e34eb41f1bd28bcd096).
+- Exact-head PR quality [#43358596963](https://github.com/the-griff-list/the-griff-list.github.io/actions/runs/43358596963) and push quality [#43358589227](https://github.com/the-griff-list/the-griff-list.github.io/actions/runs/43358589227) passed.
+- Static integrity: 9 HTML pages, 19 JavaScript files, 53 service-worker precache entries, 11 service-worker policy groups and 21 lifecycle groups passed.
+- Playwright: 66/66 tests passed on desktop Chromium and Android-size Chromium. These are emulated browser viewports, not a physical phone, iOS/WebKit, a real request backend, PayPal/Supabase transaction, live stream or deployed-site acceptance.
+- Development service worker is v66; published `main` remains v38. No deployment occurred.
+- The latest available booking context still contains no later confirmed performance after November 10. Keep the homepage at “Next date to be announced” until a new booking is confirmed.
+- The historical mobile-device, real request, payment, streaming and published-site checklist items remain unchecked.
