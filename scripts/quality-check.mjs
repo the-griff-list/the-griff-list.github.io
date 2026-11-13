@@ -208,7 +208,7 @@ assert.match(files.paypalWebhook, /isExactPriorityAmount\(capture\.amount\?\.val
 assert.match(files.paypalWebhook, /readBoundedRequestText\(request\)/);
 assert.match(files.paypalWebhook, /status: 413/);
 assert.match(files.paypalCreate, /readBoundedRequestText\(request, PAYPAL_CREATE_ORDER_MAX_BODY_BYTES\)/);
-assert.match(files.paypalCreate, /status: 413/);
+assert.match(files.paypalCreate, /json\(413,\s*\{ error: "Request body too large\." \}\)/);
 assert.match(files.paypalCreate, /A JSON object is required/);
 assert.match(files.paymentSql, /create table if not exists public\.paypal_payments/);
 assert.match(files.paymentSql, /verified_paypal_payment_updates_rockometer/);
