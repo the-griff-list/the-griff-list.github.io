@@ -513,22 +513,41 @@ test('request form exposes accessible names for every public field and keeps key
 
   const name = page.getByLabel('Your name, required', { exact: true });
   const song = page.getByLabel('Song name', { exact: true });
+  const artist = page.getByLabel('Artist name', { exact: true });
+  const rememberName = page.getByLabel('Remember my name on this device (optional)', { exact: true });
+  const dedication = page.getByLabel('Dedication / special instructions (optional)', { exact: true });
+  const priority = page.getByRole('checkbox', { name: 'Add priority request for $5 CAD' });
+  const randomSong = page.locator('#random-request-song');
+  const submitRequest = page.locator('#request-form button[type="submit"]');
+
   await expect(name).toHaveAttribute('required', '');
   await name.focus();
   await expect(name).toBeFocused();
-  await page.keyboard.press('Tab');
-  await expect(song).toBeFocused();
+  for (const nextControl of [song, artist, rememberName, dedication, priority]) {
+    await page.keyboard.press('Tab');
+    await expect(nextControl).toBeFocused();
+  }
 
-  // The optional payment selector must become discoverable only after the
-  // visitor opts into a priority request; hidden controls are not exposed.
+  // The optional payment selector must remain out of the tab order until
+  // priority is explicitly selected, then appear immediately after its toggle.
   const paymentWrap = page.locator('#priority-payment-wrap');
   const paymentMethod = page.locator('#priority-payment-method');
   await expect(paymentWrap).toBeHidden();
   await expect(paymentMethod).toBeHidden();
-  await page.locator('#priority-request').check();
+  await page.keyboard.press('Tab');
+  await expect(randomSong).toBeFocused();
+
+  await priority.check();
   await expect(paymentWrap).toBeVisible();
   await expect(paymentMethod).toBeVisible();
   await expect(paymentMethod).toHaveAccessibleName(/Payment method/);
+  await priority.focus();
+  await page.keyboard.press('Tab');
+  await expect(paymentMethod).toBeFocused();
+  await page.keyboard.press('Tab');
+  await expect(randomSong).toBeFocused();
+  await page.keyboard.press('Tab');
+  await expect(submitRequest).toBeFocused();
 });
 
 test('tip surfaces do not advertise unverified wallet methods before checkout', async ({ page }) => {
