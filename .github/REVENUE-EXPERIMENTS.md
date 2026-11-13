@@ -1,7 +1,7 @@
 # Revenue experiments — research backlog
 
 **Status:** research only; no offers activated, payments collected, inventory purchased, or vendor fees paid.  
-**Research date:** 2026-11-05  
+**Research date:** 2026-11-13 (incremental refresh; historical research retained)  
 **Rule:** preserve the existing Ko-fi/PayPal flow. Do not add a paid service, new checkout, payment credential, or public sales claim without explicit owner approval.
 
 ## Market and platform evidence
