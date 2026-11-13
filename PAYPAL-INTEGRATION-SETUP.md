@@ -82,8 +82,8 @@ The webhook ID shown by PayPal must be stored as `PAYPAL_WEBHOOK_ID`.
 - A forged webhook signature is rejected.
 - An APPROVED event for an unknown order/reference does not trigger capture.
 - A valid APPROVED event triggers capture once (idempotency key is used).
-- Only a verified COMPLETED capture for the same order, reference, CAD currency, and amount of at least $5 marks the request paid.
-- A pending, denied, wrong-currency, underpaid, unrelated, or duplicate event does not mark another request paid.
+- Only a verified COMPLETED capture for the same order, reference, CAD currency, and exactly CAD $5.00 marks the request paid. Both underpayments and overpayments are rejected.
+- A pending, denied, wrong-currency, underpaid, overpaid, unrelated, or duplicate event does not mark another request paid.
 - The admin inbox updates to show PayPal as the verified provider.
 
 ## Current limitations
