@@ -7,7 +7,9 @@ import {
   SUPABASE_PROJECT_ORIGIN,
   resolvePayPalApiBase,
   resolveSupabaseUrl,
-  isExactPriorityAmount
+  isExactPriorityAmount,
+  PAYPAL_WEBHOOK_MAX_BODY_BYTES,
+  readBoundedRequestText
 } from "../supabase/functions/_shared/paypal-api-base.mjs";
 
 const read = (path) => readFileSync(new URL("../" + path, import.meta.url), "utf8");
@@ -51,6 +53,36 @@ for (const value of [
   assert.equal(isExactPriorityAmount(value), false, String(value));
 }
 console.log("PASS exact CAD $5.00 PayPal priority amount policy");
+
+const bodyLimit = PAYPAL_WEBHOOK_MAX_BODY_BYTES;
+const boundaryBody = "x".repeat(bodyLimit);
+assert.equal((await readBoundedRequestText(new Request("https://example.test/webhook", {
+  method: "POST",
+  body: boundaryBody
+}))).length, bodyLimit);
+await assert.rejects(
+  readBoundedRequestText(new Request("https://example.test/webhook", {
+    method: "POST",
+    body: "x".repeat(bodyLimit + 1)
+  })),
+  RangeError
+);
+await assert.rejects(
+  readBoundedRequestText(new Request("https://example.test/webhook", {
+    method: "POST",
+    headers: { "content-length": String(bodyLimit + 1) },
+    body: "small"
+  })),
+  RangeError
+);
+await assert.rejects(
+  readBoundedRequestText(new Request("https://example.test/webhook", {
+    method: "POST",
+    body: new Uint8Array([0xff])
+  })),
+  TypeError
+);
+console.log("PASS bounded PayPal webhook body and UTF-8 validation");
 
 const files = {
   index: read("index.html"),
@@ -142,6 +174,8 @@ assert.match(files.paymentSqlTests, /TEST-HIGH-CAPTURE-/);
 assert.match(files.paypalWebhook, /purchaseUnits\.length !== 1/);
 assert.match(files.paypalWebhook, /isExactPriorityAmount\(amount\)/);
 assert.match(files.paypalWebhook, /isExactPriorityAmount\(capture\.amount\?\.value\)/);
+assert.match(files.paypalWebhook, /readBoundedRequestText\(request\)/);
+assert.match(files.paypalWebhook, /status: 413/);
 assert.match(files.paymentSql, /create table if not exists public\.paypal_payments/);
 assert.match(files.paymentSql, /verified_paypal_payment_updates_rockometer/);
 assert.match(files.qualityWorkflow, /permissions:\s+contents:\s+read/);

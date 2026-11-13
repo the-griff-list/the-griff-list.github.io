@@ -46,3 +46,49 @@ export function resolveSupabaseUrl(rawUrl) {
 export function isExactPriorityAmount(value) {
   return typeof value === "string" && /^5(?:\.0{1,2})?$/.test(value);
 }
+
+
+export const PAYPAL_WEBHOOK_MAX_BODY_BYTES = 256 * 1024;
+
+/**
+ * Read a webhook body with a strict byte ceiling before JSON parsing.
+ * Content-Length is an early rejection hint; the streamed byte count remains
+ * authoritative when the header is absent, incorrect, or uses chunked transfer.
+ */
+export async function readBoundedRequestText(request) {
+  const maxBytes = PAYPAL_WEBHOOK_MAX_BODY_BYTES;
+  const declaredLength = request.headers.get("content-length");
+  if (declaredLength !== null) {
+    if (!/^\d+$/.test(declaredLength)) {
+      throw new TypeError("Invalid webhook Content-Length.");
+    }
+    const declaredBytes = Number(declaredLength);
+    if (!Number.isSafeInteger(declaredBytes) || declaredBytes > maxBytes) {
+      throw new RangeError("Webhook payload exceeds the configured size limit.");
+    }
+  }
+
+  if (!request.body) return "";
+  const reader = request.body.getReader();
+  const buffer = new Uint8Array(maxBytes);
+  let totalBytes = 0;
+  try {
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      if (!(value instanceof Uint8Array)) {
+        throw new TypeError("Webhook body stream must contain byte chunks.");
+      }
+      if (value.byteLength > maxBytes - totalBytes) {
+        try { await reader.cancel(); } catch {}
+        throw new RangeError("Webhook payload exceeds the configured size limit.");
+      }
+      buffer.set(value, totalBytes);
+      totalBytes += value.byteLength;
+    }
+  } finally {
+    reader.releaseLock();
+  }
+
+  return new TextDecoder("utf-8", { fatal: true }).decode(buffer.subarray(0, totalBytes));
+}

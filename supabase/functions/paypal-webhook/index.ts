@@ -54,7 +54,7 @@ Deno.serve(async (request) => {
   if (request.method !== "POST") return new Response("Method not allowed", { status: 405 });
 
   try {
-    const { isExactPriorityAmount, resolvePayPalApiBase, resolveSupabaseUrl } = await import("../_shared/paypal-api-base.mjs");
+    const { isExactPriorityAmount, readBoundedRequestText, resolvePayPalApiBase, resolveSupabaseUrl } = await import("../_shared/paypal-api-base.mjs");
     const supabaseUrl = resolveSupabaseUrl(required("SUPABASE_URL"));
     const serviceKey = required("SUPABASE_SERVICE_ROLE_KEY");
     const clientId = required("PAYPAL_CLIENT_ID");
@@ -62,7 +62,15 @@ Deno.serve(async (request) => {
     const webhookId = required("PAYPAL_WEBHOOK_ID");
     const base = resolvePayPalApiBase(Deno.env.get("PAYPAL_API_BASE"), Deno.env.get("PAYPAL_ENABLE_LIVE"));
 
-    const rawBody = await request.text();
+    let rawBody;
+    try {
+      rawBody = await readBoundedRequestText(request);
+    } catch (error) {
+      if (error instanceof RangeError) {
+        return new Response("Webhook payload too large", { status: 413 });
+      }
+      return new Response("Invalid webhook body", { status: 400 });
+    }
     let event;
     try { event = JSON.parse(rawBody); } catch { return new Response("Invalid JSON", { status: 400 }); }
 
