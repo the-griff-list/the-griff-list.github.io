@@ -83,7 +83,7 @@ if 'const RECORDING_RIGHTS_APPROVED = false;' not in recording_safety_source:
     issues.append('recording-safety.js: rights approval must default to false')
 live_show_source=(ROOT/'live-show.js').read_text(encoding='utf-8')
 sw_source=(ROOT/'sw.js').read_text(encoding='utf-8')
-if "const CACHE = 'grifflist-livekit-offline-v64';" not in sw_source:
+if "const CACHE = 'grifflist-livekit-offline-v65';" not in sw_source:
     issues.append('sw.js: public homepage update must use a new cache generation')
 if 'recordingSafety.canAppendChunk(recordingBytes,e.data.size)' not in live_show_source:
     issues.append('live-show.js: recording chunks must pass the bounded memory guard')
