@@ -668,6 +668,8 @@ if workflow_path.is_file():
     workflow = workflow_path.read_text(encoding='utf-8')
     required_workflow_controls = {
         'standard public runner': 'runs-on: ubuntu-latest',
+        'new public-runner concurrency namespace': 'group: grifflist-site-quality-public-${{ github.ref }}',
+        'pending runs are not force-cancelled': 'cancel-in-progress: false',
         'owner actor restriction': "github.actor == 'the-griff-list'",
         'triggering actor restriction': "github.triggering_actor == 'the-griff-list'",
         'same-repository PR restriction': 'github.event.pull_request.head.repo.full_name == github.repository',

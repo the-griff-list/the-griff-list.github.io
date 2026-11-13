@@ -15,7 +15,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: grifflist-site-quality-${{ github.ref }}
+  group: grifflist-site-quality-public-${{ github.ref }}
   # Preserve active static/browser verification when a newer commit arrives.
   # Pending runs may be replaced by GitHub; in-progress checks must finish.
   cancel-in-progress: false
