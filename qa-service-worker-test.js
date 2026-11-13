@@ -250,4 +250,31 @@ test('only credentialless requests without authorization may persist responses',
   );
 });
 
+
+test('public offline shell stays within its mobile precache budget', () => {
+  const maxTotalBytes = 10 * 1024 * 1024;
+  const maxAssetBytes = 3 * 1024 * 1024;
+  const core = vm.runInContext('CORE.slice()', context);
+  const sizes = core.map(assetPath => {
+    // The root URL resolves to the same public document as index.html, but it
+    // is a distinct CacheStorage key and therefore counts as a second entry.
+    const relativePath = assetPath.replace(/^\\.\\//, '').split('?', 1)[0] || 'index.html';
+    const absolutePath = path.resolve(__dirname, relativePath);
+    assert.ok(
+      absolutePath.startsWith(__dirname + path.sep),
+      'precache asset must remain inside the repository: ' + assetPath
+    );
+    const stat = fs.statSync(absolutePath);
+    assert.equal(stat.isFile(), true, assetPath);
+    assert.ok(stat.size <= maxAssetBytes, assetPath + ' exceeds the 3 MiB per-asset budget');
+    return stat.size;
+  });
+  const totalBytes = sizes.reduce((sum, size) => sum + size, 0);
+  assert.ok(
+    totalBytes <= maxTotalBytes,
+    'public precache is ' + totalBytes + ' bytes; maximum is ' + maxTotalBytes
+  );
+  process.stdout.write('Public precache payload: ' + totalBytes + ' bytes\\n');
+});
+
 process.stdout.write('PASS ' + passed + ' service-worker policy groups\n');
