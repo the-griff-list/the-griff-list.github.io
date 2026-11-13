@@ -495,17 +495,37 @@ test('same-origin cookie-bearing public navigation is not persisted in Cache Sto
   }, { name: serviceWorkerCacheName, target: url });
   expect(persisted).toBe(false);
 });
-test('request form exposes required, keyboard-reachable fields', async ({ page }) => {
+test('request form exposes accessible names for every public field and keeps keyboard order', async ({ page }) => {
   await page.goto('/index.html');
   await page.locator('#splash').click();
-  const name = page.locator('#requester-name');
-  const song = page.locator('#request-song');
+
+  const fields = [
+    ['Your name, required', '#requester-name'],
+    ['Song name', '#request-song'],
+    ['Artist name', '#request-artist'],
+    ['Dedication / special instructions (optional)', '#request-message'],
+  ];
+  for (const [accessibleName, selector] of fields) {
+    const control = page.getByLabel(accessibleName, { exact: true });
+    await expect(control).toHaveCount(1);
+    await expect(control).toHaveAttribute('id', selector.slice(1));
+  }
+
+  const name = page.getByLabel('Your name, required', { exact: true });
+  const song = page.getByLabel('Song name', { exact: true });
   await expect(name).toHaveAttribute('required', '');
-  await expect(name).toHaveAttribute('aria-label', 'Your name, required');
   await name.focus();
   await expect(name).toBeFocused();
   await page.keyboard.press('Tab');
   await expect(song).toBeFocused();
+
+  // The optional payment selector must become discoverable only after the
+  // visitor opts into a priority request; hidden controls are not exposed.
+  const paymentMethod = page.getByLabel('Payment method', { exact: true });
+  await expect(paymentMethod).toBeHidden();
+  await page.locator('#priority-request').check();
+  await expect(paymentMethod).toBeVisible();
+  await expect(paymentMethod).toHaveCount(1);
 });
 
 test('tip surfaces do not advertise unverified wallet methods before checkout', async ({ page }) => {
