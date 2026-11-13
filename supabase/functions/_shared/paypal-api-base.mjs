@@ -44,5 +44,5 @@ export function resolveSupabaseUrl(rawUrl) {
  * non-finite values, whitespace, numbers and excess precision.
  */
 export function isExactPriorityAmount(value) {
-  return typeof value === "string" && /^5(?:\\.0{1,2})?$/.test(value);
+  return typeof value === "string" && /^5(?:\.0{1,2})?$/.test(value);
 }
