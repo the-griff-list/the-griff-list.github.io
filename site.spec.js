@@ -521,11 +521,14 @@ test('request form exposes accessible names for every public field and keeps key
 
   // The optional payment selector must become discoverable only after the
   // visitor opts into a priority request; hidden controls are not exposed.
-  const paymentMethod = page.getByLabel('Payment method', { exact: true });
+  const paymentWrap = page.locator('#priority-payment-wrap');
+  const paymentMethod = page.locator('#priority-payment-method');
+  await expect(paymentWrap).toBeHidden();
   await expect(paymentMethod).toBeHidden();
   await page.locator('#priority-request').check();
+  await expect(paymentWrap).toBeVisible();
   await expect(paymentMethod).toBeVisible();
-  await expect(paymentMethod).toHaveCount(1);
+  await expect(paymentMethod).toHaveAccessibleName(/Payment method/);
 });
 
 test('tip surfaces do not advertise unverified wallet methods before checkout', async ({ page }) => {
