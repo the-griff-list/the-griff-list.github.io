@@ -383,18 +383,48 @@ test('public offline shell registers, falls back offline, and never caches priva
     return deleted && !(await cache.match(key));
   }, cacheName);
   expect(removedWatchLive).toBe(true);
-  // The service worker precache may also populate Chromium's HTTP cache. Clear
-  // and disable that separate cache so this assertion exercises CacheStorage's
-  // offline fallback rather than a browser-cached copy of watch-live.html.
+  // Chromium's page-target offline emulation does not reliably force the
+  // service-worker target's own fetch() to fail. Simulate that network failure
+  // inside the active worker so this assertion deterministically exercises its
+  // CacheStorage offline fallback rather than an HTTP-cache response.
+  const serviceWorker = page.context().serviceWorkers().find(worker =>
+    new URL(worker.url()).pathname.endsWith('/sw.js')
+  );
+  expect(serviceWorker, 'the active public service worker must be inspectable').toBeTruthy();
+  await serviceWorker.evaluate(() => {
+    globalThis.__grifflistOriginalFetchForTest = globalThis.fetch;
+    globalThis.fetch = async (input, init) => {
+      const requestUrl = typeof input === 'string' ? input : input.url;
+      if (new URL(requestUrl, self.registration.scope).pathname === '/watch-live.html') {
+        throw new TypeError('Simulated offline network failure');
+      }
+      return globalThis.__grifflistOriginalFetchForTest(input, init);
+    };
+  });
+
   const cdp = await page.context().newCDPSession(page);
   await cdp.send('Network.clearBrowserCache');
   await cdp.send('Network.setCacheDisabled', { cacheDisabled: true });
-  await page.context().setOffline(true);
-  await page.goto('/watch-live.html');
-  await expect(page.locator('h1')).toContainText("You're offline");
-  await page.context().setOffline(false);
-  await cdp.send('Network.setCacheDisabled', { cacheDisabled: false });
-  await cdp.detach();
+  try {
+    await page.context().setOffline(true);
+    await page.goto('/watch-live.html');
+    await expect(page.locator('h1')).toContainText("You're offline");
+  } finally {
+    await page.context().setOffline(false);
+    const activeWorker = page.context().serviceWorkers().find(worker =>
+      new URL(worker.url()).pathname.endsWith('/sw.js')
+    );
+    if (activeWorker) {
+      await activeWorker.evaluate(() => {
+        if (globalThis.__grifflistOriginalFetchForTest) {
+          globalThis.fetch = globalThis.__grifflistOriginalFetchForTest;
+          delete globalThis.__grifflistOriginalFetchForTest;
+        }
+      });
+    }
+    await cdp.send('Network.setCacheDisabled', { cacheDisabled: false });
+    await cdp.detach();
+  }
 
   // The public tour roadmap includes a device-local journal. Cache only its
   // static shell; the journal data remains in localStorage, not Cache Storage.
