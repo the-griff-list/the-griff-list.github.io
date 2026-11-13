@@ -537,17 +537,30 @@ test('request form exposes accessible names for every public field and keeps key
   await page.keyboard.press('Tab');
   await expect(randomSong).toBeFocused();
 
-  await priority.check();
+  // Use the native keyboard activation path, not Playwright's programmatic
+  // check(), so this also verifies Space toggles the optional priority flow.
+  await priority.focus();
+  await page.keyboard.press('Space');
+  await expect(priority).toBeChecked();
   await expect(paymentWrap).toBeVisible();
   await expect(paymentMethod).toBeVisible();
   await expect(paymentMethod).toHaveAccessibleName(/Payment method/);
-  await priority.focus();
   await page.keyboard.press('Tab');
   await expect(paymentMethod).toBeFocused();
   await page.keyboard.press('Tab');
   await expect(randomSong).toBeFocused();
   await page.keyboard.press('Tab');
   await expect(submitRequest).toBeFocused();
+
+  // Turning priority back off must remove the payment selector from both
+  // visibility and sequential keyboard navigation.
+  await priority.focus();
+  await page.keyboard.press('Space');
+  await expect(priority).not.toBeChecked();
+  await expect(paymentWrap).toBeHidden();
+  await expect(paymentMethod).toBeHidden();
+  await page.keyboard.press('Tab');
+  await expect(randomSong).toBeFocused();
 });
 
 test('tip surfaces do not advertise unverified wallet methods before checkout', async ({ page }) => {
