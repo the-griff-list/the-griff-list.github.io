@@ -180,3 +180,41 @@ No public offer, payment flow, new service, vendor account, paid advertising or 
 - **Validation:** privately ask up to three existing contacts whether a real small-event need exists. Count interest separately from a paid booking. Validation requires an approved quote, completed performance and received payment.
 - **Decision:** retain as a researched candidate; do not add a public offer, booking form, checkout or price until the owner approves scope and availability.
 
+## Charlottetown live-music, print and payment refresh — 2026-11-13
+
+This is a limited competitor/platform refresh, not a customer-demand study. Listings and advertised prices show that alternatives exist; they do not prove sales, local availability, quality, conversion or willingness to pay for The Griff List.
+
+### Local market signals
+
+- **Live-music channel:** Tourism PEI's current live-music directory lists recurring Island performances and Charlottetown-area programming, including Hunter's Ale House, Baba's Lounge, Olde Dublin Pub and The Old Triangle. This supports the existence of a recurring local live-music channel, but it does not establish audience size, tip conversion or demand for a new paid service. [Tourism PEI — Live Music](https://www.tourismpei.com/live-music)
+- **Apparel production competition:** Charlottetown/PEI already has established screen-printing, embroidery and promotional-product providers: [DALMAC](https://dalmac.ca/cresting/) (91 Euston St), [Instant Imprints Charlottetown](https://locations.instantimprints.com/pe/charlottetown/charlottetown) (393 University Ave), [Allstar Cresting](https://allstarcresting.ca/) (166 St Peters Rd), [Pressed 4 Time](https://www.pressed4time.ca/) (112 Longworth Ave), [Gemini](https://www.geminipei.com/) (423 Mt Edward Rd), [Stay Golden Custom](https://staygoldencustom.com/) (Hunter River) and [COWS Contract Screen Printing](https://cows.ca/) (Charlottetown production operation). Most listings do not publish a comparable small-run quote. A Charlottetown-targeted listing advertises custom tees from $19.99, but its local production/pickup claim was not independently confirmed. [Same Day Custom T-Shirts](https://www.samedaytshirts.com/locations/screen-printing-charlottetown-ca)
+- **Decision on merch:** do not buy a press, blanks or finished inventory, and do not compete as a generic screen printer. If the owner later approves a merch pilot, keep it original, pre-order-only and customer-funded; obtain written quotes that include setup, minimum quantity, garment, print, tax, shipping and turnaround before setting a retail price.
+- **Used music media:** [Back Alley Music](https://www.backalleymusicpei.ca/) is an established downtown Charlottetown record shop focused on new/used vinyl and music-related media/gear. This confirms a local channel and competitor, not a resale price or sales velocity. Prefer a written consignment test or a small rights/condition-verified curated bundle over buying speculative inventory. [Most Wanted Charlottetown](https://mostwantedpawn.com/stores/charlottetown/) is another local buy/sell channel for used media and gear.
+- **Digital design price references:** non-local public providers advertise single flyers around $65 and small social-design packages around $85; these are external asking prices, not PEI transaction data or a reliable local rate card. [MW Create Studio](https://www.mwcreatestudio.com/flyer-social-media-design) · [Tridah Media](https://tridahmedia.com/graphics-marketing/)
+
+### Payment-platform constraints and illustrative economics
+
+- **Ko-fi:** the official help page currently states 0% Ko-fi service fee on one-time tips in Free mode, 5% on shop sales, memberships, monthly tips and commissions, and 5% on all payment types in Standard mode. New creators start in Standard/Contributor mode by default unless they opt out. PayPal/Stripe processing fees still apply. The user's actual account mode and connected processor have not been inspected; do not change settings or assume the one-time-tip rate applies to a paid design/lesson/commission. [Ko-fi official fee breakdown](https://help.ko-fi.com/hc/en-us/articles/360002506494-Does-Ko-fi-take-a-fee) · [Ko-fi pricing](https://ko-fi.com/pricing)
+- **PayPal Canada:** the published standard domestic commercial rate is 2.90% + CAD $0.30. [Official merchant fees](https://www.paypal.com/ca/business/paypal-business-fees)
+- **Stripe Canada:** standard domestic online cards are listed at 2.9% + CAD $0.30, with no standard setup/monthly fee. [Official pricing](https://stripe.com/en-ca/pricing)
+- **Example only:** a CAD $25 domestic online card payment at 2.9% + $0.30 incurs about $1.03 in processing and leaves about $23.98 before tax, labour, refunds and overhead. This is not a quote for Ko-fi, PayPal QR, international cards, wallet-specific products or the user's actual account. No provider account or fee setting was inspected or changed.
+
+### Experiment implications
+
+1. Keep the **musician gig/request/tip page + digital QR kit** as a one-time setup hypothesis rather than building a generic booking marketplace or recurring SaaS. Local print suppliers can produce physical cards if a customer funds them; the initial test should remain digital-only.
+2. Keep the **gig-promo kit** digital-only (client-supplied copy and rights-cleared assets, agreed revision limit, no print inventory). External design price listings suggest a possible reference band, but no Griff List price is approved or validated.
+3. Keep **original short acoustic greetings** separate from tips and commissions. Use original melody/lyrics only, personal-use terms, no artist-voice imitation and no public posting without separate permission.
+4. Defer **vinyl/CD resale** until a written consignment split, condition-grading process, custody and returns terms are agreed. Do not buy stock.
+5. Defer **physical merch** until non-binding interest is counted and a written small-run quote is obtained. Do not pay setup fees or market fees.
+
+### Validation ledger update
+
+| Experiment | Status after this refresh | Evidence / next gate |
+|---|---|---|
+| Musician page + digital QR kit | Researched; unvalidated | Three PEI performer interviews; no generic SaaS build |
+| Gig-promo kit | Researched; unvalidated | Three non-binding interest checks; confirm rights, scope and time |
+| Original acoustic greeting | Researched; unvalidated | Fictional sample and permission-based interest check; three paid orders required before calling it validated |
+| Pre-order merch | Researched; unvalidated | Customer-funded interest plus written production quote; no stock |
+| Vinyl/CD resale | Researched; unvalidated | Written consignment agreement and condition/returns policy |
+
+**No new offer was activated. No outreach, payment collection, checkout, credential change, inventory purchase, supplier order, market booking or paid advertising occurred. All demand remains unvalidated.**
