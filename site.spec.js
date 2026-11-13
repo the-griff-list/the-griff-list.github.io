@@ -11,15 +11,18 @@ const serviceWorkerCacheName = cacheNameMatches[0][1];
 const cachePolicyMatch = serviceWorkerSource.match(
   /function isCacheableResponse\(response\) \{[\s\S]*?\n\}/,
 );
+const cacheRequestGuardMatch = serviceWorkerSource.match(
+  /function hasExplicitNoStoreOrNoCache\(request\) \{[\s\S]*?\n\}/,
+);
 const cacheRequestPolicyMatch = serviceWorkerSource.match(
   /function isCacheableResponseForRequest\(request, response\) \{[\s\S]*?\n\}/,
 );
-if (!cachePolicyMatch || !cacheRequestPolicyMatch) {
+if (!cachePolicyMatch || !cacheRequestGuardMatch || !cacheRequestPolicyMatch) {
   throw new Error('Could not extract the production service-worker cache policies.');
 }
 const cachePolicyContext = {};
 vm.runInNewContext(
-  `${cachePolicyMatch[0]}\n${cacheRequestPolicyMatch[0]}\nglobalThis.isCacheableResponse = isCacheableResponse;\nglobalThis.isCacheableResponseForRequest = isCacheableResponseForRequest;`,
+  `${cachePolicyMatch[0]}\n${cacheRequestGuardMatch[0]}\n${cacheRequestPolicyMatch[0]}\nglobalThis.isCacheableResponse = isCacheableResponse;\nglobalThis.isCacheableResponseForRequest = isCacheableResponseForRequest;`,
   cachePolicyContext,
 );
 
@@ -72,7 +75,7 @@ test('service worker only stores responses fetched without credentials', () => {
   const response = { ok: true, type: 'basic', status: 200, headers: { get: () => null } };
   const request = (credentials, authorization = false) => ({
     credentials,
-    headers: { has: name => name === 'Authorization' && authorization },
+    headers: { get: () => null, has: name => name === 'Authorization' && authorization },
   });
 
   expect(canStore(request('omit'), response)).toBe(true);
@@ -333,6 +336,13 @@ test('public offline shell registers, falls back offline, and never caches priva
   await page.reload();
 
   const cacheName = serviceWorkerCacheName;
+  await page.waitForFunction(async (expectedCache) => {
+    const names = await caches.keys();
+    return names.includes(expectedCache) &&
+      !names.some(name =>
+        name.startsWith('grifflist-livekit-offline-') && name !== expectedCache
+      );
+  }, cacheName, { timeout: 30000 });
   const initial = await page.evaluate(async (name) => {
     const cache = await caches.open(name);
     return (await cache.keys()).map(request => {
