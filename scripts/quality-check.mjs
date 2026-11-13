@@ -139,6 +139,7 @@ assert.match(files.paymentSql, /record_verified_paypal_capture/);
 assert.match(files.paymentSql, /coalesce\(p_amount,0\) <> 5\.00/);
 assert.match(files.paymentSqlTests, /TEST-LOW-CAPTURE-/);
 assert.match(files.paymentSqlTests, /TEST-HIGH-CAPTURE-/);
+assert.match(files.paypalWebhook, /purchaseUnits\.length !== 1/);
 assert.match(files.paypalWebhook, /isExactPriorityAmount\(amount\)/);
 assert.match(files.paypalWebhook, /isExactPriorityAmount\(capture\.amount\?\.value\)/);
 assert.match(files.paymentSql, /create table if not exists public\.paypal_payments/);
