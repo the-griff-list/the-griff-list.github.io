@@ -671,7 +671,7 @@ if workflow_path.is_file():
         'owner actor restriction': "github.actor == 'the-griff-list'",
         'triggering actor restriction': "github.triggering_actor == 'the-griff-list'",
         'same-repository PR restriction': 'github.event.pull_request.head.repo.full_name == github.repository',
-        'read-only repository token': 'permissions:\\n  contents: read',
+        'read-only repository token': 'permissions:\n  contents: read',
         'checkout credential persistence disabled': 'persist-credentials: false',
     }
     for control, text in required_workflow_controls.items():
