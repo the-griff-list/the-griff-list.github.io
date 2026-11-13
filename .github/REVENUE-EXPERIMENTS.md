@@ -195,7 +195,7 @@ This is a limited competitor/platform refresh, not a customer-demand study. List
 ### Payment-platform constraints and illustrative economics
 
 - **Ko-fi:** the official help page currently states 0% Ko-fi service fee on one-time tips in Free mode, 5% on shop sales, memberships, monthly tips and commissions, and 5% on all payment types in Standard mode. New creators start in Standard/Contributor mode by default unless they opt out. PayPal/Stripe processing fees still apply. The user's actual account mode and connected processor have not been inspected; do not change settings or assume the one-time-tip rate applies to a paid design/lesson/commission. [Ko-fi official fee breakdown](https://help.ko-fi.com/hc/en-us/articles/360002506494-Does-Ko-fi-take-a-fee) · [Ko-fi pricing](https://ko-fi.com/pricing)
-- **PayPal Canada:** the published standard domestic commercial rate is 2.90% + CAD $0.30. [Official merchant fees](https://www.paypal.com/ca/business/paypal-business-fees)
+- **PayPal Canada:** the published standard domestic commercial rate is 2.90% + CAD $0.30. The same current fee page lists distinct PayPal QR-code rates: 2.40% + CAD $0.05 for QR transactions of CAD $10.00 and below, and 1.90% + CAD $0.10 for QR transactions of CAD $10.01 and above. These QR rates are specific to the PayPal QR product and must not be assumed for Orders API checkout or Ko-fi payments; verify the actual account/product before using them in an offer or margin calculation. [Official merchant fees, updated 4 November 2026](https://www.paypal.com/ca/business/paypal-business-fees)
 - **Stripe Canada:** standard domestic online cards are listed at 2.9% + CAD $0.30, with no standard setup/monthly fee. [Official pricing](https://stripe.com/en-ca/pricing)
 - **Example only:** a CAD $25 domestic online card payment at 2.9% + $0.30 incurs about $1.03 in processing and leaves about $23.98 before tax, labour, refunds and overhead. This is not a quote for Ko-fi, PayPal QR, international cards, wallet-specific products or the user's actual account. No provider account or fee setting was inspected or changed.
 
@@ -218,3 +218,15 @@ This is a limited competitor/platform refresh, not a customer-demand study. List
 | Vinyl/CD resale | Researched; unvalidated | Written consignment agreement and condition/returns policy |
 
 **No new offer was activated. No outreach, payment collection, checkout, credential change, inventory purchase, supplier order, market booking or paid advertising occurred. All demand remains unvalidated.**
+
+### PayPal QR-code tip comparison (separate product from API checkout)
+
+The official Canadian fee schedule distinguishes QR-code transactions from standard commercial transactions. Illustrative calculations before any other fees, refunds or tax:
+
+| CAD tip | Standard commercial rate (2.90% + $0.30) | PayPal QR rate | QR fee | QR proceeds |
+|---:|---:|---:|---:|---:|
+| $5.00 | about $0.45 | 2.40% + $0.05 | about $0.17 | about $4.83 |
+| $15.00 | about $0.74 | 1.90% + $0.10 | about $0.39 | about $14.62 |
+| $25.00 | about $1.03 | 1.90% + $0.10 | about $0.58 | about $24.43 |
+
+This is a potentially useful live-show tip option, but it is **not** a recommendation to change the existing PayPal API checkout or payment destination. The actual QR product, account eligibility, transaction classification and rate must be confirmed in the user's PayPal account before any public claim. No account settings were inspected or changed.
