@@ -408,39 +408,36 @@ test('public offline shell registers and never caches private pages', async ({ p
 });
 
 
-test('public navigation falls back to the offline shell and cached roadmap when worker fetches reject', async ({ page, browserName }) => {
+test('service-worker navigation handler falls back to the offline shell and cached roadmap when fetch rejects', async ({ page, browserName }) => {
   test.skip(
     browserName === 'webkit',
-    'The worker-object interception test uses Chromium CDP; WebKit still runs page-level offline UI and cache-scope checks.',
+    'This synthetic service-worker event integration check runs in Chromium; WebKit still runs page-level offline UI and cache-scope checks.',
   );
   await page.goto('/index.html');
-  const cacheName = serviceWorkerCacheName;
-  await waitForActiveCacheController(page, cacheName);
-
-  const removedWatchLive = await page.evaluate(async (name) => {
-    const cache = await caches.open(name);
-    const key = (await cache.keys()).find(request => new URL(request.url).pathname === '/watch-live.html');
-    if (!key) return false;
-    const deleted = await cache.delete(key);
-    return deleted && !(await cache.match(key));
-  }, cacheName);
-  expect(removedWatchLive).toBe(true);
-
-  // Keep the browser online so navigation reaches the controlling worker, but
-  // clear/disable Chromium's HTTP cache so it cannot bypass the worker. Reject
-  // only the worker's network fetch for the two target navigations.
-  const cdpSession = await page.context().newCDPSession(page);
-  await cdpSession.send('Network.enable');
-  await cdpSession.send('Network.clearBrowserCache');
-  await cdpSession.send('Network.setCacheDisabled', { cacheDisabled: true });
+  await waitForActiveCacheController(page, serviceWorkerCacheName);
 
   const serviceWorker = page.context().serviceWorkers().find(worker =>
     new URL(worker.url()).pathname.endsWith('/sw.js')
   );
   expect(serviceWorker, 'the active public service worker must be inspectable').toBeTruthy();
-  const fetchPatchInstalled = await serviceWorker.evaluate(() => {
+
+  // Dispatch synthetic navigation FetchEvents inside the actual active worker.
+  // This exercises its registered fetch listener and real CacheStorage without
+  // relying on browser navigation routing or HTTP-cache interception.
+  const fallbackResults = await serviceWorker.evaluate(async (cacheName) => {
+    const cache = await caches.open(cacheName);
+    const watchLiveUrl = new URL('/watch-live.html', self.registration.scope).href;
+    const offlineUrl = new URL('/offline.html', self.registration.scope).href;
+    const roadmapUrl = new URL('/roadmap.html', self.registration.scope).href;
+    const offlineShell = await cache.match(offlineUrl);
+    const cachedRoadmap = await cache.match(roadmapUrl);
+    if (!offlineShell || !cachedRoadmap) {
+      throw new Error('The public offline shell and roadmap must be precached before fallback testing.');
+    }
+    await cache.delete(watchLiveUrl);
+
     const originalFetch = globalThis.fetch;
-    globalThis.__grifflistOfflineFetchTest = { originalFetch, failedPaths: [] };
+    const failedPaths = [];
     globalThis.fetch = async (input, init) => {
       const requestUrl = typeof input === 'string'
         ? input
@@ -449,43 +446,65 @@ test('public navigation falls back to the offline shell and cached roadmap when 
           : input.url;
       const pathname = new URL(requestUrl, self.registration.scope).pathname;
       if (pathname === '/watch-live.html' || pathname === '/roadmap.html') {
-        globalThis.__grifflistOfflineFetchTest.failedPaths.push(pathname);
+        failedPaths.push(pathname);
         throw new TypeError('Simulated offline network failure');
       }
       return originalFetch.call(globalThis, input, init);
     };
-    return globalThis.fetch !== originalFetch;
-  });
-  expect(fetchPatchInstalled).toBe(true);
 
-  try {
-    await page.goto('/watch-live.html');
-    await expect(page.locator('h1')).toContainText("You're offline");
-    await page.goto('/roadmap.html');
-    await expect(page.locator('h1')).toContainText('THE ROAD');
-    await expect(page.locator('#gig-form')).toBeVisible();
-
-    const failedPaths = await serviceWorker.evaluate(
-      () => globalThis.__grifflistOfflineFetchTest?.failedPaths ?? [],
-    );
-    expect(failedPaths).toContain('/watch-live.html');
-    expect(failedPaths).toContain('/roadmap.html');
-  } finally {
-    const activeWorker = page.context().serviceWorkers().find(worker =>
-      new URL(worker.url()).pathname.endsWith('/sw.js')
-    );
-    if (activeWorker) {
-      await activeWorker.evaluate(() => {
-        const state = globalThis.__grifflistOfflineFetchTest;
-        if (state) globalThis.fetch = state.originalFetch;
-        delete globalThis.__grifflistOfflineFetchTest;
+    async function dispatchNavigation(pathname) {
+      const request = new Request(new URL(pathname, self.registration.scope), {
+        credentials: 'omit',
       });
+      Object.defineProperties(request, {
+        mode: { value: 'navigate' },
+        destination: { value: 'document' },
+      });
+      let responsePromise;
+      let waitPromise;
+      const event = new Event('fetch');
+      Object.defineProperties(event, {
+        request: { value: request },
+        waitUntil: { value: promise => { waitPromise = Promise.resolve(promise); } },
+        respondWith: { value: promise => { responsePromise = Promise.resolve(promise); } },
+      });
+      self.dispatchEvent(event);
+      if (!responsePromise) throw new Error('The service worker did not handle the synthetic navigation event.');
+      const response = await responsePromise;
+      if (waitPromise) await waitPromise;
+      return {
+        url: response.url,
+        status: response.status,
+        body: await response.text(),
+      };
     }
-    await cdpSession.send('Network.setCacheDisabled', { cacheDisabled: false });
-    await cdpSession.detach();
-  }
-});
 
+    try {
+      return {
+        watchLive: await dispatchNavigation('/watch-live.html'),
+        roadmap: await dispatchNavigation('/roadmap.html'),
+        failedPaths,
+      };
+    } finally {
+      globalThis.fetch = originalFetch;
+    }
+  }, serviceWorkerCacheName);
+
+  expect(fallbackResults.watchLive.status).toBe(200);
+  expect(new URL(fallbackResults.watchLive.url).pathname).toBe('/offline.html');
+  expect(fallbackResults.watchLive.body).toContain("You're offline");
+  expect(fallbackResults.roadmap.status).toBe(200);
+  expect(new URL(fallbackResults.roadmap.url).pathname).toBe('/roadmap.html');
+  expect(fallbackResults.roadmap.body).toContain('THE ROAD');
+  expect(fallbackResults.failedPaths).toEqual(['/watch-live.html', '/roadmap.html']);
+
+  // Confirm both returned public pages also render at browser level.
+  await page.goto('/offline.html');
+  await expect(page.locator('h1')).toContainText("You're offline");
+  await page.goto('/roadmap.html');
+  await expect(page.locator('h1')).toContainText('THE ROAD');
+  await expect(page.locator('#gig-form')).toBeVisible();
+});
 
 test('authenticated same-origin asset requests bypass the offline cache', async ({ page }) => {
   await page.goto('/index.html');
