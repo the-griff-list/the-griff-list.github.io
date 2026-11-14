@@ -634,6 +634,9 @@ async function test(name, callback) {
   await test('uncached Watch Live navigation falls back to the precached offline shell after a worker network failure', async () => {
     reset();
     await dispatch('install');
+    // Exclude the 54 install-precache requests; count only this navigation.
+    fetchCalls = 0;
+    fetchedRequests = [];
     const watchLiveUrl = ORIGIN + '/watch-live.html';
     const offlineUrl = ORIGIN + '/offline.html';
     const cache = cacheData.get(CACHE);
@@ -659,6 +662,9 @@ async function test(name, callback) {
   await test('cached Tour Roadmap remains available after a worker network failure', async () => {
     reset();
     await dispatch('install');
+    // Exclude the 54 install-precache requests; count only this navigation.
+    fetchCalls = 0;
+    fetchedRequests = [];
     const roadmapUrl = ORIGIN + '/roadmap.html';
     const cachedRoadmap = cacheData.get(CACHE).get(roadmapUrl);
     assert.ok(cachedRoadmap, 'Tour Roadmap must be present in the public offline shell');
