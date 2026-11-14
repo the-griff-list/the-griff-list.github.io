@@ -359,7 +359,7 @@ async function waitForActiveCacheController(page, expectedCache) {
   }, expectedCache, { timeout: 30000 });
 }
 
-test('public offline shell registers, falls back offline, and never caches private pages', async ({ page }) => {
+test('public offline shell registers and never caches private pages', async ({ page }) => {
   await page.goto('/index.html');
   const cacheName = serviceWorkerCacheName;
   await waitForActiveCacheController(page, cacheName);
@@ -411,7 +411,7 @@ test('public offline shell registers, falls back offline, and never caches priva
 test('public navigation falls back to the offline shell and cached roadmap when offline', async ({ page, browserName }) => {
   test.skip(
     browserName === 'webkit',
-    'Playwright documents service-worker inspection as Chromium-only; WebKit still runs the offline UI and cache-scope checks.',
+    'WebKit offline navigation emulation previously failed inside WebKit; WebKit still runs the offline UI and cache-scope checks.',
   );
   await page.goto('/index.html');
   const cacheName = serviceWorkerCacheName;
@@ -428,10 +428,14 @@ test('public navigation falls back to the offline shell and cached roadmap when 
   }, cacheName);
   expect(removedWatchLive).toBe(true);
 
-  // BrowserContext.setOffline exercises the actual navigation fetch event.
-  // Chromium can emulate this while the active service worker supplies its
-  // cached fallback; WebKit's Playwright offline navigation previously failed
-  // inside WebKit itself, so that engine retains the independent UI/cache tests.
+  // Bypass the browser HTTP cache so offline navigation reaches the service
+  // worker's failed network fetch and exercises its CacheStorage fallback.
+  // WebKit's offline navigation emulation previously failed inside WebKit
+  // itself, so that engine retains the independent UI/cache-scope tests.
+  await page.setExtraHTTPHeaders({
+    'Cache-Control': 'no-cache',
+    'Pragma': 'no-cache'
+  });
   await page.context().setOffline(true);
   try {
     await page.reload();
@@ -441,6 +445,7 @@ test('public navigation falls back to the offline shell and cached roadmap when 
     await expect(page.locator('#gig-form')).toBeVisible();
   } finally {
     await page.context().setOffline(false);
+    await page.setExtraHTTPHeaders({});
   }
 });
 
