@@ -408,7 +408,7 @@ test('public offline shell registers and never caches private pages', async ({ p
 });
 
 
-test('public navigation falls back to the offline shell and cached roadmap when offline', async ({ page, browserName }) => {
+test('public navigation falls back to the offline shell and cached roadmap when worker network requests fail', async ({ page, browserName }) => {
   test.skip(
     browserName === 'webkit',
     'Playwright exposes BrowserContext.serviceWorkers() only in Chromium; WebKit still runs the offline UI and cache-scope checks.',
@@ -426,43 +426,54 @@ test('public navigation falls back to the offline shell and cached roadmap when 
   }, cacheName);
   expect(removedWatchLive).toBe(true);
 
-  // This worker-object interception test runs only in Chromium. Put the
-  // context offline before either navigation so the browser HTTP cache cannot
-  // satisfy the uncached Watch Live page and mask the service-worker fallback.
+  // Simulate origin failures inside the active worker instead of taking the
+  // whole browser context offline. Chromium can fail a navigation before the
+  // worker's fetch handler gets a chance to provide its offline response.
   const serviceWorker = page.context().serviceWorkers().find(worker =>
     new URL(worker.url()).pathname.endsWith('/sw.js')
   );
   expect(serviceWorker, 'the active public service worker must be inspectable').toBeTruthy();
-  await serviceWorker.evaluate(() => {
-    globalThis.__grifflistOriginalFetchForTest = globalThis.fetch;
+  const fetchPatchInstalled = await serviceWorker.evaluate(() => {
+    const originalFetch = globalThis.fetch;
+    globalThis.__grifflistOfflineFetchTest = { originalFetch, failedPaths: [] };
     globalThis.fetch = async (input, init) => {
-      const requestUrl = typeof input === 'string' ? input : input.url;
+      const requestUrl = typeof input === 'string'
+        ? input
+        : input instanceof URL
+          ? input.href
+          : input.url;
       const pathname = new URL(requestUrl, self.registration.scope).pathname;
       if (pathname === '/watch-live.html' || pathname === '/roadmap.html') {
+        globalThis.__grifflistOfflineFetchTest.failedPaths.push(pathname);
         throw new TypeError('Simulated offline network failure');
       }
-      return globalThis.__grifflistOriginalFetchForTest(input, init);
+      return originalFetch.call(globalThis, input, init);
     };
+    return globalThis.fetch !== originalFetch;
   });
+  expect(fetchPatchInstalled).toBe(true);
 
   try {
-    await page.context().setOffline(true);
     await page.goto('/watch-live.html');
     await expect(page.locator('h1')).toContainText("You're offline");
     await page.goto('/roadmap.html');
     await expect(page.locator('h1')).toContainText('THE ROAD');
     await expect(page.locator('#gig-form')).toBeVisible();
+
+    const failedPaths = await serviceWorker.evaluate(
+      () => globalThis.__grifflistOfflineFetchTest?.failedPaths ?? [],
+    );
+    expect(failedPaths).toContain('/watch-live.html');
+    expect(failedPaths).toContain('/roadmap.html');
   } finally {
-    await page.context().setOffline(false);
     const activeWorker = page.context().serviceWorkers().find(worker =>
       new URL(worker.url()).pathname.endsWith('/sw.js')
     );
     if (activeWorker) {
       await activeWorker.evaluate(() => {
-        if (globalThis.__grifflistOriginalFetchForTest) {
-          globalThis.fetch = globalThis.__grifflistOriginalFetchForTest;
-          delete globalThis.__grifflistOriginalFetchForTest;
-        }
+        const state = globalThis.__grifflistOfflineFetchTest;
+        if (state) globalThis.fetch = state.originalFetch;
+        delete globalThis.__grifflistOfflineFetchTest;
       });
     }
   }
