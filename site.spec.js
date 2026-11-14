@@ -377,11 +377,19 @@ test('public offline shell registers, falls back offline, and never caches priva
   expect(initial).toContain('/roadmap.html');
   expect(initial).toContain('/styles.css?v=grifflist-tour-roadmap-1');
   expect(initial).toContain('/script.js?v=payment-security-pause-1');
-  await page.context().setOffline(true);
-  await page.reload();
+
+  // Exercise the app's navigator.onLine event handler without asking WebKit to
+  // reload a page while its whole browser context is offline.
+  await page.evaluate(() => {
+    Object.defineProperty(navigator, 'onLine', { configurable: true, value: false });
+    window.dispatchEvent(new Event('offline'));
+  });
   await expect(page.locator('#offline-status')).toBeVisible();
   await expect(page.locator('#offline-status')).toContainText('Nothing is queued while offline');
-  await page.context().setOffline(false);
+  await page.evaluate(() => {
+    Object.defineProperty(navigator, 'onLine', { configurable: true, value: true });
+    window.dispatchEvent(new Event('online'));
+  });
   await expect(page.locator('#offline-status')).toBeHidden();
 
   const removedWatchLive = await page.evaluate(async (name) => {
@@ -393,9 +401,10 @@ test('public offline shell registers, falls back offline, and never caches priva
   }, cacheName);
   expect(removedWatchLive).toBe(true);
 
-  // Simulate a network failure inside the active service worker. Use request
-  // revalidation headers to bypass the browser HTTP cache without Chromium CDP,
-  // so the same fallback assertion can run in Chromium and WebKit.
+  // Simulate network failures inside the active service worker. Standard
+  // revalidation headers bypass browser HTTP caching without Chromium CDP.
+  // The uncached Watch Live page must fall back to offline.html; the cached
+  // roadmap must still be served from the public offline shell.
   const serviceWorker = page.context().serviceWorkers().find(worker =>
     new URL(worker.url()).pathname.endsWith('/sw.js')
   );
@@ -404,7 +413,8 @@ test('public offline shell registers, falls back offline, and never caches priva
     globalThis.__grifflistOriginalFetchForTest = globalThis.fetch;
     globalThis.fetch = async (input, init) => {
       const requestUrl = typeof input === 'string' ? input : input.url;
-      if (new URL(requestUrl, self.registration.scope).pathname === '/watch-live.html') {
+      const pathname = new URL(requestUrl, self.registration.scope).pathname;
+      if (pathname === '/watch-live.html' || pathname === '/roadmap.html') {
         throw new TypeError('Simulated offline network failure');
       }
       return globalThis.__grifflistOriginalFetchForTest(input, init);
@@ -418,6 +428,9 @@ test('public offline shell registers, falls back offline, and never caches priva
   try {
     await page.goto('/watch-live.html');
     await expect(page.locator('h1')).toContainText("You're offline");
+    await page.goto('/roadmap.html');
+    await expect(page.locator('h1')).toContainText('THE ROAD');
+    await expect(page.locator('#gig-form')).toBeVisible();
   } finally {
     const activeWorker = page.context().serviceWorkers().find(worker =>
       new URL(worker.url()).pathname.endsWith('/sw.js')
@@ -432,14 +445,6 @@ test('public offline shell registers, falls back offline, and never caches priva
     }
     await page.setExtraHTTPHeaders({});
   }
-
-  // The public tour roadmap includes a device-local journal. Cache only its
-  // static shell; the journal data remains in localStorage, not Cache Storage.
-  await page.context().setOffline(true);
-  await page.goto('/roadmap.html');
-  await expect(page.locator('h1')).toContainText('THE ROAD');
-  await expect(page.locator('#gig-form')).toBeVisible();
-  await page.context().setOffline(false);
 
   await page.goto('/admin.html');
   await page.goto('/request-archive.html');
