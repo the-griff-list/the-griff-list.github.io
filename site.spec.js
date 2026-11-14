@@ -238,6 +238,31 @@ test('all public pages remain error-free and horizontally contained at mobile si
   }
 });
 
+test('only pages with live Rockometer or Encore widgets schedule 8-second refreshes', async ({ page }) => {
+  await page.addInitScript(() => {
+    const originalSetInterval = window.setInterval.bind(window);
+    window.__grifflistIntervalDelays = [];
+    window.setInterval = (handler, delay, ...args) => {
+      window.__grifflistIntervalDelays.push(Number(delay));
+      return originalSetInterval(handler, delay, ...args);
+    };
+  });
+
+  for (const path of ['/taxi-services.html', '/roadmap.html', '/offline.html']) {
+    await page.goto(path);
+    const refreshCount = await page.evaluate(() =>
+      window.__grifflistIntervalDelays.filter(delay => delay === 8000).length
+    );
+    expect(refreshCount, `${path} must not install the live-widget refresh timer`).toBe(0);
+  }
+
+  await page.goto('/explore.html');
+  const encoreRefreshCount = await page.evaluate(() =>
+    window.__grifflistIntervalDelays.filter(delay => delay === 8000).length
+  );
+  expect(encoreRefreshCount, 'Explore has an Encore widget and must retain its refresh timer').toBe(1);
+});
+
 test('homepage exposes one visually hidden primary heading', async ({ page }) => {
   await page.goto('/index.html');
   const heading = page.getByRole('heading', { level: 1 });
