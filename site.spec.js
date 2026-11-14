@@ -738,6 +738,35 @@ test('tip surfaces do not advertise unverified wallet methods before checkout', 
     .toContainText('Checkout shows the methods actually available');
 });
 
+test('song selection and request-status lookup fail closed when local storage is blocked', async ({ page }) => {
+  const pageErrors = [];
+  page.on('pageerror', error => pageErrors.push(error.message));
+  await page.addInitScript(() => {
+    const originalGetItem = Storage.prototype.getItem;
+    Storage.prototype.getItem = function (key) {
+      if (key === 'grifflistRememberName.v1' || key === 'grifflistLastRequestToken.v1') {
+        throw new DOMException('Storage access is blocked', 'SecurityError');
+      }
+      return originalGetItem.call(this, key);
+    };
+    HTMLMediaElement.prototype.play = () => Promise.resolve();
+  });
+
+  await page.goto('/index.html');
+  await page.locator('#splash').click();
+  await page.locator('#song-reveal summary').click();
+  const row = page.locator('#song-list .song-row').first();
+  const title = (await row.locator('.song-title').textContent()).trim();
+  await row.click();
+
+  await expect(page.locator('#request-song')).toHaveValue(title);
+  await expect(page.locator('#form-status')).toHaveText('');
+  await page.locator('#check-last-request').click();
+  await expect(page.locator('#request-status-result'))
+    .toContainText('cannot access the saved request token');
+  expect(pageErrors).toEqual([]);
+});
+
 test('catalogue selection fills the request without opening the mobile keyboard', async ({ page }) => {
   // WebKit's headless Linux media-process teardown intermittently exceeds the
   // suite's 30s default after all assertions have passed. Keep the allowance
