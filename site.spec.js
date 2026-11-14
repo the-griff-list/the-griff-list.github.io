@@ -250,7 +250,7 @@ test('tour roadmap lists only the confirmed upcoming performance windows', async
   await expect(dates).toContainText('Hunter’s Ale House');
   await expect(dates).toContainText('The Levee');
   await expect(dates).toContainText('The November 10 Hunter’s Ale House performance is complete');
-  await expect(dates.locator('article.confirmed-show-card')).not.toContainText('November 10');
+  await expect(dates.locator('article.confirmed-show-card').filter({ hasText: 'November 10' })).toHaveCount(0);
 });
 
 test('home Watch Live CTA checks status when no stream is active', async ({ page }) => {
