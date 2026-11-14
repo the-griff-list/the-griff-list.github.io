@@ -1,6 +1,6 @@
 # The Griff List — Revenue Experiment Backlog
 
-**Research snapshot:** 13 November 2026 (incremental market refresh; earlier evidence retained)  
+**Research snapshot:** 14 November 2026 (incremental competitor refresh; earlier evidence retained)  
 **Status:** researched hypotheses only — no customer demand or paid conversion has been validated.  
 **Scope:** low/no-upfront-cost services that can be tested through the existing live-music network. This is an internal planning document on the development branch; it does not activate checkout, publish an offer, or authorize spending.
 
@@ -255,3 +255,37 @@ This is a small service experiment that could validate the StagePilot Inventory 
 - [BandHelper — official pricing](https://www.bandhelper.com/main/pricing_upcoming.html)
 - [SongbookPro — official pricing](https://songbook-pro.com/pricing/)
 - [PayPal Canada — merchant fees](https://www.paypal.com/ca/business/paypal-business-fees)
+
+
+## Live song-request competitor refresh — 14 November 2026
+
+This is a public-page scan of products in the same broad QR-request category. Displayed prices may be in USD, AUD or another currency; where the vendor page did not state a currency, the amount below is deliberately not converted or treated as CAD. Marketing claims, trials and feature lists are not verified sales, customer counts or evidence of PEI demand.
+
+| Product | Publicly displayed offer | What overlaps with the existing Griff List concept | Implication |
+|---|---|---|---|
+| [PlayThis.Live](https://www.playthis.live/) | Free plan; Pro displayed at $4.99/month (currency not stated) | QR events, song requests, tip jar, cooldowns, reusable catalog and queue board | A strong low-cost/free substitute. A new monthly request app would be difficult to differentiate. |
+| [Requesting Songs](https://requestingsongs.com/) | $9.99/month; 30-day trial (currency not stated) | Musician setlists, branded QR/print templates, tip links and no-app guest flow | Direct competition for solo musicians and bands; its onboarding and template features overlap with a basic QR kit. |
+| [Decknics — Live Requests](https://www.decknics.net/live-requests) | Free trial; $9.99/month and an annual launch price displayed (currency not stated) | Bands/DJs/karaoke, uploaded libraries, QR flyers, request queue, tips and event analytics | Direct category competition; do not build a generic subscription clone. |
+| [StageRequest](https://stagerequest.com/) | Advertises a free basic plan; paid price not captured in this scan | QR requests, voting, tips and a live queue for performers | Free entry raises the bar for a paid basic request flow. Paid tier and currency need a fresh check before comparison. |
+| [Scan to Request a Song](https://www.scantorequestasong.com/) | $9/month; 14-day trial (currency not stated) | Performer catalog, QR code, request queue and direct tips | Another low-cost subscription alternative; not a PEI transaction benchmark. |
+| [FloorRequest](https://www.floorrequest.com/) | $100/month after a 14-day trial (currency not stated) | Venue-focused QR requests, real-time voting, branded guest page, Spotify integration and team roles | Venue/enterprise scope is broader than a one-person performer setup; do not compare the price directly with a digital sign service. |
+| [droprq](https://www.droprq.com/) | Early-access/waitlist language; advertises a 10% + $0.50 service fee | QR requests, approval queue and optional/required tips | Availability and exact launch terms are not established; treat as an emerging competitor, not a fully available price comparison. |
+| [YouOwnMusic](https://youownmusic.com/pricing) | ₹1,999/year (₹166.58/month), INR pricing on the page | Venue QR requests, moderation, live queue, printed poster and custom branding | India-focused pricing/market; not a Canadian local-rate comparator. |
+
+### Decision for The Griff List
+
+- **Do not build another generic request/tip SaaS or add a recurring subscription offer on this evidence.** The category already has free tiers and low-priced monthly products.
+- Retain the existing **one-time performer QR setup/signage kit** only as a private, unvalidated service hypothesis: test one performer-owned request/tip URL, generate a QR that resolves to that exact URL, create one original print-ready stage/table sign and one social crop, test it on a phone, and include one defined revision. Digital delivery only; printing, payment-account setup, checkout, and custom software are excluded.
+- The defensible difference is local, done-for-you setup and a readable, tested sign for a performer who already owns their destination—not exclusive request software, more tips, guaranteed audience engagement, or better earnings.
+- Competitor pricing is a reason to keep the pilot one-time and tightly scoped, not evidence that anyone in PEI will pay. Keep the $25–$35 hypothesis unchanged until customer interviews and paid-pilot data justify revision.
+- Validation remains: up to five permission-based, non-binding conversations with existing warm contacts; at most three pilots only after owner approval of exact scope, price and payment route. Record paid orders, actual delivery minutes, revisions and client-volunteered aggregate scans/requests. Do not collect audience identities or scrape contacts.
+
+### Payment and rights boundaries
+
+- Ko-fi's official guidance currently distinguishes 0% platform fee on one-time tips in Free mode from 5% on commissions, shop and memberships; Standard/Contributor applies 5% to one-time tips too. PayPal/Stripe processing fees remain additional. The user's account mode has not been inspected. [Ko-fi fee breakdown](https://help.ko-fi.com/hc/en-us/articles/360002506494-Does-Ko-fi-take-a-fee)
+- Stripe Canada currently lists 2.9% + CAD $0.30 for domestic online card transactions. This is a public standard rate, not confirmation of the user's account-specific rate or an instruction to add Stripe. [Stripe Canada pricing](https://stripe.com/en-ca/pricing)
+- Do not imply Apple Pay or Google Pay is guaranteed by a static logo; actual eligibility is determined by the connected provider, account, device, browser and checkout.
+- The performer must own the payment account and destination. The Griff List must not receive, hold, route or reconcile performer tips or paid requests.
+- Use only client-supplied or original assets with permission. Do not include unlicensed lyrics, recordings, artwork or third-party logos.
+
+**Status:** competitor scan researched; the QR setup kit remains researched and unvalidated. No customer interviews, paid orders, prototype, public offer, checkout, payment destination, outreach, account change, inventory purchase or spend occurred.
