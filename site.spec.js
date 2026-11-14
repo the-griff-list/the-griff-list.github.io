@@ -359,11 +359,7 @@ async function waitForActiveCacheController(page, expectedCache) {
   }, expectedCache, { timeout: 30000 });
 }
 
-test('public offline shell registers, falls back offline, and never caches private pages', async ({ page, browserName }) => {
-  test.skip(
-    browserName !== 'chromium',
-    'This fallback assertion uses Chromium CDP to disable the HTTP cache.'
-  );
+test('public offline shell registers, falls back offline, and never caches private pages', async ({ page }) => {
   await page.goto('/index.html');
   const cacheName = serviceWorkerCacheName;
   await waitForActiveCacheController(page, cacheName);
@@ -388,7 +384,6 @@ test('public offline shell registers, falls back offline, and never caches priva
   await page.context().setOffline(false);
   await expect(page.locator('#offline-status')).toBeHidden();
 
-
   const removedWatchLive = await page.evaluate(async (name) => {
     const cache = await caches.open(name);
     const key = (await cache.keys()).find(request => new URL(request.url).pathname === '/watch-live.html');
@@ -397,10 +392,10 @@ test('public offline shell registers, falls back offline, and never caches priva
     return deleted && !(await cache.match(key));
   }, cacheName);
   expect(removedWatchLive).toBe(true);
-  // Chromium's page-target offline emulation does not reliably force the
-  // service-worker target's own fetch() to fail. Simulate that network failure
-  // inside the active worker so this assertion deterministically exercises its
-  // CacheStorage offline fallback rather than an HTTP-cache response.
+
+  // Simulate a network failure inside the active service worker. Use request
+  // revalidation headers to bypass the browser HTTP cache without Chromium CDP,
+  // so the same fallback assertion can run in Chromium and WebKit.
   const serviceWorker = page.context().serviceWorkers().find(worker =>
     new URL(worker.url()).pathname.endsWith('/sw.js')
   );
@@ -416,15 +411,14 @@ test('public offline shell registers, falls back offline, and never caches priva
     };
   });
 
-  const cdp = await page.context().newCDPSession(page);
-  await cdp.send('Network.clearBrowserCache');
-  await cdp.send('Network.setCacheDisabled', { cacheDisabled: true });
+  await page.setExtraHTTPHeaders({
+    'Cache-Control': 'no-cache',
+    'Pragma': 'no-cache'
+  });
   try {
-    await page.context().setOffline(true);
     await page.goto('/watch-live.html');
     await expect(page.locator('h1')).toContainText("You're offline");
   } finally {
-    await page.context().setOffline(false);
     const activeWorker = page.context().serviceWorkers().find(worker =>
       new URL(worker.url()).pathname.endsWith('/sw.js')
     );
@@ -436,8 +430,7 @@ test('public offline shell registers, falls back offline, and never caches priva
         }
       });
     }
-    await cdp.send('Network.setCacheDisabled', { cacheDisabled: false });
-    await cdp.detach();
+    await page.setExtraHTTPHeaders({});
   }
 
   // The public tour roadmap includes a device-local journal. Cache only its
