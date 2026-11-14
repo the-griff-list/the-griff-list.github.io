@@ -1,6 +1,6 @@
 # Archived draft — December 3, 2026 booking not verified
 
-<badge>DO NOT USE AS AN OPERATIONAL PRE-GIG CHECKLIST</badge>
+**ARCHIVED — DO NOT USE AS AN OPERATIONAL PRE-GIG CHECKLIST**
 
 This document was created from an assistant-generated booking summary, not a verified user-confirmed booking record. A targeted review of the available conversation history found no user confirmation of:
 
