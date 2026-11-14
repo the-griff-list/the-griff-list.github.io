@@ -92,32 +92,15 @@ This evidence was collected after the November 10 performance and does not retro
 - The historical mobile-device, real request, payment, streaming and published-site checklist items remain unchecked.
 
 
-## Upcoming booking refresh — November 14, 2026
+## Booking verification correction — November 14, 2026
 
-A fresh retrieval of the user's confirmed booking history recovered the October 30 booking record. It confirms the following upcoming performances; this supersedes the November 12 note above that treated these dates as unconfirmed. That earlier note is retained as historical context, not as the current booking status.
+A targeted review of the available conversation record found that the December 3 and December 17 Hunter's Ale House dates and January 1 at The Levee were previously repeated by an assistant, but no underlying user confirmation or booking record is present. The user's request to schedule Hunter's performances at 10:00 p.m.–1:30 a.m. was a calendar-time instruction, not confirmation of those dates or venue bookings.
 
-- **Hunter’s Ale House — Thursday, December 3, 2026:** 10:00 p.m.–1:30 a.m. Atlantic.
-- **Hunter’s Ale House — Thursday, December 17, 2026:** 10:00 p.m.–1:30 a.m. Atlantic.
-- **The Levee — Friday, January 1, 2027:** 12:00 p.m.–3:00 p.m. Atlantic.
+- Do not advertise December 3, December 17 or January 1 as confirmed.
+- Do not assign performance times, doors times, venue terms or stream availability to those dates.
+- The homepage and Tour Roadmap have been corrected to say “Next date to be announced” and “No upcoming performance date is currently confirmed.”
+- The dated December 3 checklist is retained only as an archived invalid draft; do not use it as an operational checklist.
+- The last confirmed performance context available is Hunter's Ale House on November 10, 2026, now completed. No later confirmed booking was found in the retrieved conversation history.
+- Rebuild a dated pre-gig checklist only after an actual user-confirmed booking is available.
+- PR #3 remains draft and unpublished. No deployment occurred.
 
-The listed windows are user-confirmed performance times, not venue doors times. The November 10 performance remains completed and archived.
-
-### December 3 pre-gig checklist — draft branch only
-
-- [ ] Confirm the homepage next-show strip and Tour Roadmap display all three dates and the supplied performance windows.
-- [ ] Open the draft site on the actual phone; verify navigation, catalogue, request form and tip section at mobile width with no horizontal overflow.
-- [ ] Test song selection, required-name validation, optional priority selection, keyboard focus and request idempotency against a designated test backend only. Do not submit a real request without owner approval.
-- [ ] Open Ko-fi and PayPal checkout manually and verify only payment methods actually offered by the current account/device. E-transfer remains unavailable. Do not promise Apple Pay or Google Pay based on static branding.
-- [ ] Confirm Rock-O-Meter values against current admin data; do not invent amounts or goals.
-- [ ] Check Watch Live status; do not advertise an active stream until phone-to-viewer playback is verified end-to-end.
-- [ ] Keep recording disabled until venue, performer and applicable rights-holder permissions are approved.
-- [ ] Recheck service-worker v66 cache exclusions, offline status messaging, current-head static checks and desktop/Android/WebKit browser tests.
-- [ ] Complete a physical-device accessibility pass: keyboard/focus order, screen-reader labels, contrast and touch targets.
-- [ ] Obtain explicit approval before merging or deploying. This draft checklist does not authorize publication, payment activation or spending.
-
-**Status:** dates and times are now reflected in the development homepage and Tour Roadmap; exact-head CI and physical-device acceptance are pending. PR #3 remains draft and unpublished. No deployment or payment action occurred.
-
-
-## Next confirmed Hunter's Ale House milestone — December 3, 2026
-
-The November 10 checklist above remains archived and its unchecked acceptance items were not retroactively completed. The next user-confirmed Hunter's Ale House performance is Thursday, December 3, 2026, 10:00 p.m.–1:30 a.m. Atlantic (performance window, not doors time). The dedicated development-only checklist is [PRE-GIG-CHECKLIST-2026-12-03.md](PRE-GIG-CHECKLIST-2026-12-03.md). December 17 at Hunter's Ale House and January 1 at The Levee are also confirmed; see the development homepage and Tour Roadmap.
