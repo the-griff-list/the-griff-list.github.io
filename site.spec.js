@@ -205,6 +205,39 @@ globalThis.isSafePublicCacheResponse = isSafePublicCacheResponse;`,
 });
 
 test('homepage loads without horizontal overflow or page errors', async ({ page }) => { const errors=[]; page.on('pageerror',e=>errors.push(e.message)); await page.goto('/index.html'); await expect(page.locator('#splash')).toBeVisible(); expect(await page.evaluate(()=>document.documentElement.scrollWidth>document.documentElement.clientWidth)).toBe(false); expect(errors).toEqual([]); });
+test('all public pages remain error-free and horizontally contained at mobile sizes', async ({ page }) => {
+  test.setTimeout(60000);
+  const publicPages = [
+    '/index.html',
+    '/explore.html',
+    '/watch-live.html',
+    '/taxi-services.html',
+    '/roadmap.html',
+    '/offline.html',
+  ];
+
+  for (const path of publicPages) {
+    const pageErrors = [];
+    const onPageError = error => pageErrors.push(error.message);
+    page.on('pageerror', onPageError);
+    try {
+      await page.goto(path);
+      await expect(page.locator('body')).toBeVisible();
+      const layout = await page.evaluate(() => ({
+        scrollWidth: document.documentElement.scrollWidth,
+        clientWidth: document.documentElement.clientWidth,
+      }));
+      expect(
+        layout.scrollWidth,
+        `${path} must not overflow horizontally at the current viewport`,
+      ).toBeLessThanOrEqual(layout.clientWidth);
+      expect(pageErrors, `${path} must not throw uncaught JavaScript errors`).toEqual([]);
+    } finally {
+      page.off('pageerror', onPageError);
+    }
+  }
+});
+
 test('homepage exposes one visually hidden primary heading', async ({ page }) => {
   await page.goto('/index.html');
   const heading = page.getByRole('heading', { level: 1 });
