@@ -349,7 +349,11 @@ async function waitForActiveCacheController(page, expectedCache) {
   }, expectedCache, { timeout: 30000 });
 }
 
-test('public offline shell registers, falls back offline, and never caches private pages', async ({ page }) => {
+test('public offline shell registers, falls back offline, and never caches private pages', async ({ page, browserName }) => {
+  test.skip(
+    browserName !== 'chromium',
+    'This fallback assertion uses Chromium CDP to disable the HTTP cache.'
+  );
   await page.goto('/index.html');
   const cacheName = serviceWorkerCacheName;
   await waitForActiveCacheController(page, cacheName);

@@ -67,8 +67,11 @@ jobs:
       - name: Install pinned Playwright test dependency
         run: npm install --no-save --no-audit --no-fund --package-lock=false
 
-      - name: Install Chromium for desktop and mobile-size checks
+      - name: Install Chromium for desktop and Android-size checks
         run: npx playwright install chromium
+
+      - name: Install WebKit and Linux dependencies for iPhone-size checks
+        run: npx playwright install --with-deps webkit
 
       - name: Start local static site server
         shell: bash
@@ -86,5 +89,5 @@ jobs:
           cat "$RUNNER_TEMP/grifflist-site-http.log"
           exit 1
 
-      - name: Run desktop and Android-size browser regression tests
-        run: npx playwright test -c playwright.config.js site.spec.js --project=desktop-chromium --project=android-size-touch-chromium
+      - name: Run desktop, Android-size and iPhone WebKit browser regression tests
+        run: npx playwright test -c playwright.config.js site.spec.js --project=desktop-chromium --project=android-size-touch-chromium --project=iphone-size-touch-webkit
