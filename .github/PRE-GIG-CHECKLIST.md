@@ -90,3 +90,29 @@ This evidence was collected after the November 10 performance and does not retro
 - Development service worker is v66; published `main` remains v38. No deployment occurred.
 - The latest available booking context still contains no later confirmed performance after November 10. Keep the homepage at “Next date to be announced” until a new booking is confirmed.
 - The historical mobile-device, real request, payment, streaming and published-site checklist items remain unchecked.
+
+
+## Upcoming booking refresh — November 14, 2026
+
+A fresh retrieval of the user's confirmed booking history recovered the October 30 booking record. It confirms the following upcoming performances; this supersedes the November 12 note above that treated these dates as unconfirmed. That earlier note is retained as historical context, not as the current booking status.
+
+- **Hunter’s Ale House — December 3, 2026:** 10:00 p.m.–1:30 a.m. Atlantic.
+- **Hunter’s Ale House — December 17, 2026:** 10:00 p.m.–1:30 a.m. Atlantic.
+- **The Levee — January 1, 2027:** 12:00 p.m.–3:00 p.m. Atlantic.
+
+The listed windows are user-confirmed performance times, not venue doors times. The November 10 performance remains completed and archived.
+
+### December 3 pre-gig checklist — draft branch only
+
+- [ ] Confirm the homepage next-show strip and Tour Roadmap display all three dates and the supplied performance windows.
+- [ ] Open the draft site on the actual phone; verify navigation, catalogue, request form and tip section at mobile width with no horizontal overflow.
+- [ ] Test song selection, required-name validation, optional priority selection, keyboard focus and request idempotency against a designated test backend only. Do not submit a real request without owner approval.
+- [ ] Open Ko-fi and PayPal checkout manually and verify only payment methods actually offered by the current account/device. E-transfer remains unavailable. Do not promise Apple Pay or Google Pay based on static branding.
+- [ ] Confirm Rock-O-Meter values against current admin data; do not invent amounts or goals.
+- [ ] Check Watch Live status; do not advertise an active stream until phone-to-viewer playback is verified end-to-end.
+- [ ] Keep recording disabled until venue, performer and applicable rights-holder permissions are approved.
+- [ ] Recheck service-worker v66 cache exclusions, offline status messaging, current-head static checks and desktop/Android/WebKit browser tests.
+- [ ] Complete a physical-device accessibility pass: keyboard/focus order, screen-reader labels, contrast and touch targets.
+- [ ] Obtain explicit approval before merging or deploying. This draft checklist does not authorize publication, payment activation or spending.
+
+**Status:** dates and times are now reflected in the development homepage and Tour Roadmap; exact-head CI and physical-device acceptance are pending. PR #3 remains draft and unpublished. No deployment or payment action occurred.

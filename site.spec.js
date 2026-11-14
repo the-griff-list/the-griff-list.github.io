@@ -218,18 +218,34 @@ test('private dashboard exposes one main landmark and its page heading', async (
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Request Dashboard');
 });
 test('title screen can be entered', async ({ page }) => { await page.goto('/index.html'); await page.locator('#splash').click(); await expect(page.locator('#catalog')).toBeVisible(); });
-test('next-show strip does not invent an unconfirmed booking', async ({ page }) => {
+test('next-show strip lists the latest confirmed booking and other confirmed dates', async ({ page }) => {
   await page.goto('/index.html');
   const card = page.locator('.next-show-card');
   await expect(card.locator('.eyebrow')).toHaveText('UPCOMING SHOWS');
-  await expect(card.locator('#next-show-title')).toHaveText('Next date to be announced');
-  await expect(card).toContainText('No upcoming performance date is currently confirmed.');
-  await expect(card.locator('time')).toHaveCount(0);
+  await expect(card.locator('#next-show-title')).toContainText('Hunter’s Ale House');
+  await expect(card.locator('#next-show-title')).toContainText('December 3, 2026');
+  await expect(card.locator('time[datetime="2026-12-03T22:00:00-04:00"]')).toHaveText('10:00 p.m.');
+  await expect(card.locator('time[datetime="2026-12-04T01:30:00-04:00"]')).toHaveText('1:30 a.m.');
+  await expect(card).toContainText('December 17, 2026');
+  await expect(card).toContainText('January 1, 2027');
+  await expect(card).toContainText('The Levee');
+  await expect(card.locator('a[href="roadmap.html#confirmed-dates"]')).toHaveText('See all confirmed dates');
   await expect(card.locator('a[href="#catalog"]')).toHaveText('BROWSE SONGS ↗');
-  await expect(card).not.toContainText('Hunter’s Ale House');
+  await expect(card).not.toContainText('November 6');
   await expect(card).not.toContainText('November 10');
-  await expect(card).not.toContainText('December 3');
-  await expect(card).not.toContainText('December 17');
+});
+
+test('tour roadmap lists only the confirmed upcoming performance windows', async ({ page }) => {
+  await page.goto('/roadmap.html');
+  const dates = page.locator('#confirmed-dates');
+  await expect(dates.getByRole('heading', { level: 2 })).toHaveText('UPCOMING SHOWS');
+  await expect(dates.locator('article.confirmed-show')).toHaveCount(3);
+  await expect(dates).toContainText('December 3, 2026');
+  await expect(dates).toContainText('December 17, 2026');
+  await expect(dates).toContainText('January 1, 2027');
+  await expect(dates).toContainText('Hunter’s Ale House');
+  await expect(dates).toContainText('The Levee');
+  await expect(dates).not.toContainText('November 10');
 });
 
 test('home Watch Live CTA checks status when no stream is active', async ({ page }) => {
