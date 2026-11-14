@@ -1,0 +1,93 @@
+name: Grifflist website quality checks
+
+on:
+  push:
+    branches:
+      - main
+      - site-quality-ci
+      - sitewide-grifflist-experience
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: grifflist-site-quality-public-${{ github.ref }}
+  # Preserve active static/browser verification when a newer commit arrives.
+  # Pending runs may be replaced by GitHub; in-progress checks must finish.
+  cancel-in-progress: false
+
+jobs:
+  static-quality:
+    name: Static website integrity
+    # Restrict the public GitHub-hosted runner to the repository owner and same-repository PRs.
+    if: >-
+      github.actor == 'the-griff-list' &&
+      github.triggering_actor == 'the-griff-list' &&
+      (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
+    # Standard ubuntu-24.04 runners are free for this public repository.
+    # Pin 24.04: the pinned Playwright 1.55 browser installer rejects ubuntu26.04.
+    # Keep the owner-only and same-repository PR guards above; never use a larger runner.
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Check out source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '22'
+
+      - name: Set up Python
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: '3.12'
+
+      - name: Install optional audit parsers
+        run: python -m pip install --disable-pip-version-check tinycss2==1.4.0 Pillow==11.3.0
+
+      - name: Verify bounded live recording safety
+        run: node qa-recording-safety-test.js
+
+      - name: Verify service-worker cache policy
+        run: node qa-service-worker-test.js
+
+      - name: Verify service-worker install, activation and offline lifecycle
+        run: node qa-service-worker-lifecycle-test.js
+
+      - name: Check HTML references, JavaScript syntax, PWA manifest, service worker, CSS and images
+        run: python qa-smoke-test.py
+
+      - name: Install pinned Playwright test dependency
+        run: npm install --no-save --no-audit --no-fund --package-lock=false
+
+      - name: Install Chromium for desktop and Android-size checks
+        run: npx playwright install chromium
+
+      - name: Install WebKit and Linux dependencies for iPhone-size checks
+        run: npx playwright install --with-deps webkit
+
+      - name: Start local static site server
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m http.server 4173 --bind 127.0.0.1 > "$RUNNER_TEMP/grifflist-site-http.log" 2>&1 &
+          echo "$!" > "$RUNNER_TEMP/grifflist-site-http.pid"
+          for attempt in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:4173/index.html >/dev/null; then
+              echo "Static site server is ready."
+              exit 0
+            fi
+            sleep 1
+          done
+          cat "$RUNNER_TEMP/grifflist-site-http.log"
+          exit 1
+
+      - name: Run desktop, Android-size and iPhone WebKit browser regression tests
+        run: npx playwright test -c playwright.config.js site.spec.js --project=desktop-chromium --project=android-size-touch-chromium --project=iphone-size-touch-webkit

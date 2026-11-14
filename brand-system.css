@@ -1,0 +1,101 @@
+/* The Grifflist site-wide brand system — shared by every page.
+   Palette and typography intentionally inherit the main stage identity. */
+:root{
+ --bg:#08080b;--panel:#151419;--panel2:#1d1a1e;--line:#40343a;
+ --text:#faf5ee;--muted:#b2a8aa;--hot:#ff642e;--gold:#ffb347;
+ --max:1160px;color-scheme:dark;
+}
+html{scroll-behavior:smooth;scroll-padding-top:92px}
+body{
+ color:var(--text);
+ background:radial-gradient(ellipse at 50% -12%,#54200f 0,transparent 39%),
+ radial-gradient(ellipse at 100% 58%,#25100d 0,transparent 30%),
+ linear-gradient(180deg,#100e12 0%,#08080b 46%,#100a09 100%);
+ background-attachment:fixed;
+ font-family:Inter,system-ui,sans-serif;
+}
+body:before{opacity:.11;background-image:radial-gradient(#fff .55px,transparent .55px);background-size:5px 5px}
+.site-header{background:linear-gradient(180deg,#09090bf5,#0c0a0bed);border-bottom:1px solid #ff8c4330;box-shadow:0 8px 30px #0006;backdrop-filter:blur(14px)}
+.top-nav a{font-family:Inter,system-ui,sans-serif;text-transform:uppercase;letter-spacing:.075em}
+h1,h2,h3,.section h2,.tour-shell h1,.tour-shell h2,.tour-shell h3{
+ font-family:'Barlow Condensed',Impact,sans-serif;letter-spacing:-.025em;text-transform:uppercase;
+}
+h1,h2,.section h2,.tour-shell h1,.tour-shell h2{ text-shadow:0 3px 0 #000,0 0 34px #ff512b13 }
+a{color:inherit}
+a:hover{color:var(--gold)}
+button,.button,.chip,.province-tabs button,.console-buttons button,.cockpit-options button{
+ border-radius:3px;transition:transform .16s ease,background .16s ease,border-color .16s ease,box-shadow .16s ease;
+}
+button:hover,.button:hover{transform:translateY(-1px)}
+.button-hot,button.button-hot{background:linear-gradient(135deg,#ff7438,#e63e25);border:1px solid #ffad6b;color:#fff;box-shadow:0 4px 0 #7b2818,0 0 24px #ff542e20}
+.button-quiet{background:linear-gradient(180deg,#201c20,#111014);border-color:#544149;color:var(--text)}
+input,select,textarea{background:#09090c;color:var(--text);border:1px solid #494047;border-radius:3px}
+input:focus,select:focus,textarea:focus{border-color:#ff9e57;box-shadow:0 0 0 3px #ff9e2414;outline:none}
+.panel,.card,.request-form,.venue,.memory,.gig,.console,.cockpit-detail,.support-main-card,.encore-card,.request-status-panel{
+ background:linear-gradient(145deg,#1d191d,#111014 76%);border:1px solid #604233;border-radius:5px;
+ box-shadow:0 18px 50px #0004,inset 0 1px #ffffff09;
+}
+.panel{color:var(--text)}
+.panel p,.tour-shell p{color:var(--muted)}
+.eyebrow,.tour-kicker,.tour-shell .eyebrow{color:var(--gold)}
+.section,.panel{border-color:#ff8a3a27}
+.site-footer,footer{border-top-color:#ff8a3a27;color:#a99da0}
+:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+.tour-shell{max-width:var(--max);padding:1.2rem 24px}
+.tour-hero{padding:3rem 0 2rem}
+.tour-hero h1{color:var(--text);font-size:clamp(2.8rem,8vw,6rem)}
+.tour-hero h1 span,.tour-shell h2 span{color:var(--hot)}
+.tour-shell .panel{background:linear-gradient(145deg,#1d191d,#111014 76%);border-color:#604233;border-radius:5px}
+.tour-shell .cockpit-stage{background:radial-gradient(ellipse at 50% 15%,#65301f 0,#25202a 38%,#0c0b10 80%)}
+.tour-shell .province-tabs button[aria-pressed=true],.tour-shell .console-buttons button[aria-pressed=true]{background:linear-gradient(135deg,#ff7135,#e94728);border-color:#ff9f61}
+.tour-shell .venue,.tour-shell .memory,.tour-shell .gig{background:linear-gradient(145deg,#1d191d,#111014);border-color:#604233}
+.tour-shell .venue a,.tour-shell .memory a{color:var(--gold)}
+.tour-shell .venue-actions button,.tour-shell .venue-dialog button{background:#21191a;color:var(--text);border:1px solid #79503a;padding:.65rem .85rem}
+.tour-shell .tour-transition{border:1px solid #70432e;background:linear-gradient(90deg,#26130f,#151116)}
+.tour-shell .bus{filter:drop-shadow(0 0 12px #ff6b32)}
+.tour-shell .venue-dialog{background:linear-gradient(145deg,#211a1d,#100f13);color:var(--text);border:1px solid #805039}
+@media(max-width:700px){
+ .tour-shell{padding:1rem 16px}
+ .tour-hero{padding:2rem 0 1.3rem}
+ .site-header{backdrop-filter:blur(12px)}
+}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+
+/* Short-lived gig banner: clear venue/date, no unconfirmed start time or stream promise. */
+.next-show-section{max-width:var(--max);margin:0 auto;padding:18px 24px 0}
+.next-show-card{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:18px 22px;border:1px solid #604233;border-radius:5px;background:linear-gradient(145deg,#1d191d,#111014 76%);box-shadow:0 18px 50px #0004}
+.next-show-card .eyebrow{margin:0 0 4px;font-size:.72rem}
+.next-show-card h2{margin:0;color:var(--hot);font-size:clamp(1.5rem,4vw,2.1rem)}
+.next-show-card p{margin:4px 0 0;color:var(--muted)}
+@media(max-width:600px){.next-show-section{padding:14px 12px 0}.next-show-card{align-items:stretch;flex-direction:column;padding:16px}.next-show-card .button{width:100%;text-align:center}}
+
+.payment-disclosure{max-width:64rem;margin:10px auto 0;padding:0 4px;color:var(--muted);font-size:.78rem;line-height:1.5}
+
+/* Network state is announced without hiding the cached catalogue. */
+.offline-status{max-width:var(--max);margin:12px auto;padding:12px 16px;border:1px solid #9a5a24;border-radius:5px;background:#24180f;color:#ffe0b4;font-size:.88rem;line-height:1.55}
+.offline-status[hidden]{display:none!important}
+
+
+/* Keyboard users can bypass repeated navigation and land on the page's main landmark. */
+.skip-link{
+ position:fixed;
+ top:.5rem;
+ left:.5rem;
+ z-index:100000;
+ max-width:calc(100vw - 1rem);
+ transform:translateY(calc(-100% - 1rem));
+ padding:.75rem 1rem;
+ border:2px solid var(--gold);
+ border-radius:4px;
+ background:var(--text);
+ color:var(--bg);
+ font-weight:800;
+ line-height:1.2;
+ text-decoration:none;
+ box-shadow:0 4px 18px #0009;
+}
+.skip-link:focus,.skip-link:hover{
+ transform:translateY(0);
+ background:var(--gold);
+ color:var(--bg);
+}

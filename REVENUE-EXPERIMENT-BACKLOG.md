@@ -1,0 +1,337 @@
+# The Griff List — Revenue Experiment Backlog
+
+**Research snapshot:** 14 November 2026 (incremental competitor refresh; earlier evidence retained)  
+**Status:** researched hypotheses only — no customer demand or paid conversion has been validated.  
+**Scope:** low/no-upfront-cost services that can be tested through the existing live-music network. This is an internal planning document on the development branch; it does not activate checkout, publish an offer, or authorize spending.
+
+## Guardrails
+
+- Existing concepts already on the roadmap are not counted as new experiments: song requests and optional priority requests, tips, Ko-fi/PayPal presentation, merchandise, custom screen printing, cassette duplication (Arsenal Mills), bottle lamps, vinyl/CD resale, and performance promotion.
+- Do not enable e-transfer, change payment credentials, add payment providers, advertise Apple Pay/Google Pay as guaranteed methods, or collect a payment until the owner explicitly approves the exact flow and verifies checkout on a real device.
+- Keep the existing Ko-fi and PayPal destinations unchanged. Wallet availability depends on the actual checkout and account configuration; static badges are not proof.
+- Use client-supplied assets or original work. Obtain permission for photos, logos, recordings and footage; do not use unlicensed cover art, lyrics, recordings or backing tracks.
+- No fake testimonials, fabricated audience numbers, guaranteed bookings/reach, scraped contacts, unsolicited bulk outreach or dark patterns.
+- Prices below are **pilot hypotheses**, not established market rates. Validate scope and delivery time before quoting. Exclude tax, labour, software, refunds and overhead from the simple payment examples below.
+
+## Ranked experiments
+
+| Rank | Experiment | Pilot price hypothesis (CAD) | Startup cost | Time to first dollar (hypothesis) | Effort per order | Margin outlook before labour | Main risks / fit |
+|---|---|---:|---:|---:|---|---|---|
+| 1 | **Band booking + tech pack:** one-page EPK, stage plot, input list, contact/booking details and shareable PDF | $39 basic tech pack; $59 with a simple EPK page | $0 if current tools are sufficient | 1–14 days through warm local contacts | 1–2 hours | High; digital delivery, little material cost | Details must be confirmed by the band; avoid promising gigs. Free Riderize already generates a basic rider, so paid value must be human cleanup, client-confirmed venue advance and EPK integration—not generic rider generation. Very strong fit with live performers and venue contacts. |
+| 2 | **Gig promo kit:** one poster plus square/story crops and a ready-to-edit event caption | $35–$55 | $0 if current design tools are sufficient | 1–7 days | 45–90 minutes | High; digital delivery | Client must own or authorize supplied logos/photos. Differentiate as a small, fast package rather than full event photography. |
+| 3 | **Cassette release artwork/J-card layout:** print-ready J-card, spine and simple digital cover using client-owned artwork | $25–$50 | $0 for a digital proof; physical printing is quoted separately | 1–14 days | 1–2 hours | High for digital layout; physical materials excluded | Confirm duplication/print specifications and artwork rights. Strong fit with Arsenal Mills, but do not bundle uncosted materials. |
+| 4 | **Short-form clip edit:** two vertical social clips from footage supplied by the artist/venue, with captions and basic audio cleanup | $35–$60 | $0 if current editing tools are sufficient | 1–14 days | 1–2 hours | High before labour | Obtain recording/performer permission and music rights; set a strict footage/length/revision limit. Local providers already offer full event capture, so position this as editing supplied footage, not photography. |
+| 5 | **Beginner guitar coaching:** a focused 30-minute lesson on one song, chord change or practice goal | $20–$30 / 30 min | $0 if existing instrument and space are used | 1–7 days through existing contacts | 30 minutes plus preparation | High before labour | Set beginner-level scope, scheduling and cancellation terms. Do not imply formal credentials. Strong skill fit, but time-for-money. |
+| 6 | **Used-gear listing pack:** seller-approved photos, a fact-checked spec checklist and a clear Marketplace/Reverb-ready description; seller publishes and handles the sale | $15 one item; $35 for three (pilot hypotheses) | $0 if the client supplies the gear and existing phone/design tools are sufficient | 1–14 days via warm musician contacts (hypothesis) | 20–30 min/item; 45–60 min for three | High before labour; no inventory or fulfilment | Local used/demo gear channels exist, but no willingness-to-pay evidence. Differentiate through accurate condition disclosure and time saved, not price appraisal. Client retains the item and completes the sale; no custody, consignment, delivery or buyer-money handling. **Researched, not validated.** |
+| 7 | **Clearly labelled local sponsor/featured listing** on The Griff List | Test only after traffic is measured; no price set | $0 to test interest | Unknown | Low after setup | Potentially high | Do not sell reach before reliable analytics establish audience size, location and engagement. Disclose sponsorship clearly and never imply editorial endorsement. **Not ready to offer.** |
+| 8 | **Performer QR request/tip setup kit:** one tested client-owned destination, original QR stage/table sign and social crop; no payment processing or account handling | $25–$35 digital-only pilot hypothesis | $0 if existing design/QR tools are sufficient | 1–7 days through warm local contacts (unvalidated) | 30–45 minutes | Moderate–high before labour and processor fees | Competitors already offer request QR software; differentiate as a one-time setup/signage service, not another SaaS subscription. Client owns accounts and payment links. No printed inventory, personal-data collection or earnings claims. **Researched, not validated.** |
+| 9 | **Done-for-you band gear inventory + gig load-out pack:** client-owned spreadsheet/CSV with optional serials, owner/location fields and a gig checklist | $25 up to 15 items; $40 up to 30 (hypotheses) | $0 if existing spreadsheet/phone tools suffice | 1–14 days through warm musician contacts (hypothesis) | 30–90 minutes | High before labour/materials, but weak paid differentiation against free tools | Strong StagePilot Inventory fit; only plausible paid value is done-for-you setup. Free substitutes are abundant; serials, receipts and location data are sensitive. Client owns file; no retention, appraisal or insurance advice. **Researched, unvalidated, lowest priority.** |
+| 10 | **Gig-night setlist + cue sheet:** a large-print, phone-readable and printable one-page set order with client-confirmed keys/capos, instrument changes, vocal handoffs, breaks and encore notes | $15 basic; $25 with cue/timing notes (pilot hypotheses) | $0 if existing document/design tools suffice | 1–14 days through warm musician contacts (hypothesis) | 20–30 min basic; 30–45 min with cues | High before labour; digital PDF, no inventory | Free docs/spreadsheets and low-cost band apps are strong substitutes. Client verifies song order, keys, capos and timings; no lyrics, chord charts, sheet music or copyrighted recordings. Convenience service, not a setlist-app replacement. **Researched, not validated.** |
+
+### Competitor and market observations
+
+- **Used gear listing support (new research — 7 November 2026):** Long & McQuade Charlottetown confirms a local used/demo gear channel through its Gear Hunter listings and in-store availability; [Most Wanted Jewellery & Pawn](https://www.loc8nearme.com/prince-edward-island/charlottetown/most-wanted-jewellery-and-pawn/7017932/) advertises buying and selling used musical instruments; [Back Alley Music](https://www.backalleymusicpei.ca/) says it buys used vinyl, record players, amplifiers, speakers and other music-related items. These are market/channel signals, not proof that sellers will pay Griff List to prepare listings. No direct Charlottetown listing-copy service was identified in this limited search; absence from search is not proof none exists. [Long & McQuade Charlottetown](https://www.long-mcquade.com/location/Prince-Edward-Island/Charlottetown/) · [Long & McQuade Gear Hunter](https://www.long-mcquade.com/)
+- **Free alternatives:** Facebook Marketplace and other classifieds let owners list items themselves; local shops already buy/sell or offer used stock. The proposed service must stay optional and save sellers time rather than claim better sale prices.
+
+- Charlottetown-based [Eastside Photography](https://eastside-photography.com/) advertises live-event photography, artist promos and short-form content. Its published starting event rate is $300 for the first hour. That is a different, full-capture service; it is not a direct price comparison for editing client-supplied footage.
+- [Higher Design](https://higherdesign.com/) operates in Charlottetown and Summerside and offers broader video, photography and web/creative services. This confirms an existing local creative-services market, not unmet demand for these proposed packages.
+- [Pixel Punch](https://www.pixelpunch.ca/) advertises performer EPKs at $299, but it is Toronto-based. Treat this only as an out-of-market price reference, not a PEI rate.
+- **Setlist/cue-sheet competitor check (14 November 2026):** [BandHelper's official pricing](https://www.bandhelper.com/main/pricing.html) lists solo Basic at USD $16/year and solo Pro at USD $32/year; its included features cover songs, set lists, documents and MIDI, while Pro adds stage plots. Its [feature list](https://www.bandhelper.com/main/features.html) also describes setlists, lyrics/chords, notes, voice memos and event/checklist tools. This is a strong low-cost substitute, so a one-off PDF must sell convenience and done-for-you formatting, not software functionality. [Riderize](https://ridera.io/riderize) separately offers a free, editable technical rider with input list, monitors, power, scaled stage plan, shareable link and printable PDF; this further weakens any paid offer based only on generating a basic rider.
+- Regional studio listings show established paid music services (for example, [B-Town Sound](https://www.btownsound.ca/ratesandservices/) lists rehearsal and recording services). The proposed offers should complement, not misrepresent or compete as equivalent studio work.
+- The Griff List's live-gig and musician network is a plausible first test channel. It is **not** proof that anyone will pay. No willingness-to-pay interviews, paid orders or conversion data are recorded yet.
+
+## Payment-fee illustration
+
+PayPal Canada currently lists a standard domestic commercial transaction fee of **2.90% + $0.30 CAD**. The official merchant-fee page says it was last updated **13 October 2026** (rechecked 8 November 2026). On a hypothetical $45 service payment, that is about **$1.61** in processor fees and **$43.39** remaining before labour, tax, refunds and overhead. The same page separately lists QR-code rates of **1.90% + $0.10 CAD** for transactions of $10.01 and above and **2.40% + $0.05 CAD** for transactions of $10.00 and below; those rates are product-specific and must not be assumed for a standard PayPal payment link.
+
+Ko-fi's official help page (rechecked 7 November 2026) says its Free mode charges 0% platform fee on one-time tips but 5% on shop, membership and commission payments; Standard applies 5% to one-time tips too. Processor fees still apply. A hypothetical $45 Ko-fi commission with a 5% platform fee plus the same illustrative PayPal processing rate would leave about **$41.14** before labour, tax and overhead. This is a calculation example, not a promise of the user's actual account rate or checkout method.
+
+- [Ko-fi fee breakdown](https://help.ko-fi.com/hc/en-us/articles/360002506494-Does-Ko-fi-take-a-fee)
+- [PayPal Canada merchant fees](https://www.paypal.com/ca/business/paypal-business-fees)
+
+Do not pay for Ko-fi Gold or another subscription based on these examples. Re-check the live account mode and processor quote before any offer is activated.
+
+## Market evidence refresh — 7 November 2026
+
+This is a research update only. Published prices are advertised rates, not verified transactions or proof of demand.
+
+- **Charlottetown guitar instruction:** [Long & McQuade Charlottetown](https://www.long-mcquade.com/lessons/Prince-Edward-Island/Charlottetown/) currently lists individual guitar instructors at $27–$30 per half-hour and describes the local average as $25–$31 per half-hour. [Canada Music Academy PEI](https://canadamusicacademy.ca/music_lessons_in_PEI.html) advertises lessons starting at $50/hour. [Superprof's Charlottetown electric-guitar page](https://www.superprof.ca/lessons/electric-guitar/charlottetown/) reports 8 tutor profiles and an average advertised rate of $50/hour; individual profiles are marketplace asking prices, not verified transactions. **Implication:** the existing $20–$30 / 30-minute beginner-coaching hypothesis is within the published local range, not a proven bargain. Differentiate by a narrow, low-pressure beginner outcome rather than claiming credentials or undercutting established teachers. No lesson availability or teaching commitment is confirmed.
+- **Musician EPK / promo design:** Toronto-based [Pixel Punch](https://www.pixelpunch.ca/) advertises performer EPKs at $299. [Wildroses Design](https://wildrosesdesign.ca/advertisement-design-packages/) advertises single-promotion design at $195 and broader packages at $295–$425. These are scope/market benchmarks, not direct PEI competitors or equivalent deliverables. **Implication:** a small $35–$55 digital gig-promo kit or $39–$59 tech-pack/EPK pilot could be tested as a tightly scoped, musician-specific service, but the price hypothesis must include revision limits, asset permissions and delivery time.
+- **PEI live-music channel:** [Tourism PEI's live-music directory](https://www.tourismpei.com/live-music) lists recurring performances and venues across Charlottetown and other Island regions. This confirms an active public discovery channel, not the number of reachable performers, their budgets, or willingness to pay for a tech pack or promo kit.
+- **Demand remains unvalidated:** none of these listings proves a paid customer for The Griff List. No customer interviews, paid orders, conversion rates or repeat purchases have been recorded. Continue with private, non-binding interest checks only; do not activate a public offer or payment flow.
+
+## Used-gear listing pack — unit-economics and safety notes
+
+- At the $15 single-item pilot price, PayPal Canada's published domestic commercial rate (2.90% + CAD $0.30) implies about $0.74 processing and $14.26 remaining before labour, tax, refunds and overhead. At 20–30 minutes, that is approximately $28.52–$42.78 per hour before labour/tax/overhead. For a $35 three-item bundle, estimated processing is about $1.32 and $33.68 remains; at 45–60 minutes, about $33.68–$44.91 per hour before labour/tax/overhead. Actual account fees and payment eligibility must be checked before any offer.
+- Source: [PayPal Canada merchant fees](https://www.paypal.com/ca/business/paypal-business-fees) (page returned in research with last-updated date 13 October 2026). Calculations are illustrative and rounded to cents.
+- Do not represent asking-price suggestions as appraisals. The seller confirms model/year/serial details, condition, included accessories and defects; use manufacturer documentation where possible. Do not publish serial numbers, home addresses, private contact data or location metadata in photos.
+- Client supplies and owns the item, approves all copy/photos, posts the listing, answers buyers and completes the transaction. No custody, consignment, shipping, payment collection for the item, repair advice, authenticity guarantee or sale-price guarantee.
+- Payment for the listing-preparation service itself must use only an owner-approved existing payment route; do not add checkout or change credentials. The experiment remains internal until explicitly approved.
+
+## Low-risk validation plan
+
+1. Pick **one** offer (start with the band tech pack) and prepare one clearly marked sample using fictional data, not a real band's details without permission.
+2. Privately ask up to five existing musician/venue contacts whether the deliverable solves a real problem and what they would pay. No mass messages or scraped contact lists.
+3. Offer at most three pilot slots only after the scope, price, turnaround, revisions and payment method are owner-approved.
+4. Track: inquiries, paid orders, time spent, revisions, delivery time, processor fees, refunds and net revenue per hour. Record zeroes as well as sales.
+5. Keep an idea **researched** until at least three unrelated customers pay and the service can be delivered within the stated time. Do not call interest or likes validation.
+6. Only then consider a clearly labelled draft page/feature flag. Any live checkout, payment credential change, new vendor, subscription or public activation requires separate owner approval.
+
+## Status ledger
+
+| Idea | Status | Evidence needed to advance |
+|---|---|---|
+| Band booking + tech pack | Researched | Three paid pilot orders; delivery-time and revision data |
+| Gig promo kit | Researched | Three paid orders; rights/asset checklist and repeatable template |
+| Cassette J-card layout | Researched | One print-spec proof plus three paid digital-layout orders |
+| Short-form clip edit | Researched | Written permissions and three paid orders |
+| Beginner guitar coaching | Researched | Three paid sessions and repeat interest |
+| Used-gear listing pack | Researched hypothesis | Three paid pilot orders; verify specs/condition workflow, time per listing and repeat interest |
+| Performer QR request/tip setup kit | Researched, not validated | Three paid setup pilots; test QR destination, signage readability, client-owned account handoff and delivery time |
+| Done-for-you band gear inventory + load-out pack | Researched, unvalidated / lowest priority | Three paid pilots; record item count, time, corrections and repeat/referral interest while confirming client-owned data handoff and no retained serials |
+| Sponsor/featured listing | Brainstormed / not offerable | Reliable consent-based traffic and engagement data; clear sponsor disclosure |
+
+**No idea is validated yet. No payment flow or public offer was changed as part of this research.**
+
+
+## Local used-gear competition refresh — 2026-11-08
+
+- **Most Wanted Charlottetown** says its local store buys instruments for cash on the spot, alongside tools and phones. This is a direct local alternative for a seller who prioritizes speed over maximizing price. [Most Wanted — Charlottetown](https://mostwantedpawn.com/stores/charlottetown/)
+- **Long & McQuade Charlottetown** is an established local instrument retailer; its location page identifies the store and services, while current store inventory pages surface demo/used availability. It is a local alternative for buyers and sellers to investigate, not evidence that it offers the same listing-preparation service. [Long & McQuade Charlottetown](https://www.long-mcquade.com/location/Prince-Edward-Island/Charlottetown/) · [Example demo/used inventory listing](https://www.long-mcquade.com/?Sku=304280&page=instore_stock&usedFirst=1)
+- **Back Alley Music** is a local used/new records channel rather than a direct guitar/amp listing service. [Back Alley Music](https://www.backalleymusicpei.ca/)
+- **Implication:** the proposed $15 single-item / $35 three-item listing-preparation pack must not pretend to be a marketplace, consignment shop, appraisal or faster-sale guarantee. Its only defensible value proposition is saving an owner time on clear photos, accurate seller-approved specifications and listing copy while the owner retains the item, account, posting, buyer contact and transaction.
+- **Competition test:** compare against free self-listing and local cash-buy alternatives. Ask a few local musicians/sellers whether they would pay specifically to save preparation time; compliments or interest are not demand. Keep this researched and unvalidated; no outreach, public offer, payment flow or customer data collection is authorized by this research.
+
+
+## Charlottetown production and apparel competition refresh — 2026-11-09
+
+This is a limited competitor check, not a demand study. Advertised services establish that suppliers exist; they do not establish prices paid, capacity, quality or customer willingness to pay for a Griff List alternative.
+
+- **Recording / creative production:** The Arts Guild's Charlottetown arts-hub listing identifies a recording studio; [The Hill Sound Studio](https://thehillsoundstudio.com/index.html) describes itself as a PEI sound-creation studio. [House-Front Production Services](https://meetpei.com/member/house-front-production-services-inc/) advertises concert and event audio, lighting, video and staging support in Charlottetown. **Positioning:** do not claim to be a recording studio or full-service AV provider. The proposed short-form clip offer is limited to editing customer-supplied, rights-cleared footage.
+- **Apparel / print:** [Pressed 4 Time](https://www.pressed4time.ca/) lists screen printing, embroidery, signs and promotional products and gives a Charlottetown address. [Gemini Branding - Cresting - Signs](https://www.geminipei.com/) describes custom apparel, screen printing and embroidery. [DALMAC](https://dalmac.ca/cresting/) offers cresting, embroidery and custom merchandise in Charlottetown. **Positioning:** do not buy equipment or hold shirt inventory; if apparel is tested later, keep it to original design/prepress and obtain customer-funded written production quotes.
+- **Music PEI business support:** the [Takin’ Care of Business page](https://www.musicpei.com/development-programs/taking-care-of-business-program/) still describes its **2025/2026** program and says delivery runs through February 2026. As of this 9 November 2026 refresh, that page is historical evidence of a prior free member program, **not proof that a current cohort is open**. Verify a new cohort and eligibility directly with Music PEI before treating it as an available resource.
+- **Experiment decision:** retain the ranked digital-only band tech pack and gig-promo kit as the first private validation hypotheses. Do not reposition The Griff List as a generic recording, event-production, screen-printing or marketplace business.
+
+**Evidence / validation status:** researched competitor listings only. No customer interviews, paid orders, repeat purchases, bookings, conversion data or willingness-to-pay results have been recorded. No public offer, checkout, payment destination, account setting or vendor commitment was changed.
+
+
+## Charlottetown guitar instruction, print suppliers and fee refresh — 2026-11-10
+
+This is a limited competitor and platform recheck. Advertised prices are asking rates, not verified transactions or evidence of Griff List demand.
+
+- **Guitar instruction:** Long & McQuade Charlottetown currently lists several guitar instructors at **$27–$30 per half-hour** and describes the local average as **$25–$31 per half-hour**. Canada Music Academy advertises PEI lessons starting at **$50/hour**. Superprof's current Charlottetown electric-guitar page reports 8 profiles and an average advertised rate of **$50/hour**; the profile list is a marketplace snapshot and does not prove local lesson demand or availability. These establish a real local price band. The existing $20–$30 / 30-minute beginner tune-up hypothesis is therefore a low-commitment, narrow-scope option, not an uncontested market or a proven bargain. Differentiate only through a clearly scoped adult-beginner/classic-rock rhythm or one-song goal; do not claim formal credentials or promise results. [Long & McQuade Charlottetown lessons](https://www.long-mcquade.com/lessons/Prince-Edward-Island/Charlottetown/) · [Canada Music Academy PEI](https://canadamusicacademy.ca/music_lessons_in_PEI.html) · [Superprof Charlottetown listing](https://www.superprof.ca/lessons/electric-guitar/charlottetown/)
+- **Local print suppliers:** Charlottetown has established alternatives including [DALMAC](https://dalmac.ca/cresting/), [Allstar Cresting](https://allstarcresting.ca/), [Pressed 4 Time](https://www.pressed4time.ca/), [Gemini Screen Print & Embroidery](https://www.geminipei.com/) and [Instant Imprints Charlottetown](https://locations.instantimprints.com/pe/charlottetown/charlottetown). Their presence means The Griff List should not buy equipment or hold blank-shirt inventory for a speculative merch idea. If the owner later approves a test, first request written quotes for a customer-funded small run and compare setup, minimum quantity, garment, print, tax and turnaround. No current supplier quote or order has been obtained.
+- **Local music ecosystem:** [Back Alley Music](https://www.backalleymusicpei.ca/) is an established Charlottetown record shop, while [The Guild](https://www.theartshotel.ca/en/discover-charlottetown/the-guild/) and [The Hill Sound Studio](https://thehillsoundstudio.com/index.html) are local production/recording alternatives. Do not position a digital promo or setlist service as equivalent to recording, mastering or full event production.
+- **Ko-fi fee recheck:** Ko-fi's current help page states that Free mode charges 0% platform fee on one-time tips and 5% on Shop, memberships and commissions; Standard charges 5% on one-time tips too. PayPal/Stripe processing fees are additional. A paid lesson or design job is a service/commission, not a tip; do not route it through a tip category to avoid fees. The user's actual Ko-fi mode and connected processor have not been inspected. [Ko-fi official fee breakdown](https://help.ko-fi.com/hc/en-us/articles/360002506494-Does-Ko-fi-take-a-fee)
+- **PayPal Canada fee recheck:** the official domestic commercial transaction rate remains **2.90% + CAD $0.30** (page last updated 13 October 2026). Illustrative processor-only net before tax, labour, refunds and overhead: a $20 service payment leaves about **$19.12**; a $30 payment leaves about **$28.83**. QR-code rates are a different product and must not be assumed for an ordinary PayPal link. Actual account statements and transaction eligibility govern. [PayPal Canada merchant fees](https://www.paypal.com/ca/business/paypal-business-fees)
+
+**Decision:** retain the current digital-first ranking (band tech pack, tightly scoped gig promo kit, and customer-supplied clip editing) as private validation hypotheses. Keep beginner coaching as a time-for-money alternative only if the owner wants to teach and can confirm availability. Do not add a generic recording, apparel-production, marketplace or booking-platform offer. No customer interviews, paid orders, conversion data or repeat purchases have been recorded; all demand remains unvalidated. No public offer, payment flow, provider setting, inventory purchase or vendor commitment was changed.
+
+
+## Additional local booking candidate — 2026-11-11 (researched, unvalidated)
+
+A private acoustic mini-set is a new candidate for the existing booking-contact funnel; it is not a public offer and no price or availability has been approved.
+
+- **Local marketplace benchmark:** Cueup's Charlottetown musician page currently reports an estimated average of about **CAD $140/hour**, with an advertised range of **$110–$280/hour** and a typical event estimate of **$170–$420**. The page showed 19 reviews and one visible DJ profile. Treat this as a directional marketplace estimate, not a verified local rate card, booked revenue or a recommended Griff List quote. [Cueup — Charlottetown musicians](https://cueup.io/es/charlottetown/book-musician)
+- **Platform competition:** IndiMu describes a free-to-join Canadian musician/venue marketplace with gig applications and Stripe payments. This is a substitute discovery/booking channel, not evidence that a Charlottetown profile will produce leads. [IndiMu](https://indimu.ca/)
+- **Offer hypothesis:** a 30–45 minute solo acoustic set for a small birthday, anniversary, community or private gathering, with the exact repertoire, sound equipment, travel area and setup agreed in writing. Use only the existing booking contact; do not promise a date until availability is confirmed.
+- **Price:** **quote-only for now**. Do not publish a starting price until the owner confirms set length, PA/equipment, travel radius, setup/break requirements, cancellation terms and minimum acceptable compensation. Cueup's estimate is only a benchmark.
+- **Startup cost:** potentially $0 if current guitar/PA/transport are sufficient; no equipment purchase is justified by this research.
+- **Time to first dollar:** 1–4 weeks is a planning hypothesis through existing warm contacts, not measured demand.
+- **Gross-margin outlook:** potentially high before owner labour and travel when existing equipment is sufficient, but no defensible net estimate exists until travel, setup, gear, payment fees and tax treatment are known.
+- **Effort:** medium; lead qualification, repertoire preparation, travel, setup and performance.
+- **Risks / fit:** strong performance fit; schedule conflicts, transport, equipment, venue noise/permission, cancellation and event expectations must be controlled. Do not imply a booking, insurance coverage, PA capability or setlist until confirmed.
+- **Validation:** privately ask up to three existing contacts whether they know of a real event need and what format they expect. A positive reply is interest only. Count validation only after an approved quote is accepted, the event is performed and payment is received.
+- **Status:** researched candidate; no outreach, booking, payment or revenue validated.
+
+## Original acoustic greeting micro-song — 2026-11-12 (researched, unvalidated)
+
+A small, human-performed original song greeting is a possible add-on to the existing booking/contact audience. This is distinct from a full-length custom-song production service and from a live acoustic booking. It is an internal pilot hypothesis only; it is not a public offer. **Provisional shortlist position: #8**, below the existing digital tech-pack, promo-kit and supplied-footage clip-edit tests because it requires bespoke creative labour and has no PEI willingness-to-pay evidence.
+
+- **Competitor evidence:** Canadian custom-song providers advertise materially different scopes and prices. [Ink & Impact](https://www.inkandimpact.ca/custom-song) lists songs from **$40 CAD**, 5–7 business-day delivery and one small adjustment; its page says AI assists the creative/production process with human guidance. [Maple Custom Song Studio](https://www.maplecustomsongstudio.ca/shop/p/product-2-5c6mb-j8mng-wnz8a) lists **$99.99** for a 2:30–3-minute produced song and advertises a 72-hour option. [Crissi Cochrane](https://crissi-cochrane.squarespace.com/shop/customsongs) lists original custom songs from **CA$325** and describes artist-written/recorded work. These are advertised offers, not verified transactions or PEI-specific demand.
+- **Narrow offer hypothesis:** one original 30–45-second acoustic guitar/vocal greeting, based on a short customer-approved brief, delivered as an MP3; one small factual/pronunciation correction; personal-use licence only. No full studio-production claim, public/commercial-use licence, rush promise, or artist/celebrity voice imitation.
+- **Pilot price hypothesis:** **$45 CAD**. This is a test price for the smaller scope, not a proven local rate. At the PayPal Canada domestic commercial rate of 2.90% + $0.30, a hypothetical $45 payment leaves about **$43.39** after rounding the fee to cents, before labour, tax, refunds and overhead. The official fee page was last updated **4 November 2026** and was rechecked 12 November 2026. Ko-fi's current help page confirms a **5% service fee on commissions in both Free and Standard modes**, with PayPal/Stripe processing fees additional; one-time tips have different rules. A paid custom song is a commission/service, not a tip, and must not be misclassified to avoid fees. The user's actual Ko-fi mode and processor remain uninspected.
+- **Startup cost:** $0 only if the existing guitar, recording setup and delivery tools are sufficient; do not buy a microphone, software or subscription for an unvalidated idea.
+- **Time to first dollar:** 1–14 days through warm, permission-based contacts is a planning hypothesis, not a measured result.
+- **Effort / margin:** approximately 45–90 minutes per order is an initial planning estimate including brief review, writing, recording, export and one small correction. Digital delivery has little material cost, but gross margin before labour is not the same as profit. Track actual time before keeping the price.
+- **Risks / fit:** strong fit with original guitar/vocal performance and low inventory risk. Use only original melody, lyrics and performance; do not reproduce copyrighted lyrics, backing tracks or melodies, and do not imitate a named artist's voice. Keep the customer's story and contact details private; do not publish the song or a sample without separate written permission. Restrict the initial licence to personal gifting/use and quote separately for any commercial or public use.
+- **Validation plan:** create one fictional sample; privately ask up to five existing contacts whether this short format is useful and what they would pay. Do not mass-message or scrape contacts. Count validation only after three unrelated paid orders, recorded delivery time, revision rate, processor fees and repeat/referral interest. A compliment, like or stated interest is not a sale.
+- **Status:** **researched hypothesis, not validated**. No outreach, public page, checkout, payment route, customer data collection or booking commitment was created or changed.
+
+### Research sources
+
+- [Ink & Impact — custom songs and pricing](https://www.inkandimpact.ca/custom-song)
+- [Maple Custom Song Studio — full-length custom song](https://www.maplecustomsongstudio.ca/shop/p/product-2-5c6mb-j8mng-wnz8a)
+- [Crissi Cochrane — custom songs](https://crissi-cochrane.squarespace.com/shop/customsongs)
+- [PayPal Canada — merchant fees](https://www.paypal.com/ca/business/paypal-business-fees)
+- [Ko-fi — fee breakdown](https://help.ko-fi.com/hc/en-us/articles/360002506494-Does-Ko-fi-take-a-fee)
+
+## Market evidence refresh — 13 November 2026
+
+This is a limited local competitor and payment-platform refresh. Listings are channel/competition evidence, not proof of Griff List demand or completed sales.
+
+- **Live music:** Tourism PEI's current [live-music directory](https://www.tourismpei.com/live-music) lists recurring Island performances, including Charlottetown venues such as Hunter's Ale House, Baba's Lounge, Olde Dublin Pub and The Old Triangle. This supports the existing gig-promotion/request-page channel, but does not establish audience size or willingness to pay.
+- **Print/apparel competition:** Charlottetown/PEI has established providers including [DALMAC](https://dalmac.ca/cresting/), [Instant Imprints](https://locations.instantimprints.com/pe/charlottetown/charlottetown), [Allstar Cresting](https://allstarcresting.ca/), [Pressed 4 Time](https://www.pressed4time.ca/), [Gemini](https://www.geminipei.com/), [Stay Golden Custom](https://staygoldencustom.com/) and [COWS Contract Screen Printing](https://cows.ca/). A Charlottetown-targeted listing advertises tees from $19.99, but local production/pickup claims were not independently verified. No comparable written quotes were obtained. **Decision:** do not buy printing equipment or inventory; keep merch customer-funded/preorder-only and differentiate with original design/prepress rather than generic production.
+- **Used media:** [Back Alley Music](https://www.backalleymusicpei.ca/) is an established downtown record store with new/used vinyl and music-related media/gear. No comparable resale prices or sales velocity were captured. **Decision:** no speculative inventory; consider consignment only with written custody, condition, split and return terms.
+- **Digital promo pricing:** non-local public design listings advertise approximately $65 for a flyer and $85 for a small social-design package. These are asking prices, not PEI transaction data. A digital poster + QR request-card variant can remain inside the existing gig-promo/QR-kit hypothesis; do not create a new public SKU or claim a validated price.
+- **Payment constraints:** Ko-fi's [official fee guidance](https://help.ko-fi.com/hc/en-us/articles/360002506494-Does-Ko-fi-take-a-fee) states Free mode has 0% platform fee on one-time tips but 5% on commissions/shop/memberships/monthly tips; Standard applies 5% to one-time tips too. Processor fees remain additional; the user's actual account mode is uninspected. PayPal Canada's [official fee schedule](https://www.paypal.com/ca/business/paypal-business-fees), updated 4 November 2026, lists 2.90% + CAD $0.30 for standard domestic commercial transactions, but separate QR-code rates of 2.40% + $0.05 for QR tips up to CAD $10 and 1.90% + $0.10 above CAD $10. These QR rates must not be assumed for Orders API or Ko-fi payments; verify the actual product/account. [Stripe Canada](https://stripe.com/en-ca/pricing) lists 2.9% + CAD $0.30 for domestic online cards. These are published rates, not confirmation of the user's account-specific pricing or checkout method.
+
+### Decision / validation gate
+
+Keep the existing ranked digital tech-pack, gig-promo kit and one-time musician QR-page setup as private hypotheses. A poster + QR request-card bundle may be tested only as a digital scope variant, with client-supplied/rights-cleared assets, one defined revision and no printed inventory. At a hypothetical $35 PayPal domestic commercial price, the published 2.90% + $0.30 rate implies about $1.32 processing and $33.68 remaining before labour, tax, refunds and overhead; at 45–60 minutes, about $33.68–$44.91 per hour before those costs. This is a planning calculation, not a price recommendation or proven margin.
+
+No customer interview, paid order, conversion, repeat purchase or validated demand was added in this refresh. No public offer, checkout, payment destination, account setting, supplier order, inventory purchase or outreach was created or changed.
+
+
+## Competitive benchmark — live song-request and tip platforms (13 November 2026)
+
+This refresh tests the existing one-time performer QR setup/signage hypothesis against current public competitor positioning. Published pricing is self-reported marketing information, not verified transaction data or evidence of PEI demand.
+
+| Product | Publicly advertised pricing / model | Relevance and caveat |
+|---|---|---|
+| [Request Deck](https://requestdeck.com/) | Free to join; no monthly subscription; advertises a $1 platform fee per paid request | Closest direct category match. Its "extra income" examples and testimonials are marketing claims, not independent earnings evidence. |
+| [Requesting Songs](https://requestingsongs.com/) | $9.99/month; advertises a 30-day free trial | A subscription product with QR setlists, branded print templates and tip links. |
+| [YouRequestNow](https://www.yourequestnow.com/) | $19.99/month after a 14-day trial; advertises 0% platform fee, with processor fees applying | Broader performer/fan-management product. Do not compare its feature scope directly with a small one-time setup service. |
+| [Encore](https://encorelivemusic.app/for) | Advertises a free tier with a 10% platform fee and Pro at $8/month with a 5% fee | Offers one QR for tips, requests, follows and feedback. Published fees are its own pricing, not a market average. |
+| [Song-Q](https://song-q.com/) | Advertises a free plan with an 18% + A$0.30 per-tip service fee | Australian-dollar pricing; not directly comparable with CAD or a Canadian account. Verify current region/processor eligibility before using as a benchmark. |
+
+**Payment-platform constraints (official sources):**
+- [Ko-fi's fee guidance](https://help.ko-fi.com/hc/en-us/articles/360002506494-Does-Ko-fi-take-a-fee) says Free mode charges 0% platform fee on one-time tips and 5% on shop, memberships and commissions; Standard applies 5% to one-time tips too. Payment-processor fees remain additional. The user's actual account mode has not been inspected.
+- [PayPal Canada QR-code pricing](https://www.paypal.com/ca/business/accept-payments/qr-code) advertises 2.40% + CAD $0.05 for QR transactions of CAD $10.00 and below, and 1.90% + CAD $0.10 for QR transactions above CAD $10.00. These are product-specific QR rates; do not assume they apply to ordinary payment links, Ko-fi, or another checkout path.
+- The proposed service should only create/test links that the performer supplies and owns. Payments go directly to that performer's existing provider; The Griff List must not receive, route, hold or reconcile the performer's tips or paid requests.
+
+### Experiment economics and decision
+
+- **Proposed scope:** check one performer-owned request/tip landing URL, generate a QR code that resolves to that exact URL, create one original print-ready stage/table sign and one social crop, test the QR on a phone, and include one small revision. Digital delivery only; printing, account setup, payment processing and custom app development are excluded.
+- **Pilot price hypothesis:** CAD $25–$35. At a $29 example price and an assumed 30–45 minutes of labour valued at $25/hour, labour is about $12.50–$18.75. Using PayPal's published standard domestic commercial illustration of 2.90% + CAD $0.30 (not its separate QR rate), processing would be about $1.14; estimated contribution after that labour and illustrative fee is about $9.11–$15.36 before tax, refunds, software, overhead and any additional revisions. This is a scenario, not a quote or validated margin.
+- **Startup cost:** $0 only if existing tools are sufficient and the deliverable remains digital. No printer, paid QR subscription, inventory or new payment provider is required.
+- **Time to first dollar:** 1–7 days is a hypothesis for warm local introductions, not a forecast.
+- **Customer signal:** several specialist products compete in this category, confirming a product category exists. Their marketing pages do not establish local Charlottetown/PEI demand, conversion or willingness to pay. No local interviews or paid orders have been recorded.
+- **Differentiation:** a small one-time setup and tested sign for a performer who already has a request/tip destination; avoid competing as another subscription platform or promising a dollar amount per gig.
+- **Validation gate:** privately ask up to five existing musician contacts whether this solves a real setup/signage problem; proceed to at most three pilots only after owner approval of the exact scope, price and payment route. Record inquiries, paid orders, delivery minutes, revisions and client-volunteered aggregate QR scans/requests. Do not collect audience identities or scrape contacts.
+- **Status:** **researched hypothesis; not prototyped, offered or validated.** No public website section, checkout, payment destination, account change, outreach or spending was created by this research.
+
+
+## Done-for-you band gear inventory and load-out pack — 2026-11-13 (researched, unvalidated)
+
+This is a small service experiment that could validate the StagePilot Inventory problem before building more inventory software. It is **not** a new app, insurance product, appraisal service, consignment offer or public checkout.
+
+- **Offer hypothesis:** turn a musician's or small band's own item list and client-selected photos into a tidy client-owned spreadsheet/CSV with item, owner, make/model, optional serial number, condition, storage location and a simple gig load-out checklist. Keep the first pilot to 15 items; an optional 30-item tier can be tested only if the first delivery time is acceptable.
+- **Pilot price hypotheses:** **$25 CAD for up to 15 items** or **$40 CAD for up to 30 items**, digital delivery only. These are test prices, not market rates or approved public offers.
+- **Startup cost:** $0 if existing spreadsheet and phone tools are sufficient. No inventory, labels, printer, hosting, subscription or equipment purchase is needed.
+- **Time to first dollar:** 1–14 days through existing warm musician contacts is a planning hypothesis, not a forecast.
+- **Effort / margin:** estimate 30–90 minutes per order including intake, normalization, load-out grouping and one correction. Digital delivery has little material cost, but labour and privacy handling dominate. Do not call the gross margin profit.
+- **Payment illustration:** PayPal Canada's published standard domestic commercial rate is 2.90% + CAD $0.30. At $25, the illustrative fee is about $1.03 and net is about $23.98; at $40, fee is about $1.46 and net about $38.54, before labour, tax, refunds and overhead. If sold as a Ko-fi commission, Free mode still charges Ko-fi's 5% commission fee plus processor fees; do not classify a service as a tip. Actual account and processor rates remain uninspected.
+- **Free / low-cost competition and substitutes:** a search-indexed [Bandmate free equipment XLSX template](https://bandmate.io/academy/resources/equipment-inventory/) was surfaced, but its old `.io` URL now redirects to `bandmate.co` and the redirected page could not be fetched in this pass; treat that lead as unverified, not as a confirmed live offer. Verified alternatives include [MusicNomad GuitarTracker](https://www.theguitartracker.com/) (free instrument tracker); [StashTracker Pro](https://apps.apple.com/us/app/stashtracker-pro/id6760924416) (free band gear inventory/load-out app); [GearDex](https://www.geardex.app/tools/camera-gear-inventory-template) (no-account browser-side inventory template, camera/AV-oriented); [Fretfolio](https://www.fretfolio.app/) (open beta, free tier up to 10 items); [GuitarProfile](https://www.guitarprofile.com/) (free up to 25 instruments, $5/month for 50 instruments, $10/month unlimited); [Orchesi](https://orchesi.com/instrument-inventory-app/) (€0.15 per active member/month, capped at €16.95, with a three-month free trial); and [BandMate AI](https://bandmateai.com/pricing) (free up to 10 gigs; paid band plan is $19/month or $15/month billed annually and includes equipment/maintenance/depreciation). These non-PEI software alternatives make a generic template or software subscription a weak paid proposition. The only plausible differentiation to test is **done-for-you initial setup plus a gig-specific load-out checklist**, not exclusive data or better insurance coverage.
+- **Local market context / demand evidence:** a targeted Charlottetown search did not surface a public offer specifically for done-for-you personal band inventory + load-out spreadsheet setup, but adjacent providers already serve the market: [Long & McQuade Charlottetown](https://www.long-mcquade.com/location/Prince-Edward-Island/Charlottetown/) advertises rentals, repairs, lessons and consultation for studio/sound-stage/installed-sound setups; [K-Audio](https://k-audio.ca/) offers professional audio/video/lighting production and publishes an extensive equipment list; [House-Front](https://www.house-front.com/about) offers event planning and full production with a large gear inventory. Do not position this as AV rental, repair, studio design or professional production. No PEI willingness-to-pay evidence was found, and the absence of a directly matching public offer is not proof of unmet demand. The user's musician network and StagePilot Inventory concept are a plausible test channel, not proof of demand.
+- **Low-cost industry support:** [Music PEI's Takin' Care of Business page](https://www.musicpei.com/development-programs/taking-care-of-business-program/) advertised its 2025/26 program as free for Music PEI members, with delivery through February 2026. That published cycle is past as of this research date; it is not evidence of a current November 2026 intake. Check current eligibility/intake before relying on it.
+- **Privacy / safety:** gear serial numbers, receipts, purchase prices, owner names and storage locations can be sensitive. The client must own the output file and choose which fields to include. Prefer a client-owned sheet or local file; do not upload inventories to The Griff List, retain copies, publish serials, create a public stolen-gear registry, estimate values, appraise instruments, advise on insurance, or promise that a list establishes coverage. The client verifies every entry and keeps the source photos/receipts.
+- **Validation gate:** privately ask up to five existing musician contacts whether they have a real inventory/load-out problem and whether a done-for-you file would be worth $25. Do not mass-message, scrape contacts or collect gear data. Consider at most three owner-approved pilots only after the scope, privacy handoff and price are approved. Record actual minutes, corrections, paid orders and repeat/referral interest. A free-template download, compliment or stated interest is not a sale.
+- **Status:** **researched candidate; not prototyped, offered or validated.** No outreach, public page, payment flow, data collection, vendor commitment or spending occurred.
+
+### Research sources
+
+- [Bandmate — free equipment inventory template](https://bandmate.io/academy/resources/equipment-inventory/)
+- [MusicNomad — GuitarTracker](https://www.theguitartracker.com/)
+- [StashTracker Pro — App Store listing](https://apps.apple.com/us/app/stashtracker-pro/id6760924416)
+- [GearDex — browser-side inventory template](https://www.geardex.app/tools/camera-gear-inventory-template)
+- [Fretfolio — open beta](https://www.fretfolio.app/)
+- [PayPal Canada — merchant fees](https://www.paypal.com/ca/business/paypal-business-fees)
+- [Ko-fi — fee breakdown](https://help.ko-fi.com/hc/en-us/articles/360002506494-Does-Ko-fi-take-a-fee)
+
+
+## Large-print gig setlist and show-flow sheet — 2026-11-13 (researched, unvalidated)
+
+- **Offer hypothesis:** a client-specific, print-ready one- or two-page setlist/show-flow PDF for solo acoustic performers and small bands. The client supplies and verifies song titles, artists, order, keys/capo/tuning notes, set lengths, break timing, transitions and backup songs. Optional large-type, high-contrast layout is designed for ordinary letter-size printing and a binder/duotang. This is a one-off document service, not a setlist app or booking guarantee.
+- **Rights boundary:** include only client-supplied song titles, artist names and operational notes. Do not reproduce lyrics, chord charts, sheet music, backing tracks, recordings or third-party artwork. Client confirms every entry and owns the final file.
+- **Pilot price hypotheses:** $15 CAD for one simple set; $25 CAD for a multi-set show-flow sheet with break cues and a large-print variant. These are internal test prices, not public offers or established local rates.
+- **Startup / time / effort:** $0 if current document tools are sufficient; 1–14 days to a first paid pilot is only a warm-contact planning hypothesis; estimate 20–40 minutes for a simple sheet and 30–60 minutes for a multi-set version, including one correction. Digital delivery has little material cost, but labour, revisions, tax and overhead matter.
+- **Illustrative payment economics:** using the PayPal Canada standard domestic commercial rate already documented in this backlog (2.90% + CAD $0.30), a $15 payment would net about $14.27 and a $25 payment about $23.98 before tax, refunds, labour and overhead. At 20–40 minutes, the $15 example is roughly $21.40–$42.80 per hour before those exclusions; at 30–60 minutes, the $25 example is roughly $23.98–$47.95 per hour. Actual account-specific fees must be checked before quoting. A service must not be classified as a tip to obtain tip fee treatment.
+- **Competitor benchmark:** BandHelper already offers repertoire and setlists, with its official page listing solo Basic at $16/year and 2–5-member Basic at $40/year (USD); higher tiers include stage plots and checklists. SongbookPro Solo offers unlimited sets and offline support after a 12-song trial for a one-time purchase (approximately $7 USD), while Groups starts at $4 per user per year. These low-cost tools make a generic setlist-management product a weak proposition. The only plausible distinction here is done-for-you, binder-ready formatting and a large-print stage copy for performers who prefer paper or do not want to configure another app. [BandHelper official pricing](https://www.bandhelper.com/main/pricing_upcoming.html) · [SongbookPro official pricing](https://songbook-pro.com/pricing/).
+- **Fit / risks:** strong fit with live acoustic performance experience and the existing Griff List song catalogue, but the user must confirm availability and willingness to provide the service. Main risks are underpricing revisions, inaccurate client-supplied timing/keys, and confusing a planning sheet with a rights-cleared songbook. Do not promise a set will fit an exact duration without rehearsal data.
+- **No-cost validation gate:** privately ask up to five existing musician contacts whether they would pay $15–$25 for a custom large-print setlist/show-flow PDF. Do not mass-message or collect song lists until a person requests a pilot. Count paid orders separately from compliments or non-binding interest. Record actual preparation time, revision count, and repeat/referral interest. No public sales page, payment flow, printed inventory, or paid promotion until owner approval.
+- **Status:** researched candidate; not prototyped, offered or validated. No outreach, payment, data collection, or spending occurred.
+
+### Research sources
+
+- [BandHelper — official pricing](https://www.bandhelper.com/main/pricing_upcoming.html)
+- [SongbookPro — official pricing](https://songbook-pro.com/pricing/)
+- [PayPal Canada — merchant fees](https://www.paypal.com/ca/business/paypal-business-fees)
+
+
+## Live song-request competitor refresh — 14 November 2026
+
+This is a public-page scan of products in the same broad QR-request category. Displayed prices may be in USD, AUD or another currency; where the vendor page did not state a currency, the amount below is deliberately not converted or treated as CAD. Marketing claims, trials and feature lists are not verified sales, customer counts or evidence of PEI demand.
+
+| Product | Publicly displayed offer | What overlaps with the existing Griff List concept | Implication |
+|---|---|---|---|
+| [PlayThis.Live](https://www.playthis.live/) | Free plan; Pro displayed at $4.99/month (currency not stated) | QR events, song requests, tip jar, cooldowns, reusable catalog and queue board | A strong low-cost/free substitute. A new monthly request app would be difficult to differentiate. |
+| [Requesting Songs](https://requestingsongs.com/) | $9.99/month; 30-day trial (currency not stated) | Musician setlists, branded QR/print templates, tip links and no-app guest flow | Direct competition for solo musicians and bands; its onboarding and template features overlap with a basic QR kit. |
+| [Decknics — Live Requests](https://www.decknics.net/live-requests) | Free trial; $9.99/month and an annual launch price displayed (currency not stated) | Bands/DJs/karaoke, uploaded libraries, QR flyers, request queue, tips and event analytics | Direct category competition; do not build a generic subscription clone. |
+| [StageRequest](https://stagerequest.com/) | Advertises a free basic plan; paid price not captured in this scan | QR requests, voting, tips and a live queue for performers | Free entry raises the bar for a paid basic request flow. Paid tier and currency need a fresh check before comparison. |
+| [Scan to Request a Song](https://www.scantorequestasong.com/) | $9/month; 14-day trial (currency not stated) | Performer catalog, QR code, request queue and direct tips | Another low-cost subscription alternative; not a PEI transaction benchmark. |
+| [FloorRequest](https://www.floorrequest.com/) | $100/month after a 14-day trial (currency not stated) | Venue-focused QR requests, real-time voting, branded guest page, Spotify integration and team roles | Venue/enterprise scope is broader than a one-person performer setup; do not compare the price directly with a digital sign service. |
+| [droprq](https://www.droprq.com/) | Early-access/waitlist language; advertises a 10% + $0.50 service fee | QR requests, approval queue and optional/required tips | Availability and exact launch terms are not established; treat as an emerging competitor, not a fully available price comparison. |
+| [YouOwnMusic](https://youownmusic.com/pricing) | ₹1,999/year (₹166.58/month), INR pricing on the page | Venue QR requests, moderation, live queue, printed poster and custom branding | India-focused pricing/market; not a Canadian local-rate comparator. |
+
+### Decision for The Griff List
+
+- **Do not build another generic request/tip SaaS or add a recurring subscription offer on this evidence.** The category already has free tiers and low-priced monthly products.
+- Retain the existing **one-time performer QR setup/signage kit** only as a private, unvalidated service hypothesis: test one performer-owned request/tip URL, generate a QR that resolves to that exact URL, create one original print-ready stage/table sign and one social crop, test it on a phone, and include one defined revision. Digital delivery only; printing, payment-account setup, checkout, and custom software are excluded.
+- The defensible difference is local, done-for-you setup and a readable, tested sign for a performer who already owns their destination—not exclusive request software, more tips, guaranteed audience engagement, or better earnings.
+- Competitor pricing is a reason to keep the pilot one-time and tightly scoped, not evidence that anyone in PEI will pay. Keep the $25–$35 hypothesis unchanged until customer interviews and paid-pilot data justify revision.
+- Validation remains: up to five permission-based, non-binding conversations with existing warm contacts; at most three pilots only after owner approval of exact scope, price and payment route. Record paid orders, actual delivery minutes, revisions and client-volunteered aggregate scans/requests. Do not collect audience identities or scrape contacts.
+
+### Payment and rights boundaries
+
+- Ko-fi's official guidance currently distinguishes 0% platform fee on one-time tips in Free mode from 5% on commissions, shop and memberships; Standard/Contributor applies 5% to one-time tips too. PayPal/Stripe processing fees remain additional. The user's account mode has not been inspected. [Ko-fi fee breakdown](https://help.ko-fi.com/hc/en-us/articles/360002506494-Does-Ko-fi-take-a-fee)
+- Stripe Canada currently lists 2.9% + CAD $0.30 for domestic online card transactions. This is a public standard rate, not confirmation of the user's account-specific rate or an instruction to add Stripe. [Stripe Canada pricing](https://stripe.com/en-ca/pricing)
+- Do not imply Apple Pay or Google Pay is guaranteed by a static logo; actual eligibility is determined by the connected provider, account, device, browser and checkout.
+- The performer must own the payment account and destination. The Griff List must not receive, hold, route or reconcile performer tips or paid requests.
+- Use only client-supplied or original assets with permission. Do not include unlicensed lyrics, recordings, artwork or third-party logos.
+
+**Status:** competitor scan researched; the QR setup kit remains researched and unvalidated. No customer interviews, paid orders, prototype, public offer, checkout, payment destination, outreach, account change, inventory purchase or spend occurred.
+
+## Previously approved payment-integration scope — 14 November 2026
+
+**Status:** approved design scope from prior conversations; not live-enabled, not fully integrated, and not verified against a production payment account. This section records constraints so later revenue work does not silently change the approved flow.
+
+### Approved scope to preserve
+
+- **Priority song request:** a separate, fixed **CAD $5.00** payment, clearly optional and distinct from submitting a normal song request.
+- **General tips:** supporter-entered amount, not a fixed-price product and not conflated with the priority-request payment.
+- **Accounting/admin:** separate tip history and administrator-visible payment status.
+- **Verification:** only a provider-verified payment event may mark a request/tip as paid or trigger a payment-confirmation notification. Browser redirects, user statements and unverified webhook payloads are not proof.
+- **Qualification:** use PayPal Sandbox and a non-production Supabase project before any Live enablement. Preserve existing payment destinations and credentials; do not add providers, change credentials, enable e-transfer, deploy functions or activate checkout without explicit owner approval.
+
+### Current implementation separation
+
+- The active `sitewide-grifflist-experience` branch presents the existing Ko-fi and PayPal destinations and the optional $5 CAD priority-request UI. Priority payment is still described as manually checked; this branch does not establish end-to-end provider verification or automated payment notifications. E-transfer remains visibly unavailable.
+- Separate draft [PR #1 — payment and Stage Control integration](https://github.com/the-griff-list/the-griff-list.github.io/pull/1) is on `kofi-live-tips-integration`, based on `watch-live-test`; it is **not** part of active PR #3. Its PayPal source includes bounded request bodies, exact CAD $5 checks, signature verification, order/capture re-fetch and a service-role-only idempotent capture RPC. The latest source-quality checks passed, but no live Supabase, SQL/RLS, TOTP enrollment, PayPal Sandbox transaction/webhook or deployment test is established.
+- **Ko-fi is incomplete in PR #1:** no Ko-fi webhook function exists in the branch tree. `kofi-tips-integration.sql` assumes `public.kofi_tips` already exists and does not create the table or enable RLS; the base SQL migrations do not create that table. The AAL2 enforcement migration refuses to proceed if a listed table has RLS disabled. A reviewed create-table/RLS migration and a signed, replay-safe server-side Ko-fi ingestion path are required before this can be considered complete.
+- The separate PR #1 remains draft. Its existing source checks are not evidence of a real payment, webhook, database policy or admin-authentication test.
+
+### Required acceptance before any activation
+
+1. Review and apply the complete schema/RLS migration sequence in a non-production Supabase project; verify anonymous, authenticated non-admin, designated admin at AAL1/AAL2, and service-role access separately.
+2. Exercise PayPal Sandbox order creation, approval, completed capture and webhook signature verification. Reject wrong amount/currency, multiple purchase units, cancelled/denied orders, unknown tracking tokens, replay, duplicate events and mismatched capture/order/reference.
+3. Implement and test Ko-fi webhook authentication, replay/idempotency and least-privilege writes; do not infer a verified payment from a public browser redirect.
+4. Verify the general supporter-entered tip path, separate tip ledger/history and admin status, and ensure notifications occur only after verified provider events.
+5. Record device/browser, environment, exact test result and rollback evidence. Keep Live activation, credential changes, SQL changes to the live project and payment collection behind explicit owner approval.
+
+**No customer demand or paid conversion is implied by this implementation scope.** No credentials, payment destinations, account settings, database projects, deployments or live payment flows were changed in this research update.
+
+
+## Gig-night setlist + cue sheet — new researched hypothesis (14 November 2026)
+
+**Offer concept:** convert a musician's client-confirmed set order into one clean, large-print, phone-readable and printable page. Optional cue layer may include confirmed keys/capos, guitar/instrument changes, vocal handoffs, break markers and encore notes. Deliver a PDF only; the client supplies and verifies all song/order details. Do not include lyrics, chord charts, sheet music, recordings or unlicensed material.
+
+**Pilot price hypotheses:** CAD $15 for a basic set order; CAD $25 for a set order with concise transition/timing cues. Estimated effort is 20–30 minutes basic and 30–45 minutes with cues. Startup cost is $0 if existing document/design tools suffice. A 1–14 day first-dollar window through warm musician contacts is only a hypothesis; no outreach or offer is authorized by this entry.
+
+**Substitutes and differentiation:** BandHelper's official pricing lists a solo Basic subscription at USD $16/year and solo Pro at USD $32/year; its feature set already includes setlists and notes, with stage plots in Pro. Free documents/spreadsheets are also close substitutes. The proposed service therefore cannot be positioned as a software replacement. Its only plausible value is a one-off, done-for-you, easy-to-read show sheet for a musician who does not want to format it themselves. Riderize's free rider builder is a further reminder that generic technical-document generation is already available at no charge.
+
+**Illustrative economics only:** at the existing backlog's example PayPal domestic commercial rate of 2.90% + CAD $0.30, a hypothetical CAD $25 payment would incur about $1.03 in fees and leave about $23.98 before labour, tax, refunds and overhead. At 30–45 minutes, that is roughly $31.97–$47.96/hour before those costs. Actual fees and the owner's account eligibility must be checked; no payment route is activated here.
+
+**Risks and controls:** the musician confirms the final order, keys, capos, transitions, breaks and duration; no set-duration guarantee or performance advice is implied. Limit the package to one revision. Avoid personal phone numbers or private venue contacts unless the client explicitly supplies and approves them for inclusion. Use only song titles and client-owned/original notes; no lyrics or copyrighted notation. Free/low-cost substitutes make willingness to pay uncertain.
+
+**Validation status:** researched hypothesis only. No local demand interviews, paid orders, conversion or repeat-purchase evidence exists. Keep internal to this development backlog; do not add a public offer, checkout button or payment flow without explicit owner approval.

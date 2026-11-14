@@ -6,6 +6,6 @@
     "test:browser:headed": "playwright test -c playwright.config.js site.spec.js --headed"
   },
   "devDependencies": {
-    "@playwright/test": "^1.55.0"
+    "@playwright/test": "1.55.0"
   }
 }
