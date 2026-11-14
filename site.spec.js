@@ -263,6 +263,44 @@ test('only pages with live Rockometer or Encore widgets schedule 8-second refres
   expect(encoreRefreshCount, 'Explore has an Encore widget and must retain its refresh timer').toBe(1);
 });
 
+test('shared script tolerates incomplete optional request and booking controls', async ({ page }) => {
+  await page.route('**/explore.html', async route => {
+    const response = await route.fetch();
+    const html = await response.text();
+    const scriptStart = html.indexOf('<script src="script.js');
+    expect(scriptStart).toBeGreaterThanOrEqual(0);
+    const scriptEnd = html.indexOf('</script>', scriptStart);
+    expect(scriptEnd).toBeGreaterThan(scriptStart);
+    const scriptTag = html.slice(scriptStart, scriptEnd + '</script>'.length);
+    const controls = '<button id="check-last-request" type="button">Check request</button>' +
+      '<button id="booking-copy" type="button">Copy booking email</button>';
+    await route.fulfill({
+      response,
+      body: html.replace(scriptTag, controls + scriptTag),
+    });
+  });
+
+  await page.addInitScript(() => {
+    window.__grifflistRuntimeErrors = [];
+    window.addEventListener('error', event => {
+      window.__grifflistRuntimeErrors.push(event.message);
+    });
+    window.addEventListener('unhandledrejection', event => {
+      const reason = event.reason;
+      window.__grifflistRuntimeErrors.push(
+        reason && reason.message ? reason.message : String(reason),
+      );
+    });
+  });
+
+  await page.goto('/explore.html');
+  await page.locator('#check-last-request').click();
+  await page.locator('#booking-copy').click();
+  await page.waitForTimeout(50);
+  const errors = await page.evaluate(() => window.__grifflistRuntimeErrors);
+  expect(errors).toEqual([]);
+});
+
 test('homepage exposes one visually hidden primary heading', async ({ page }) => {
   await page.goto('/index.html');
   const heading = page.getByRole('heading', { level: 1 });

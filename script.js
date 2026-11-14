@@ -235,7 +235,9 @@ requesterNameInput?.addEventListener("change",persistRememberedName);
 requesterNameInput?.addEventListener("blur",persistRememberedName);
 const requestStatusButton=$("#check-last-request"), requestStatusResult=$("#request-status-result");
 let pendingRequestAttempt=null;
-requestStatusButton?.addEventListener("click",async()=>{const token=localStorage.getItem("grifflistLastRequestToken.v1");if(!token){requestStatusResult.textContent="No recent request is saved on this device yet.";return;}if(!window.supabaseClient){requestStatusResult.textContent="Request status is temporarily unavailable.";return;}requestStatusButton.disabled=true;requestStatusResult.textContent="Checking…";try{const {data,error}=await window.supabaseClient.rpc("get_my_request_status",{p_tracking_token:token});if(error)throw error;const row=Array.isArray(data)?data[0]:data;if(!row){requestStatusResult.textContent="We couldn't find that request. It may have been archived or the status link expired.";}else{requestStatusResult.textContent=row.song_title+(row.artist_name?" - "+row.artist_name:"")+": "+(row.status||"Received")+".";}}catch(e){requestStatusResult.textContent="Status lookup needs the included Supabase migration. Please try again later.";}finally{requestStatusButton.disabled=false;}});
+if(requestStatusButton && requestStatusResult) {
+ requestStatusButton.addEventListener("click",async()=>{const token=localStorage.getItem("grifflistLastRequestToken.v1");if(!token){requestStatusResult.textContent="No recent request is saved on this device yet.";return;}if(!window.supabaseClient){requestStatusResult.textContent="Request status is temporarily unavailable.";return;}requestStatusButton.disabled=true;requestStatusResult.textContent="Checking…";try{const {data,error}=await window.supabaseClient.rpc("get_my_request_status",{p_tracking_token:token});if(error)throw error;const row=Array.isArray(data)?data[0]:data;if(!row){requestStatusResult.textContent="We couldn't find that request. It may have been archived or the status link expired.";}else{requestStatusResult.textContent=row.song_title+(row.artist_name?" - "+row.artist_name:"")+": "+(row.status||"Received")+".";}}catch(e){requestStatusResult.textContent="Status lookup needs the included Supabase migration. Please try again later.";}finally{requestStatusButton.disabled=false;}});
+}
 requestForm?.addEventListener("submit",async e=>{
  e.preventDefault();
  const name=$("#requester-name").value.trim(),song=$("#request-song").value.trim(),artist=$("#request-artist").value.trim(),message=$("#request-message").value.trim(),status=$("#form-status"),submit=requestForm.querySelector('button[type="submit"]');
@@ -319,7 +321,7 @@ requestForm?.addEventListener("submit",async e=>{
  }
 });
 const bookingCopy=$("#booking-copy"), bookingStatus=$("#booking-status");
-bookingCopy?.addEventListener("click", async()=>{playSfx("highway-riser-sfx");try{await navigator.clipboard.writeText("griffenarsenaultmusic@hotmail.com");bookingStatus.textContent="Booking email copied.";}catch(e){bookingStatus.textContent="Email: griffenarsenaultmusic@hotmail.com - select and copy it.";}});
+if(bookingCopy && bookingStatus) bookingCopy.addEventListener("click", async()=>{playSfx("highway-riser-sfx");try{await navigator.clipboard.writeText("griffenarsenaultmusic@hotmail.com");bookingStatus.textContent="Booking email copied.";}catch(e){bookingStatus.textContent="Email: griffenarsenaultmusic@hotmail.com - select and copy it.";}});
 // Audio behavior: never autoplay the title sound on page load. The first title-screen gesture starts it once; menu music crossfades in near the end.
 const splash=$("#splash");
 const titleAudio=$("#title-screen-audio"), menuAudio=$("#menu-screen-audio");
