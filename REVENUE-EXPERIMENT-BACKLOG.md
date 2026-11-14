@@ -289,3 +289,32 @@ This is a public-page scan of products in the same broad QR-request category. Di
 - Use only client-supplied or original assets with permission. Do not include unlicensed lyrics, recordings, artwork or third-party logos.
 
 **Status:** competitor scan researched; the QR setup kit remains researched and unvalidated. No customer interviews, paid orders, prototype, public offer, checkout, payment destination, outreach, account change, inventory purchase or spend occurred.
+
+## Previously approved payment-integration scope — 14 November 2026
+
+**Status:** approved design scope from prior conversations; not live-enabled, not fully integrated, and not verified against a production payment account. This section records constraints so later revenue work does not silently change the approved flow.
+
+### Approved scope to preserve
+
+- **Priority song request:** a separate, fixed **CAD $5.00** payment, clearly optional and distinct from submitting a normal song request.
+- **General tips:** supporter-entered amount, not a fixed-price product and not conflated with the priority-request payment.
+- **Accounting/admin:** separate tip history and administrator-visible payment status.
+- **Verification:** only a provider-verified payment event may mark a request/tip as paid or trigger a payment-confirmation notification. Browser redirects, user statements and unverified webhook payloads are not proof.
+- **Qualification:** use PayPal Sandbox and a non-production Supabase project before any Live enablement. Preserve existing payment destinations and credentials; do not add providers, change credentials, enable e-transfer, deploy functions or activate checkout without explicit owner approval.
+
+### Current implementation separation
+
+- The active `sitewide-grifflist-experience` branch presents the existing Ko-fi and PayPal destinations and the optional $5 CAD priority-request UI. Priority payment is still described as manually checked; this branch does not establish end-to-end provider verification or automated payment notifications. E-transfer remains visibly unavailable.
+- Separate draft [PR #1 — payment and Stage Control integration](https://github.com/the-griff-list/the-griff-list.github.io/pull/1) is on `kofi-live-tips-integration`, based on `watch-live-test`; it is **not** part of active PR #3. Its PayPal source includes bounded request bodies, exact CAD $5 checks, signature verification, order/capture re-fetch and a service-role-only idempotent capture RPC. The latest source-quality checks passed, but no live Supabase, SQL/RLS, TOTP enrollment, PayPal Sandbox transaction/webhook or deployment test is established.
+- **Ko-fi is incomplete in PR #1:** no Ko-fi webhook function exists in the branch tree. `kofi-tips-integration.sql` assumes `public.kofi_tips` already exists and does not create the table or enable RLS; the base SQL migrations do not create that table. The AAL2 enforcement migration refuses to proceed if a listed table has RLS disabled. A reviewed create-table/RLS migration and a signed, replay-safe server-side Ko-fi ingestion path are required before this can be considered complete.
+- The separate PR #1 remains draft. Its existing source checks are not evidence of a real payment, webhook, database policy or admin-authentication test.
+
+### Required acceptance before any activation
+
+1. Review and apply the complete schema/RLS migration sequence in a non-production Supabase project; verify anonymous, authenticated non-admin, designated admin at AAL1/AAL2, and service-role access separately.
+2. Exercise PayPal Sandbox order creation, approval, completed capture and webhook signature verification. Reject wrong amount/currency, multiple purchase units, cancelled/denied orders, unknown tracking tokens, replay, duplicate events and mismatched capture/order/reference.
+3. Implement and test Ko-fi webhook authentication, replay/idempotency and least-privilege writes; do not infer a verified payment from a public browser redirect.
+4. Verify the general supporter-entered tip path, separate tip ledger/history and admin status, and ensure notifications occur only after verified provider events.
+5. Record device/browser, environment, exact test result and rollback evidence. Keep Live activation, credential changes, SQL changes to the live project and payment collection behind explicit owner approval.
+
+**No customer demand or paid conversion is implied by this implementation scope.** No credentials, payment destinations, account settings, database projects, deployments or live payment flows were changed in this research update.
