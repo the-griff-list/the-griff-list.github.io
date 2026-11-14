@@ -411,12 +411,10 @@ test('public offline shell registers and never caches private pages', async ({ p
 test('public navigation falls back to the offline shell and cached roadmap when offline', async ({ page, browserName }) => {
   test.skip(
     browserName === 'webkit',
-    'WebKit offline navigation emulation previously failed inside WebKit; WebKit still runs the offline UI and cache-scope checks.',
+    'Playwright exposes BrowserContext.serviceWorkers() only in Chromium; WebKit still runs the offline UI and cache-scope checks.',
   );
   await page.goto('/index.html');
   const cacheName = serviceWorkerCacheName;
-  await waitForActiveCacheController(page, cacheName);
-  await page.goto('/watch-live.html');
   await waitForActiveCacheController(page, cacheName);
 
   const removedWatchLive = await page.evaluate(async (name) => {
@@ -428,24 +426,44 @@ test('public navigation falls back to the offline shell and cached roadmap when 
   }, cacheName);
   expect(removedWatchLive).toBe(true);
 
-  // Bypass the browser HTTP cache so offline navigation reaches the service
-  // worker's failed network fetch and exercises its CacheStorage fallback.
-  // WebKit's offline navigation emulation previously failed inside WebKit
-  // itself, so that engine retains the independent UI/cache-scope tests.
-  await page.setExtraHTTPHeaders({
-    'Cache-Control': 'no-cache',
-    'Pragma': 'no-cache'
+  // Fail the service worker's network fetch directly. This bypasses both the
+  // browser HTTP cache and browser-specific offline emulation behavior.
+  const serviceWorker = page.context().serviceWorkers().find(worker =>
+    new URL(worker.url()).pathname.endsWith('/sw.js')
+  );
+  expect(serviceWorker, 'the active public service worker must be inspectable').toBeTruthy();
+  await serviceWorker.evaluate(() => {
+    globalThis.__grifflistOriginalFetchForTest = globalThis.fetch;
+    globalThis.fetch = async (input, init) => {
+      const requestUrl = typeof input === 'string' ? input : input.url;
+      const pathname = new URL(requestUrl, self.registration.scope).pathname;
+      if (pathname === '/watch-live.html' || pathname === '/roadmap.html') {
+        throw new TypeError('Simulated offline network failure');
+      }
+      return globalThis.__grifflistOriginalFetchForTest(input, init);
+    };
   });
-  await page.context().setOffline(true);
+
   try {
-    await page.reload();
+    await page.goto('/watch-live.html');
     await expect(page.locator('h1')).toContainText("You're offline");
+    await page.context().setOffline(true);
     await page.goto('/roadmap.html');
     await expect(page.locator('h1')).toContainText('THE ROAD');
     await expect(page.locator('#gig-form')).toBeVisible();
   } finally {
     await page.context().setOffline(false);
-    await page.setExtraHTTPHeaders({});
+    const activeWorker = page.context().serviceWorkers().find(worker =>
+      new URL(worker.url()).pathname.endsWith('/sw.js')
+    );
+    if (activeWorker) {
+      await activeWorker.evaluate(() => {
+        if (globalThis.__grifflistOriginalFetchForTest) {
+          globalThis.fetch = globalThis.__grifflistOriginalFetchForTest;
+          delete globalThis.__grifflistOriginalFetchForTest;
+        }
+      });
+    }
   }
 });
 

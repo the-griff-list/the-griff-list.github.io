@@ -113,8 +113,12 @@ def next_show_schedule_errors(section_html, now=None):
             errors.append('UPCOMING SHOWS without a confirmed booking must retain the song-catalogue CTA')
         if 'browse songs' not in visible_text:
             errors.append('UPCOMING SHOWS without a confirmed booking must retain the visible catalogue action')
-        if re.search(r"Hunter[’']s Ale House|November 10|December 3|December 17", visible_text, re.I):
-            errors.append('UPCOMING SHOWS without a confirmed booking must not retain an expired or unconfirmed event')
+        if re.search(
+            r'\\b\\d{4}-\\d{2}-\\d{2}\\b|\\b(?:January|February|March|April|May|June|July|August|September|October|November|December)\\s+\\d{1,2},\\s+\\d{4}\\b',
+            visible_text,
+            re.I,
+        ):
+            errors.append('UPCOMING SHOWS without a confirmed booking must not display an unconfirmed date')
         return errors
 
     zone = ZoneInfo('America/Halifax')
@@ -214,26 +218,26 @@ def next_show_schedule_errors(section_html, now=None):
         )
     return errors
 
-# Regression fixtures: the Atlantic label must follow each show's end time,
-# not merely any earlier <time> element in the same schedule group.
+# Synthetic regression fixtures only; these are parser test dates, not bookings.
+# The Atlantic label must follow each show's end time, not an earlier <time>.
 _schedule_fixture_now = datetime(2026, 11, 12, tzinfo=timezone.utc)
 _schedule_valid_fixture = (
-    '<time datetime="2026-12-03">Thursday, December 3, 2026</time> '
-    '<time datetime="2026-12-03T22:00:00-04:00">10:00 p.m.</time>–'
-    '<time datetime="2026-12-04T01:30:00-04:00">1:30 a.m.</time> Atlantic '
-    '<time datetime="2026-12-17">Thursday, December 17, 2026</time> '
-    '<time datetime="2026-12-17T22:00:00-04:00">10:00 p.m.</time>–'
-    '<time datetime="2026-12-18T01:30:00-04:00">1:30 a.m.</time> Atlantic'
+    '<time datetime="2099-01-06">Tuesday, January 6, 2099</time> '
+    '<time datetime="2099-01-06T22:00:00-04:00">10:00 p.m.</time>–'
+    '<time datetime="2099-01-07T01:30:00-04:00">1:30 a.m.</time> Atlantic '
+    '<time datetime="2099-01-20">Tuesday, January 20, 2099</time> '
+    '<time datetime="2099-01-20T22:00:00-04:00">10:00 p.m.</time>–'
+    '<time datetime="2099-01-21T01:30:00-04:00">1:30 a.m.</time> Atlantic'
 )
 if next_show_schedule_errors(_schedule_valid_fixture, _schedule_fixture_now):
     issues.append('qa-smoke-test.py: valid two-show Atlantic schedule fixture was rejected')
 _schedule_misplaced_label_fixture = (
-    '<time datetime="2026-12-03">Thursday, December 3, 2026</time> Atlantic '
-    '<time datetime="2026-12-03T22:00:00-04:00">10:00 p.m.</time>–'
-    '<time datetime="2026-12-04T01:30:00-04:00">1:30 a.m.</time> '
-    '<time datetime="2026-12-17">Thursday, December 17, 2026</time> '
-    '<time datetime="2026-12-17T22:00:00-04:00">10:00 p.m.</time>–'
-    '<time datetime="2026-12-18T01:30:00-04:00">1:30 a.m.</time> Atlantic'
+    '<time datetime="2099-01-06">Tuesday, January 6, 2099</time> Atlantic '
+    '<time datetime="2099-01-06T22:00:00-04:00">10:00 p.m.</time>–'
+    '<time datetime="2099-01-07T01:30:00-04:00">1:30 a.m.</time> '
+    '<time datetime="2099-01-20">Tuesday, January 20, 2099</time> '
+    '<time datetime="2099-01-20T22:00:00-04:00">10:00 p.m.</time>–'
+    '<time datetime="2099-01-21T01:30:00-04:00">1:30 a.m.</time> Atlantic'
 )
 _misplaced_label_errors = next_show_schedule_errors(
     _schedule_misplaced_label_fixture, _schedule_fixture_now
@@ -264,44 +268,8 @@ for required in (
     if required not in home_html:
         issues.append(f'index.html: missing next-show/payment acceptance text: {required}')
 
-if next_show:
-    next_show_html = next_show.group(1)
-    has_machine_readable_show = bool(re.search(r'<time\b[^>]*\bdatetime="', next_show_html))
-    if has_machine_readable_show:
-        visible_schedule_text = " ".join(re.sub(r'<[^>]+>', ' ', next_show_html).split())
-        for required in (
-            'Hunter’s Ale House — Thursday, December 3, 2026',
-            'Hunter’s Ale House — Thursday, December 17, 2026',
-            'The Levee — Friday, January 1, 2027',
-        ):
-            if required not in visible_schedule_text:
-                issues.append(f'index.html: confirmed upcoming-show schedule is missing: {required}')
-        for required_datetime in (
-            'datetime="2026-12-03"',
-            'datetime="2026-12-03T22:00:00-04:00"',
-            'datetime="2026-12-04T01:30:00-04:00"',
-            'datetime="2026-12-17"',
-            'datetime="2026-12-17T22:00:00-04:00"',
-            'datetime="2026-12-18T01:30:00-04:00"',
-            'datetime="2027-01-01"',
-            'datetime="2027-01-01T12:00:00-04:00"',
-            'datetime="2027-01-01T15:00:00-04:00"',
-        ):
-            if required_datetime not in next_show_html:
-                issues.append(f'index.html: confirmed upcoming-show schedule is missing machine-readable value: {required_datetime}')
-        for forbidden in (
-            'Next date to be announced',
-            'No upcoming performance date is currently confirmed.',
-        ):
-            if forbidden in next_show_html:
-                issues.append(f'index.html: confirmed upcoming-show schedule still contains stale no-booking text: {forbidden}')
-    else:
-        for required in (
-            'Next date to be announced',
-            'No upcoming performance date is currently confirmed.',
-        ):
-            if required not in next_show_html:
-                issues.append(f'index.html: no-booking state is missing: {required}')
+# The generic next_show_schedule_errors validator above is authoritative.
+# No venue/date is pinned here; future events must come from a verified booking.
 
 if re.search(r'<p class="eyebrow">(?:LATEST SHOW|UP NEXT)</p>', home_html):
     issues.append('index.html: confirmed upcoming performance must use the NEXT SHOW label')
