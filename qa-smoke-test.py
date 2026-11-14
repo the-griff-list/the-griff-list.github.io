@@ -114,7 +114,7 @@ def next_show_schedule_errors(section_html, now=None):
         if 'browse songs' not in visible_text:
             errors.append('UPCOMING SHOWS without a confirmed booking must retain the visible catalogue action')
         if re.search(
-            r'\\b\\d{4}-\\d{2}-\\d{2}\\b|\\b(?:January|February|March|April|May|June|July|August|September|October|November|December)\\s+\\d{1,2},\\s+\\d{4}\\b',
+            r'\b\d{4}-\d{2}-\d{2}\b|\b(?:January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2},\s+\d{4}\b',
             visible_text,
             re.I,
         ):
@@ -242,6 +242,16 @@ _schedule_misplaced_label_fixture = (
 _misplaced_label_errors = next_show_schedule_errors(
     _schedule_misplaced_label_fixture, _schedule_fixture_now
 )
+_schedule_no_booking_date_fixture = (
+    '<p>No upcoming performance date is currently confirmed.</p> '
+    '<a href="#catalog">Browse songs</a> <p>January 6, 2099</p>'
+)
+_no_booking_date_errors = next_show_schedule_errors(
+    _schedule_no_booking_date_fixture, _schedule_fixture_now
+)
+if not any('must not display an unconfirmed date' in error for error in _no_booking_date_errors):
+    issues.append('qa-smoke-test.py: no-booking fixture must reject a generic date string')
+
 if not any('group 1: end time must be followed by the Atlantic timezone label' in error
            for error in _misplaced_label_errors):
     issues.append('qa-smoke-test.py: Atlantic label after a date must not satisfy the end-of-range timezone disclosure')
