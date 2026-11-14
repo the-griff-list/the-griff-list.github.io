@@ -239,7 +239,11 @@ test('tour roadmap lists only the confirmed upcoming performance windows', async
   await page.goto('/roadmap.html');
   const dates = page.locator('#confirmed-dates');
   await expect(dates.getByRole('heading', { level: 2 })).toHaveText('UPCOMING SHOWS');
-  await expect(dates.locator('article.confirmed-show')).toHaveCount(3);
+  await expect(dates.locator('article.confirmed-show-card')).toHaveCount(3);
+  await expect(dates.locator('.venue-actions')).toHaveCount(0);
+  await page.getByRole('button', { name: 'Nova Scotia' }).click();
+  await expect(dates.locator('article.confirmed-show-card')).toHaveCount(3);
+  await expect(dates.locator('article.confirmed-show-card').first()).toBeVisible();
   await expect(dates).toContainText('December 3, 2026');
   await expect(dates).toContainText('December 17, 2026');
   await expect(dates).toContainText('January 1, 2027');
