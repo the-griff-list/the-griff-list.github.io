@@ -401,26 +401,14 @@ test('public offline shell registers, falls back offline, and never caches priva
   }, cacheName);
   expect(removedWatchLive).toBe(true);
 
-  // Simulate network failures inside the active service worker. Standard
-  // revalidation headers bypass browser HTTP caching without Chromium CDP.
-  // The uncached Watch Live page must fall back to offline.html; the cached
-  // roadmap must still be served from the public offline shell.
-  const serviceWorker = page.context().serviceWorkers().find(worker =>
-    new URL(worker.url()).pathname.endsWith('/sw.js')
-  );
-  expect(serviceWorker, 'the active public service worker must be inspectable').toBeTruthy();
-  await serviceWorker.evaluate(() => {
-    globalThis.__grifflistOriginalFetchForTest = globalThis.fetch;
-    globalThis.fetch = async (input, init) => {
-      const requestUrl = typeof input === 'string' ? input : input.url;
-      const pathname = new URL(requestUrl, self.registration.scope).pathname;
-      if (pathname === '/watch-live.html' || pathname === '/roadmap.html') {
-        throw new TypeError('Simulated offline network failure');
-      }
-      return globalThis.__grifflistOriginalFetchForTest(input, init);
-    };
-  });
-
+  // Simulate failures on the service worker's own network fetches. Playwright
+  // exposes BrowserContext.serviceWorkers() only for Chromium, but context
+  // routing also observes requests initiated by a service worker in WebKit.
+  // The intercepted navigation itself remains under the worker's control;
+  // aborting its network fetch exercises the real CacheStorage fallback.
+  const failNetwork = route => route.abort();
+  await page.context().route('**/watch-live.html', failNetwork);
+  await page.context().route('**/roadmap.html', failNetwork);
   await page.setExtraHTTPHeaders({
     'Cache-Control': 'no-cache',
     'Pragma': 'no-cache'
@@ -432,17 +420,8 @@ test('public offline shell registers, falls back offline, and never caches priva
     await expect(page.locator('h1')).toContainText('THE ROAD');
     await expect(page.locator('#gig-form')).toBeVisible();
   } finally {
-    const activeWorker = page.context().serviceWorkers().find(worker =>
-      new URL(worker.url()).pathname.endsWith('/sw.js')
-    );
-    if (activeWorker) {
-      await activeWorker.evaluate(() => {
-        if (globalThis.__grifflistOriginalFetchForTest) {
-          globalThis.fetch = globalThis.__grifflistOriginalFetchForTest;
-          delete globalThis.__grifflistOriginalFetchForTest;
-        }
-      });
-    }
+    await page.context().unroute('**/watch-live.html', failNetwork);
+    await page.context().unroute('**/roadmap.html', failNetwork);
     await page.setExtraHTTPHeaders({});
   }
 
