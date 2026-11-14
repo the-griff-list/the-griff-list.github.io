@@ -631,6 +631,52 @@ async function test(name, callback) {
     assert.equal(fetchCalls, 2);
   });
 
+  await test('uncached Watch Live navigation falls back to the precached offline shell after a worker network failure', async () => {
+    reset();
+    await dispatch('install');
+    const watchLiveUrl = ORIGIN + '/watch-live.html';
+    const offlineUrl = ORIGIN + '/offline.html';
+    const cache = cacheData.get(CACHE);
+    const offlineShell = cache.get(offlineUrl);
+    assert.ok(cache.has(watchLiveUrl), 'Watch Live must begin in the public offline shell');
+    assert.ok(offlineShell, 'offline.html must be present in the public offline shell');
+    cache.delete(watchLiveUrl);
+
+    fetchImpl = async request => {
+      fetchCalls += 1;
+      fetchedRequests.push(request);
+      throw new Error('simulated offline network');
+    };
+    const result = await dispatchFetch(navigation(watchLiveUrl));
+    const fallback = await result.responsePromise;
+    await result.waitPromise;
+
+    assert.equal(fallback, offlineShell);
+    assert.equal(fallback.url, offlineUrl);
+    assert.equal(fetchCalls, 1);
+  });
+
+  await test('cached Tour Roadmap remains available after a worker network failure', async () => {
+    reset();
+    await dispatch('install');
+    const roadmapUrl = ORIGIN + '/roadmap.html';
+    const cachedRoadmap = cacheData.get(CACHE).get(roadmapUrl);
+    assert.ok(cachedRoadmap, 'Tour Roadmap must be present in the public offline shell');
+
+    fetchImpl = async request => {
+      fetchCalls += 1;
+      fetchedRequests.push(request);
+      throw new Error('simulated offline network');
+    };
+    const result = await dispatchFetch(navigation(roadmapUrl));
+    const cached = await result.responsePromise;
+    await result.waitPromise;
+
+    assert.equal(cached, cachedRoadmap);
+    assert.equal(cached.url, roadmapUrl);
+    assert.equal(fetchCalls, 1);
+  });
+
   process.stdout.write('PASS ' + passed + ' service-worker lifecycle groups\n');
 })().catch(error => {
   process.stderr.write(String(error && error.stack || error) + '\n');
