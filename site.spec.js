@@ -249,6 +249,7 @@ test('tour roadmap lists only the confirmed upcoming performance windows', async
   await expect(dates).toContainText('Friday, January 1, 2027');
   await expect(dates).toContainText('Hunter’s Ale House');
   await expect(dates).toContainText('The Levee');
+  await expect(dates).toContainText('The November 10 Hunter’s Ale House performance is complete');
   await expect(dates.locator('article.confirmed-show-card')).not.toContainText('November 10');
 });
 
