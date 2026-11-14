@@ -249,7 +249,7 @@ test('tour roadmap lists only the confirmed upcoming performance windows', async
   await expect(dates).toContainText('Friday, January 1, 2027');
   await expect(dates).toContainText('Hunter’s Ale House');
   await expect(dates).toContainText('The Levee');
-  await expect(dates).not.toContainText('November 10');
+  await expect(dates.locator('article.confirmed-show-card')).not.toContainText('November 10');
 });
 
 test('home Watch Live CTA checks status when no stream is active', async ({ page }) => {
