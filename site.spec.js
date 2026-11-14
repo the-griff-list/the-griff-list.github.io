@@ -218,21 +218,28 @@ test('private dashboard exposes one main landmark and its page heading', async (
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Request Dashboard');
 });
 test('title screen can be entered', async ({ page }) => { await page.goto('/index.html'); await page.locator('#splash').click(); await expect(page.locator('#catalog')).toBeVisible(); });
-test('next-show strip lists the latest confirmed booking and other confirmed dates', async ({ page }) => {
+test('next-show strip does not advertise an unconfirmed performance date', async ({ page }) => {
   await page.goto('/index.html');
   const card = page.locator('.next-show-card');
   await expect(card.locator('.eyebrow')).toHaveText('UPCOMING SHOWS');
-  await expect(card.locator('#next-show-title')).toContainText('Hunter’s Ale House');
-  await expect(card.locator('#next-show-title')).toContainText('Thursday, December 3, 2026');
-  await expect(card.locator('time[datetime="2026-12-03T22:00:00-04:00"]')).toHaveText('10:00 p.m.');
-  await expect(card.locator('time[datetime="2026-12-04T01:30:00-04:00"]')).toHaveText('1:30 a.m.');
-  await expect(card).toContainText('Thursday, December 17, 2026');
-  await expect(card).toContainText('Friday, January 1, 2027');
-  await expect(card).toContainText('The Levee');
-  await expect(card.locator('a[href="roadmap.html#confirmed-dates"]')).toHaveText('See all confirmed dates');
+  await expect(card.locator('#next-show-title')).toHaveText('Next date to be announced');
+  await expect(card).toContainText('No upcoming performance date is currently confirmed');
   await expect(card.locator('a[href="#catalog"]')).toHaveText('BROWSE SONGS ↗');
-  await expect(card).not.toContainText('November 6');
-  await expect(card).not.toContainText('November 10');
+  await expect(card).not.toContainText('December 3, 2026');
+  await expect(card).not.toContainText('December 17, 2026');
+  await expect(card).not.toContainText('January 1, 2027');
+});
+
+test('tour roadmap shows no confirmed upcoming dates until a booking is verified', async ({ page }) => {
+  await page.goto('/roadmap.html');
+  const dates = page.locator('#confirmed-dates');
+  await expect(dates.getByRole('heading', { level: 2 })).toHaveText('NEXT DATE TO BE ANNOUNCED');
+  await expect(dates.locator('article.confirmed-show-card')).toHaveCount(0);
+  await expect(dates).toContainText('No upcoming performance date is currently confirmed');
+  await expect(dates).toContainText('The November 10 Hunter’s Ale House performance is complete');
+  await expect(dates).not.toContainText('December 3, 2026');
+  await expect(dates).not.toContainText('December 17, 2026');
+  await expect(dates).not.toContainText('January 1, 2027');
 });
 
 test('tour roadmap lists only the confirmed upcoming performance windows', async ({ page }) => {
