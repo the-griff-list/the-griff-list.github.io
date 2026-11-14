@@ -426,8 +426,9 @@ test('public navigation falls back to the offline shell and cached roadmap when 
   }, cacheName);
   expect(removedWatchLive).toBe(true);
 
-  // Fail the service worker's network fetch directly. This bypasses both the
-  // browser HTTP cache and browser-specific offline emulation behavior.
+  // This worker-object interception test runs only in Chromium. Put the
+  // context offline before either navigation so the browser HTTP cache cannot
+  // satisfy the uncached Watch Live page and mask the service-worker fallback.
   const serviceWorker = page.context().serviceWorkers().find(worker =>
     new URL(worker.url()).pathname.endsWith('/sw.js')
   );
@@ -445,9 +446,9 @@ test('public navigation falls back to the offline shell and cached roadmap when 
   });
 
   try {
+    await page.context().setOffline(true);
     await page.goto('/watch-live.html');
     await expect(page.locator('h1')).toContainText("You're offline");
-    await page.context().setOffline(true);
     await page.goto('/roadmap.html');
     await expect(page.locator('h1')).toContainText('THE ROAD');
     await expect(page.locator('#gig-form')).toBeVisible();
