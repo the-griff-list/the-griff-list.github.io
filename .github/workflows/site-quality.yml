@@ -23,7 +23,7 @@ concurrency:
 jobs:
   static-quality:
     name: Static website integrity
-    # Restrict execution on the private self-hosted machine to the repository owner.
+    # Restrict the public GitHub-hosted runner to the repository owner and same-repository PRs.
     if: >-
       github.actor == 'the-griff-list' &&
       github.triggering_actor == 'the-griff-list' &&
