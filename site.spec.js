@@ -591,6 +591,12 @@ test('tip surfaces do not advertise unverified wallet methods before checkout', 
 });
 
 test('catalogue selection fills the request without opening the mobile keyboard', async ({ page }) => {
+  // This test covers request selection/focus, not playback. Prevent the splash
+  // transition's background music from leaving a WebKit media process alive
+  // during browser-context teardown on headless Linux.
+  await page.addInitScript(() => {
+    HTMLMediaElement.prototype.play = () => Promise.resolve();
+  });
   await page.goto('/index.html');
   await page.locator('#splash').click();
   await page.locator('#song-reveal summary').click();
