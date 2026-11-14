@@ -223,11 +223,11 @@ test('next-show strip lists the latest confirmed booking and other confirmed dat
   const card = page.locator('.next-show-card');
   await expect(card.locator('.eyebrow')).toHaveText('UPCOMING SHOWS');
   await expect(card.locator('#next-show-title')).toContainText('Hunter’s Ale House');
-  await expect(card.locator('#next-show-title')).toContainText('December 3, 2026');
+  await expect(card.locator('#next-show-title')).toContainText('Thursday, December 3, 2026');
   await expect(card.locator('time[datetime="2026-12-03T22:00:00-04:00"]')).toHaveText('10:00 p.m.');
   await expect(card.locator('time[datetime="2026-12-04T01:30:00-04:00"]')).toHaveText('1:30 a.m.');
-  await expect(card).toContainText('December 17, 2026');
-  await expect(card).toContainText('January 1, 2027');
+  await expect(card).toContainText('Thursday, December 17, 2026');
+  await expect(card).toContainText('Friday, January 1, 2027');
   await expect(card).toContainText('The Levee');
   await expect(card.locator('a[href="roadmap.html#confirmed-dates"]')).toHaveText('See all confirmed dates');
   await expect(card.locator('a[href="#catalog"]')).toHaveText('BROWSE SONGS ↗');
@@ -244,9 +244,9 @@ test('tour roadmap lists only the confirmed upcoming performance windows', async
   await page.getByRole('button', { name: 'Nova Scotia' }).click();
   await expect(dates.locator('article.confirmed-show-card')).toHaveCount(3);
   await expect(dates.locator('article.confirmed-show-card').first()).toBeVisible();
-  await expect(dates).toContainText('December 3, 2026');
-  await expect(dates).toContainText('December 17, 2026');
-  await expect(dates).toContainText('January 1, 2027');
+  await expect(dates).toContainText('Thursday, December 3, 2026');
+  await expect(dates).toContainText('Thursday, December 17, 2026');
+  await expect(dates).toContainText('Friday, January 1, 2027');
   await expect(dates).toContainText('Hunter’s Ale House');
   await expect(dates).toContainText('The Levee');
   await expect(dates).not.toContainText('November 10');

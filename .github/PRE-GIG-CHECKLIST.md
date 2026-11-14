@@ -96,9 +96,9 @@ This evidence was collected after the November 10 performance and does not retro
 
 A fresh retrieval of the user's confirmed booking history recovered the October 30 booking record. It confirms the following upcoming performances; this supersedes the November 12 note above that treated these dates as unconfirmed. That earlier note is retained as historical context, not as the current booking status.
 
-- **Hunter’s Ale House — December 3, 2026:** 10:00 p.m.–1:30 a.m. Atlantic.
-- **Hunter’s Ale House — December 17, 2026:** 10:00 p.m.–1:30 a.m. Atlantic.
-- **The Levee — January 1, 2027:** 12:00 p.m.–3:00 p.m. Atlantic.
+- **Hunter’s Ale House — Thursday, December 3, 2026:** 10:00 p.m.–1:30 a.m. Atlantic.
+- **Hunter’s Ale House — Thursday, December 17, 2026:** 10:00 p.m.–1:30 a.m. Atlantic.
+- **The Levee — Friday, January 1, 2027:** 12:00 p.m.–3:00 p.m. Atlantic.
 
 The listed windows are user-confirmed performance times, not venue doors times. The November 10 performance remains completed and archived.
 

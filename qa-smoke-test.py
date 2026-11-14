@@ -272,7 +272,7 @@ if next_show:
         for required in (
             'Hunter’s Ale House — Thursday, December 3, 2026',
             'Hunter’s Ale House — Thursday, December 17, 2026',
-            'The Levee with Travis — Friday, January 1, 2027',
+            'The Levee — Friday, January 1, 2027',
         ):
             if required not in visible_schedule_text:
                 issues.append(f'index.html: confirmed upcoming-show schedule is missing: {required}')
