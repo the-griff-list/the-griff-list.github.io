@@ -116,3 +116,8 @@ The listed windows are user-confirmed performance times, not venue doors times. 
 - [ ] Obtain explicit approval before merging or deploying. This draft checklist does not authorize publication, payment activation or spending.
 
 **Status:** dates and times are now reflected in the development homepage and Tour Roadmap; exact-head CI and physical-device acceptance are pending. PR #3 remains draft and unpublished. No deployment or payment action occurred.
+
+
+## Next confirmed Hunter's Ale House milestone — December 3, 2026
+
+The November 10 checklist above remains archived and its unchecked acceptance items were not retroactively completed. The next user-confirmed Hunter's Ale House performance is Thursday, December 3, 2026, 10:00 p.m.–1:30 a.m. Atlantic (performance window, not doors time). The dedicated development-only checklist is [PRE-GIG-CHECKLIST-2026-12-03.md](PRE-GIG-CHECKLIST-2026-12-03.md). December 17 at Hunter's Ale House and January 1 at The Levee are also confirmed; see the development homepage and Tour Roadmap.
