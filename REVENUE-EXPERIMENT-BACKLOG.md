@@ -91,6 +91,8 @@ This is a research update only. Published prices are advertised rates, not verif
 | Performer QR request/tip setup kit | Researched, not validated | Three paid setup pilots; test QR destination, signage readability, client-owned account handoff and delivery time |
 | Done-for-you band gear inventory + load-out pack | Researched, unvalidated / lowest priority | Three paid pilots; record item count, time, corrections and repeat/referral interest while confirming client-owned data handoff and no retained serials |
 | Sponsor/featured listing | Brainstormed / not offerable | Reliable consent-based traffic and engagement data; clear sponsor disclosure |
+| Gig-night setlist + cue sheet | Researched, not validated | Three paid pilots; record formatting time, corrections and whether client-confirmed details were accurate |
+| Private acoustic booking | Researched, not validated | Three paid private-event bookings; record accepted price, total hours, travel/gear costs, cancellation terms and referrals |
 
 **No idea is validated yet. No payment flow or public offer was changed as part of this research.**
 
