@@ -591,6 +591,12 @@ test('tip surfaces do not advertise unverified wallet methods before checkout', 
 });
 
 test('catalogue selection fills the request without opening the mobile keyboard', async ({ page }) => {
+  // WebKit's headless Linux media-process teardown intermittently exceeds the
+  // suite's 30s default after all assertions have passed. Keep the allowance
+  // local to this interaction test and WebKit; assertions remain unchanged.
+  if (test.info().project.name === 'iphone-size-touch-webkit') {
+    test.setTimeout(45_000);
+  }
   // This test covers request selection/focus, not playback. Prevent the splash
   // transition's background music from leaving a WebKit media process alive
   // during browser-context teardown on headless Linux.
