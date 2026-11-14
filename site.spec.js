@@ -242,24 +242,6 @@ test('tour roadmap shows no confirmed upcoming dates until a booking is verified
   await expect(dates).not.toContainText('January 1, 2027');
 });
 
-test('tour roadmap lists only the confirmed upcoming performance windows', async ({ page }) => {
-  await page.goto('/roadmap.html');
-  const dates = page.locator('#confirmed-dates');
-  await expect(dates.getByRole('heading', { level: 2 })).toHaveText('UPCOMING SHOWS');
-  await expect(dates.locator('article.confirmed-show-card')).toHaveCount(3);
-  await expect(dates.locator('.venue-actions')).toHaveCount(0);
-  await page.getByRole('button', { name: 'Nova Scotia' }).click();
-  await expect(dates.locator('article.confirmed-show-card')).toHaveCount(3);
-  await expect(dates.locator('article.confirmed-show-card').first()).toBeVisible();
-  await expect(dates).toContainText('Thursday, December 3, 2026');
-  await expect(dates).toContainText('Thursday, December 17, 2026');
-  await expect(dates).toContainText('Friday, January 1, 2027');
-  await expect(dates).toContainText('Hunter’s Ale House');
-  await expect(dates).toContainText('The Levee');
-  await expect(dates).toContainText('The November 10 Hunter’s Ale House performance is complete');
-  await expect(dates.locator('article.confirmed-show-card').filter({ hasText: 'November 10' })).toHaveCount(0);
-});
-
 test('home Watch Live CTA checks status when no stream is active', async ({ page }) => {
   await page.route('**/rest/v1/live_show_settings*', async route => {
     const cors = {
