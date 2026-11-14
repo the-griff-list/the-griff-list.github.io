@@ -118,6 +118,7 @@ const config = {
 const $ = selector => document.querySelector(selector);
 const listEl = $("#song-list"), searchEl = $("#search"), decadeEl = $("#decade-filters");
 const artistEl = $("#artist-filter"), countEl = $("#track-count"), emptyEl = $("#empty-state");
+const hasSongCatalog = Boolean(listEl && searchEl && decadeEl && artistEl && countEl && emptyEl);
 
 let selectedDecade = "All", activeAudio = null, activeButton = null, stopTimer = null;
 const decades = ["All", "60s", "70s", "80s", "90s", "2000s", "2010s"];
@@ -183,7 +184,13 @@ function selectSongForRequest(song){
  brieflyHighlightSection(section);
  // Deliberately do not focus the name field: mobile keyboards must remain closed.
 }
-searchEl.addEventListener("input",()=>{const reveal=document.querySelector("#song-reveal");if(reveal&&searchEl.value.trim())reveal.open=true;renderSongs();});searchEl.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();searchEl.blur();const reveal=document.querySelector("#song-reveal");if(reveal)reveal.open=true;renderSongs();document.querySelector("#song-list")?.scrollIntoView({behavior:"smooth",block:"start"});}});artistEl.addEventListener("change",()=>{const reveal=document.querySelector("#song-reveal");if(reveal&&artistEl.value!=="All")reveal.open=true;renderSongs();});document.addEventListener("keydown",e=>{if(e.key==="/"&&!['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName)){e.preventDefault();searchEl.focus();}});window.addEventListener("pagehide",stopPreview);
+if (hasSongCatalog) {
+ searchEl.addEventListener("input",()=>{const reveal=document.querySelector("#song-reveal");if(reveal&&searchEl.value.trim())reveal.open=true;renderSongs();});
+ searchEl.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();searchEl.blur();const reveal=document.querySelector("#song-reveal");if(reveal)reveal.open=true;renderSongs();document.querySelector("#song-list")?.scrollIntoView({behavior:"smooth",block:"start"});}});
+ artistEl.addEventListener("change",()=>{const reveal=document.querySelector("#song-reveal");if(reveal&&artistEl.value!=="All")reveal.open=true;renderSongs();});
+ document.addEventListener("keydown",e=>{if(e.key==="/"&&!['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName)){e.preventDefault();searchEl.focus();}});
+}
+window.addEventListener("pagehide",stopPreview);
 // Public visitors can submit requests; the database only permits public INSERTs.
 const requestForm=$("#request-form");
 const priorityToggle=$("#priority-request"), priorityPaymentWrap=$("#priority-payment-wrap");
@@ -198,7 +205,7 @@ function setPrioritySelected(selected,{alreadyTipped=false}={}){
  priorityAlreadyTipped=Boolean(selected&&alreadyTipped);
  if(!selected){const method=document.querySelector("#priority-payment-method");if(method)method.value="";}
 }
-priorityToggle.addEventListener("change",()=>setPrioritySelected(priorityToggle.checked));
+priorityToggle?.addEventListener("change",()=>setPrioritySelected(priorityToggle.checked));
 const requesterNameInput=$("#requester-name");
 const rememberNameCheckbox=$("#remember-requester-name");
 const rememberNamePreferenceKey="grifflistRememberName.v1";
@@ -229,7 +236,7 @@ requesterNameInput?.addEventListener("blur",persistRememberedName);
 const requestStatusButton=$("#check-last-request"), requestStatusResult=$("#request-status-result");
 let pendingRequestAttempt=null;
 requestStatusButton?.addEventListener("click",async()=>{const token=localStorage.getItem("grifflistLastRequestToken.v1");if(!token){requestStatusResult.textContent="No recent request is saved on this device yet.";return;}if(!window.supabaseClient){requestStatusResult.textContent="Request status is temporarily unavailable.";return;}requestStatusButton.disabled=true;requestStatusResult.textContent="Checking…";try{const {data,error}=await window.supabaseClient.rpc("get_my_request_status",{p_tracking_token:token});if(error)throw error;const row=Array.isArray(data)?data[0]:data;if(!row){requestStatusResult.textContent="We couldn't find that request. It may have been archived or the status link expired.";}else{requestStatusResult.textContent=row.song_title+(row.artist_name?" - "+row.artist_name:"")+": "+(row.status||"Received")+".";}}catch(e){requestStatusResult.textContent="Status lookup needs the included Supabase migration. Please try again later.";}finally{requestStatusButton.disabled=false;}});
-requestForm.addEventListener("submit",async e=>{
+requestForm?.addEventListener("submit",async e=>{
  e.preventDefault();
  const name=$("#requester-name").value.trim(),song=$("#request-song").value.trim(),artist=$("#request-artist").value.trim(),message=$("#request-message").value.trim(),status=$("#form-status"),submit=requestForm.querySelector('button[type="submit"]');
  status.textContent="";
@@ -312,7 +319,7 @@ requestForm.addEventListener("submit",async e=>{
  }
 });
 const bookingCopy=$("#booking-copy"), bookingStatus=$("#booking-status");
-bookingCopy.addEventListener("click", async()=>{playSfx("highway-riser-sfx");try{await navigator.clipboard.writeText("griffenarsenaultmusic@hotmail.com");bookingStatus.textContent="Booking email copied.";}catch(e){bookingStatus.textContent="Email: griffenarsenaultmusic@hotmail.com - select and copy it.";}});
+bookingCopy?.addEventListener("click", async()=>{playSfx("highway-riser-sfx");try{await navigator.clipboard.writeText("griffenarsenaultmusic@hotmail.com");bookingStatus.textContent="Booking email copied.";}catch(e){bookingStatus.textContent="Email: griffenarsenaultmusic@hotmail.com - select and copy it.";}});
 // Audio behavior: never autoplay the title sound on page load. The first title-screen gesture starts it once; menu music crossfades in near the end.
 const splash=$("#splash");
 const titleAudio=$("#title-screen-audio"), menuAudio=$("#menu-screen-audio");
@@ -389,10 +396,10 @@ function enterSite(){
 let restoredMenu=false;
 try{restoredMenu=sessionStorage.getItem("grifflistEntered.v1")==="yes";}catch(e){}
 if(restoredMenu){siteEntered=true;splash?.classList.add("dismissed");document.body.classList.remove("splash-open");startMenuMusic();}
-else document.body.classList.add("splash-open");
+else if(splash) document.body.classList.add("splash-open");
 splash?.addEventListener("click",enterSite);
 splash?.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();enterSite();}});
-document.addEventListener("keydown",e=>{if(!splash.classList.contains("dismissed")&&(e.key==="Enter"||e.key===" "))enterSite();});
+if(splash)document.addEventListener("keydown",e=>{if(!splash.classList.contains("dismissed")&&(e.key==="Enter"||e.key===" "))enterSite();});
 // Pause background music when the tab/app is hidden; resume only after the visitor has entered the site.
 document.addEventListener("visibilitychange",()=>{
  if(!menuAudio)return;
@@ -427,7 +434,7 @@ document.addEventListener("click",event=>{
 },true);
 // Audio cues after successful actions.
 const requestFormForAchievement=$("#request-form");
-requestFormForAchievement.addEventListener("submit",()=>{ /* Success cue is triggered after Supabase confirms below. */ });
+requestFormForAchievement?.addEventListener("submit",()=>{ /* Success cue is triggered after Supabase confirms below. */ });
 function focusPaymentMethod(method){
  const targets={paypal:document.querySelector(".payment-paypal"),kofi:document.querySelector(".payment-kofi-wallet")};
  const target=targets[method];const status=document.querySelector("#payment-flow-status");
@@ -472,7 +479,7 @@ if(songReveal&&closeSongList){
  closeSongList.addEventListener("click",()=>{songReveal.open=false;songReveal.querySelector("summary").scrollIntoView({behavior:"smooth",block:"center"});});
  syncCloseButton();
 }
-renderDecades();renderArtists();renderSongs();
+if(hasSongCatalog){renderDecades();renderArtists();renderSongs();}
 
 // Rockometer and encore poll use the existing Supabase project. Apply grifflist-combined-reviewed-migration.sql to enable the database features.
 const rockMeterGoalLabel=document.querySelector("#rock-meter-goal-label");
@@ -489,6 +496,7 @@ const encoreStatus=document.querySelector("#encore-poll-status");
 const encoreTitle=document.querySelector("#encore-poll-title");
 const moneyCAD=value=>new Intl.NumberFormat("en-CA",{style:"currency",currency:"CAD",maximumFractionDigits:0}).format(Number(value)||0);
 async function loadRockMeter(){
+ if(!rockMeterCaption||!rockMeterProgress||!rockMeterRaised||!rockMeterGoal||!rockMeterGoalLabel||!rockMeterFill)return;
  const client=window.supabaseClient;
  if(!client){rockMeterCaption.textContent="Rockometer is waiting for its Supabase connection.";return;}
  try{
@@ -510,6 +518,7 @@ async function loadRockMeter(){
  }catch(e){rockMeterCaption.textContent="";rockMeterCaption.hidden=true;console.error("Rockometer load failed:",e.message);}
 }
 async function loadEncorePoll(){
+ if(!encoreOptions||!encoreStatus||!encoreTitle)return;
  const client=window.supabaseClient;if(!client)return;
  try{const {data,error}=await client.rpc("get_active_encore_poll");if(error)throw error;const poll=Array.isArray(data)?data[0]:data;if(!poll||!poll.active){encoreStatus.textContent="No active encore vote right now. Check back during a show!";encoreOptions.replaceChildren();return;}
  encoreTitle.textContent=poll.title||"VOTE FOR THE ENCORE";encoreStatus.textContent="";encoreOptions.replaceChildren();
@@ -519,7 +528,14 @@ async function loadEncorePoll(){
  if(alreadyVoted)encoreStatus.textContent=`Your vote is in. ${total} vote${total===1?"":"s"} so far.`;
  }catch(e){encoreStatus.textContent="Encore voting will be available after the database setup is complete.";console.info("Encore poll needs the combined Supabase migration.",e.message);}
 }
-loadRockMeter();loadEncorePoll();window.setInterval(()=>{if(!document.hidden){loadRockMeter();loadEncorePoll();}},8000);document.addEventListener("visibilitychange",()=>{if(!document.hidden){loadRockMeter();loadEncorePoll();}});
+const hasRockMeter = Boolean(rockMeterCaption && rockMeterProgress && rockMeterRaised && rockMeterGoal && rockMeterGoalLabel && rockMeterFill);
+const hasEncorePoll = Boolean(encoreOptions && encoreStatus && encoreTitle);
+if (hasRockMeter || hasEncorePoll) {
+ if (hasRockMeter) loadRockMeter();
+ if (hasEncorePoll) loadEncorePoll();
+ window.setInterval(()=>{if(!document.hidden){if(hasRockMeter)loadRockMeter();if(hasEncorePoll)loadEncorePoll();}},8000);
+ document.addEventListener("visibilitychange",()=>{if(!document.hidden){if(hasRockMeter)loadRockMeter();if(hasEncorePoll)loadEncorePoll();}});
+}
 
 
 /* Smart toolbar behavior: hide on downward scroll, reveal on upward scroll, always visible at page top. */
