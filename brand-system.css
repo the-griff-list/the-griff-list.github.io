@@ -109,3 +109,11 @@ input:focus,select:focus,textarea:focus{border-color:#ff9e57;box-shadow:0 0 0 3p
     overflow-wrap:anywhere;
   }
 }
+
+/* The 100vw unit includes the scrollbar in some browser engines; keep the
+   fixed splash and its artwork inside the layout viewport on narrow screens. */
+.splash{max-width:100%}
+.splash-stage{width:min(100%,61.3dvh);max-width:100%}
+@media(max-width:700px){
+  .splash-stage{width:min(100%,61.3dvh);max-width:100%}
+}
