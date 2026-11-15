@@ -343,15 +343,19 @@ test('next-show strip lists the confirmed December Hunter’s dates and performa
   await expect(card).not.toContainText('January 1, 2027');
 });
 
-test('upcoming-show card stays fully usable at compact phone widths', async ({ page }) => {
+test('upcoming-show card and catalog stay usable at compact phone widths', async ({ page }) => {
   await page.goto('/index.html');
   const card = page.locator('.next-show-card');
   const browse = card.locator('a[href="#catalog"]');
+  const catalogHeading = page.locator('.catalog-title h2');
+  const trackCounter = page.locator('.catalog-title .track-counter');
 
   for (const width of [320, 360, 375, 390, 430]) {
     await page.setViewportSize({ width, height: 900 });
     await expect(card).toBeVisible();
     await expect(browse).toBeVisible();
+    await expect(catalogHeading).toBeVisible();
+    await expect(trackCounter).toBeVisible();
     await expect(card.locator('time')).toHaveCount(6);
 
     const layout = await page.evaluate(() => {
@@ -371,7 +375,7 @@ test('upcoming-show card stays fully usable at compact phone widths', async ({ p
             clientWidth: element.clientWidth,
             position: style.position,
             whiteSpace: style.whiteSpace,
-            text: (element.textContent || '').trim().replace(/\\s+/g, ' ').slice(0, 80),
+            text: (element.textContent || '').trim().replace(/\s+/g, ' ').slice(0, 80),
           };
         })
         .filter((item) => item.width > 0 && (item.left < -0.5 || item.right > viewportWidth + 0.5))
@@ -392,13 +396,21 @@ test('upcoming-show card stays fully usable at compact phone widths', async ({ p
 
     const cardBox = await card.boundingBox();
     const browseBox = await browse.boundingBox();
+    const headingBox = await catalogHeading.boundingBox();
+    const counterBox = await trackCounter.boundingBox();
     expect(cardBox, `show card must have a layout box at ${width}px`).not.toBeNull();
     expect(browseBox, `browse action must have a layout box at ${width}px`).not.toBeNull();
+    expect(headingBox, `catalog heading must have a layout box at ${width}px`).not.toBeNull();
+    expect(counterBox, `song count must have a layout box at ${width}px`).not.toBeNull();
     expect(cardBox.x, `show card must remain inside the viewport at ${width}px`).toBeGreaterThanOrEqual(0);
     expect(
       cardBox.x + cardBox.width,
       `show card must not extend beyond the viewport at ${width}px`,
     ).toBeLessThanOrEqual(layout.viewportWidth);
+    expect(headingBox.x).toBeGreaterThanOrEqual(0);
+    expect(headingBox.x + headingBox.width).toBeLessThanOrEqual(layout.viewportWidth);
+    expect(counterBox.x).toBeGreaterThanOrEqual(0);
+    expect(counterBox.x + counterBox.width).toBeLessThanOrEqual(layout.viewportWidth);
     expect(browseBox.x).toBeGreaterThanOrEqual(cardBox.x);
     expect(
       browseBox.x + browseBox.width,
@@ -1582,7 +1594,7 @@ test('service worker caches only query-bearing URLs pinned in CORE', () => {
   for (const path of [
     '/styles.css?v=grifflist-v41',
     '/styles.css?v=grifflist-tour-roadmap-1',
-    '/brand-system.css?v=sitewide-v2',
+    '/brand-system.css?v=sitewide-v3',
     '/script.js?v=request-gateway-stage-1',
     '/script.js?v=grifflist-v28',
     '/site-interactions.js?v=grifflist-v42',

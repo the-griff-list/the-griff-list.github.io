@@ -22,7 +22,7 @@ An earlier version of this file incorrectly marked December 3 and December 17 as
 - [ ] Check keyboard-only navigation, visible focus, skip link, accessible form names, validation announcements and reduced-motion behavior.
 - [ ] Validate every navigation link, image, stylesheet, script, manifest and service-worker asset used by the homepage and Tour Roadmap.
 - [ ] Re-run the exact-head website quality workflow after these date edits. The earlier 137-pass/1-skip run [#43696107553](https://github.com/the-griff-list/the-griff-list.github.io/actions/runs/43696107553) passed on the previous code head; it does not qualify the new date-change commits.
-- [ ] Review the published-site service-worker v38 cache/privacy issue separately. Development v67 is not live and no deployment/cache purge is authorized.
+- [ ] Review the published-site service-worker v38 cache/privacy issue separately. Development v68 is not live and no deployment/cache purge is authorized.
 
 ## Show information rules
 
