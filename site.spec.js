@@ -343,6 +343,43 @@ test('next-show strip lists the confirmed December Hunter’s dates and performa
   await expect(card).not.toContainText('January 1, 2027');
 });
 
+test('upcoming-show card stays fully usable at compact phone widths', async ({ page }) => {
+  await page.goto('/index.html');
+  const card = page.locator('.next-show-card');
+  const browse = card.locator('a[href="#catalog"]');
+
+  for (const width of [320, 360, 375, 390, 430]) {
+    await page.setViewportSize({ width, height: 900 });
+    await expect(card).toBeVisible();
+    await expect(browse).toBeVisible();
+    await expect(card.locator('time')).toHaveCount(6);
+
+    const layout = await page.evaluate(() => ({
+      viewportWidth: document.documentElement.clientWidth,
+      documentWidth: document.documentElement.scrollWidth,
+    }));
+    expect(
+      layout.documentWidth,
+      `homepage must not overflow at ${width}px`,
+    ).toBeLessThanOrEqual(layout.viewportWidth);
+
+    const cardBox = await card.boundingBox();
+    const browseBox = await browse.boundingBox();
+    expect(cardBox, `show card must have a layout box at ${width}px`).not.toBeNull();
+    expect(browseBox, `browse action must have a layout box at ${width}px`).not.toBeNull();
+    expect(cardBox.x, `show card must remain inside the viewport at ${width}px`).toBeGreaterThanOrEqual(0);
+    expect(
+      cardBox.x + cardBox.width,
+      `show card must not extend beyond the viewport at ${width}px`,
+    ).toBeLessThanOrEqual(layout.viewportWidth);
+    expect(browseBox.x).toBeGreaterThanOrEqual(cardBox.x);
+    expect(
+      browseBox.x + browseBox.width,
+      `browse action must remain inside the show card at ${width}px`,
+    ).toBeLessThanOrEqual(cardBox.x + cardBox.width);
+  }
+});
+
 test('tour roadmap lists only the two confirmed Hunter’s dates and their performance windows', async ({ page }) => {
   await page.goto('/roadmap.html');
   const dates = page.locator('#confirmed-dates');
