@@ -1022,6 +1022,7 @@ test('uses the opt-in request gateway and never falls back to direct Supabase IN
     turnstile_token: 'turnstile-test-token'
   });
   expect(gatewayPayload.tracking_token).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i);
+  expect(gatewayPayload.client_session_id).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i);
   expect(gatewayPayload).not.toHaveProperty('status');
   expect(gatewayPayload).not.toHaveProperty('created_at');
   expect(directInsert).toBe(false);
