@@ -242,15 +242,20 @@ const requestStatusButton=$("#check-last-request"), requestStatusResult=$("#requ
 let pendingRequestAttempt=null;
 if(requestStatusButton && requestStatusResult) {
  requestStatusButton.addEventListener("click",async()=>{
+  const sessionAttempt=readSessionStorageSafely("grifflistLastRequest");
   const savedToken=readLocalStorageSafely("grifflistLastRequestToken.v1");
-  let token=savedToken.available&&isTrackingToken(savedToken.value)?savedToken.value:null;
-  let sessionAttempt={available:true,value:null};
-  if(!token){
-   sessionAttempt=readSessionStorageSafely("grifflistLastRequest");
-   if(sessionAttempt.available&&sessionAttempt.value){
-    try{const attempt=JSON.parse(sessionAttempt.value);if(isTrackingToken(attempt?.trackingToken))token=attempt.trackingToken;}catch(e){}
-   }
+  let token=null;
+  if(sessionAttempt.available&&sessionAttempt.value){
+   try{
+    const attempt=JSON.parse(sessionAttempt.value);
+    if(isTrackingToken(attempt?.trackingToken)&&typeof attempt.fingerprint==="string"&&
+       typeof attempt.time==="number"&&Number.isFinite(attempt.time)&&attempt.time>0&&
+       [undefined,"pending","sent"].includes(attempt.state)){
+     token=attempt.trackingToken;
+    }
+   }catch(e){}
   }
+  if(!token&&savedToken.available&&isTrackingToken(savedToken.value))token=savedToken.value;
   if(!token){
    requestStatusResult.textContent=(!savedToken.available||!sessionAttempt.available)
     ?"This browser cannot access the saved request token. Check the request on the device where it was submitted."
@@ -299,7 +304,7 @@ requestForm?.addEventListener("submit",async e=>{
    return;
   }
   if(previous!==null&&(!previous||typeof previous!=="object"||Array.isArray(previous)||
-     typeof previous.fingerprint!=="string"||!Number.isFinite(Number(previous.time))||
+     typeof previous.fingerprint!=="string"||typeof previous.time!=="number"||!Number.isFinite(previous.time)||previous.time<=0||
      !isTrackingToken(previous.trackingToken)||
      ![undefined,"pending","sent"].includes(previous.state))){
    status.textContent="A previous request retry record is invalid. Your request was not sent. Check the last request before trying again.";
@@ -309,14 +314,14 @@ requestForm?.addEventListener("submit",async e=>{
  const now=Date.now();
  const sameFingerprint=previous?.fingerprint===fingerprint;
  const previousTime=Number(previous?.time);
- const previousAge=Number.isFinite(previousTime)?now-previousTime:Infinity;
+ const previousAge=Number.isFinite(previousTime)?Math.max(0,now-previousTime):Infinity;
  const previousWasSent=previous?.state==="sent"||(sameFingerprint&&!previous?.state);
  if(sameFingerprint&&previousWasSent&&previousAge>=0&&previousAge<5*60*1000){
   status.textContent="That same request was just sent. Please wait five minutes before sending it again.";
   return;
  }
- const storedPendingToken=sameFingerprint&&previous?.state==="pending"&&previousAge>=0&&previousAge<24*60*60*1000&&isTrackingToken(previous.trackingToken)?previous.trackingToken:null;
- const memoryPendingToken=pendingRequestAttempt?.fingerprint===fingerprint&&now-pendingRequestAttempt.time<24*60*60*1000?pendingRequestAttempt.trackingToken:null;
+ const storedPendingToken=sameFingerprint&&previous?.state==="pending"&&isTrackingToken(previous.trackingToken)?previous.trackingToken:null;
+ const memoryPendingToken=pendingRequestAttempt?.fingerprint===fingerprint&&isTrackingToken(pendingRequestAttempt.trackingToken)?pendingRequestAttempt.trackingToken:null;
  const trackingToken=storedPendingToken||memoryPendingToken||(crypto.randomUUID?crypto.randomUUID():([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g,c=>(c^crypto.getRandomValues(new Uint8Array(1))[0]&15>>c/4).toString(16)));
  const pendingRecord={fingerprint,time:now,trackingToken,state:"pending"};
  const pendingSerialized=JSON.stringify(pendingRecord);

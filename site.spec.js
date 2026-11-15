@@ -946,6 +946,11 @@ test('retries an uncertain request with the same tracking token instead of creat
   const pending = await page.evaluate(() => JSON.parse(sessionStorage.getItem('grifflistLastRequest')));
   expect(pending.state).toBe('pending');
   expect(pending.trackingToken).toMatch(/^[0-9a-f-]{36}$/i);
+  await page.evaluate(() => {
+    const attempt = JSON.parse(sessionStorage.getItem('grifflistLastRequest'));
+    attempt.time = Date.now() - 48 * 60 * 60 * 1000;
+    sessionStorage.setItem('grifflistLastRequest', JSON.stringify(attempt));
+  });
 
   await submit.click();
   await expect(page.locator('#form-status')).toHaveText('Request sent! Thanks for helping choose the music.');
@@ -1135,6 +1140,49 @@ test('request status falls back to the current tab when local token storage is b
   await expect(page.locator('#form-status')).toHaveText('Request sent! Thanks for helping choose the music.');
   await page.locator('#check-last-request').click();
   await expect(page.locator('#request-status-result')).toContainText('Fallback Song');
+});
+
+
+
+test('request status prefers this tab\'s latest token when local token replacement fails', async ({ page }) => {
+  await page.addInitScript(() => {
+    localStorage.setItem('grifflistLastRequestToken.v1', '00000000-0000-4000-8000-000000000001');
+    const originalSetItem = Storage.prototype.setItem;
+    Storage.prototype.setItem = function (key, value) {
+      if (this === window.localStorage && key === 'grifflistLastRequestToken.v1') {
+        throw new DOMException('local token quota reached', 'QuotaExceededError');
+      }
+      return originalSetItem.call(this, key, value);
+    };
+  });
+  await page.goto('/index.html');
+  await page.locator('#splash').click();
+  await page.evaluate(() => {
+    const client = {
+      from: () => ({ insert: async () => ({ error: null }) }),
+      rpc: async (_name, args) => {
+        window.__statusToken = args.p_tracking_token;
+        return {
+          data: { song_title: 'Current Tab Song', artist_name: 'Current Tab Artist', status: 'Received' },
+          error: null
+        };
+      }
+    };
+    Object.defineProperty(window, 'supabaseClient', {
+      configurable: false,
+      enumerable: true,
+      get: () => client,
+      set: () => {}
+    });
+  });
+  await page.locator('#requester-name').fill('Current Tab Listener');
+  await page.locator('#request-song').fill('Current Tab Song');
+  await page.locator('#request-form button[type="submit"]').click();
+  const currentToken = await page.evaluate(() => JSON.parse(sessionStorage.getItem('grifflistLastRequest')).trackingToken);
+  expect(await page.evaluate(() => localStorage.getItem('grifflistLastRequestToken.v1'))).toBe('00000000-0000-4000-8000-000000000001');
+  await page.locator('#check-last-request').click();
+  await expect(page.locator('#request-status-result')).toContainText('Current Tab Song');
+  expect(await page.evaluate(() => window.__statusToken)).toBe(currentToken);
 });
 
 function findMissingHtmlFragmentLinks(pages, origin = 'https://site.invalid') {
