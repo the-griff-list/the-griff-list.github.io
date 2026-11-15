@@ -133,11 +133,11 @@ test('explicit cache-bypass requests stay unpersisted while public navigations r
     assert.equal(context.isCacheableRequest(request({ destination: 'style', cache }), publicUrl), false, cache);
   }
   const homepage = new URL('/index.html', ORIGIN);
-  for (const cache of ['no-store', 'no-cache']) {
-    const navigation = request({ mode: 'navigate', destination: 'document', cache });
-    assert.equal(context.isCacheableRequest(navigation, homepage), true, cache);
-    assert.equal(context.isCacheableResponseForRequest(navigation, response()), false, cache);
-  }
+  const noStoreNavigation = request({ mode: 'navigate', destination: 'document', cache: 'no-store' });
+  assert.equal(context.isCacheableRequest(noStoreNavigation, homepage), false, 'no-store navigation bypasses the worker');
+  const noCacheNavigation = request({ mode: 'navigate', destination: 'document', cache: 'no-cache' });
+  assert.equal(context.isCacheableRequest(noCacheNavigation, homepage), true, 'no-cache navigation remains network-first');
+  assert.equal(context.isCacheableResponseForRequest(noCacheNavigation, response()), false, 'no-cache navigation is never persisted');
   const reloadNavigation = request({ mode: 'navigate', destination: 'document', cache: 'reload' });
   assert.equal(context.isCacheableRequest(reloadNavigation, homepage), true, 'reload navigation remains interceptable');
   assert.equal(context.isCacheableResponseForRequest(reloadNavigation, response()), true, 'credentialless reload may refresh the public cache');
@@ -148,8 +148,11 @@ test('explicit cache-bypass requests stay unpersisted while public navigations r
     { Pragma: 'no-cache' },
   ]) {
     const navigation = request({ mode: 'navigate', destination: 'document', headerValues });
-    assert.equal(context.isCacheableRequest(navigation, homepage), true, JSON.stringify(headerValues));
-    assert.equal(context.isCacheableResponseForRequest(navigation, response()), false, JSON.stringify(headerValues));
+    const expectedIntercept = !Object.hasOwn(headerValues, 'Cache-Control') || headerValues['Cache-Control'] !== 'no-store';
+    assert.equal(context.isCacheableRequest(navigation, homepage), expectedIntercept, JSON.stringify(headerValues));
+    if (expectedIntercept) {
+      assert.equal(context.isCacheableResponseForRequest(navigation, response()), false, JSON.stringify(headerValues));
+    }
   }
   for (const cacheControl of ['no-store', 'no-cache', 'no-store=1', 'no-cache="set-cookie"', 'max-age=0', 'max-age=00', 'public, max-age="0"']) {
     assert.equal(
