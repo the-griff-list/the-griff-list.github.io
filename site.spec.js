@@ -835,13 +835,21 @@ test('priority payment details appear only after optional opt-in and disclose ma
 
 test('priority request status explains manual verification and no playback guarantee', async ({ page }) => {
   await page.addInitScript(() => {
+    // supabase-config.js legitimately assigns the SDK client once during bootstrap.
+    // Count that expected assignment separately from any later replacement.
+    window.__requestClientAssignmentCount = 0;
     window.__requestClientReplacementDetected = false;
     const mockClient = { from: () => ({ insert: async () => ({ error: null }) }) };
     Object.defineProperty(window, 'supabaseClient', {
       configurable: false,
       enumerable: true,
       get: () => mockClient,
-      set: () => { window.__requestClientReplacementDetected = true; }
+      set: () => {
+        window.__requestClientAssignmentCount += 1;
+        if (window.__requestClientAssignmentCount > 1) {
+          window.__requestClientReplacementDetected = true;
+        }
+      }
     });
   });
   await page.goto('/index.html');
@@ -853,6 +861,7 @@ test('priority request status explains manual verification and no playback guara
   await page.locator('#request-form button[type="submit"]').click();
   await expect(page.locator('#form-status')).toContainText('manual verification');
   await expect(page.locator('#form-status')).toContainText('not guaranteed');
+  expect(await page.evaluate(() => window.__requestClientAssignmentCount)).toBe(1);
   expect(await page.evaluate(() => window.__requestClientReplacementDetected)).toBe(false);
 });
 
