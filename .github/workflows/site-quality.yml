@@ -62,6 +62,8 @@ jobs:
         run: node qa-service-worker-lifecycle-test.js
       - name: Verify public song-request insert privileges
         run: node qa-public-request-privileges-test.js
+      - name: Test draft Cloudflare request gateway
+        run: node --test tests/cloudflare-request-gateway.test.mjs
 
       - name: Check HTML references, JavaScript syntax, PWA manifest, service worker, CSS and images
         run: python qa-smoke-test.py
