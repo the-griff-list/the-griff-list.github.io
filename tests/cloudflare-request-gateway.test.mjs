@@ -82,6 +82,23 @@ test("rejects missing and foreign origins before backend access", async () => {
   assert.equal((await run(request(payload(), { Origin: "https://evil.example" }), env())).status, 403);
   assert.equal(mock.calls.length, 0);
 });
+test("handles exact-origin preflight and rejects unsupported methods", async () => {
+  const mock = mockFetch();
+  const run = handler(mock);
+  const preflight = await run(new Request("https://requests.example.workers.dev/submit", {
+    method: "OPTIONS", headers: { Origin: ORIGIN },
+  }), env());
+  assert.equal(preflight.status, 204);
+  assert.equal(preflight.headers.get("Access-Control-Allow-Origin"), ORIGIN);
+  assert.match(preflight.headers.get("Access-Control-Allow-Methods"), /POST/);
+  const get = await run(new Request("https://requests.example.workers.dev/submit", {
+    method: "GET", headers: { Origin: ORIGIN },
+  }), env());
+  assert.equal(get.status, 405);
+  assert.equal(get.headers.get("Allow"), "POST, OPTIONS");
+  assert.equal(mock.calls.length, 0);
+});
+
 
 test("ignores spoofed X-Forwarded-For and requires Cloudflare client metadata", async () => {
   const mock = mockFetch();
@@ -194,4 +211,12 @@ test("draft SQL keeps the legacy insert path until explicit cutover", async () =
   assert.doesNotMatch(migration, /revoke insert on table public\.song_requests from public, anon, authenticated/i);
   assert.match(cutover, /revoke insert on table public\.song_requests from public, anon, authenticated/i);
   assert.match(migration, /set search_path = ''/i);
+});
+
+ 
+test("browser config keeps the gateway disabled and contains no server secrets", async () => {
+  const config = await readFile(new URL("../supabase-config.js", import.meta.url), "utf8");
+  assert.match(config, /requestGatewayUrl:\s*""/);
+  assert.match(config, /turnstileSiteKey:\s*""/);
+  assert.doesNotMatch(config, /SUPABASE_SECRET_KEY|TURNSTILE_SECRET_KEY|RATE_LIMIT_HMAC_SECRET/);
 });
