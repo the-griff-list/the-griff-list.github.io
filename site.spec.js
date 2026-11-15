@@ -472,7 +472,7 @@ test('public offline shell registers and never caches private pages', async ({ p
   expect(initial).toContain('/offline.html');
   expect(initial).toContain('/roadmap.html');
   expect(initial).toContain('/styles.css?v=grifflist-tour-roadmap-1');
-  expect(initial).toContain('/script.js?v=payment-security-pause-1');
+  expect(initial).toContain('/script.js?v=request-gateway-stage-1');
 
   // Exercise the app's navigator.onLine event handler without asking WebKit to
   // reload a page while its whole browser context is offline.
@@ -979,26 +979,33 @@ test('uses the opt-in request gateway and never falls back to direct Supabase IN
     });
   });
 
-  await page.route('https://requests.example.workers.dev/submit', async route => {
-    const req = route.request();
-    const origin = req.headers().origin || 'http://127.0.0.1:4173';
-    const corsHeaders = {
-      'Access-Control-Allow-Origin': origin,
-      'Access-Control-Allow-Methods': 'POST, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type',
-      'Access-Control-Max-Age': '600',
-      'Vary': 'Origin'
+  // Test the browser-to-gateway request contract without making this UI test
+  // depend on each engine's cross-origin preflight implementation. The Worker
+  // CORS, origin, redirect and secret-forwarding rules are covered separately
+  // by cloudflare-request-gateway.test.mjs.
+  await page.addInitScript(() => {
+    const originalFetch = window.fetch.bind(window);
+    window.__gatewayFetchCalls = [];
+    window.fetch = async (input, init = {}) => {
+      const url = typeof input === 'string' ? input : input?.url;
+      if (url !== 'https://requests.example.workers.dev/submit') {
+        return originalFetch(input, init);
+      }
+      const body = JSON.parse(String(init.body || '{}'));
+      window.__gatewayFetchCalls.push({
+        url,
+        method: String(init.method || 'GET').toUpperCase(),
+        body
+      });
+      return new Response(JSON.stringify({
+        ok: true,
+        duplicate: false,
+        tracking_token: body.tracking_token
+      }), {
+        status: 201,
+        headers: { 'Content-Type': 'application/json' }
+      });
     };
-    if (req.method() === 'OPTIONS') {
-      await route.fulfill({ status: 204, headers: corsHeaders });
-      return;
-    }
-    gatewayPayload = req.postDataJSON();
-    await route.fulfill({
-      status: 201,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ok: true, duplicate: false, tracking_token: gatewayPayload.tracking_token })
-    });
   });
 
   await page.route('**/rest/v1/song_requests*', async route => {
@@ -1016,6 +1023,11 @@ test('uses the opt-in request gateway and never falls back to direct Supabase IN
   await page.locator('#request-form button[type="submit"]').click();
 
   await expect(page.locator('#form-status')).toHaveText('Request sent! Thanks for helping choose the music.');
+  const gatewayCalls = await page.evaluate(() => window.__gatewayFetchCalls || []);
+  expect(gatewayCalls).toHaveLength(1);
+  expect(gatewayCalls[0].url).toBe('https://requests.example.workers.dev/submit');
+  expect(gatewayCalls[0].method).toBe('POST');
+  gatewayPayload = gatewayCalls[0].body;
   expect(gatewayPayload).toMatchObject({
     requester_name: 'Gateway Listener',
     song_title: 'Gateway Song',
@@ -1465,7 +1477,7 @@ test('service worker caches only query-bearing URLs pinned in CORE', () => {
     '/styles.css?v=grifflist-v41',
     '/styles.css?v=grifflist-tour-roadmap-1',
     '/brand-system.css?v=sitewide-v2',
-    '/script.js?v=payment-security-pause-1',
+    '/script.js?v=request-gateway-stage-1',
     '/script.js?v=grifflist-v28',
     '/site-interactions.js?v=grifflist-v42',
     '/live-show.js?v=grifflist-v31',
