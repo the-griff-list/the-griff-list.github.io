@@ -739,6 +739,10 @@ test('tip surfaces do not advertise unverified wallet methods before checkout', 
 });
 
 test('song selection and request-status lookup fail closed when local storage is blocked', async ({ page }) => {
+  // This regression targets storage behavior, not smooth-scroll animation. The
+  // song-selection flow already honors reduced motion; enable it here so WebKit
+  // does not keep the request-status button moving during Playwright's click.
+  await page.emulateMedia({ reducedMotion: 'reduce' });
   const pageErrors = [];
   page.on('pageerror', error => pageErrors.push(error.message));
   await page.addInitScript(() => {
