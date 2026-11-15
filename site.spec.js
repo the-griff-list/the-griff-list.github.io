@@ -354,13 +354,40 @@ test('upcoming-show card stays fully usable at compact phone widths', async ({ p
     await expect(browse).toBeVisible();
     await expect(card.locator('time')).toHaveCount(6);
 
-    const layout = await page.evaluate(() => ({
-      viewportWidth: document.documentElement.clientWidth,
-      documentWidth: document.documentElement.scrollWidth,
-    }));
+    const layout = await page.evaluate(() => {
+      const viewportWidth = document.documentElement.clientWidth;
+      const overflowingElements = Array.from(document.querySelectorAll('body *'))
+        .map((element) => {
+          const rect = element.getBoundingClientRect();
+          const style = getComputedStyle(element);
+          return {
+            tag: element.tagName.toLowerCase(),
+            id: element.id,
+            className: typeof element.className === 'string' ? element.className : '',
+            left: Math.round(rect.left * 10) / 10,
+            right: Math.round(rect.right * 10) / 10,
+            width: Math.round(rect.width * 10) / 10,
+            scrollWidth: element.scrollWidth,
+            clientWidth: element.clientWidth,
+            position: style.position,
+            whiteSpace: style.whiteSpace,
+            text: (element.textContent || '').trim().replace(/\\s+/g, ' ').slice(0, 80),
+          };
+        })
+        .filter((item) => item.width > 0 && (item.left < -0.5 || item.right > viewportWidth + 0.5))
+        .sort((left, right) => right.right - left.right)
+        .slice(0, 20);
+      return {
+        viewportWidth,
+        documentWidth: document.documentElement.scrollWidth,
+        bodyWidth: document.body.scrollWidth,
+        overflowingElements,
+      };
+    });
+    console.log(`compact show layout at ${width}px: ${JSON.stringify(layout.overflowingElements)}`);
     expect(
       layout.documentWidth,
-      `homepage must not overflow at ${width}px`,
+      `homepage must not overflow at ${width}px; offenders: ${JSON.stringify(layout.overflowingElements)}`,
     ).toBeLessThanOrEqual(layout.viewportWidth);
 
     const cardBox = await card.boundingBox();
