@@ -34,7 +34,7 @@ Configure privately in Cloudflare; never put values in this repository:
 | `TURNSTILE_SECRET_KEY` | Secret | Turnstile Siteverify secret |
 | `RATE_LIMIT_HMAC_SECRET` | Secret | At least 32 random bytes; used only to derive source digests |
 
-The public Turnstile site key and Worker endpoint belong in the browser config only after the Worker is deployed and tested. Never expose the Supabase secret key or HMAC secret.
+The public Turnstile site key and Worker endpoint belong in the browser config only after the Worker is deployed and tested. Never expose the Supabase secret key or HMAC secret. The Worker requires a new Supabase sb_secret_ key and sends it only in the apikey header; do not send the opaque key as Authorization: Bearer. The configured project URL is restricted to an HTTPS project-ref.supabase.co hostname.
 
 ## Important edge-rate-limit limitation
 
