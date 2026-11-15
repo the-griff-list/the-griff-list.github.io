@@ -30,6 +30,16 @@ function validHttpsOrigin(value) {
   } catch { return false; }
 }
 
+function validSupabaseUrl(value) {
+  try {
+    const base = String(value).replace(/\\/+$/, "");
+    const parsed = new URL(base);
+    return parsed.protocol === "https:" &&
+      /^[a-z0-9-]+\\.supabase\\.co$/i.test(parsed.hostname) &&
+      parsed.origin === base && parsed.pathname === "/";
+  } catch { return false; }
+}
+
 function validIpLiteral(value) {
   if (typeof value !== "string" || !value || value !== value.trim() || /[%\s,]/.test(value)) return false;
   if (value.includes(":")) {
@@ -116,8 +126,10 @@ export function createRequestGatewayHandler({ fetchImpl = globalThis.fetch, cryp
   return async function handleRequest(request, env) {
     const origin = request.headers.get("Origin") || "";
     const allowedOrigin = env?.ALLOWED_ORIGIN || "";
-    if (!validHttpsOrigin(allowedOrigin) || !env?.SUPABASE_URL || !env?.SUPABASE_SECRET_KEY ||
+    if (!validHttpsOrigin(allowedOrigin) || !validSupabaseUrl(env?.SUPABASE_URL) ||
+        typeof env?.SUPABASE_SECRET_KEY !== "string" || !env.SUPABASE_SECRET_KEY.startsWith("sb_secret_") ||
         !env?.TURNSTILE_SECRET_KEY || !env?.TURNSTILE_EXPECTED_HOSTNAME ||
+        new URL(allowedOrigin).hostname !== env.TURNSTILE_EXPECTED_HOSTNAME ||
         typeof env?.RATE_LIMIT_HMAC_SECRET !== "string" || env.RATE_LIMIT_HMAC_SECRET.length < 32) {
       return jsonResponse(503, { error: "request_service_unavailable" }, origin, allowedOrigin);
     }
@@ -150,8 +162,8 @@ export function createRequestGatewayHandler({ fetchImpl = globalThis.fetch, cryp
     const supabaseBase = String(env.SUPABASE_URL).replace(/\/+$/, "");
     const supabaseHeaders = {
       "Content-Type": "application/json",
+      // Supabase opaque secret keys belong in apikey, not Authorization: Bearer.
       apikey: env.SUPABASE_SECRET_KEY,
-      Authorization: "Bearer " + env.SUPABASE_SECRET_KEY,
     };
     const callRpc = async (name, payload) => {
       const response = await fetchImpl(supabaseBase + "/rest/v1/rpc/" + name, {
