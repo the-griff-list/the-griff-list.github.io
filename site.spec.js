@@ -314,36 +314,20 @@ test('private dashboard exposes one main landmark and its page heading', async (
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Request Dashboard');
 });
 test('title screen can be entered', async ({ page }) => { await page.goto('/index.html'); await page.locator('#splash').click(); await expect(page.locator('#catalog')).toBeVisible(); });
-test('next-show strip lists the confirmed December Hunter’s dates and performance windows', async ({ page }) => {
+test('homepage does not advertise unconfirmed performance dates', async ({ page }) => {
   await page.goto('/index.html');
   const card = page.locator('.next-show-card');
-  await expect(card.locator('.eyebrow')).toHaveText('UPCOMING SHOWS');
-  await expect(card.locator('#next-show-title')).toHaveText('Next show');
-  await expect(card).toContainText('Hunter’s Ale House');
+  await expect(card.locator('.eyebrow')).toHaveText('NEXT PERFORMANCE');
+  await expect(card.locator('#next-show-title')).toHaveText('Next date to be announced');
+  await expect(card).toContainText('No upcoming performance date is currently confirmed.');
   await expect(card.locator('a[href="#catalog"]')).toHaveText('BROWSE SONGS ↗');
-
-  const times = card.locator('time');
-  await expect(times).toHaveCount(6);
-  const expectedTimes = [
-    '2026-12-03',
-    '2026-12-03T22:00:00-04:00',
-    '2026-12-04T01:30:00-04:00',
-    '2026-12-17',
-    '2026-12-17T22:00:00-04:00',
-    '2026-12-18T01:30:00-04:00',
-  ];
-  for (const [index, datetime] of expectedTimes.entries()) {
-    await expect(times.nth(index)).toHaveAttribute('datetime', datetime);
-  }
-  await expect(card).toContainText('Thursday, December 3, 2026');
-  await expect(card).toContainText('Thursday, December 17, 2026');
-  await expect(card).toContainText('10:00 p.m.');
-  await expect(card).toContainText('1:30 a.m.');
-  await expect(card).toContainText('Atlantic');
+  await expect(card.locator('time')).toHaveCount(0);
+  await expect(card).not.toContainText('Hunter’s Ale House');
+  await expect(card).not.toContainText('December 3, 2026');
+  await expect(card).not.toContainText('December 17, 2026');
   await expect(card).not.toContainText('January 1, 2027');
 });
-
-test('upcoming-show card and catalog stay usable at compact phone widths', async ({ page }) => {
+test('next-performance notice and catalog stay usable at compact phone widths', async ({ page }) => {
   await page.goto('/index.html');
   const card = page.locator('.next-show-card');
   const browse = card.locator('a[href="#catalog"]');
@@ -356,7 +340,8 @@ test('upcoming-show card and catalog stay usable at compact phone widths', async
     await expect(browse).toBeVisible();
     await expect(catalogHeading).toBeVisible();
     await expect(trackCounter).toBeVisible();
-    await expect(card.locator('time')).toHaveCount(6);
+    await expect(card.locator('time')).toHaveCount(0);
+    await expect(card).toContainText('No upcoming performance date is currently confirmed.');
 
     const layout = await page.evaluate(() => {
       const viewportWidth = document.documentElement.clientWidth;
@@ -419,43 +404,17 @@ test('upcoming-show card and catalog stay usable at compact phone widths', async
   }
 });
 
-test('tour roadmap lists only the two confirmed Hunter’s dates and their performance windows', async ({ page }) => {
+test('tour roadmap does not advertise unconfirmed performance dates', async ({ page }) => {
   await page.goto('/roadmap.html');
   const dates = page.locator('#confirmed-dates');
-  await expect(dates.getByRole('heading', { level: 2 })).toHaveText('CONFIRMED UPCOMING SHOWS');
-  await expect(dates).toContainText('Two upcoming Hunter’s Ale House performances are confirmed.');
-  await expect(dates).toContainText('planned performance windows, not doors times');
-
-  const cards = dates.locator('article.confirmed-show-card');
-  await expect(cards).toHaveCount(2);
-
-  const expectedCards = [
-    {
-      date: '2026-12-03',
-      start: '2026-12-03T22:00:00-04:00',
-      end: '2026-12-04T01:30:00-04:00',
-    },
-    {
-      date: '2026-12-17',
-      start: '2026-12-17T22:00:00-04:00',
-      end: '2026-12-18T01:30:00-04:00',
-    },
-  ];
-  for (const [index, expected] of expectedCards.entries()) {
-    const card = cards.nth(index);
-    await expect(card.getByRole('heading', { level: 3 })).toHaveText('Hunter’s Ale House');
-    const times = card.locator('time');
-    await expect(times).toHaveCount(3);
-    await expect(times.nth(0)).toHaveAttribute('datetime', expected.date);
-    await expect(times.nth(1)).toHaveAttribute('datetime', expected.start);
-    await expect(times.nth(2)).toHaveAttribute('datetime', expected.end);
-    await expect(card).toContainText('10:00 p.m.');
-    await expect(card).toContainText('1:30 a.m.');
-    await expect(card).toContainText('Atlantic');
-  }
+  await expect(dates.getByRole('heading', { level: 2 })).toHaveText('NEXT DATE TO BE ANNOUNCED');
+  await expect(dates).toContainText('No upcoming performance date is currently confirmed.');
+  await expect(dates.locator('article.confirmed-show-card')).toHaveCount(0);
+  await expect(dates.locator('time')).toHaveCount(0);
+  await expect(dates).not.toContainText('December 3, 2026');
+  await expect(dates).not.toContainText('December 17, 2026');
   await expect(dates).not.toContainText('January 1, 2027');
 });
-
 test('home Watch Live CTA checks status when no stream is active', async ({ page }) => {
   await page.route('**/rest/v1/live_show_settings*', async route => {
     const cors = {
