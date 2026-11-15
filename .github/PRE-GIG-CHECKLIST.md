@@ -1,3 +1,15 @@
+# Current pre-gig milestone — December 3, 2026
+
+**Next confirmed show:** Hunter’s Ale House · Thursday, December 3, 2026 · planned performance window 10:00 p.m.–1:30 a.m. Atlantic.  
+**Following confirmed show:** Hunter’s Ale House · Thursday, December 17, 2026 · planned performance window 10:00 p.m.–1:30 a.m. Atlantic.  
+**Confirmation source:** the user explicitly confirmed both dates and the performance window in the October 30, 2026 conversation. November 13 was not booked.
+
+The earlier November 11 note below saying no later confirmed booking was available is superseded. It was based on an incomplete assistant-generated summary; the user’s October 30 confirmation is the authoritative booking context. Use the active [December 3 pre-gig checklist](PRE-GIG-CHECKLIST-2026-12-03.md) for current work. The November 10 checklist remains a historical post-event record.
+
+PR #3 remains draft and unpublished. No deployment, production change or payment activation is authorized.
+
+---
+
 # November 10, 2026 — pre-gig website checklist
 
 **Confirmed booking / planned set:** Hunter’s Ale House · Tuesday, November 10, 2026 · 10:00 p.m.–1:30 a.m. Atlantic (user-confirmed).  
