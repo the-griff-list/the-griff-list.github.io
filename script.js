@@ -159,6 +159,18 @@ function readSessionStorageSafely(key){try{return {available:true,value:sessionS
 function writeLocalStorageSafely(key,value){try{localStorage.setItem(key,value);return true;}catch(e){return false;}}
 function writeSessionStorageSafely(key,value){try{sessionStorage.setItem(key,value);return true;}catch(e){return false;}}
 function isTrackingToken(value){return typeof value==="string"&&/^[0-9a-f-]{36}$/i.test(value);}
+function isUuidV4(value){return typeof value==="string"&&/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);}
+function createUuidV4(){return crypto.randomUUID?crypto.randomUUID():([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g,c=>(c^crypto.getRandomValues(new Uint8Array(1))[0]&15>>c/4).toString(16));}
+function getOrCreateRequestSessionId(){
+ const key="grifflistRequestSession.v1";
+ const saved=readSessionStorageSafely(key);
+ if(!saved.available)return null;
+ if(isUuidV4(saved.value))return saved.value.toLowerCase();
+ const sessionId=createUuidV4();
+ if(!writeSessionStorageSafely(key,sessionId))return null;
+ const verified=readSessionStorageSafely(key);
+ return verified.available&&verified.value===sessionId?sessionId:null;
+}
 function filteredSongs(){const q=normalizeSearchText(searchEl.value);return songs.map((s,i)=>({...s,index:i,displayGenre:genreFor(s)}))
  .filter(s=>selectedDecade==="All"||s.decade===selectedDecade)
  .filter(s=>artistEl.value==="All"||s.artist===artistEl.value)
@@ -375,6 +387,11 @@ requestForm?.addEventListener("submit",async e=>{
  const storedPendingToken=sameFingerprint&&previous?.state==="pending"&&isTrackingToken(previous.trackingToken)?previous.trackingToken:null;
  const memoryPendingToken=pendingRequestAttempt?.fingerprint===fingerprint&&isTrackingToken(pendingRequestAttempt.trackingToken)?pendingRequestAttempt.trackingToken:null;
  const trackingToken=storedPendingToken||memoryPendingToken||(crypto.randomUUID?crypto.randomUUID():([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g,c=>(c^crypto.getRandomValues(new Uint8Array(1))[0]&15>>c/4).toString(16)));
+ const clientSessionId=requestGatewayEnabled?getOrCreateRequestSessionId():null;
+ if(requestGatewayEnabled&&!clientSessionId){
+  status.textContent="This browser cannot safely save a request session. Your request was not sent. Enable session storage or use another browser.";
+  return;
+ }
  const pendingRecord={fingerprint,time:now,trackingToken,state:"pending"};
  const pendingSerialized=JSON.stringify(pendingRecord);
  if(!writeSessionStorageSafely(storageKey,pendingSerialized)){
@@ -391,7 +408,7 @@ requestForm?.addEventListener("submit",async e=>{
  submit.textContent="SENDING REQUEST…";
  try{
   if(requestGatewayEnabled){
-   const gatewayResponse=await fetch(requestGatewayUrl,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({requester_name:name,song_title:song,artist_name:artist||null,note:savedNote||null,tracking_token:trackingToken,turnstile_token:requestChallengeToken})});
+   const gatewayResponse=await fetch(requestGatewayUrl,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({requester_name:name,song_title:song,artist_name:artist||null,note:savedNote||null,tracking_token:trackingToken,client_session_id:clientSessionId,turnstile_token:requestChallengeToken})});
    const gatewayBody=await gatewayResponse.json().catch(()=>null);
    if(!gatewayResponse.ok){
     const gatewayError=new Error(gatewayBody?.error||"request_gateway_error");
