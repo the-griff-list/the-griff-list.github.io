@@ -198,6 +198,57 @@ if (hasSongCatalog) {
 window.addEventListener("pagehide",stopPreview);
 // Public visitors can submit requests; the database only permits public INSERTs.
 const requestForm=$("#request-form");
+const requestGatewayConfig=window.GRIFflist_SUPABASE_CONFIG||{};
+const requestGatewayUrlValue=typeof requestGatewayConfig.requestGatewayUrl==="string"?requestGatewayConfig.requestGatewayUrl.trim():"";
+const requestGatewayEnabled=requestGatewayUrlValue.length>0;
+let requestGatewayUrl=null;
+let requestGatewayConfigurationValid=true;
+if(requestGatewayEnabled){
+ try{
+  const parsedGatewayUrl=new URL(requestGatewayUrlValue);
+  if(parsedGatewayUrl.protocol!=="https:"||parsedGatewayUrl.username||parsedGatewayUrl.password||parsedGatewayUrl.search||parsedGatewayUrl.hash||parsedGatewayUrl.pathname!=="/submit")throw new Error("invalid gateway URL");
+  requestGatewayUrl=parsedGatewayUrl.href;
+ }catch(e){requestGatewayConfigurationValid=false;}
+}
+const requestTurnstileSiteKey=typeof requestGatewayConfig.turnstileSiteKey==="string"?requestGatewayConfig.turnstileSiteKey.trim():"";
+let requestChallengeToken=null,requestChallengeWidgetId=null,requestChallengeReady=false;
+const requestChallengeWrap=$("#request-challenge-wrap"),requestChallengeContainer=$("#request-challenge");
+async function initializeRequestChallenge(){
+ if(!requestGatewayEnabled||!requestForm)return;
+ if(requestChallengeWrap)requestChallengeWrap.hidden=false;
+ if(!requestGatewayConfigurationValid||!requestTurnstileSiteKey||!requestChallengeContainer){
+  const challengeStatus=$("#form-status");
+  if(challengeStatus)challengeStatus.textContent="Secure request verification is not configured yet. Please try again later.";
+  return;
+ }
+ try{
+  if(!window.turnstile){
+   if(!window.__grifflistTurnstileLoad){
+    window.__grifflistTurnstileLoad=new Promise((resolve,reject)=>{
+     const loader=document.createElement("script");
+     loader.src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";
+     loader.async=true;loader.defer=true;
+     loader.onload=resolve;loader.onerror=()=>reject(new Error("Turnstile failed to load"));
+     document.head.appendChild(loader);
+    });
+   }
+   await window.__grifflistTurnstileLoad;
+  }
+  requestChallengeWidgetId=window.turnstile.render(requestChallengeContainer,{
+   sitekey:requestTurnstileSiteKey,
+   action:"song_request",
+   callback:token=>{requestChallengeToken=typeof token==="string"?token:null;},
+   "expired-callback":()=>{requestChallengeToken=null;},
+   "error-callback":()=>{requestChallengeToken=null;}
+  });
+  requestChallengeReady=true;
+ }catch(e){
+  requestChallengeReady=false;
+  if(requestChallengeContainer)requestChallengeContainer.textContent="Request verification is temporarily unavailable.";
+ }
+}
+if(requestGatewayEnabled&&requestForm)void initializeRequestChallenge();
+
 const priorityToggle=$("#priority-request"), priorityPaymentWrap=$("#priority-payment-wrap");
 const availablePriorityPaymentMethods = new Set(["kofi", "paypal"]);
 let priorityAlreadyTipped=false;
@@ -281,7 +332,8 @@ requestForm?.addEventListener("submit",async e=>{
  if(!name){status.textContent="Please enter your name.";$("#requester-name").focus();return;}
  if(!song){status.textContent="Please enter a song name.";$("#request-song").focus();return;}
  const client=window.supabaseClient;
- if(!client){status.textContent="Online requests are being set up. Please try again later.";return;}
+ if(!client&&!requestGatewayEnabled){status.textContent="Online requests are being set up. Please try again later.";return;}
+ if(requestGatewayEnabled&&(!requestGatewayConfigurationValid||!requestChallengeReady||!requestChallengeToken)){status.textContent="Complete the secure request check before sending your request.";return;}
  if(submit.disabled)return;
 
  const priority=isPrioritySelected();
@@ -338,15 +390,28 @@ requestForm?.addEventListener("submit",async e=>{
  submit.disabled=true;
  submit.textContent="SENDING REQUEST…";
  try{
-  const {error}=await client.from("song_requests").insert({requester_name:name,song_title:song,artist_name:artist||null,note:savedNote||null,tracking_token:trackingToken});
-  if(error){
-   if(String(error.code||"")==="23505"){
-    const {data:existing,error:lookupError}=await client.rpc("get_my_request_status",{p_tracking_token:trackingToken});
-    const row=Array.isArray(existing)?existing[0]:existing;
-    const matchesAttempt=row&&row.song_title===song&&(row.artist_name||"")===artist;
-    if(lookupError||!matchesAttempt)throw error;
-   }else{
-    throw error;
+  if(requestGatewayEnabled){
+   const gatewayResponse=await fetch(requestGatewayUrl,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({requester_name:name,song_title:song,artist_name:artist||null,note:savedNote||null,tracking_token:trackingToken,turnstile_token:requestChallengeToken})});
+   const gatewayBody=await gatewayResponse.json().catch(()=>null);
+   if(!gatewayResponse.ok){
+    const gatewayError=new Error(gatewayBody?.error||"request_gateway_error");
+    gatewayError.code=String(gatewayResponse.status);
+    throw gatewayError;
+   }
+   if(gatewayBody?.ok!==true||gatewayBody.tracking_token!==trackingToken)throw new Error("request_gateway_response_invalid");
+   requestChallengeToken=null;
+   if(window.turnstile&&requestChallengeWidgetId!==null)window.turnstile.reset(requestChallengeWidgetId);
+  }else{
+   const {error}=await client.from("song_requests").insert({requester_name:name,song_title:song,artist_name:artist||null,note:savedNote||null,tracking_token:trackingToken});
+   if(error){
+    if(String(error.code||"")==="23505"){
+     const {data:existing,error:lookupError}=await client.rpc("get_my_request_status",{p_tracking_token:trackingToken});
+     const row=Array.isArray(existing)?existing[0]:existing;
+     const matchesAttempt=row&&row.song_title===song&&(row.artist_name||"")===artist;
+     if(lookupError||!matchesAttempt)throw error;
+    }else{
+     throw error;
+    }
    }
   }
   pendingRequestAttempt=null;
@@ -369,8 +434,9 @@ requestForm?.addEventListener("submit",async e=>{
   priorityAlreadyTipped=false;
  }catch(err){
   console.error("Request submission failed",err);
+  if(requestGatewayEnabled){requestChallengeToken=null;if(window.turnstile&&requestChallengeWidgetId!==null)window.turnstile.reset(requestChallengeWidgetId);}
   const code=String(err?.code||"");
-  if(code==="42501"||/row-level security|permission denied/i.test(String(err?.message||""))){
+  if(requestGatewayEnabled&&code==="429"){status.textContent="Request limit reached. Please wait a little before trying again.";}else if(requestGatewayEnabled&&code==="403"){status.textContent="The secure request check expired or could not be verified. Please complete it again.";}else if(requestGatewayEnabled&&code==="503"){status.textContent="Request verification or storage is temporarily unavailable. Please try again shortly.";}else if(requestGatewayEnabled&&code==="409"){status.textContent="This retry token no longer matches the request. Check your last request before trying again.";}else if(code==="42501"||/row-level security|permission denied/i.test(String(err?.message||""))){
    status.textContent="The request database is blocking public submissions. The Supabase song-request INSERT policy needs to be enabled.";
   }else if(code==="PGRST204"||/column .* does not exist|schema cache/i.test(String(err?.message||""))){
    status.textContent="The song-request database is missing a required column. Apply the included Grifflist database migrations in Supabase.";
