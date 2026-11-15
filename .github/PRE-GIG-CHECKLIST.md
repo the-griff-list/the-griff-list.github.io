@@ -54,7 +54,7 @@ Keep the distinction explicit in historical records. The venue listings are not 
 - [ ] Confirm encoded, double-encoded and malformed private/admin/API paths bypass service-worker caching, while public assets with encoded spaces still cache normally.
 - [ ] Confirm query-bearing navigation and static-asset URLs are cached only when the exact URL is pinned in `sw.js` `CORE`; arbitrary token/query parameters and unknown version parameters must bypass Cache Storage.
 - [ ] Confirm decoded `.` / `..` path segments cannot traverse into admin, analytics, request-archive or API routes before the offline worker classifies a request.
-- [ ] For a future owner-approved release, verify development cache generation `grifflist-livekit-offline-v66` and confirm v65 is retired only after successful activation. Published `main` remains v38 until an explicitly approved deployment.
+- [ ] For a future owner-approved release, verify development cache generation `grifflist-livekit-offline-v67` and confirm v66 is retired only after successful activation. Published `main` remains v38 until an explicitly approved deployment.
 - [ ] Verify admin, analytics, request-archive pages, Supabase config and API responses are never cached by the offline worker.
 - [ ] Confirm same-origin requests carrying an Authorization header bypass offline caching, and responses varying by Cookie or Authorization are never cached.
 - [ ] Confirm responses with no-cache, must-revalidate, proxy-revalidate, Pragma: no-cache, or zero max-age directives are not cached for offline reuse.
@@ -85,9 +85,9 @@ This evidence was collected after the November 10 performance and does not retro
 
 - Development head: [bf81cc862e10f830d7496e34eb41f1bd28bcd096](https://github.com/the-griff-list/the-griff-list.github.io/commit/bf81cc862e10f830d7496e34eb41f1bd28bcd096).
 - Exact-head PR quality [#43358596963](https://github.com/the-griff-list/the-griff-list.github.io/actions/runs/43358596963) and push quality [#43358589227](https://github.com/the-griff-list/the-griff-list.github.io/actions/runs/43358589227) passed.
-- Static integrity: 9 HTML pages, 19 JavaScript files, 53 service-worker precache entries, 11 service-worker policy groups and 21 lifecycle groups passed.
+- Static integrity: 9 HTML pages, 21 JavaScript files, 53 service-worker precache entries, 12 service-worker policy groups and 23 lifecycle groups passed.
 - Playwright: 66/66 tests passed on desktop Chromium and Android-size Chromium. These are emulated browser viewports, not a physical phone, iOS/WebKit, a real request backend, PayPal/Supabase transaction, live stream or deployed-site acceptance.
-- Development service worker is v66; published `main` remains v38. No deployment occurred.
+- Development service worker is v67; published `main` remains v38. No deployment occurred.
 - The latest available booking context still contains no later confirmed performance after November 10. Keep the homepage at “Next date to be announced” until a new booking is confirmed.
 - The historical mobile-device, real request, payment, streaming and published-site checklist items remain unchecked.
 
