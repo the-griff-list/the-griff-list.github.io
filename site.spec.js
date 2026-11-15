@@ -956,6 +956,78 @@ test('successful request shows success instead of a post-insert JavaScript error
   expect(await page.evaluate(() => localStorage.getItem('grifflistRememberedName.v2'))).toBeNull();
 });
 
+test('uses the opt-in request gateway and never falls back to direct Supabase INSERT', async ({ page }) => {
+  let gatewayPayload = null;
+  let directInsert = false;
+  let turnstileScriptLoaded = false;
+  let turnstileResetCount = 0;
+
+  await page.route('**/supabase-config.js*', async route => {
+    const response = await route.fetch();
+    const body = (await response.text())
+      .replace('requestGatewayUrl: ""', 'requestGatewayUrl: "https://requests.example.workers.dev/submit"')
+      .replace('turnstileSiteKey: ""', 'turnstileSiteKey: "test-site-key"');
+    await route.fulfill({ response, body });
+  });
+
+  await page.route('**/turnstile/v0/api.js*', async route => {
+    turnstileScriptLoaded = true;
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/javascript',
+      body: 'window.turnstile = { render: function (element, options) { options.callback("turnstile-test-token"); return 17; }, reset: function () { window.__turnstileResetCount = (window.__turnstileResetCount || 0) + 1; } };'
+    });
+  });
+
+  await page.route('https://requests.example.workers.dev/submit', async route => {
+    const req = route.request();
+    const origin = req.headers().origin || 'http://127.0.0.1:4173';
+    const corsHeaders = {
+      'Access-Control-Allow-Origin': origin,
+      'Access-Control-Allow-Methods': 'POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type',
+      'Access-Control-Max-Age': '600',
+      'Vary': 'Origin'
+    };
+    if (req.method() === 'OPTIONS') {
+      await route.fulfill({ status: 204, headers: corsHeaders });
+      return;
+    }
+    gatewayPayload = req.postDataJSON();
+    await route.fulfill({
+      status: 201,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ok: true, duplicate: false, tracking_token: gatewayPayload.tracking_token })
+    });
+  });
+
+  await page.route('**/rest/v1/song_requests*', async route => {
+    directInsert = true;
+    await route.fulfill({ status: 200, contentType: 'application/json', body: '[]' });
+  });
+
+  await page.goto('/index.html');
+  await page.locator('#splash').click();
+  await expect(page.locator('#request-challenge-wrap')).toBeVisible();
+  await expect.poll(() => turnstileScriptLoaded).toBe(true);
+  await page.locator('#requester-name').fill('Gateway Listener');
+  await page.locator('#request-song').fill('Gateway Song');
+  await page.locator('#request-form button[type="submit"]').click();
+
+  await expect(page.locator('#form-status')).toHaveText('Request sent! Thanks for helping choose the music.');
+  expect(gatewayPayload).toMatchObject({
+    requester_name: 'Gateway Listener',
+    song_title: 'Gateway Song',
+    turnstile_token: 'turnstile-test-token'
+  });
+  expect(gatewayPayload.tracking_token).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i);
+  expect(gatewayPayload).not.toHaveProperty('status');
+  expect(gatewayPayload).not.toHaveProperty('created_at');
+  expect(directInsert).toBe(false);
+  turnstileResetCount = await page.evaluate(() => window.__turnstileResetCount || 0);
+  expect(turnstileResetCount).toBeGreaterThan(0);
+});
+
 test('successful request retains the name only when the visitor opted in', async ({ page }) => {
   await page.goto('/index.html');
   await page.locator('#splash').click();
