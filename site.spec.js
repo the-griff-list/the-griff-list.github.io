@@ -968,8 +968,9 @@ test('uses a new idempotency token when the visitor changes the song after an un
   await page.evaluate(() => {
     const rows = new Map();
     window.__requestTokens = [];
+    window.__requestClientReplacementDetected = false;
     let attempt = 0;
-    window.supabaseClient = {
+    const mockClient = {
       from: () => ({
         insert: async (payload) => {
           window.__requestTokens.push(payload.tracking_token);
@@ -988,6 +989,15 @@ test('uses a new idempotency token when the visitor changes the song after an un
         }
       })
     };
+
+    // Keep this deterministic request mock authoritative if a delayed setup
+    // script attempts to assign the live Supabase client after page startup.
+    Object.defineProperty(window, 'supabaseClient', {
+      configurable: false,
+      enumerable: true,
+      get: () => mockClient,
+      set: () => { window.__requestClientReplacementDetected = true; }
+    });
     window.__requestRows = rows;
   });
 
@@ -1006,8 +1016,10 @@ test('uses a new idempotency token when the visitor changes the song after an un
     tokens: window.__requestTokens,
     rows: Array.from(window.__requestRows.entries()),
     savedToken: localStorage.getItem('grifflistLastRequestToken.v1'),
-    attempt: JSON.parse(sessionStorage.getItem('grifflistLastRequest'))
+    attempt: JSON.parse(sessionStorage.getItem('grifflistLastRequest')),
+    clientReplaced: window.__requestClientReplacementDetected
   }));
+  expect(result.clientReplaced).toBe(false);
   expect(result.tokens).toHaveLength(2);
   expect(result.tokens[0]).toBe(first.trackingToken);
   expect(result.tokens[1]).not.toBe(first.trackingToken);
