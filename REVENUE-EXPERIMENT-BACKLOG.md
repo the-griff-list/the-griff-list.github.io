@@ -357,3 +357,24 @@ This is a public-page scan of products in the same broad QR-request category. Di
 **Operational and rights controls:** obtain a written booking scope, deposit/cancellation terms and venue contact; confirm start/end times, access/load-in, power, room size, volume limits, travel and whether a suitable PA is supplied. The venue/organizer should confirm responsibility for applicable public-performance music licences; do not offer legal advice or promise that a performance is covered. Use only the performer's authorized repertoire and do not distribute unlicensed lyrics, recordings or backing tracks. For outdoor events, require a safe weather/power contingency. Do not collect or publish private guest information.
 
 **Validation status:** researched hypothesis only. No customer interviews, private-event inquiry conversion, paid booking or repeat/referral evidence is recorded. A cautious validation test would be up to five private, non-binding interest checks with existing warm contacts, followed—only after the owner approves scope and price—by up to three paid pilot bookings. Track quoted vs accepted price, total hours, travel/fuel, equipment costs, cancellation rate and referrals. Keep this entry internal; do not add a public booking page, price or payment flow without explicit owner approval.
+
+
+## Venue show-night handoff sheet — brainstormed, unvalidated (15 November 2026)
+
+**Offer concept:** a one-page, venue-specific show-night handoff sheet assembled from information the venue and its sound technician explicitly confirm: load-in and soundcheck window, stage layout, channel/input list, monitor assignments, equipment supplied by the venue, and the approved band/crew handoff route. Deliver a clean PDF and editable source. Do not include private staff phone numbers, access codes, security details or unapproved operating procedures.
+
+| Dimension | Planning estimate |
+|---|---|
+| Pilot price hypothesis | CAD $35–$60 one-time, only if a venue asks for a done-for-you setup |
+| Startup cost | $0 if the venue supplies verified details and existing document tools are sufficient |
+| Time to first dollar | 1–4 weeks after owner approval (hypothesis; no demand evidence) |
+| Gross-margin potential | High before labour, tax, travel and revisions; no inventory |
+| Effort | 45–90 minutes for a simple venue; complex rooms are out of scope |
+| Main risks | Free stage-plot tools, inaccurate venue-supplied data, scope creep, privacy and safety/liability boundaries |
+| Fit | Medium–high with live-music venue operations and the StagePilot Venue direction |
+
+**Competitor check (15 November 2026):** this is not a software gap. [StagePlotTr](https://www.stageplottr.com/) advertises a free tier with one stage plot, input lists and basic PDF export; [MicPlot](https://micplot.com/) advertises free stage, input and monitor plots; [StageOn](https://www.stageon.app/) has a free tier and paid plans for advanced sharing/console workflows. These are strong free/low-cost substitutes. A generic blank template is not worth charging for. The only plausible paid value is accurate, venue-specific, done-for-you setup and handoff for a venue that does not want to build or maintain it itself. No local customer demand or paid conversion has been found.
+
+**Validation gate:** first ask one venue manager and one sound technician—only after the owner approves outreach—whether repeated setup questions cause a real problem and whether they already use a tool. If they use a free tool successfully, drop the idea. If a venue explicitly wants help, make one sample using only venue-approved details, cap it at one revision, and track time saved and total effort. Do not market it as acoustic engineering, occupational hearing advice, electrical inspection, rigging/egress review, safety certification or regulatory compliance.
+
+**Status:** brainstormed and competitor-researched; unvalidated. Keep below the existing top experiments. No public offer, price, checkout, outreach or payment flow is approved.
