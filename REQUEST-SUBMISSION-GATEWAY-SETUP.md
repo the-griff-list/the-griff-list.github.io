@@ -46,7 +46,7 @@ The database quotas are strict for requests that reach the RPCs, but they do not
 2. Create a separate Worker from `cloudflare-request-gateway.js`; configure the variables/secrets above. Do not replace the existing LiveKit Worker.
 3. Apply `request-submission-gateway-migration.sql` only to a disposable/staging Supabase project first. Review grants, function owners, RLS behavior, quotas, cleanup, duplicate races, and PostgREST RPC responses.
 4. Deploy the Worker to a staging endpoint and verify direct edge ingress supplies a real Cloudflare `CF-Connecting-IP`. Do not test trust by sending a spoofed header from a local client and assuming it is authentic.
-5. Verify Turnstile hostname/action, invalid/replayed token rejection, per-source attempt limit, per-source accepted limit, global daily cap, same-token retry, changed-content conflict, malformed/oversized body rejection, and fail-closed backend outage.
+5. Verify Turnstile hostname/action, invalid/replayed token rejection, per-IP attempt limit, per-session accepted limit, global daily cap, same-token retry, changed-content conflict, malformed/oversized body rejection, and fail-closed backend outage.
 6. Add an upstream edge rate-limit rule and verify it applies before Worker invocation. If this cannot be done within an approved plan, public cutover remains blocked.
 7. Configure `requestGatewayUrl` and `turnstileSiteKey` in the development browser config and run the desktop/Android-size/iPhone browser suite. An empty gateway URL deliberately preserves the existing direct-Supabase path during staging; once a gateway URL is set, errors must not fall back to direct INSERT.
 8. Only after the endpoint is deployed and end-to-end verified, review and apply `request-submission-gateway-cutover.sql` to revoke direct public INSERT. The cutover file is separate and is not run by CI.
@@ -61,7 +61,7 @@ The database quotas are strict for requests that reach the RPCs, but they do not
 
 ## Authoritative implementation references
 
-- [Cloudflare CF-Connecting-IP semantics](https://developers.cloudflare.com/fundamentals/reference/http-headers/#cf-connecting-ip) — the header is added on edge-to-origin traffic; same-zone Worker subrequests have different semantics.
+- [Cloudflare CF-Connecting-IP semantics](https://developers.cloudflare.com/fundamentals/reference/http-request-headers/#cf-connecting-ip) — the header is added on edge-to-origin traffic; same-zone Worker subrequests have different semantics.
 - [Cloudflare Turnstile server-side validation](https://developers.cloudflare.com/turnstile/get-started/server-side-validation/) — Siteverify is mandatory; tokens are up to 2048 characters, expire after 300 seconds, and are intended for single use. Replay detection is eventually consistent, so database idempotency remains necessary.
 - [Cloudflare Workers Rate Limiting API](https://developers.cloudflare.com/workers/runtime-apis/bindings/rate-limit/) — Worker binding limits are approximate and location-local; Cloudflare warns against IP-only user limits because many valid users can share an IP. Strict cross-location limits require Durable Objects.
 - [Supabase API keys](https://supabase.com/docs/guides/getting-started/api-keys) — secret keys bypass RLS and must remain server-side; this Worker sends the opaque key in the apikey header only.
