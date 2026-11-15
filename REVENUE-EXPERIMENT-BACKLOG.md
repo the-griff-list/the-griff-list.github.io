@@ -1,6 +1,6 @@
 # The Griff List — Revenue Experiment Backlog
 
-**Research snapshot:** 14 November 2026 (incremental competitor refresh; earlier evidence retained)  
+**Research snapshot:** 15 November 2026 (incremental competitor refresh; earlier evidence retained)  
 **Status:** researched hypotheses only — no customer demand or paid conversion has been validated.  
 **Scope:** low/no-upfront-cost services that can be tested through the existing live-music network. This is an internal planning document on the development branch; it does not activate checkout, publish an offer, or authorize spending.
 
@@ -373,7 +373,7 @@ This is a public-page scan of products in the same broad QR-request category. Di
 | Main risks | Free stage-plot tools, inaccurate venue-supplied data, scope creep, privacy and safety/liability boundaries |
 | Fit | Medium–high with live-music venue operations and the StagePilot Venue direction |
 
-**Competitor check (15 November 2026):** this is not a software gap. [StagePlotTr](https://www.stageplottr.com/) advertises a free tier with one stage plot, input lists and basic PDF export; [MicPlot](https://micplot.com/) advertises free stage, input and monitor plots; [StageOn](https://www.stageon.app/) has a free tier and paid plans for advanced sharing/console workflows. These are strong free/low-cost substitutes. A generic blank template is not worth charging for. The only plausible paid value is accurate, venue-specific, done-for-you setup and handoff for a venue that does not want to build or maintain it itself. No local customer demand or paid conversion has been found.
+**Competitor check (15 November 2026):** this is not a software gap. [StagePlotTr](https://www.stageplottr.com/) has a free tier with one stage plot, input list and basic PDF export; Pro is £6.99/month. [MicPlot](https://micplot.com/) is primarily an orchestral mic-plot tool: its free tier includes 3D stage/seating layouts, risers/gobos, unlimited mic sessions and printable mic/channel/input/stage plots; Pro is US$12/month or US$99/year for more AI imports and branding. It is an adjacent, not direct, substitute for bar bands. [StageOn](https://www.stageon.app/) has a free tier capped at one project and 16 channels, with watermarked PDF export; Pro is US$9.99/month (US$84/year), Sync US$39/month and Team US$69/month. These free/low-cost tools make a generic blank template weak. The only plausible paid value is accurate, venue-specific, done-for-you setup and handoff for a venue that does not want to build or maintain it itself. No local customer demand or paid conversion has been found.
 
 **Validation gate:** first ask one venue manager and one sound technician—only after the owner approves outreach—whether repeated setup questions cause a real problem and whether they already use a tool. If they use a free tool successfully, drop the idea. If a venue explicitly wants help, make one sample using only venue-approved details, cap it at one revision, and track time saved and total effort. Do not market it as acoustic engineering, occupational hearing advice, electrical inspection, rigging/egress review, safety certification or regulatory compliance.
 
