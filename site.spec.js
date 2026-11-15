@@ -1537,13 +1537,16 @@ test('service worker caches only query-bearing URLs pinned in CORE', () => {
       destination = 'image',
       authorization = false,
       range = false,
+      cache = 'default',
+      cacheControl = '',
     } = options;
     const request = {
       method,
       mode,
       destination,
+      cache,
       headers: {
-        get: () => null,
+        get: name => name === 'Cache-Control' ? cacheControl : null,
         has: name => (name === 'Authorization' && authorization) || (name === 'Range' && range),
       },
     };
@@ -1578,6 +1581,14 @@ test('service worker caches only query-bearing URLs pinned in CORE', () => {
   }
   expect(canCache('/index.html', { mode: 'navigate', destination: '', method: 'POST' })).toBe(false);
   expect(canCache('/index.html', { mode: 'navigate', destination: '', authorization: true })).toBe(false);
+  // Explicit no-store must bypass the service worker entirely, so an offline
+  // cached page cannot satisfy a request that forbids cache reuse.
+  expect(canCache('/index.html', { mode: 'navigate', destination: '', cache: 'no-store' })).toBe(false);
+  expect(canCache('/index.html', { mode: 'navigate', destination: '', cacheControl: 'public, no-store' })).toBe(false);
+  // Browser reload/no-cache navigations remain network-first and may use the
+  // public offline shell only when the network is unavailable.
+  expect(canCache('/index.html', { mode: 'navigate', destination: '', cache: 'reload' })).toBe(true);
+  expect(canCache('/index.html', { mode: 'navigate', destination: '', cacheControl: 'no-cache' })).toBe(true);
   expect(canCache('https://external.invalid/logo.webp', { destination: 'image' })).toBe(false);
   expect(canCache('/admin.html', { mode: 'navigate', destination: '' })).toBe(false);
 });
