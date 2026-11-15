@@ -739,9 +739,11 @@ test('tip surfaces do not advertise unverified wallet methods before checkout', 
 });
 
 test('song selection and request-status lookup fail closed when local storage is blocked', async ({ page }) => {
-  // This regression targets storage behavior, not smooth-scroll animation. The
-  // song-selection flow already honors reduced motion; enable it here so WebKit
-  // does not keep the request-status button moving during Playwright's click.
+  // This regression targets the request-status handler, not pointer hit-testing.
+  // WebKit can keep the form in a compositor transition after song selection even
+  // with reduced motion enabled. Verify the control is exposed, then dispatch its
+  // click event directly so the test exercises the handler without waiting for a
+  // moving target to satisfy Playwright's pointer-stability heuristic.
   await page.emulateMedia({ reducedMotion: 'reduce' });
   const pageErrors = [];
   page.on('pageerror', error => pageErrors.push(error.message));
@@ -765,7 +767,10 @@ test('song selection and request-status lookup fail closed when local storage is
 
   await expect(page.locator('#request-song')).toHaveValue(title);
   await expect(page.locator('#form-status')).toHaveText('');
-  await page.locator('#check-last-request').click();
+  const checkLastRequest = page.locator('#check-last-request');
+  await expect(checkLastRequest).toBeVisible();
+  await expect(checkLastRequest).toBeEnabled();
+  await checkLastRequest.dispatchEvent('click');
   await expect(page.locator('#request-status-result'))
     .toContainText('cannot access the saved request token');
   expect(pageErrors).toEqual([]);
