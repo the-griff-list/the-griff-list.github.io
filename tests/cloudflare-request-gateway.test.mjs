@@ -242,7 +242,13 @@ test("missing secrets, wrong Supabase host or malformed configuration fail close
 
 test("requires a complete anchored 64-hex digest check in the SQL migration", async () => {
   const migration = await readFile(new URL("../request-submission-gateway-migration.sql", import.meta.url), "utf8");
-  assert.match(migration, /p_ip_hash\\s+is\\s+null\\s+or\\s+p_ip_hash\\s+!~\\s*'\\^\\[0-9a-f\\]\\{64\\}\\$'\\s+then/i);
+  assert.ok(migration.includes("if p_ip_hash is null or p_ip_hash !~ '^[0-9a-f]{64}$' then"));
+});
+
+test("gateway migration has exactly one terminal transaction commit", async () => {
+  const migration = await readFile(new URL("../request-submission-gateway-migration.sql", import.meta.url), "utf8");
+  assert.equal((migration.match(/^[ \\t]*commit;[ \\t]*$/gim) || []).length, 1);
+  assert.equal(migration.trimEnd().split(/\\r?\\n/).at(-1), "commit;");
 });
 
 test("draft SQL keeps the legacy insert path until explicit cutover", async () => {
