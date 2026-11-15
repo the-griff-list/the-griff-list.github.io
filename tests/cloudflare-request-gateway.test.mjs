@@ -95,6 +95,8 @@ test("uses only a keyed source digest and never forwards raw IP to Siteverify", 
   const result = await handler(mock)(request(payload(), { "X-Forwarded-For": "198.51.100.9" }), env());
   assert.equal(result.status, 201);
   const attemptBody = JSON.parse(mock.calls[0].options.body);
+  assert.equal(mock.calls[0].options.headers.apikey, env().SUPABASE_SECRET_KEY);
+  assert.equal(Object.hasOwn(mock.calls[0].options.headers, "Authorization"), false);
   assert.match(attemptBody.p_source_hash, /^[0-9a-f]{64}$/);
   assert.equal(attemptBody.p_source_hash.includes(IP), false);
   const challengeBody = JSON.parse(mock.calls[1].options.body);
@@ -175,9 +177,11 @@ test("backend and challenge outages fail closed without direct database fallback
   assert.equal(challenge.calls.some(call => call.url.endsWith("/rpc/submit_song_request_once")), false);
 });
 
-test("missing secrets or malformed configuration fail closed", async () => {
+test("missing secrets, wrong Supabase host or malformed configuration fail closed", async () => {
   const mock = mockFetch();
   assert.equal((await handler(mock)(request(), env({ RATE_LIMIT_HMAC_SECRET: "short" }))).status, 503);
+  assert.equal((await handler(mock)(request(), env({ SUPABASE_URL: "https://attacker.example" }))).status, 503);
+  assert.equal((await handler(mock)(request(), env({ SUPABASE_SECRET_KEY: "sb_publishable_not_secret" }))).status, 503);
   assert.equal(mock.calls.length, 0);
 });
 
