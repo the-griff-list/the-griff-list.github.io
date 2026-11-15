@@ -71,6 +71,7 @@ test("accepts a valid request and returns only its tracking token", async () => 
   assert.equal(result.status, 201);
   assert.deepEqual(await result.json(), { ok: true, duplicate: false, tracking_token: TRACKING_TOKEN });
   assert.equal(mock.calls.length, 3);
+  assert.deepEqual(mock.calls.map(call => call.options.redirect), ["error", "error", "error"]);
   assert.ok(mock.calls[0].url.endsWith("/rpc/consume_request_submission_attempt"));
   assert.ok(mock.calls[1].url.includes("challenges.cloudflare.com/turnstile/v0/siteverify"));
   assert.ok(mock.calls[2].url.endsWith("/rpc/submit_song_request_once"));
@@ -220,6 +221,11 @@ test("missing secrets, wrong Supabase host or malformed configuration fail close
   assert.equal((await handler(mock)(request(), env({ SUPABASE_URL: "https://attacker.example" }))).status, 503);
   assert.equal((await handler(mock)(request(), env({ SUPABASE_SECRET_KEY: "sb_publishable_not_secret" }))).status, 503);
   assert.equal(mock.calls.length, 0);
+});
+
+test("requires a complete anchored 64-hex digest check in the SQL migration", async () => {
+  const migration = await readFile(new URL("../request-submission-gateway-migration.sql", import.meta.url), "utf8");
+  assert.match(migration, /p_ip_hash\\s+is\\s+null\\s+or\\s+p_ip_hash\\s+!~\\s*'\\^\\[0-9a-f\\]\\{64\\}\\$'\\s+then/i);
 });
 
 test("draft SQL keeps the legacy insert path until explicit cutover", async () => {

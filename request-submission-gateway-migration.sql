@@ -104,7 +104,7 @@ as $function$
 declare
   v_quota record;
 begin
-  if p_ip_hash is null or p_ip_hash !~ '^[0-9a-f]{64}
+  if p_ip_hash is null or p_ip_hash !~ '^[0-9a-f]{64}$' then
     raise exception 'Invalid source digest.';
   end if;
 
