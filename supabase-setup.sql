@@ -6,8 +6,14 @@ create table if not exists public.song_requests (
   artist_name text check (artist_name is null or char_length(artist_name) <= 200),
   note text check (note is null or char_length(note) <= 1500),
   status text not null default 'New' check (status in ('New', 'Played', 'Completed', 'Declined')),
-  created_at timestamptz not null default now()
+  created_at timestamptz not null default now(),
+  tracking_token uuid
 );
+alter table public.song_requests
+  add column if not exists tracking_token uuid;
+create unique index if not exists song_requests_tracking_token_unique
+  on public.song_requests (tracking_token)
+  where tracking_token is not null;
 alter table public.song_requests enable row level security;
 
 -- Anyone can submit a request, but anonymous visitors cannot read or change requests.
@@ -21,6 +27,13 @@ create policy "Anyone can submit a song request"
     (note is null or char_length(note) <= 1500) and
     status = 'New'
   );
+
+-- Public submissions may set only request content and their random tracking token.
+-- Keep identity, moderation status, and server timestamps controlled by PostgreSQL defaults/admins.
+revoke insert on table public.song_requests from public, anon, authenticated;
+revoke insert (id, status, created_at) on table public.song_requests from public, anon, authenticated;
+grant insert (requester_name, song_title, artist_name, note, tracking_token)
+  on table public.song_requests to anon, authenticated;
 
 -- Only the designated admin account can read or update requests.
 -- Admin account UID: 7c4c9232-2c28-47f3-a00a-a371ed23cef5

@@ -60,6 +60,8 @@ jobs:
 
       - name: Verify service-worker install, activation and offline lifecycle
         run: node qa-service-worker-lifecycle-test.js
+      - name: Verify public song-request insert privileges
+        run: node qa-public-request-privileges-test.js
 
       - name: Check HTML references, JavaScript syntax, PWA manifest, service worker, CSS and images
         run: python qa-smoke-test.py
