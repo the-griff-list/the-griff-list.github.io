@@ -975,7 +975,7 @@ test('uses the opt-in request gateway and never falls back to direct Supabase IN
     await route.fulfill({
       status: 200,
       contentType: 'application/javascript',
-      body: 'window.turnstile = { render: function (element, options) { options.callback("turnstile-test-token"); return 17; }, reset: function () { window.__turnstileResetCount = (window.__turnstileResetCount || 0) + 1; } };'
+      body: 'window.turnstile = { render: function (element, options) { window.__turnstileRendered = true; options.callback("turnstile-test-token"); return 17; }, reset: function () { window.__turnstileResetCount = (window.__turnstileResetCount || 0) + 1; } };'
     });
   });
 
@@ -1010,6 +1010,7 @@ test('uses the opt-in request gateway and never falls back to direct Supabase IN
   await page.locator('#splash').click();
   await expect(page.locator('#request-challenge-wrap')).toBeVisible();
   await expect.poll(() => turnstileScriptLoaded).toBe(true);
+  await expect.poll(() => page.evaluate(() => window.__turnstileRendered === true)).toBe(true);
   await page.locator('#requester-name').fill('Gateway Listener');
   await page.locator('#request-song').fill('Gateway Song');
   await page.locator('#request-form button[type="submit"]').click();
