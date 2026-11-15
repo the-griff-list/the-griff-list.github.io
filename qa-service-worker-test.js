@@ -141,14 +141,17 @@ test('explicit cache-bypass requests stay unpersisted while public navigations r
   const reloadNavigation = request({ mode: 'navigate', destination: 'document', cache: 'reload' });
   assert.equal(context.isCacheableRequest(reloadNavigation, homepage), true, 'reload navigation remains interceptable');
   assert.equal(context.isCacheableResponseForRequest(reloadNavigation, response()), true, 'credentialless reload may refresh the public cache');
-  for (const headerValues of [
-    { 'Cache-Control': 'no-store' },
-    { 'Cache-Control': 'no-cache' },
-    { 'Cache-Control': 'max-age=0' },
-    { Pragma: 'no-cache' },
-  ]) {
+  const navigationHeaderCases = [
+    { headerValues: { 'Cache-Control': 'no-store' }, expectedIntercept: false },
+    { headerValues: { 'Cache-Control': 'public, no-store' }, expectedIntercept: false },
+    { headerValues: { 'Cache-Control': 'max-age=3600, NO-STORE' }, expectedIntercept: false },
+    { headerValues: { 'Cache-Control': 'private, max-age=0, no-store' }, expectedIntercept: false },
+    { headerValues: { 'Cache-Control': 'no-cache' }, expectedIntercept: true },
+    { headerValues: { 'Cache-Control': 'max-age=0' }, expectedIntercept: true },
+    { headerValues: { Pragma: 'no-cache' }, expectedIntercept: true },
+  ];
+  for (const { headerValues, expectedIntercept } of navigationHeaderCases) {
     const navigation = request({ mode: 'navigate', destination: 'document', headerValues });
-    const expectedIntercept = !Object.hasOwn(headerValues, 'Cache-Control') || headerValues['Cache-Control'] !== 'no-store';
     assert.equal(context.isCacheableRequest(navigation, homepage), expectedIntercept, JSON.stringify(headerValues));
     if (expectedIntercept) {
       assert.equal(context.isCacheableResponseForRequest(navigation, response()), false, JSON.stringify(headerValues));
