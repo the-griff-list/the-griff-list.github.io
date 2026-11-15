@@ -32,10 +32,10 @@ function validHttpsOrigin(value) {
 
 function validSupabaseUrl(value) {
   try {
-    const base = String(value).replace(/\\/+$/, "");
+    const base = String(value).replace(/\/+$/, "");
     const parsed = new URL(base);
     return parsed.protocol === "https:" &&
-      /^[a-z0-9-]+\\.supabase\\.co$/i.test(parsed.hostname) &&
+      /^[a-z0-9-]+\.supabase\.co$/i.test(parsed.hostname) &&
       parsed.origin === base && parsed.pathname === "/";
   } catch { return false; }
 }
