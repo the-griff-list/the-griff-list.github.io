@@ -739,6 +739,12 @@ test('tip surfaces do not advertise unverified wallet methods before checkout', 
 });
 
 test('song selection and request-status lookup fail closed when local storage is blocked', async ({ page }) => {
+  // The assertions finish, but headless Linux WebKit's media-process cleanup can
+  // exceed the suite's 30s default. Keep this allowance local to WebKit; do not
+  // relax the browser assertion or the workflow-wide timeout.
+  if (test.info().project.name === 'iphone-size-touch-webkit') {
+    test.setTimeout(45_000);
+  }
   // This regression targets the request-status handler, not pointer hit-testing.
   // WebKit can keep the form in a compositor transition after song selection even
   // with reduced motion enabled. Verify the control is exposed, then dispatch its
