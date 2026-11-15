@@ -99,3 +99,13 @@ input:focus,select:focus,textarea:focus{border-color:#ff9e57;box-shadow:0 0 0 3p
  background:var(--gold);
  color:var(--bg);
 }
+
+/* Keep the catalog heading and song count inside very narrow phone viewports. */
+@media(max-width:380px){
+  body:not(.admin-page) .catalog-title > div:first-child{min-width:0}
+  body:not(.admin-page) .catalog-title h2{
+    min-width:0!important;
+    white-space:normal!important;
+    overflow-wrap:anywhere;
+  }
+}
