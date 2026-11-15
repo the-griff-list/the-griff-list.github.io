@@ -48,6 +48,8 @@ function mockFetch({ attempt = [{ allowed: true, retry_after_seconds: 0 }],
   const calls = [];
   const fetchImpl = async (url, options = {}) => {
     calls.push({ url: String(url), options });
+    if (fail === "attempt-redirect" && String(url).includes("consume_request_submission_attempt")) return new Response(null, { status: 302, headers: { Location: "https://attacker.example/" } });
+    if (fail === "challenge-redirect" && String(url).includes("siteverify")) return new Response(null, { status: 302, headers: { Location: "https://attacker.example/" } });
     if (fail === "attempt" && String(url).includes("consume_request_submission_attempt")) return response({}, 503);
     if (fail === "challenge" && String(url).includes("siteverify")) return response({}, 503);
     if (fail === "submit" && String(url).includes("submit_song_request_once")) return response({}, 503);
@@ -71,7 +73,7 @@ test("accepts a valid request and returns only its tracking token", async () => 
   assert.equal(result.status, 201);
   assert.deepEqual(await result.json(), { ok: true, duplicate: false, tracking_token: TRACKING_TOKEN });
   assert.equal(mock.calls.length, 3);
-  assert.deepEqual(mock.calls.map(call => call.options.redirect), ["error", "error", "error"]);
+  assert.deepEqual(mock.calls.map(call => call.options.redirect), ["manual", "manual", "manual"]);
   assert.ok(mock.calls[0].url.endsWith("/rpc/consume_request_submission_attempt"));
   assert.ok(mock.calls[1].url.includes("challenges.cloudflare.com/turnstile/v0/siteverify"));
   assert.ok(mock.calls[2].url.endsWith("/rpc/submit_song_request_once"));
@@ -212,6 +214,21 @@ test("backend and challenge outages fail closed without direct database fallback
   assert.equal(backend.calls.length, 1);
   const challenge = mockFetch({ fail: "challenge" });
   assert.equal((await handler(challenge)(request(), env())).status, 503);
+  assert.equal(challenge.calls.some(call => call.url.endsWith("/rpc/submit_song_request_once")), false);
+});
+
+test("does not follow redirects that could receive Supabase or Turnstile secrets", async () => {
+  const backend = mockFetch({ fail: "attempt-redirect" });
+  const backendResult = await handler(backend)(request(), env());
+  assert.equal(backendResult.status, 503);
+  assert.equal(backend.calls.length, 1);
+  assert.equal(backend.calls[0].options.redirect, "manual");
+
+  const challenge = mockFetch({ fail: "challenge-redirect" });
+  const challengeResult = await handler(challenge)(request(), env());
+  assert.equal(challengeResult.status, 503);
+  assert.equal(challenge.calls.length, 2);
+  assert.equal(challenge.calls[1].options.redirect, "manual");
   assert.equal(challenge.calls.some(call => call.url.endsWith("/rpc/submit_song_request_once")), false);
 });
 

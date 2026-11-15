@@ -176,8 +176,9 @@ export function createRequestGatewayHandler({ fetchImpl = globalThis.fetch, cryp
     const callRpc = async (name, payload) => {
       const response = await fetchImpl(supabaseBase + "/rest/v1/rpc/" + name, {
         method: "POST", headers: supabaseHeaders, body: JSON.stringify(payload),
-        // Do not forward the secret apikey header through an unexpected redirect.
-        redirect: "error",
+        // Cloudflare Workers support manual/follow; manual prevents forwarding the apikey on redirects.
+        // response.ok below rejects the returned 3xx response.
+        redirect: "manual",
         signal: AbortSignal.timeout(7000),
       });
       if (!response.ok) throw new Error("backend_unavailable");
@@ -203,8 +204,8 @@ export function createRequestGatewayHandler({ fetchImpl = globalThis.fetch, cryp
       const response = await fetchImpl(TURNSTILE_URL, {
         method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ secret: env.TURNSTILE_SECRET_KEY, response: validated.value.turnstile_token }),
-        // The challenge secret must never follow an HTTP redirect either.
-        redirect: "error",
+        // Keep the challenge secret at the fixed Siteverify endpoint; reject any returned 3xx.
+        redirect: "manual",
         signal: AbortSignal.timeout(5000),
       });
       if (!response.ok) throw new Error("challenge_unavailable");
