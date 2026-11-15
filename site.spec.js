@@ -877,6 +877,32 @@ test('requester name is stored only after explicit on-device opt-in', async ({ p
 });
 
 test('successful request shows success instead of a post-insert JavaScript error', async ({ page }) => {
+  // Install the diagnostic before navigation so the application cannot submit
+  // before the console-error capture exists.
+  await page.addInitScript(() => {
+    window.__requestErrors = [];
+    const originalConsoleError = console.error.bind(console);
+    console.error = (...args) => {
+      if (args[0] === 'Request submission failed') {
+        const error = args[1];
+        window.__requestErrors.push(error instanceof Error
+          ? error.name + ': ' + error.message
+          : String(error?.code || '') + ': ' + String(error?.message || error));
+      }
+      originalConsoleError(...args);
+    };
+    window.addEventListener('error', event => {
+      window.__requestErrors.push(event.error instanceof Error
+        ? event.error.name + ': ' + event.error.message
+        : String(event.message || 'Unhandled window error'));
+    });
+    window.addEventListener('unhandledrejection', event => {
+      const reason = event.reason;
+      window.__requestErrors.push(reason instanceof Error
+        ? reason.name + ': ' + reason.message
+        : String(reason));
+    });
+  });
   await page.goto('/index.html');
   await page.locator('#splash').click();
   await page.evaluate(() => {
@@ -886,8 +912,8 @@ test('successful request shows success instead of a post-insert JavaScript error
   await page.locator('#request-song').fill('Test Song');
   await page.locator('#request-form button[type="submit"]').click();
   await expect(page.locator('#form-status')).toHaveText(/Request sent!|Request could not be saved/);
-  const requestErrors = await page.evaluate(() => window.__requestErrors);
-  expect(requestErrors, 'Unexpected request failure: ' + requestErrors.join(' | ')).toHaveLength(1);
+  const requestErrors = await page.evaluate(() => window.__requestErrors || []);
+  expect(requestErrors, 'Unexpected request failure: ' + requestErrors.join(' | ')).toHaveLength(0);
   expect(await page.locator('#form-status').textContent()).toBe('Request sent! Thanks for helping choose the music.');
   expect(await page.evaluate(() => localStorage.getItem('grifflistRememberName.v1'))).toBeNull();
   expect(await page.evaluate(() => localStorage.getItem('grifflistRememberedName.v2'))).toBeNull();
