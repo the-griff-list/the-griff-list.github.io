@@ -1028,6 +1028,115 @@ test('uses a new idempotency token when the visitor changes the song after an un
   expect(result.savedToken).toBe(result.tokens[1]);
   expect(result.attempt.state).toBe('sent');});
 
+test('does not send a request when session storage cannot be read for idempotency', async ({ page }) => {
+  await page.addInitScript(() => {
+    const originalGetItem = Storage.prototype.getItem;
+    Storage.prototype.getItem = function (key) {
+      if (this === window.sessionStorage && key === 'grifflistLastRequest') {
+        throw new DOMException('session storage blocked', 'SecurityError');
+      }
+      return originalGetItem.call(this, key);
+    };
+  });
+  await page.goto('/index.html');
+  await page.locator('#splash').click();
+  await page.evaluate(() => {
+    window.__requestInsertCount = 0;
+    window.supabaseClient = {
+      from: () => ({ insert: async () => { window.__requestInsertCount += 1; return { error: null }; } })
+    };
+  });
+  await page.locator('#requester-name').fill('Storage Blocked Listener');
+  await page.locator('#request-song').fill('Storage Blocked Song');
+  await page.locator('#request-form button[type="submit"]').click();
+  await expect(page.locator('#form-status')).toContainText('Your request was not sent');
+  expect(await page.evaluate(() => window.__requestInsertCount)).toBe(0);
+});
+
+test('does not send a request when session storage cannot persist the retry token', async ({ page }) => {
+  await page.addInitScript(() => {
+    const originalSetItem = Storage.prototype.setItem;
+    Storage.prototype.setItem = function (key, value) {
+      if (this === window.sessionStorage && key === 'grifflistLastRequest') {
+        throw new DOMException('session storage blocked', 'SecurityError');
+      }
+      return originalSetItem.call(this, key, value);
+    };
+  });
+  await page.goto('/index.html');
+  await page.locator('#splash').click();
+  await page.evaluate(() => {
+    window.__requestInsertCount = 0;
+    window.supabaseClient = {
+      from: () => ({ insert: async () => { window.__requestInsertCount += 1; return { error: null }; } })
+    };
+  });
+  await page.locator('#requester-name').fill('Storage Write Blocked Listener');
+  await page.locator('#request-song').fill('Storage Write Blocked Song');
+  await page.locator('#request-form button[type="submit"]').click();
+  await expect(page.locator('#form-status')).toContainText('Your request was not sent');
+  expect(await page.evaluate(() => window.__requestInsertCount)).toBe(0);
+});
+
+test('does not send a request when the saved retry record is malformed', async ({ page }) => {
+  await page.addInitScript(() => sessionStorage.setItem('grifflistLastRequest', '{'));
+  await page.goto('/index.html');
+  await page.locator('#splash').click();
+  await page.evaluate(() => {
+    window.__requestInsertCount = 0;
+    window.supabaseClient = {
+      from: () => ({ insert: async () => { window.__requestInsertCount += 1; return { error: null }; } })
+    };
+  });
+  await page.locator('#requester-name').fill('Malformed Storage Listener');
+  await page.locator('#request-song').fill('Malformed Storage Song');
+  await page.locator('#request-form button[type="submit"]').click();
+  await expect(page.locator('#form-status')).toContainText('could not be read safely');
+  expect(await page.evaluate(() => window.__requestInsertCount)).toBe(0);
+});
+
+test('request status falls back to the current tab when local token storage is blocked', async ({ page }) => {
+  await page.addInitScript(() => {
+    const originalGetItem = Storage.prototype.getItem;
+    const originalSetItem = Storage.prototype.setItem;
+    Storage.prototype.getItem = function (key) {
+      if (this === window.localStorage && key === 'grifflistLastRequestToken.v1') {
+        throw new DOMException('local token storage blocked', 'SecurityError');
+      }
+      return originalGetItem.call(this, key);
+    };
+    Storage.prototype.setItem = function (key, value) {
+      if (this === window.localStorage && key === 'grifflistLastRequestToken.v1') {
+        throw new DOMException('local token storage blocked', 'SecurityError');
+      }
+      return originalSetItem.call(this, key, value);
+    };
+  });
+  await page.goto('/index.html');
+  await page.locator('#splash').click();
+  await page.evaluate(() => {
+    const client = {
+      from: () => ({ insert: async () => ({ error: null }) }),
+      rpc: async () => ({
+        data: { song_title: 'Fallback Song', artist_name: 'Fallback Artist', status: 'Received' },
+        error: null
+      })
+    };
+    Object.defineProperty(window, 'supabaseClient', {
+      configurable: false,
+      enumerable: true,
+      get: () => client,
+      set: () => {}
+    });
+  });
+  await page.locator('#requester-name').fill('Fallback Listener');
+  await page.locator('#request-song').fill('Fallback Song');
+  await page.locator('#request-form button[type="submit"]').click();
+  await expect(page.locator('#form-status')).toHaveText('Request sent! Thanks for helping choose the music.');
+  await page.locator('#check-last-request').click();
+  await expect(page.locator('#request-status-result')).toContainText('Fallback Song');
+});
+
 function findMissingHtmlFragmentLinks(pages, origin = 'https://site.invalid') {
   const normalizedOrigin = new URL(origin).origin;
   const pageIds = new Map();

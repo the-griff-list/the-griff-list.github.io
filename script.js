@@ -155,6 +155,10 @@ function renderArtists() {
 
 function normalizeSearchText(value){return String(value||"").toLocaleLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g,"");}
 function readLocalStorageSafely(key){try{return {available:true,value:localStorage.getItem(key)};}catch(e){return {available:false,value:null};}}
+function readSessionStorageSafely(key){try{return {available:true,value:sessionStorage.getItem(key)};}catch(e){return {available:false,value:null};}}
+function writeLocalStorageSafely(key,value){try{localStorage.setItem(key,value);return true;}catch(e){return false;}}
+function writeSessionStorageSafely(key,value){try{sessionStorage.setItem(key,value);return true;}catch(e){return false;}}
+function isTrackingToken(value){return typeof value==="string"&&/^[0-9a-f-]{36}$/i.test(value);}
 function filteredSongs(){const q=normalizeSearchText(searchEl.value);return songs.map((s,i)=>({...s,index:i,displayGenre:genreFor(s)}))
  .filter(s=>selectedDecade==="All"||s.decade===selectedDecade)
  .filter(s=>artistEl.value==="All"||s.artist===artistEl.value)
@@ -237,7 +241,33 @@ requesterNameInput?.addEventListener("blur",persistRememberedName);
 const requestStatusButton=$("#check-last-request"), requestStatusResult=$("#request-status-result");
 let pendingRequestAttempt=null;
 if(requestStatusButton && requestStatusResult) {
- requestStatusButton.addEventListener("click",async()=>{const savedToken=readLocalStorageSafely("grifflistLastRequestToken.v1");if(!savedToken.available){requestStatusResult.textContent="This browser cannot access the saved request token. Check the request on the device where it was submitted.";return;}const token=savedToken.value;if(!token){requestStatusResult.textContent="No recent request is saved on this device yet.";return;}if(!window.supabaseClient){requestStatusResult.textContent="Request status is temporarily unavailable.";return;}requestStatusButton.disabled=true;requestStatusResult.textContent="Checking…";try{const {data,error}=await window.supabaseClient.rpc("get_my_request_status",{p_tracking_token:token});if(error)throw error;const row=Array.isArray(data)?data[0]:data;if(!row){requestStatusResult.textContent="We couldn't find that request. It may have been archived or the status link expired.";}else{requestStatusResult.textContent=row.song_title+(row.artist_name?" - "+row.artist_name:"")+": "+(row.status||"Received")+".";}}catch(e){requestStatusResult.textContent="Status lookup needs the included Supabase migration. Please try again later.";}finally{requestStatusButton.disabled=false;}});
+ requestStatusButton.addEventListener("click",async()=>{
+  const savedToken=readLocalStorageSafely("grifflistLastRequestToken.v1");
+  let token=savedToken.available&&isTrackingToken(savedToken.value)?savedToken.value:null;
+  let sessionAttempt={available:true,value:null};
+  if(!token){
+   sessionAttempt=readSessionStorageSafely("grifflistLastRequest");
+   if(sessionAttempt.available&&sessionAttempt.value){
+    try{const attempt=JSON.parse(sessionAttempt.value);if(isTrackingToken(attempt?.trackingToken))token=attempt.trackingToken;}catch(e){}
+   }
+  }
+  if(!token){
+   requestStatusResult.textContent=(!savedToken.available||!sessionAttempt.available)
+    ?"This browser cannot access the saved request token. Check the request on the device where it was submitted."
+    :"No recent request is saved on this device or tab yet.";
+   return;
+  }
+  if(!window.supabaseClient){requestStatusResult.textContent="Request status is temporarily unavailable.";return;}
+  requestStatusButton.disabled=true;requestStatusResult.textContent="Checking…";
+  try{
+   const {data,error}=await window.supabaseClient.rpc("get_my_request_status",{p_tracking_token:token});
+   if(error)throw error;
+   const row=Array.isArray(data)?data[0]:data;
+   if(!row){requestStatusResult.textContent="We couldn't find that request. It may have been archived or the status link expired.";}
+   else{requestStatusResult.textContent=row.song_title+(row.artist_name?" - "+row.artist_name:"")+": "+(row.status||"Received")+".";}
+  }catch(e){requestStatusResult.textContent="Status lookup needs the included Supabase migration. Please try again later.";}
+  finally{requestStatusButton.disabled=false;}
+ });
 }
 requestForm?.addEventListener("submit",async e=>{
  e.preventDefault();
@@ -257,8 +287,25 @@ requestForm?.addEventListener("submit",async e=>{
  const savedNote=[priority?priorityMarker+" Method: "+paymentMethod:"",message].filter(Boolean).join("\n\n");
  const fingerprint=[name,song,artist,savedNote].map(v=>v.trim().toLowerCase()).join("|");
  const storageKey="grifflistLastRequest";
+ const previousRead=readSessionStorageSafely(storageKey);
+ if(!previousRead.available){
+  status.textContent="This browser cannot safely save a request retry token. Your request was not sent. Enable session storage or use another browser.";
+  return;
+ }
  let previous=null;
- try{previous=JSON.parse(sessionStorage.getItem(storageKey)||"null");}catch(e){}
+ if(previousRead.value!==null){
+  try{previous=JSON.parse(previousRead.value);}catch(e){
+   status.textContent="A previous request retry record could not be read safely. Your request was not sent. Check the last request before trying again.";
+   return;
+  }
+  if(previous!==null&&(!previous||typeof previous!=="object"||Array.isArray(previous)||
+     typeof previous.fingerprint!=="string"||!Number.isFinite(Number(previous.time))||
+     !isTrackingToken(previous.trackingToken)||
+     ![undefined,"pending","sent"].includes(previous.state))){
+   status.textContent="A previous request retry record is invalid. Your request was not sent. Check the last request before trying again.";
+   return;
+  }
+ }
  const now=Date.now();
  const sameFingerprint=previous?.fingerprint===fingerprint;
  const previousTime=Number(previous?.time);
@@ -268,16 +315,24 @@ requestForm?.addEventListener("submit",async e=>{
   status.textContent="That same request was just sent. Please wait five minutes before sending it again.";
   return;
  }
- const storedPendingToken=sameFingerprint&&previous?.state==="pending"&&previousAge>=0&&previousAge<24*60*60*1000&&typeof previous.trackingToken==="string"&&/^[0-9a-f-]{36}$/i.test(previous.trackingToken)?previous.trackingToken:null;
+ const storedPendingToken=sameFingerprint&&previous?.state==="pending"&&previousAge>=0&&previousAge<24*60*60*1000&&isTrackingToken(previous.trackingToken)?previous.trackingToken:null;
  const memoryPendingToken=pendingRequestAttempt?.fingerprint===fingerprint&&now-pendingRequestAttempt.time<24*60*60*1000?pendingRequestAttempt.trackingToken:null;
  const trackingToken=storedPendingToken||memoryPendingToken||(crypto.randomUUID?crypto.randomUUID():([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g,c=>(c^crypto.getRandomValues(new Uint8Array(1))[0]&15>>c/4).toString(16)));
+ const pendingRecord={fingerprint,time:now,trackingToken,state:"pending"};
+ const pendingSerialized=JSON.stringify(pendingRecord);
+ if(!writeSessionStorageSafely(storageKey,pendingSerialized)){
+  status.textContent="This browser could not save a request retry token. Your request was not sent. Enable session storage and try again.";
+  return;
+ }
+ const pendingVerification=readSessionStorageSafely(storageKey);
+ if(!pendingVerification.available||pendingVerification.value!==pendingSerialized){
+  status.textContent="This browser could not verify the saved request retry token. Your request was not sent. Enable session storage and try again.";
+  return;
+ }
  pendingRequestAttempt={fingerprint,trackingToken,time:now};
  submit.disabled=true;
  submit.textContent="SENDING REQUEST…";
  try{
-  // Persist the idempotency key before sending. If the server commits but the
-  // response is lost, a retry of this same form reuses the same unique token.
-  try{sessionStorage.setItem(storageKey,JSON.stringify({fingerprint,time:now,trackingToken,state:"pending"}));}catch(e){}
   const {error}=await client.from("song_requests").insert({requester_name:name,song_title:song,artist_name:artist||null,note:savedNote||null,tracking_token:trackingToken});
   if(error){
    if(String(error.code||"")==="23505"){
@@ -290,12 +345,13 @@ requestForm?.addEventListener("submit",async e=>{
    }
   }
   pendingRequestAttempt=null;
-  try{
-   localStorage.setItem("grifflistLastRequestToken.v1",trackingToken);
-   sessionStorage.setItem(storageKey,JSON.stringify({fingerprint,time:Date.now(),trackingToken,state:"sent"}));
-  }catch(e){}
+  const localTokenSaved=writeLocalStorageSafely("grifflistLastRequestToken.v1",trackingToken)&&
+   readLocalStorageSafely("grifflistLastRequestToken.v1").value===trackingToken;
+  writeSessionStorageSafely(storageKey,JSON.stringify({fingerprint,time:Date.now(),trackingToken,state:"sent"}));
   if(shouldRememberName){try{localStorage.setItem(rememberNamePreferenceKey,"yes");localStorage.setItem(rememberedNameKey,name);}catch(e){}}
-  if(requestStatusResult)requestStatusResult.textContent="Your latest request is saved on this device. Use Check My Last Request to see its status.";
+  if(requestStatusResult)requestStatusResult.textContent=localTokenSaved
+   ?"Your latest request is saved on this device. Use Check My Last Request to see its status."
+   :"Your latest request is saved in this tab. Use Check My Last Request here to see its status.";
   status.textContent=priority?(priorityAlreadyTipped?"Priority request submitted. Your payment will be checked manually.":"Request saved! Complete your $5 CAD tip using the highlighted payment option below."):"Request sent! Thanks for helping choose the music.";
   playSfx("you-rock-sfx");
   const shouldGoPay=priority&&!priorityAlreadyTipped;
