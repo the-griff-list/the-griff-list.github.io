@@ -182,8 +182,9 @@ export function createRequestGatewayHandler({ fetchImpl = globalThis.fetch, cryp
       return response.json();
     };
 
-    // Strict per-source attempt cap before Siteverify. This does not replace
-    // an upstream WAF/edge rule for volumetric Worker-invocation protection.
+    // Coarse per-IP attempt cap before Siteverify, intentionally high for shared
+    // venue/mobile NAT. It does not replace an upstream WAF/edge rule for
+    // volumetric Worker-invocation protection.
     let attempt;
     try { attempt = firstRow(await callRpc("consume_request_submission_attempt", { p_ip_hash: ipHash })); }
     catch { return jsonResponse(503, { error: "request_service_unavailable" }, origin, allowedOrigin); }
