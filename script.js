@@ -357,7 +357,7 @@ requestForm?.addEventListener("submit",async e=>{
   if(requestStatusResult)requestStatusResult.textContent=localTokenSaved
    ?"Your latest request is saved on this device. Use Check My Last Request to see its status."
    :"Your latest request is saved in this tab. Use Check My Last Request here to see its status.";
-  status.textContent=priority?(priorityAlreadyTipped?"Priority request submitted. Your payment will be checked manually.":"Request saved! Complete your $5 CAD tip using the highlighted payment option below."):"Request sent! Thanks for helping choose the music.";
+  status.textContent=priority?(priorityAlreadyTipped?"Request saved. Your reported $5 CAD tip will be checked manually before priority consideration; song playback is not guaranteed.":"Request saved. Complete your optional $5 CAD tip using the highlighted payment option below. Priority consideration is applied only after manual verification; song playback is not guaranteed."):"Request sent! Thanks for helping choose the music.";
   playSfx("you-rock-sfx");
   const shouldGoPay=priority&&!priorityAlreadyTipped;
   const chosenMethod=paymentMethod;
@@ -506,7 +506,7 @@ function focusPaymentMethod(method){
   if(status){status.hidden=false;status.textContent="That payment method is unavailable. Choose Ko-fi or PayPal.";}
   return;
  }
- if(status){status.hidden=false;status.textContent=method==="paypal"?"Your request is saved. Complete your $5 CAD tip through PayPal below.":"Your request is saved. Complete your $5 CAD tip through Ko-fi below.";}
+ if(status){status.hidden=false;status.textContent=method==="paypal"?"Your request is saved. Complete the optional $5 CAD tip through PayPal below. Priority consideration is applied only after manual verification; song playback is not guaranteed.":"Your request is saved. Complete the optional $5 CAD tip through Ko-fi below. Priority consideration is applied only after manual verification; song playback is not guaranteed.";}
  document.querySelectorAll(".payment-method-banner.payment-highlight").forEach(el=>el.classList.remove("payment-highlight"));
  target.classList.add("payment-highlight");target.scrollIntoView({behavior:"smooth",block:"center"});
  window.setTimeout(()=>target.classList.remove("payment-highlight"),1700);

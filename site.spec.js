@@ -811,21 +811,41 @@ test('catalogue selection fills the request without opening the mobile keyboard'
   await expect(page.locator('#requester-name')).not.toBeFocused();
 });
 
-test('priority payment details appear only after explicit optional opt-in', async ({ page }) => {
+test('priority payment details appear only after optional opt-in and disclose manual verification', async ({ page }) => {
   await page.goto('/index.html');
   await page.locator('#splash').click();
   const priority = page.locator('#priority-request');
   const paymentWrap = page.locator('#priority-payment-wrap');
   const paymentMethod = page.locator('#priority-payment-method');
+  const disclosure = page.locator('.priority-option-copy small');
+  await expect(disclosure).toContainText('Optional $5 CAD tip');
+  await expect(disclosure).toContainText('checked manually');
+  await expect(disclosure).toContainText('not guaranteed');
   await expect(priority).not.toBeChecked();
   await expect(priority).not.toHaveAttribute('required', '');
   await expect(paymentWrap).toBeHidden();
   await priority.check();
   await expect(paymentWrap).toBeVisible();
+  await expect(paymentWrap).toContainText('Optional tip method');
   await expect(paymentMethod).toHaveValue('');
   await priority.uncheck();
   await expect(paymentWrap).toBeHidden();
   await expect(paymentMethod).toHaveValue('');
+});
+
+test('priority request status explains manual payment verification and no playback guarantee', async ({ page }) => {
+  await page.goto('/index.html');
+  await page.locator('#splash').click();
+  await page.evaluate(() => {
+    window.supabaseClient = { from: () => ({ insert: async () => ({ error: null }) }) };
+  });
+  await page.locator('#requester-name').fill('Test Listener');
+  await page.locator('#request-song').fill('Test Song');
+  await page.locator('#priority-request').check();
+  await page.locator('#priority-payment-method').selectOption('paypal');
+  await page.locator('#request-form button[type="submit"]').click();
+  await expect(page.locator('#form-status')).toContainText('manual verification');
+  await expect(page.locator('#form-status')).toContainText('not guaranteed');
 });
 
 test('e-transfer remains visibly unavailable and exposes no recipient or action', async ({ page }) => {
