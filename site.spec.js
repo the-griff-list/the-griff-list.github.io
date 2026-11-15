@@ -317,7 +317,7 @@ test('title screen can be entered', async ({ page }) => { await page.goto('/inde
 test('homepage does not advertise unconfirmed performance dates', async ({ page }) => {
   await page.goto('/index.html');
   const card = page.locator('.next-show-card');
-  await expect(card.locator('.eyebrow')).toHaveText('NEXT PERFORMANCE');
+  await expect(card.locator('.eyebrow')).toHaveText('UPCOMING SHOWS');
   await expect(card.locator('#next-show-title')).toHaveText('Next date to be announced');
   await expect(card).toContainText('No upcoming performance date is currently confirmed.');
   await expect(card.locator('a[href="#catalog"]')).toHaveText('BROWSE SONGS ↗');
