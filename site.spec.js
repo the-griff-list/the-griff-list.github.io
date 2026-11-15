@@ -885,7 +885,10 @@ test('successful request shows success instead of a post-insert JavaScript error
   await page.locator('#requester-name').fill('Test Listener');
   await page.locator('#request-song').fill('Test Song');
   await page.locator('#request-form button[type="submit"]').click();
-  await expect(page.locator('#form-status')).toHaveText('Request sent! Thanks for helping choose the music.');
+  await expect(page.locator('#form-status')).toHaveText(/Request sent!|Request could not be saved/);
+  const requestErrors = await page.evaluate(() => window.__requestErrors);
+  expect(requestErrors, 'Unexpected request failure: ' + requestErrors.join(' | ')).toHaveLength(1);
+  expect(await page.locator('#form-status').textContent()).toBe('Request sent! Thanks for helping choose the music.');
   expect(await page.evaluate(() => localStorage.getItem('grifflistRememberName.v1'))).toBeNull();
   expect(await page.evaluate(() => localStorage.getItem('grifflistRememberedName.v2'))).toBeNull();
 });
@@ -980,6 +983,17 @@ test('uses a new idempotency token when the visitor changes the song after an un
     const rows = new Map();
     window.__requestTokens = [];
     window.__requestClientReplacementDetected = false;
+    window.__requestErrors = [];
+    const originalConsoleError = console.error.bind(console);
+    console.error = (...args) => {
+      if (args[0] === 'Request submission failed') {
+        const error = args[1];
+        window.__requestErrors.push(error instanceof Error
+          ? error.name + ': ' + error.message
+          : String(error?.code || '') + ': ' + String(error?.message || error));
+      }
+      originalConsoleError(...args);
+    };
     let attempt = 0;
     const mockClient = {
       from: () => ({
