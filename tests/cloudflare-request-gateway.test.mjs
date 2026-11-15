@@ -26,6 +26,7 @@ function payload(overrides = {}) {
     artist_name: "Bryan Adams",
     note: "Please play this one!",
     tracking_token: TRACKING_TOKEN,
+    client_session_id: "7fce5f22-40aa-4a93-88e1-9c9a4c0d1a55",
     turnstile_token: "turnstile-token-1",
     ...overrides,
   };
@@ -112,13 +113,17 @@ test("uses only a keyed source digest and never forwards raw IP to Siteverify", 
   const result = await handler(mock)(request(payload(), { "X-Forwarded-For": "198.51.100.9" }), env());
   assert.equal(result.status, 201);
   const attemptBody = JSON.parse(mock.calls[0].options.body);
+  const submitBody = JSON.parse(mock.calls[2].options.body);
   assert.equal(mock.calls[0].options.headers.apikey, env().SUPABASE_SECRET_KEY);
   assert.equal(Object.hasOwn(mock.calls[0].options.headers, "Authorization"), false);
-  assert.match(attemptBody.p_source_hash, /^[0-9a-f]{64}$/);
-  assert.equal(attemptBody.p_source_hash.includes(IP), false);
+  assert.match(attemptBody.p_ip_hash, /^[0-9a-f]{64}$/);
+  assert.match(submitBody.p_source_hash, /^[0-9a-f]{64}$/);
+  assert.equal(submitBody.p_source_hash.includes(IP), false);
+  assert.equal(submitBody.p_source_hash.includes(payload().client_session_id), false);
   const challengeBody = JSON.parse(mock.calls[1].options.body);
   assert.equal(Object.hasOwn(challengeBody, "remoteip"), false);
   assert.equal(JSON.stringify(mock.calls).includes(IP), false);
+  assert.equal(JSON.stringify(mock.calls).includes(payload().client_session_id), false);
 });
 
 test("rejects malformed and oversized bodies before backend access", async () => {
@@ -135,6 +140,21 @@ test("rejects overlong fields and client-controlled status fields", async () => 
   assert.equal((await run(request(payload({ requester_name: "x".repeat(101) })), env())).status, 400);
   assert.equal((await run(request(payload({ status: "Played" })), env())).status, 400);
   assert.equal(mock.calls.length, 0);
+});
+
+test("requires a UUID session key and separates patrons behind one shared IP", async () => {
+  const mock = mockFetch();
+  const run = handler(mock);
+  const invalid = await run(request(payload({ client_session_id: "not-a-uuid" })), env());
+  assert.equal(invalid.status, 400);
+  assert.equal(mock.calls.length, 0);
+
+  await run(request(payload(), { "X-Forwarded-For": "198.51.100.9" }), env());
+  await run(request(payload({ tracking_token: "8c7c0f18-9ef6-4a53-9d8c-7e3c12c7c0f1", client_session_id: "8c7c0f18-9ef6-4a53-9d8c-7e3c12c7c0f2" }), { "X-Forwarded-For": "192.0.2.99" }), env());
+  const attemptHashes = mock.calls.filter(call => call.url.endsWith("/rpc/consume_request_submission_attempt")).map(call => JSON.parse(call.options.body).p_ip_hash);
+  const sourceHashes = mock.calls.filter(call => call.url.endsWith("/rpc/submit_song_request_once")).map(call => JSON.parse(call.options.body).p_source_hash);
+  assert.equal(attemptHashes[0], attemptHashes[1]);
+  assert.notEqual(sourceHashes[0], sourceHashes[1]);
 });
 
 test("rejects source attempts over the strict database limit before Siteverify", async () => {
