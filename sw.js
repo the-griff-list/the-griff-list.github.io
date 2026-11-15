@@ -186,7 +186,20 @@ function hasExplicitNoStoreOrNoCache(request) {
     hasRequestNoStore || hasRequestNoCache || hasPragmaNoCache;
 }
 
+function hasExplicitNoStore(request) {
+  if (request.cache === 'no-store') return true;
+  const cacheControl = (request.headers.get('Cache-Control') || '')
+    .split(',')
+    .map(value => value.trim().toLowerCase());
+  return cacheControl.some(value => value.split('=', 1)[0].trim() === 'no-store');
+}
+
 function isCacheableRequest(request, url) {
+  // Cache-Control: no-store and Request.cache=no-store forbid both cache writes
+  // and cache reuse. Let those requests go directly to the network, including
+  // public navigations; reload/no-cache navigations retain the offline fallback.
+  if (hasExplicitNoStore(request)) return false;
+
   // Public navigations must reach the worker even when a browser reload adds
   // cache-bypass modes/headers; the worker may serve the public offline shell.
   // Such responses are never persisted when an explicit no-store/no-cache is set.
