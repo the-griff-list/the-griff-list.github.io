@@ -157,7 +157,7 @@ test("requires a UUID session key and separates patrons behind one shared IP", a
   assert.notEqual(sourceHashes[0], sourceHashes[1]);
 });
 
-test("rejects source attempts over the strict database limit before Siteverify", async () => {
+test("rejects per-IP attempts over the database limit before Siteverify", async () => {
   const mock = mockFetch({ attempt: [{ allowed: false, retry_after_seconds: 37 }] });
   const result = await handler(mock)(request(), env());
   assert.equal(result.status, 429);
