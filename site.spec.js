@@ -696,7 +696,7 @@ test('request form exposes accessible names for every public field and keeps key
   await expect(priority).toBeChecked();
   await expect(paymentWrap).toBeVisible();
   await expect(paymentMethod).toBeVisible();
-  await expect(paymentMethod).toHaveAccessibleName(/Payment method/);
+  await expect(paymentMethod).toHaveAccessibleName(/Optional tip method/);
   await page.keyboard.press('Tab');
   await expect(paymentMethod).toBeFocused();
   await page.keyboard.press('Tab');
