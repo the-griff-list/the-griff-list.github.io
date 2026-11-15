@@ -833,12 +833,19 @@ test('priority payment details appear only after optional opt-in and disclose ma
   await expect(paymentMethod).toHaveValue('');
 });
 
-test('priority request status explains manual payment verification and no playback guarantee', async ({ page }) => {
+test('priority request status explains manual verification and no playback guarantee', async ({ page }) => {
+  await page.addInitScript(() => {
+    window.__requestClientReplacementDetected = false;
+    const mockClient = { from: () => ({ insert: async () => ({ error: null }) }) };
+    Object.defineProperty(window, 'supabaseClient', {
+      configurable: false,
+      enumerable: true,
+      get: () => mockClient,
+      set: () => { window.__requestClientReplacementDetected = true; }
+    });
+  });
   await page.goto('/index.html');
   await page.locator('#splash').click();
-  await page.evaluate(() => {
-    window.supabaseClient = { from: () => ({ insert: async () => ({ error: null }) }) };
-  });
   await page.locator('#requester-name').fill('Test Listener');
   await page.locator('#request-song').fill('Test Song');
   await page.locator('#priority-request').check();
@@ -846,6 +853,7 @@ test('priority request status explains manual payment verification and no playba
   await page.locator('#request-form button[type="submit"]').click();
   await expect(page.locator('#form-status')).toContainText('manual verification');
   await expect(page.locator('#form-status')).toContainText('not guaranteed');
+  expect(await page.evaluate(() => window.__requestClientReplacementDetected)).toBe(false);
 });
 
 test('e-transfer remains visibly unavailable and exposes no recipient or action', async ({ page }) => {
