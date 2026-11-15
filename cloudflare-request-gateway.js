@@ -2,6 +2,7 @@
 // Separate from cloudflare-livekit-worker.js. No secrets belong in source control.
 const MAX_BODY_BYTES = 8192;
 const TURNSTILE_URL = "https://challenges.cloudflare.com/turnstile/v0/siteverify";
+const IP_HASH_CONTEXT = "grifflist-request-ip-attempt-v1:";
 const SOURCE_HASH_CONTEXT = "grifflist-request-source-v1:";
 const UUID_V4 = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
@@ -89,23 +90,25 @@ function codePointLength(value) { return Array.from(value).length; }
 
 function validateRequestPayload(input) {
   if (!input || typeof input !== "object" || Array.isArray(input)) return { error: "invalid_payload" };
-  const allowed = new Set(["requester_name", "song_title", "artist_name", "note", "tracking_token", "turnstile_token"]);
+  const allowed = new Set(["requester_name", "song_title", "artist_name", "note", "tracking_token", "client_session_id", "turnstile_token"]);
   if (Object.keys(input).some(key => !allowed.has(key))) return { error: "unexpected_field" };
   const requesterName = typeof input.requester_name === "string" ? input.requester_name.trim() : "";
   const songTitle = typeof input.song_title === "string" ? input.song_title.trim() : "";
   const artistName = input.artist_name == null ? "" : typeof input.artist_name === "string" ? input.artist_name.trim() : null;
   const note = input.note == null ? "" : typeof input.note === "string" ? input.note.trim() : null;
   const trackingToken = typeof input.tracking_token === "string" ? input.tracking_token.toLowerCase() : "";
+  const clientSessionId = typeof input.client_session_id === "string" ? input.client_session_id.toLowerCase() : "";
   const turnstileToken = typeof input.turnstile_token === "string" ? input.turnstile_token.trim() : "";
   if (!requesterName || codePointLength(requesterName) > 100) return { error: "invalid_requester_name" };
   if (!songTitle || codePointLength(songTitle) > 200) return { error: "invalid_song_title" };
   if (artistName === null || (artistName && codePointLength(artistName) > 200)) return { error: "invalid_artist_name" };
   if (note === null || codePointLength(note) > 1500) return { error: "invalid_note" };
   if (!UUID_V4.test(trackingToken)) return { error: "invalid_tracking_token" };
+  if (!UUID_V4.test(clientSessionId)) return { error: "invalid_client_session" };
   if (!turnstileToken || turnstileToken.length > 2048) return { error: "invalid_challenge_token" };
   return { value: {
     requester_name: requesterName, song_title: songTitle, artist_name: artistName || null,
-    note: note || null, tracking_token: trackingToken, turnstile_token: turnstileToken,
+    note: note || null, tracking_token: trackingToken, client_session_id: clientSessionId, turnstile_token: turnstileToken,
   }};
 }
 
@@ -155,9 +158,14 @@ export function createRequestGatewayHandler({ fetchImpl = globalThis.fetch, cryp
     // back to client-controlled X-Forwarded-For or another forwarded-IP field.
     const clientIp = request.headers.get("CF-Connecting-IP") || "";
     if (!validIpLiteral(clientIp)) return jsonResponse(400, { error: "trusted_client_address_required" }, origin, allowedOrigin);
-    let sourceHash;
-    try { sourceHash = await hmacHex(env.RATE_LIMIT_HMAC_SECRET, SOURCE_HASH_CONTEXT + clientIp, cryptoImpl); }
-    catch { return jsonResponse(503, { error: "request_service_unavailable" }, origin, allowedOrigin); }
+    let ipHash, sourceHash;
+    try {
+      ipHash = await hmacHex(env.RATE_LIMIT_HMAC_SECRET, IP_HASH_CONTEXT + clientIp, cryptoImpl);
+      // A per-tab random ID prevents patrons sharing venue Wi-Fi/mobile NAT
+      // from consuming one another's accepted-request allowance.
+      sourceHash = await hmacHex(env.RATE_LIMIT_HMAC_SECRET,
+        SOURCE_HASH_CONTEXT + clientIp + ":" + validated.value.client_session_id, cryptoImpl);
+    } catch { return jsonResponse(503, { error: "request_service_unavailable" }, origin, allowedOrigin); }
 
     const supabaseBase = String(env.SUPABASE_URL).replace(/\/+$/, "");
     const supabaseHeaders = {
@@ -177,7 +185,7 @@ export function createRequestGatewayHandler({ fetchImpl = globalThis.fetch, cryp
     // Strict per-source attempt cap before Siteverify. This does not replace
     // an upstream WAF/edge rule for volumetric Worker-invocation protection.
     let attempt;
-    try { attempt = firstRow(await callRpc("consume_request_submission_attempt", { p_source_hash: sourceHash })); }
+    try { attempt = firstRow(await callRpc("consume_request_submission_attempt", { p_ip_hash: ipHash })); }
     catch { return jsonResponse(503, { error: "request_service_unavailable" }, origin, allowedOrigin); }
     if (!attempt || typeof attempt.allowed !== "boolean") {
       return jsonResponse(503, { error: "request_service_unavailable" }, origin, allowedOrigin);
