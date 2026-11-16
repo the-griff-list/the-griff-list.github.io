@@ -843,10 +843,15 @@ test('song selection and request-status lookup fail closed when local storage is
 
   await page.goto('/index.html');
   await page.locator('#splash').click();
-  await page.locator('#song-reveal summary').click();
+  // Open the disclosure deterministically: the companion catalogue test
+  // exercises the real summary/row pointer interaction. This case isolates
+  // the blocked-storage request-status handler rather than WebKit hit-testing.
+  const reveal = page.locator('#song-reveal');
+  await reveal.evaluate(element => { element.open = true; });
   const row = page.locator('#song-list .song-row').first();
+  await expect(row).toBeVisible();
   const title = (await row.locator('.song-title').textContent()).trim();
-  await row.click();
+  await row.dispatchEvent('click');
 
   await expect(page.locator('#request-song')).toHaveValue(title);
   await expect(page.locator('#form-status')).toHaveText('');
