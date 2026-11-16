@@ -5,7 +5,8 @@ on:
     branches:
       - main
       - site-quality-ci
-      - sitewide-grifflist-experience
+    # The active sitewide branch is covered by its PR event below; avoid
+    # running the same full browser suite again for the matching push event.
   pull_request:
     branches:
       - main
