@@ -73,6 +73,17 @@ test('explicit private assets and private section prefixes are denied', () => {
   assert.equal(context.isPrivatePath('/explore.html'), false);
 });
 
+test('public precache manifest contains no private or API assets', () => {
+  const core = vm.runInContext('CORE.slice()', context);
+  assert.ok(core.length > 0, 'public offline shell must retain a non-empty precache');
+  for (const assetPath of core) {
+    const url = new URL(assetPath, ORIGIN + '/');
+    assert.equal(url.origin, ORIGIN, 'precache asset must remain same-origin: ' + assetPath);
+    assert.equal(context.isPrivatePath(url.pathname), false, 'private asset must not enter CORE: ' + assetPath);
+    assert.equal(context.isApiPath(url.pathname), false, 'API asset must not enter CORE: ' + assetPath);
+  }
+});
+
 test('case and repeated percent decoding cannot bypass private-path checks', () => {
   for (const pathname of [
     '/ADMIN.HTML', '/%61dmin.html', '/%2561dmin.html',
