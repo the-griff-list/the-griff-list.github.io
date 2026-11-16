@@ -1,6 +1,6 @@
 # The Griff List — Revenue Experiment Backlog
 
-**Research snapshot:** 16 November 2026 (custom audio-sting competitor refresh; earlier evidence retained)  
+**Research snapshot:** 16 November 2026 (QR request/tip competitor refresh and rehearsal-demo audio tidy-up; earlier evidence retained)  
 **Status:** researched hypotheses only — no customer demand or paid conversion has been validated.  
 **Scope:** low/no-upfront-cost services that can be tested through the existing live-music network. This is an internal planning document on the development branch; it does not activate checkout, publish an offer, or authorize spending.
 
@@ -29,6 +29,7 @@
 | 10 | **Gig-night setlist + cue sheet:** a large-print, phone-readable and printable one-page set order with client-confirmed keys/capos, instrument changes, vocal handoffs, breaks and encore notes | $15 basic; $25 with cue/timing notes (pilot hypotheses) | $0 if existing document/design tools suffice | 1–14 days through warm musician contacts (hypothesis) | 20–30 min basic; 30–45 min with cues | High before labour; digital PDF, no inventory | Free docs/spreadsheets and low-cost band apps are strong substitutes. Client verifies song order, keys, capos and timings; no lyrics, chord charts, sheet music or copyrighted recordings. Convenience service, not a setlist-app replacement. **Researched, not validated.** |
 | 11 | **Private acoustic booking:** a clearly scoped solo-guitar/vocal set for birthdays, anniversaries and small private gatherings | $250–$300 for up to 3 hours (pilot hypothesis; PA/travel scope confirmed per quote) | $0 only if existing transport and suitable sound gear are already available | 1–14 days through warm venue/musician referrals (hypothesis) | About 4–5 hours including performance, setup, travel and admin | Potentially high before labour, fuel, equipment, insurance and tax | Strong fit with existing live-performance skills and a local price benchmark exists. Confirm venue/room size, PA, power, travel, weather, set length, cancellation/deposit and applicable music licensing before accepting. No validated demand or booking is implied. **Researched, not validated.** |
 | 12 | **Original short-form audio sting:** a 10–15-second guitar-led intro/outro or show bumper for a PEI podcast, livestream or venue promo | $55 one-time (pilot hypothesis) | $0 if current recording/mixing tools and gear are sufficient | 1–4 weeks through warm creator/venue contacts (hypothesis) | 60–90 minutes including intake, production, one revision and exports | High before labour; no physical inventory | Differentiates through a locally collaborative original cue, not generic stock music. Fiverr has many low-priced offers and a Nova Scotia provider advertises custom podcast music from $450 CAD. Keep scope narrow, retain composition copyright and grant only a written use licence. No local willingness-to-pay evidence. **Researched, unvalidated.** |
+| 13 | **Rehearsal/demo audio tidy-up:** client-supplied stereo rehearsal/live recording; trim, fades, level adjustment and WAV/MP3 export, not full mixing/mastering | $20–$30 per file up to 5 minutes (pilot hypothesis) | $0 if existing editing tools and gear suffice | 1–14 days through warm musician contacts (unvalidated) | 20–40 minutes | High before labour; digital delivery | Free editing tools and the Charlottetown Library's free audio studio are substitutes; established studios offer higher-scope recording/mixing. Differentiate only on convenient done-for-you cleanup of an already-recorded file. Client confirms recording/performer/venue rights; no restoration or quality guarantee. **Researched, not validated.** |
 
 ### Competitor and market observations
 
@@ -395,3 +396,49 @@ This is a public-page scan of products in the same broad QR-request category. Di
 - **Rights / IP controls:** use only original performances and compositions; no unlicensed samples, third-party melodies, copied hooks or imitation of a named artist. Keep composition copyright with the creator where practical and grant a clearly written licence limited to the client's named show/venue and agreed promotional uses. Any exclusive, transferable, broadcast-wide or sublicensable rights require a separate written agreement and quote. Client confirms rights to any supplied name, voice, slogan and logo. No legal advice is implied.
 - **Validation gate:** before any offer, ask up to five existing PEI creators/venue contacts—only with owner-approved outreach—whether they have a real need for a short original cue and whether the $55 scope is worth paying for. At most two paid pilots only after approval of the exact brief, price, payment route and licence. Record inquiries, paid orders, actual production time, revisions, usage scope and referrals. Compliments, views and non-binding interest are not sales.
 - **Status:** researched hypothesis only; not prototyped, offered or validated. No public page, checkout, outreach, payment destination, account change, sample-library purchase or spending occurred.
+
+
+## Performer QR request/tip setup kit — competitor refresh (16 November 2026)
+
+This update compares current public offers for the existing one-time **client-owned QR setup/signage service**. It does not propose building another song-request SaaS product. Published plan prices/features are snapshots, not verified transactions or proof of local demand.
+
+- [Tiply](https://tiply.us/) advertises a free musician product with Square-backed QR tips and song requests; its page says it takes a small transaction percentage but does not publish the exact rate in the captured content.
+- [StageVibe](https://stagevibe.io/) advertises a $0 Free tier with a 10% platform fee on tips, Pro at $20/month, and Elite at $150/month with a 0% platform fee.
+- [Skyjam](https://skyjam.com/tipping-app) advertises free setup and a platform fee but the retrieved page does not state the exact percentage.
+- [TIP2PLAY](https://tip2play.app/) advertises an 85% revenue share on its free Starter tier, 95% on Pro at EUR 9/month, and 100% on Venue at EUR 49/month.
+- [YouRequestNow](https://www.yourequestnow.com/) advertises $19.99/month per band and 0% platform fee, with Stripe processing fees applying.
+- [Scan to Request a Song](https://www.scantorequestasong.com/) advertises $9/month after a free trial and says tips go directly to the performer's Venmo or Cash App.
+- [Encore](https://encorelivemusic.app/for) advertises a Free plan with a 10% platform fee and Pro at $8/month with a 5% fee.
+- [Ko-fi's official fee guidance](https://help.ko-fi.com/hc/en-us/articles/360002506494-Does-Ko-fi-take-a-fee) distinguishes 0% platform fee on one-time tips in Free mode from 5% on commissions/shop/memberships; Standard applies 5% to tips too. Processor fees remain separate.
+
+**Implication:** this is a crowded category with free/low-cost self-service substitutes. A Griff List offer should remain a one-time, done-for-you setup for a performer who already owns their request/tip accounts: test the destination, design an original QR stage/table sign and social crop, and hand over the assets. Do not promise payment acceptance, request delivery, revenue lift or platform compatibility beyond a real test. Do not collect account credentials, handle payments, create accounts for clients, or add ongoing platform fees. The existing $25–$35 digital-only price remains a hypothesis; no PEI willingness-to-pay evidence was found in this search.
+
+**Validation status:** researched competitor landscape; no customer interviews, paid setup orders, prototype, local demand or conversion evidence. Keep internal. No public offer, checkout, outreach, payment destination or provider integration is authorized by this research.
+
+## Rehearsal/demo audio tidy-up — new researched hypothesis (16 November 2026)
+
+**Offer concept:** take one client-supplied stereo rehearsal/live demo recording of up to five minutes and provide a basic tidy-up: trim start/end and long leading/trailing silence, add simple fades, adjust overall level conservatively, and export a WAV plus MP3. One revision. This is not multitrack mixing, mastering, noise restoration, pitch correction, stem separation, recording, or a promise of professional release quality.
+
+| Dimension | Planning estimate |
+|---|---|
+| Pilot price hypothesis | CAD $20–$30 per file (up to 5 minutes) |
+| Startup cost | $0 only if current editing tools/gear are adequate; no software or equipment purchase |
+| Time to first dollar | 1–14 days through warm musician contacts (hypothesis, not forecast) |
+| Effort | 20–40 minutes including intake, edit, export and one revision |
+| Gross-margin outlook | High before labour, tax, payment fees and overhead; digital delivery only |
+| Risks / fit | Medium fit with existing audio/mixing interests; free tools and established studios are strong substitutes. Keep scope narrow and describe limitations honestly. |
+
+**Competitor and substitute evidence (16 November 2026):**
+- [Charlottetown Library Learning Centre Audio Studio](https://cllcroomrentals.ca/audio-studio/) advertises Audio Studio A for podcast/voice recording at no charge for up to two hours, subject to library-card, age, booking and room rules. It is a free recording-space substitute, not a done-for-you edit service; the library says it does not provide equipment/software training.
+- [Ukee Sound](https://www.ukeesound.ca/studiorates) publishes local/regional songwriter/band recording at CAD $65/hour and mixing/mastering at CAD $65/hour. That is professional studio/engineering scope, not a direct comparison to a short file tidy-up.
+- Charlottetown's [Don't Wake Baby studio](https://www.gregalsop.com/studio) advertises professional recording/production services but the captured page does not publish rates. [SoundBetter's Charlottetown mixer profile](https://soundbetter.com/profiles/70481-adam-gallant) displays a marketplace average price of about $250 per song; profile averages are not verified transactions or comparable to this narrow service.
+- A Canadian audio editor's [5 November 2026 Reddit for-hire post](https://www.reddit.com/r/forhire/comments/1xocbn1/for_hire_audio_editor_for_music_streaming_and/) lists a CAD $45 minimum and $45–$60/hour for general audio editing, with basic voice cleanup at $45–$60 for up to ten minutes. This is one self-posted asking-rate signal, not a verified sale or local benchmark.
+- Free tools such as Audacity and client self-editing are close substitutes. The only plausible paid value is saving a musician a small amount of time on a recording they already own—not technical superiority over a studio.
+
+**Illustrative payment economics only:** using the existing backlog's example PayPal Canada standard domestic commercial rate of 2.90% + CAD $0.30, a hypothetical $20–$30 service payment would incur about $0.88–$1.17 and leave $19.12–$28.83 before labour, tax, refunds and overhead. At 20–40 minutes, the extreme range is approximately $28.68–$86.49 per hour before those costs; actual average economics will depend on intake, revisions and file issues. Verify the user's actual account fee and payment route before any offer. No checkout is activated here.
+
+**Rights, privacy and delivery controls:** accept only recordings the client is authorized to supply and edit; require the client to confirm performer and venue permissions where relevant. Do not use unlicensed backing tracks or publish/share the recording. Do not upload files to a third-party service without the client's informed permission. Agree a file-transfer and deletion period before accepting work; do not retain source audio or personal details indefinitely. No stems, restoration, forensic enhancement, copyright clearance or legal advice.
+
+**Validation gate:** if later approved, ask up to five existing warm musician contacts whether they have a real need for this narrow edit and what they would pay; no mass outreach. Only after separate approval of the exact scope, price, delivery and payment route, test at most three paid pilots. Record actual edit time, revisions, file problems, refunds and repeat/referral interest. Compliments or non-binding interest are not sales.
+
+**Status:** researched hypothesis only; not prototyped, offered or validated. No outreach, customer file, public offer, checkout, payment change, software purchase or spending occurred.
