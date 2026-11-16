@@ -52,22 +52,17 @@ assert.equal(hasBroadPublicInsertGrant('GRANT SELECT, INSERT ON public.song_requ
 assert.equal(hasBroadPublicInsertGrant('GRANT ALL PRIVILEGES ON TABLE public.song_requests TO PUBLIC;'), true);
 assert.equal(hasBroadPublicInsertGrant('GRANT INSERT (requester_name) ON TABLE public.song_requests TO anon;'), false);
 
-// The staged gateway cutover must revoke column-level grants as well as the
-// table-level grant. PostgreSQL keeps column grants when only table INSERT is
-// revoked, so the migration also verifies the effective privilege for every
-// column and aborts atomically if anon/authenticated can still insert anything.
+// The draft cutover must remove the existing table and column-level grants,
+// then verify effective privileges for every live column. PostgreSQL's table
+// REVOKE also removes corresponding column grants; the effective privilege
+// check catches grants that remain through another role or PUBLIC membership.
 const cutoverSql = cutover.toLowerCase();
 assert.ok(cutoverSql.includes(tableRevoke), 'cutover: table-level INSERT is revoked');
-assert.match(
-  cutoverSql,
-  /revoke insert \(%s\) on table public\.song_requests from public, anon, authenticated/,
-  'cutover: all column-level INSERT grants are revoked dynamically',
-);
-assert.ok(cutoverSql.includes('from pg_catalog.pg_attribute'), 'cutover: all real table columns are enumerated');
+assert.ok(cutoverSql.includes('from pg_catalog.pg_attribute'), 'cutover: every live table column is enumerated');
 assert.ok(cutoverSql.includes("pg_catalog.has_column_privilege('anon'"), 'cutover: anon effective column privileges are checked');
 assert.ok(cutoverSql.includes("pg_catalog.has_column_privilege('authenticated'"), 'cutover: authenticated effective column privileges are checked');
 assert.ok(
-  cutoverSql.indexOf('revoke insert (%s)') < cutoverSql.indexOf('pg_catalog.has_column_privilege'),
+  cutoverSql.indexOf(tableRevoke) < cutoverSql.indexOf('pg_catalog.has_column_privilege'),
   'cutover: privilege postcondition runs after revocation',
 );
 assert.ok(
@@ -89,6 +84,6 @@ assert.ok(migrationSql.includes("set search_path = ''"));
 console.log('PASS column-scoped public INSERT grants in bootstrap and upgrade migration');
 console.log('PASS broad INSERT/ALL grants to public roles are rejected');
 console.log('PASS id, status and created_at remain database/admin controlled');
-console.log('PASS gateway cutover revokes table and every column-level INSERT grant');
-console.log('PASS gateway cutover verifies effective anon/authenticated privileges and aborts on bypass');
+console.log('PASS gateway cutover revokes table INSERT and verifies all effective column privileges');
+console.log('PASS gateway cutover aborts transaction if anon/authenticated retain an INSERT path');
 console.log('PASS RLS, tracking-token uniqueness and token-based status lookup remain present');
