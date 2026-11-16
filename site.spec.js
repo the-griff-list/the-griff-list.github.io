@@ -886,6 +886,20 @@ test('catalogue selection fills the request without opening the mobile keyboard'
   );
   await expect(page.locator('#request-hint')).toBeVisible();
   await expect(page.locator('#requester-name')).not.toBeFocused();
+
+  // Close WebKit media elements before fixture teardown. The assertions above
+  // cover catalogue selection and focus; audio is outside this test's scope.
+  // Explicitly stop media so headless WPE does not leave a media process alive
+  // while Playwright closes the iPhone-sized browser context.
+  await page.evaluate(() => {
+    for (const media of document.querySelectorAll('audio, video')) {
+      media.pause();
+      media.removeAttribute('src');
+      media.querySelectorAll('source').forEach(source => source.remove());
+      media.load();
+    }
+  });
+  await page.close();
 });
 
 test('priority payment details appear only after optional opt-in and disclose manual verification', async ({ page }) => {
