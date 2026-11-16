@@ -11,7 +11,7 @@ const cutover = fs.readFileSync(path.join(__dirname, 'request-submission-gateway
 
 const tableRevoke = 'revoke insert on table public.song_requests from public, anon, authenticated;';
 const sensitiveRevoke = 'revoke insert (id, status, created_at) on table public.song_requests from public, anon, authenticated;';
-const columnGrant = 'grant insert (requester_name, song_title, artist_name, note, tracking_token)\\n  on table public.song_requests to anon, authenticated;';
+const columnGrant = 'grant insert (requester_name, song_title, artist_name, note, tracking_token)\n  on table public.song_requests to anon, authenticated;';
 
 function hasBroadPublicInsertGrant(source) {
   const statements = source
@@ -22,15 +22,15 @@ function hasBroadPublicInsertGrant(source) {
 
   return statements.some(statement => {
     const match = statement.match(
-      /^grant\\s+(.+?)\\s+on\\s+(?:table\\s+)?public\\.song_requests\\s+to\\s+(.+)$/i
+      /^grant\s+(.+?)\s+on\s+(?:table\s+)?public\.song_requests\s+to\s+(.+)$/i
     );
     if (!match) return false;
 
     const privileges = match[1].trim();
     const roles = match[2].split(',').map(role => role.trim().toLowerCase());
-    const columnScopedInsert = /^insert\\s*\\(/i.test(privileges);
-    const grantsInsert = /^all(?:\\s+privileges)?$/i.test(privileges) ||
-      (/(^|,)\\s*insert\\b/i.test(privileges) && !columnScopedInsert);
+    const columnScopedInsert = /^insert\s*\(/i.test(privileges);
+    const grantsInsert = /^all(?:\s+privileges)?$/i.test(privileges) ||
+      (/(^|,)\s*insert\b/i.test(privileges) && !columnScopedInsert);
     const grantsToPublicRole = roles.some(role =>
       ['public', 'anon', 'authenticated'].includes(role)
     );
@@ -60,7 +60,7 @@ const cutoverSql = cutover.toLowerCase();
 assert.ok(cutoverSql.includes(tableRevoke), 'cutover: table-level INSERT is revoked');
 assert.match(
   cutoverSql,
-  /revoke insert \\(%s\\) on table public\\.song_requests from public, anon, authenticated/,
+  /revoke insert \(%s\) on table public\.song_requests from public, anon, authenticated/,
   'cutover: all column-level INSERT grants are revoked dynamically',
 );
 assert.ok(cutoverSql.includes('from pg_catalog.pg_attribute'), 'cutover: all real table columns are enumerated');
