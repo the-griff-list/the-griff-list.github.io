@@ -237,6 +237,30 @@ test('response URL checks reject repeatedly encoded private and API paths', () =
   }
 });
 
+test('path normalization fails closed beyond the supported percent-decoding depth', () => {
+  // A five-layer encoding of the leading "a" in admin.html exceeds the
+  // worker's bounded canonicalization depth and must never be treated as public.
+  let deeplyEncodedAdmin = '%61dmin.html';
+  for (let depth = 0; depth < 4; depth += 1) {
+    deeplyEncodedAdmin = encodeURIComponent(deeplyEncodedAdmin);
+  }
+  const privateUrl = new URL('/' + deeplyEncodedAdmin, ORIGIN);
+  assert.equal(
+    context.isCacheableRequest(request({ destination: 'style' }), privateUrl),
+    false,
+    'over-depth encoded private paths must fail closed'
+  );
+  assert.equal(
+    context.isSafePublicCacheResponse(
+      response({ url: privateUrl.href }),
+      ORIGIN + '/index.html',
+      ORIGIN
+    ),
+    false,
+    'over-depth encoded final response URLs must fail closed'
+  );
+});
+
 test('response cache policy rejects freshness, privacy, range and vary hazards', () => {
   assert.equal(context.isCacheableResponse(response({ headerValues: { 'Cache-Control': 'public, max-age=3600' } })), true);
   for (const value of [
