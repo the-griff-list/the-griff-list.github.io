@@ -1,8 +1,8 @@
 # Current pre-gig milestone — awaiting the next confirmed booking
 
-**Next confirmed show:** None currently confirmed after Hunter’s Ale House on Tuesday, November 10, 2026.  
+**Next public show:** No future performance details are approved for publication after Hunter’s Ale House on Tuesday, November 10, 2026.  
 **Last confirmed show:** Hunter’s Ale House · Tuesday, November 10, 2026 · planned performance window 10:00 p.m.–1:30 a.m. Atlantic. The user later reported an approximate actual finish of 1:50 a.m.  
-**Booking status:** December 3 and December 17 calendar entries are not confirmed bookings. The October 30 instruction to schedule Hunter’s performances at 10:00 p.m.–1:30 a.m. was a calendar-time instruction, not confirmation of either date or venue. No later user-confirmed performance is established.
+**Booking status:** A fresh primary-calendar review found future Hunter’s Ale House entries marked confirmed, but their event records have no location or description and the recorded time window has not been verified as a performance time. Treat them as calendar entries only; do not advertise dates, times or venue details until the owner confirms them. The October 30 instruction to schedule Hunter’s performances at 10:00 p.m.–1:30 a.m. was a calendar-time instruction, not confirmation of either date or venue.
 
 PR #3 remains draft and unpublished. No deployment, production change or payment activation is authorized. Use this generic checklist only after a new booking is confirmed; do not use the archived December 3 draft.
 ---
@@ -27,7 +27,7 @@ Keep the distinction explicit in historical records. The venue listings are not 
 ## Post-event status — November 11, 2026
 
 - The November 10 Hunter’s Ale House booking has passed.
-- A fresh review of available prior conversations found no later confirmed performance booking. December 3 and December 17 remain unconfirmed; do not advertise either date or assign a performance time.
+- A later primary-calendar review found future Hunter’s Ale House entries marked confirmed, but their event details are incomplete and the recorded time window has not been verified as a performance time. Do not advertise dates or assign public performance times until the owner confirms the details.
 - The development homepage now states that no upcoming performance date is currently confirmed and retains the song-catalogue CTA.
 - This checklist remains a historical record of the November 10 release-readiness tasks. Its unchecked mobile, request, payment, stream and published-site acceptance items were not completed or represented as passed.
 - Next website milestone: wait for a later user-confirmed booking before adding a date or performance time.
@@ -97,7 +97,7 @@ This evidence was collected after the November 10 performance and does not retro
 - Static integrity: 9 HTML pages, 21 JavaScript files, 53 service-worker precache entries, 12 service-worker policy groups and 23 lifecycle groups passed.
 - Playwright: 66/66 tests passed on desktop Chromium and Android-size Chromium. These are emulated browser viewports, not a physical phone, iOS/WebKit, a real request backend, PayPal/Supabase transaction, live stream or deployed-site acceptance.
 - Development service worker is v68; published `main` remains v38. No deployment occurred.
-- The latest available booking context still contains no later confirmed performance after November 10. Keep the homepage at “Next date to be announced” until a new booking is confirmed.
+- A later primary-calendar review found user-created future entries, but their event details are incomplete and are not approved for public display. Keep the homepage at “Next date to be announced” until the owner confirms exact public details.
 - The historical mobile-device, real request, payment, streaming and published-site checklist items remain unchecked.
 
 
@@ -109,7 +109,10 @@ A targeted review of the available conversation record found that the December 3
 - Do not assign performance times, doors times, venue terms or stream availability to those dates.
 - The homepage and Tour Roadmap have been corrected to say “Next date to be announced” and “No upcoming performance date is currently confirmed.”
 - The dated December 3 checklist is retained only as an archived invalid draft; do not use it as an operational checklist.
-- The last confirmed performance context available is Hunter's Ale House on November 10, 2026, now completed. No later confirmed booking was found in the retrieved conversation history.
+- As of this November 14 conversation-history review, the last user-confirmed performance was Hunter's Ale House on November 10, 2026; this historical note predates the later calendar refresh below.
 - Rebuild a dated pre-gig checklist only after an actual user-confirmed booking is available.
 - PR #3 remains draft and unpublished. No deployment occurred.
 
+## Calendar record refresh — 17 November 2026
+
+A fresh primary-calendar search found future events titled Hunter’s Ale House with status `confirmed`, created by the calendar owner. Their records have no location or description, and the recorded one-hour time window has not been verified as the public performance time. Treat these as calendar records only; do not infer or publish dates, times, venue terms, payment arrangements or stream availability. Keep the public homepage at “Next date to be announced” until the owner confirms the exact public details.
