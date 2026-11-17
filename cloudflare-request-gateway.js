@@ -61,7 +61,14 @@ function canonicalIpLiteral(value) {
   if (!validIpLiteral(value)) return null;
   if (!value.includes(":")) return value;
   try {
-    return new URL("http://[" + value + "]/").hostname.slice(1, -1).toLowerCase();
+    const canonical = new URL("http://[" + value + "]/").hostname.slice(1, -1).toLowerCase();
+    // RFC 4291 §2.5.5.2: IPv4-mapped IPv6 represents an IPv4 node.
+    // Normalize it to the same rate-limit identity as the native IPv4 literal.
+    const mapped = canonical.match(/^::ffff:([0-9a-f]{1,4}):([0-9a-f]{1,4})$/);
+    if (!mapped) return canonical;
+    const high = Number.parseInt(mapped[1], 16);
+    const low = Number.parseInt(mapped[2], 16);
+    return `${high >>> 8}.${high & 0xff}.${low >>> 8}.${low & 0xff}`;
   } catch { return null; }
 }
 

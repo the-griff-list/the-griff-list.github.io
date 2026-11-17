@@ -212,6 +212,49 @@ test("canonicalizes equivalent IPv4-mapped IPv6 forms before deriving abuse-cont
   assert.equal(sourceHashes[0], sourceHashes[1]);
 });
 
+test("shares rate-limit identities between IPv4 and IPv4-mapped IPv6 forms", async () => {
+  const mock = mockFetch();
+  const run = handler(mock);
+  const cases = [
+    {
+      address: "192.0.2.1",
+      tracking_token: TRACKING_TOKEN,
+      turnstile_token: "turnstile-token-ipv4",
+    },
+    {
+      address: "::ffff:192.0.2.1",
+      tracking_token: "8c7c0f18-9ef6-4a53-9d8c-7e3c12c7c0f2",
+      turnstile_token: "turnstile-token-mapped-dotted",
+    },
+    {
+      address: "0:0:0:0:0:ffff:c000:201",
+      tracking_token: "9d8c0f18-9ef6-4a53-9d8c-7e3c12c7c0f3",
+      turnstile_token: "turnstile-token-mapped-hex",
+    },
+  ];
+
+  for (const entry of cases) {
+    const result = await run(request(payload({
+      tracking_token: entry.tracking_token,
+      turnstile_token: entry.turnstile_token,
+    }), {
+      "CF-Connecting-IP": entry.address,
+    }), env());
+    assert.equal(result.status, 201, entry.address);
+  }
+
+  const attemptHashes = mock.calls
+    .filter(call => call.url.endsWith("/rpc/consume_request_submission_attempt"))
+    .map(call => JSON.parse(call.options.body).p_ip_hash);
+  const sourceHashes = mock.calls
+    .filter(call => call.url.endsWith("/rpc/submit_song_request_once"))
+    .map(call => JSON.parse(call.options.body).p_source_hash);
+  assert.equal(attemptHashes.length, 3);
+  assert.equal(sourceHashes.length, 3);
+  assert.equal(new Set(attemptHashes).size, 1);
+  assert.equal(new Set(sourceHashes).size, 1);
+});
+
 test("rejects malformed and zone-scoped trusted client addresses before backend access", async () => {
   for (const address of [
     "fe80::1%eth0",
