@@ -55,6 +55,16 @@ function validIpLiteral(value) {
   );
 }
 
+// Normalize equivalent IPv6 spellings before deriving abuse-control digests.
+// Otherwise the same endpoint could consume multiple textual-key buckets.
+function canonicalIpLiteral(value) {
+  if (!validIpLiteral(value)) return null;
+  if (!value.includes(":")) return value;
+  try {
+    return new URL("http://[" + value + "]/").hostname.slice(1, -1).toLowerCase();
+  } catch { return null; }
+}
+
 async function readBoundedJson(request, maxBytes = MAX_BODY_BYTES) {
   const contentLength = request.headers.get("Content-Length");
   if (contentLength !== null && (!/^[0-9]+$/.test(contentLength) || Number(contentLength) > maxBytes)) {
@@ -156,8 +166,8 @@ export function createRequestGatewayHandler({ fetchImpl = globalThis.fetch, cryp
 
     // Cloudflare injects CF-Connecting-IP on direct edge ingress. Never fall
     // back to client-controlled X-Forwarded-For or another forwarded-IP field.
-    const clientIp = request.headers.get("CF-Connecting-IP") || "";
-    if (!validIpLiteral(clientIp)) return jsonResponse(400, { error: "trusted_client_address_required" }, origin, allowedOrigin);
+    const clientIp = canonicalIpLiteral(request.headers.get("CF-Connecting-IP") || "");
+    if (!clientIp) return jsonResponse(400, { error: "trusted_client_address_required" }, origin, allowedOrigin);
     let ipHash, sourceHash;
     try {
       ipHash = await hmacHex(env.RATE_LIMIT_HMAC_SECRET, IP_HASH_CONTEXT + clientIp, cryptoImpl);

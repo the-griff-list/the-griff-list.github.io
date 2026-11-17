@@ -160,6 +160,32 @@ test("requires a UUID session key and separates patrons behind one shared IP", a
   assert.notEqual(sourceHashes[0], sourceHashes[1]);
 });
 
+test("canonicalizes equivalent IPv6 spellings before deriving abuse-control digests", async () => {
+  const mock = mockFetch();
+  const run = handler(mock);
+  const first = await run(request(payload(), {
+    "CF-Connecting-IP": "2001:0db8:0:0:0:0:0:1",
+  }), env());
+  const second = await run(request(payload({
+    tracking_token: "8c7c0f18-9ef6-4a53-9d8c-7e3c12c7c0f1",
+  }), {
+    "CF-Connecting-IP": "2001:db8::1",
+  }), env());
+
+  assert.equal(first.status, 201);
+  assert.equal(second.status, 201);
+  const attemptHashes = mock.calls
+    .filter(call => call.url.endsWith("/rpc/consume_request_submission_attempt"))
+    .map(call => JSON.parse(call.options.body).p_ip_hash);
+  const sourceHashes = mock.calls
+    .filter(call => call.url.endsWith("/rpc/submit_song_request_once"))
+    .map(call => JSON.parse(call.options.body).p_source_hash);
+  assert.equal(attemptHashes.length, 2);
+  assert.equal(sourceHashes.length, 2);
+  assert.equal(attemptHashes[0], attemptHashes[1]);
+  assert.equal(sourceHashes[0], sourceHashes[1]);
+});
+
 test("rejects per-IP attempts over the database limit before Siteverify", async () => {
   const mock = mockFetch({ attempt: [{ allowed: false, retry_after_seconds: 37 }] });
   const result = await handler(mock)(request(), env());
