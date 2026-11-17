@@ -186,6 +186,48 @@ test("canonicalizes equivalent IPv6 spellings before deriving abuse-control dige
   assert.equal(sourceHashes[0], sourceHashes[1]);
 });
 
+test("canonicalizes equivalent IPv4-mapped IPv6 forms before deriving abuse-control digests", async () => {
+  const mock = mockFetch();
+  const run = handler(mock);
+  const first = await run(request(payload(), {
+    "CF-Connecting-IP": "::ffff:192.0.2.1",
+  }), env());
+  const second = await run(request(payload({
+    tracking_token: "8c7c0f18-9ef6-4a53-9d8c-7e3c12c7c0f2",
+  }), {
+    "CF-Connecting-IP": "::ffff:c000:201",
+  }), env());
+
+  assert.equal(first.status, 201);
+  assert.equal(second.status, 201);
+  const attemptHashes = mock.calls
+    .filter(call => call.url.endsWith("/rpc/consume_request_submission_attempt"))
+    .map(call => JSON.parse(call.options.body).p_ip_hash);
+  const sourceHashes = mock.calls
+    .filter(call => call.url.endsWith("/rpc/submit_song_request_once"))
+    .map(call => JSON.parse(call.options.body).p_source_hash);
+  assert.equal(attemptHashes.length, 2);
+  assert.equal(sourceHashes.length, 2);
+  assert.equal(attemptHashes[0], attemptHashes[1]);
+  assert.equal(sourceHashes[0], sourceHashes[1]);
+});
+
+test("rejects malformed and zone-scoped trusted client addresses before backend access", async () => {
+  for (const address of [
+    "fe80::1%eth0",
+    "2001:db8::g",
+    "192.000.2.1",
+    "256.0.0.1",
+  ]) {
+    const mock = mockFetch();
+    const result = await handler(mock)(request(payload(), {
+      "CF-Connecting-IP": address,
+    }), env());
+    assert.equal(result.status, 400, address);
+    assert.equal(mock.calls.length, 0, address);
+  }
+});
+
 test("rejects per-IP attempts over the database limit before Siteverify", async () => {
   const mock = mockFetch({ attempt: [{ allowed: false, retry_after_seconds: 37 }] });
   const result = await handler(mock)(request(), env());
