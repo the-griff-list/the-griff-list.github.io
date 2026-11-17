@@ -171,6 +171,13 @@ create unique index if not exists song_requests_tracking_token_unique
   on public.song_requests (tracking_token)
   where tracking_token is not null;
 
+-- Public submissions may set only request content and their random tracking token.
+-- Keep identity, moderation status, and server timestamps controlled by PostgreSQL defaults/admins.
+revoke insert on table public.song_requests from public, anon, authenticated;
+revoke insert (id, status, created_at) on table public.song_requests from public, anon, authenticated;
+grant insert (requester_name, song_title, artist_name, note, tracking_token)
+  on table public.song_requests to anon, authenticated;
+
 create or replace function public.get_my_request_status(p_tracking_token uuid)
 returns table (song_title text, artist_name text, status text)
 language sql

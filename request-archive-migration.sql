@@ -21,7 +21,8 @@ create or replace function public.archive_song_request()
 returns trigger
 language plpgsql
 security definer
-set search_path = public
+-- All relation references below are schema-qualified; do not trust public in a definer search path.
+set search_path = ''
 as $$
 begin
   insert into public.request_archive (request_id, requester_name, song_title, artist_name, note, requested_at)
@@ -36,7 +37,9 @@ begin
 end;
 $$;
 
-revoke all on function public.archive_song_request() from public;
+-- Supabase also grants function EXECUTE directly to Data API roles by default.
+-- This trigger is not a client RPC; only its owner needs direct EXECUTE privilege.
+revoke execute on function public.archive_song_request() from public, anon, authenticated, service_role;
 drop trigger if exists song_requests_archive_insert on public.song_requests;
 create trigger song_requests_archive_insert
 after insert on public.song_requests
